@@ -28,17 +28,7 @@ public class RolePermission extends Base implements java.io.Serializable {
 	public RolePermission() {
 	}
 
-	public RolePermission(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long role, long permission) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.role = role;
-		this.permission = permission;
-	}
+	
 
 	
 	@Column(name = "ROLE", nullable = false, precision = 10, scale = 0)

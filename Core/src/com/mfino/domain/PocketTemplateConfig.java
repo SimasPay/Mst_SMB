@@ -57,45 +57,7 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	public PocketTemplateConfig() {
 	}
 
-	public PocketTemplateConfig(BigDecimal id, KycLevel kycLevel,
-			PocketTemplate pocketTemplate, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long subscribertype, long commodity, long pockettype) {
-		this.id = id;
-		this.kycLevel = kycLevel;
-		this.pocketTemplate = pocketTemplate;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.subscribertype = subscribertype;
-		this.commodity = commodity;
-		this.pockettype = pockettype;
-	}
-
-	public PocketTemplateConfig(BigDecimal id, KycLevel kycLevel,
-			PocketTemplate pocketTemplate, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long subscribertype, Long businesspartnertype, long commodity,
-			long pockettype, Short issuspencepocket, Short iscollectorpocket,
-			Short isdefault, Set<PtcGroupMapping> ptcGroupMappings) {
-		this.id = id;
-		this.kycLevel = kycLevel;
-		this.pocketTemplate = pocketTemplate;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.subscribertype = subscribertype;
-		this.businesspartnertype = businesspartnertype;
-		this.commodity = commodity;
-		this.pockettype = pockettype;
-		this.issuspencepocket = issuspencepocket;
-		this.iscollectorpocket = iscollectorpocket;
-		this.isdefault = isdefault;
-		this.ptcGroupMappings = ptcGroupMappings;
-	}
-
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCLEVEL", nullable = false)

@@ -34,36 +34,7 @@ public class BulkBankAccount extends Base implements java.io.Serializable {
 	public BulkBankAccount() {
 	}
 
-	public BulkBankAccount(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String filename, Clob filedata, long uploadfilestatus) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.filename = filename;
-		this.filedata = filedata;
-		this.uploadfilestatus = uploadfilestatus;
-	}
-
-	public BulkBankAccount(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String filename, Clob filedata, Long totallinecount,
-			Long errorlinecount, long uploadfilestatus, Clob uploadreport) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.filename = filename;
-		this.filedata = filedata;
-		this.totallinecount = totallinecount;
-		this.errorlinecount = errorlinecount;
-		this.uploadfilestatus = uploadfilestatus;
-		this.uploadreport = uploadreport;
-	}
-
+	
 	
 	@Column(name = "FILENAME", nullable = false, length = 1020)
 	public String getFilename() {

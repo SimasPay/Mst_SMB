@@ -32,23 +32,7 @@ public class SettlementTxnSctlMap extends Base implements java.io.Serializable {
 	public SettlementTxnSctlMap() {
 	}
 
-	public SettlementTxnSctlMap(BigDecimal id,
-			SettlementTxnLog settlementTxnLog,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long status,
-			BigDecimal mspid) {
-		this.id = id;
-		this.settlementTxnLog = settlementTxnLog;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.status = status;
-		this.mspid = mspid;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STLID", nullable = false)

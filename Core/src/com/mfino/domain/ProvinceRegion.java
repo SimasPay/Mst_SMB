@@ -41,36 +41,6 @@ public class ProvinceRegion extends Base  implements java.io.Serializable {
 	public ProvinceRegion() {
 	}
 
-	public ProvinceRegion(BigDecimal id, Province province,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String regionid,
-			String biregionid) {
-		this.id = id;
-		this.province = province;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.regionid = regionid;
-		this.biregionid = biregionid;
-	}
-
-	public ProvinceRegion(BigDecimal id, Province province,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String regionid,
-			String displaytext, String biregionid, Set<District> districts) {
-		this.id = id;
-		this.province = province;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.regionid = regionid;
-		this.displaytext = displaytext;
-		this.biregionid = biregionid;
-		this.districts = districts;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

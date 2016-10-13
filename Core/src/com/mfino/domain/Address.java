@@ -56,62 +56,6 @@ public class Address extends Base implements java.io.Serializable {
 	public Address() {
 	}
 
-	public Address(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public Address(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String description, String line1, String line2, String city,
-			String state, String zipcode, String country, String regionname,
-			String rw, String rt, String substate,
-			Set<Merchant> merchantsForFranchiseoutletaddressid,
-			Set<Partner> partnersForMerchantaddressid,
-			Set<Subscriber> subscribersForSubscriberaddressktpid,
-			Set<CardInfo> cardInfosForOldbillingaddressid,
-			Set<AuthPersonDetails> authPersonDetailses,
-			Set<CardInfo> cardInfosForAddressid,
-			Set<CardInfo> cardInfosForBillingaddressid,
-			Set<Subscriber> subscribersForSubscriberaddressid,
-			Set<Partner> partnersForFranchiseoutletaddressid,
-			Set<Merchant> merchantsForMerchantaddressid,
-			Set<CardInfo> cardInfosForOldaddressid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.description = description;
-		this.line1 = line1;
-		this.line2 = line2;
-		this.city = city;
-		this.state = state;
-		this.zipcode = zipcode;
-		this.country = country;
-		this.regionname = regionname;
-		this.rw = rw;
-		this.rt = rt;
-		this.substate = substate;
-		this.merchantsForFranchiseoutletaddressid = merchantsForFranchiseoutletaddressid;
-		this.partnersForMerchantaddressid = partnersForMerchantaddressid;
-		this.subscribersForSubscriberaddressktpid = subscribersForSubscriberaddressktpid;
-		this.cardInfosForOldbillingaddressid = cardInfosForOldbillingaddressid;
-		this.authPersonDetailses = authPersonDetailses;
-		this.cardInfosForAddressid = cardInfosForAddressid;
-		this.cardInfosForBillingaddressid = cardInfosForBillingaddressid;
-		this.subscribersForSubscriberaddressid = subscribersForSubscriberaddressid;
-		this.partnersForFranchiseoutletaddressid = partnersForFranchiseoutletaddressid;
-		this.merchantsForMerchantaddressid = merchantsForMerchantaddressid;
-		this.cardInfosForOldaddressid = cardInfosForOldaddressid;
-	}
-
-	
-
 	@Column(name = "DESCRIPTION", length = 1020)
 	public String getDescription() {
 		return this.description;

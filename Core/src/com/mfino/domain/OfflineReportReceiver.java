@@ -28,18 +28,6 @@ public class OfflineReportReceiver  extends Base implements java.io.Serializable
 	public OfflineReportReceiver() {
 	}
 
-	public OfflineReportReceiver(BigDecimal id, OfflineReport offlineReport,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String email) {
-		this.id = id;
-		this.offlineReport = offlineReport;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.email = email;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

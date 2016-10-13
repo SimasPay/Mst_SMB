@@ -26,19 +26,6 @@ public class AuditLog extends Base implements java.io.Serializable {
 	public AuditLog() {
 	}
 
-	public AuditLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String messagename, Clob fixmessage, String jsaction) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.messagename = messagename;
-		this.fixmessage = fixmessage;
-		this.jsaction = jsaction;
-	}
-
 	
 
 	@Column(name = "MESSAGENAME", nullable = false)

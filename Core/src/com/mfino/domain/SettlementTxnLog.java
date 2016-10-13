@@ -37,43 +37,7 @@ public class SettlementTxnLog  extends Base implements java.io.Serializable {
 	public SettlementTxnLog() {
 	}
 
-	public SettlementTxnLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, BigDecimal partnerservicesid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.partnerservicesid = partnerservicesid;
-	}
-
-	public SettlementTxnLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, BigDecimal partnerservicesid,
-			BigDecimal commoditytransferid,
-			BigDecimal servicesettlementconfigid, Long transferstatus,
-			String response, BigDecimal amount, String description,
-			Set<SctlSettlementMap> sctlSettlementMaps,
-			Set<SettlementTxnSctlMap> settlementTxnSctlMaps) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.partnerservicesid = partnerservicesid;
-		this.commoditytransferid = commoditytransferid;
-		this.servicesettlementconfigid = servicesettlementconfigid;
-		this.transferstatus = transferstatus;
-		this.response = response;
-		this.amount = amount;
-		this.description = description;
-		this.sctlSettlementMaps = sctlSettlementMaps;
-		this.settlementTxnSctlMaps = settlementTxnSctlMaps;
-	}
-
+	
 	
 
 	@Column(name = "MSPID", nullable = false, scale = 0)

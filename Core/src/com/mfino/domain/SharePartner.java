@@ -35,43 +35,7 @@ public class SharePartner extends Base implements java.io.Serializable {
 	public SharePartner() {
 	}
 
-	public SharePartner(BigDecimal id, TransactionCharge transactionCharge,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.transactionCharge = transactionCharge;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public SharePartner(BigDecimal id, Partner partner,
-			TransactionCharge transactionCharge,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal sharepercentage, String sharetype,
-			String shareholdertype, String actualsharepercentage,
-			String minsharepercentage, String maxsharepercentage) {
-		this.id = id;
-		this.partner = partner;
-		this.transactionCharge = transactionCharge;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sharepercentage = sharepercentage;
-		this.sharetype = sharetype;
-		this.shareholdertype = shareholdertype;
-		this.actualsharepercentage = actualsharepercentage;
-		this.minsharepercentage = minsharepercentage;
-		this.maxsharepercentage = maxsharepercentage;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

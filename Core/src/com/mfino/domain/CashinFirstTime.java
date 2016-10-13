@@ -29,29 +29,7 @@ public class CashinFirstTime extends Base implements java.io.Serializable {
 	public CashinFirstTime() {
 	}
 
-	public CashinFirstTime(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public CashinFirstTime(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mdnid, String mdn, BigDecimal sctlid,
-			BigDecimal transactionamount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdnid = mdnid;
-		this.mdn = mdn;
-		this.sctlid = sctlid;
-		this.transactionamount = transactionamount;
-	}
+	
 
 	
 	@Column(name = "MDNID", scale = 0)

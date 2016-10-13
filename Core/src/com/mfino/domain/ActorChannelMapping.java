@@ -51,45 +51,6 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	public ActorChannelMapping() {
 	}
 
-	public ActorChannelMapping(BigDecimal id, ChannelCode channelCode,
-			Service service, TransactionType transactionType,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, short isallowed,
-			long subscribertype) {
-		this.id = id;
-		this.channelCode = channelCode;
-		this.service = service;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.isallowed = isallowed;
-		this.subscribertype = subscribertype;
-	}
-
-	public ActorChannelMapping(BigDecimal id, ChannelCode channelCode,
-			Service service, KycLevel kycLevel, Groups groups,
-			TransactionType transactionType, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			short isallowed, long subscribertype, Long businesspartnertype) {
-		this.id = id;
-		this.channelCode = channelCode;
-		this.service = service;
-		this.kycLevel = kycLevel;
-		this.groups = groups;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.isallowed = isallowed;
-		this.subscribertype = subscribertype;
-		this.businesspartnertype = businesspartnertype;
-	}
-
-	
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHANNELCODEID", nullable = false)
 	public ChannelCode getChannelCode() {

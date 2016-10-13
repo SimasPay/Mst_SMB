@@ -33,21 +33,6 @@ public class TxnRuleAddnInfo extends Base implements java.io.Serializable {
 	public TxnRuleAddnInfo() {
 	}
 
-	public TxnRuleAddnInfo(BigDecimal id, TransactionRule transactionRule,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String txnrulekey,
-			String txnrulevalue, String txnrulecomparator) {
-		this.id = id;
-		this.transactionRule = transactionRule;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.txnrulekey = txnrulekey;
-		this.txnrulevalue = txnrulevalue;
-		this.txnrulecomparator = txnrulecomparator;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

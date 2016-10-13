@@ -34,32 +34,7 @@ public class CreditcardDestinations extends Base implements java.io.Serializable
 	public CreditcardDestinations() {
 	}
 
-	public CreditcardDestinations(BigDecimal id, Subscriber subscriber,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public CreditcardDestinations(BigDecimal id, Subscriber subscriber,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String destmdn,
-			String olddestmdn, Long ccmdnstatus) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.destmdn = destmdn;
-		this.olddestmdn = olddestmdn;
-		this.ccmdnstatus = ccmdnstatus;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIBERID", nullable = false)

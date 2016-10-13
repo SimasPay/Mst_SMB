@@ -37,38 +37,7 @@ public class SmscConfiguration extends Base implements java.io.Serializable {
 	public SmscConfiguration() {
 	}
 
-	public SmscConfiguration(BigDecimal id, SmsPartner smsPartner,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.smsPartner = smsPartner;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public SmscConfiguration(BigDecimal id, SmsPartner smsPartner,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String shortcode,
-			String longnumber, String smartfrensmscid,
-			String otherlocaloperatorsmscid, BigDecimal charging,
-			String header, String footer) {
-		this.id = id;
-		this.smsPartner = smsPartner;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.shortcode = shortcode;
-		this.longnumber = longnumber;
-		this.smartfrensmscid = smartfrensmscid;
-		this.otherlocaloperatorsmscid = otherlocaloperatorsmscid;
-		this.charging = charging;
-		this.header = header;
-		this.footer = footer;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

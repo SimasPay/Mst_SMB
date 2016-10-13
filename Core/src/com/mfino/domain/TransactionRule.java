@@ -58,57 +58,7 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	public TransactionRule() {
 	}
 
-	public TransactionRule(BigDecimal id, ChannelCode channelCode,
-			Service service, MfinoServiceProvider mfinoServiceProvider,
-			Partner partner, TransactionType transactionType,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			long chargemode) {
-		this.id = id;
-		this.channelCode = channelCode;
-		this.service = service;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.partner = partner;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.chargemode = chargemode;
-	}
-
-	public TransactionRule(BigDecimal id, ChannelCode channelCode,
-			Service service, KycLevel kycLevelBySourcekyc,
-			MfinoServiceProvider mfinoServiceProvider, Partner partner,
-			TransactionType transactionType, KycLevel kycLevelByDestkyc,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			long chargemode, Long sourcetype, Long desttype, Long sourcegroup,
-			Long destinationgroup, Set<TxnRuleAddnInfo> txnRuleAddnInfos,
-			Set<TransactionCharge> transactionCharges) {
-		this.id = id;
-		this.channelCode = channelCode;
-		this.service = service;
-		this.kycLevelBySourcekyc = kycLevelBySourcekyc;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.partner = partner;
-		this.transactionType = transactionType;
-		this.kycLevelByDestkyc = kycLevelByDestkyc;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.chargemode = chargemode;
-		this.sourcetype = sourcetype;
-		this.desttype = desttype;
-		this.sourcegroup = sourcegroup;
-		this.destinationgroup = destinationgroup;
-		this.txnRuleAddnInfos = txnRuleAddnInfos;
-		this.transactionCharges = transactionCharges;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHANNELCODEID", nullable = false)

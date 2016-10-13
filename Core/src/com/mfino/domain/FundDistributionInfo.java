@@ -39,40 +39,7 @@ public class FundDistributionInfo extends Base implements java.io.Serializable {
 	public FundDistributionInfo() {
 	}
 
-	public FundDistributionInfo(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-	}
-
-	public FundDistributionInfo(BigDecimal id,
-			UnregisteredTxnInfo unregisteredTxnInfo,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal mspid,
-			BigDecimal distributedamount, Long distributionstatus,
-			String failurereason, Long failurereasoncode,
-			BigDecimal transfersctlid, BigDecimal transferctid,
-			Long distributiontype) {
-		this.id = id;
-		this.unregisteredTxnInfo = unregisteredTxnInfo;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.distributedamount = distributedamount;
-		this.distributionstatus = distributionstatus;
-		this.failurereason = failurereason;
-		this.failurereasoncode = failurereasoncode;
-		this.transfersctlid = transfersctlid;
-		this.transferctid = transferctid;
-		this.distributiontype = distributiontype;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

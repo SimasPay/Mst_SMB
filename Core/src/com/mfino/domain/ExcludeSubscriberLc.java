@@ -27,17 +27,7 @@ public class ExcludeSubscriberLc extends Base implements java.io.Serializable {
 	public ExcludeSubscriberLc() {
 	}
 
-	public ExcludeSubscriberLc(BigDecimal id, SubscriberMdn subscriberMdn,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID", nullable = false)

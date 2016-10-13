@@ -39,45 +39,6 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 	public ServiceSettlementCfg() {
 	}
 
-	public ServiceSettlementCfg(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			PartnerServices partnerServices,
-			SettlementTemplate settlementTemplate, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.partnerServices = partnerServices;
-		this.settlementTemplate = settlementTemplate;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public ServiceSettlementCfg(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			PartnerServices partnerServices,
-			SettlementTemplate settlementTemplate, Pocket pocket,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Timestamp startdate,
-			Timestamp enddate, Short isdefault, Long schedulerstatus,
-			BigDecimal similarconfigid) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.partnerServices = partnerServices;
-		this.settlementTemplate = settlementTemplate;
-		this.pocket = pocket;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.startdate = startdate;
-		this.enddate = enddate;
-		this.isdefault = isdefault;
-		this.schedulerstatus = schedulerstatus;
-		this.similarconfigid = similarconfigid;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

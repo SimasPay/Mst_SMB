@@ -39,20 +39,7 @@ public class MerchantCode extends Base implements java.io.Serializable {
 	public MerchantCode() {
 	}
 
-	public MerchantCode(BigDecimal id, Company company,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String merchantcode,
-			String mdn) {
-		this.id = id;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.merchantcode = merchantcode;
-		this.mdn = mdn;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COMPANYID", nullable = false)

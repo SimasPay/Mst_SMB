@@ -28,28 +28,7 @@ public class OfflineReportCompany extends Base implements java.io.Serializable {
 	public OfflineReportCompany() {
 	}
 
-	public OfflineReportCompany(BigDecimal id, OfflineReport offlineReport,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.offlineReport = offlineReport;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public OfflineReportCompany(BigDecimal id, OfflineReport offlineReport,
-			Company company, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.offlineReport = offlineReport;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
+	
 
 	
 

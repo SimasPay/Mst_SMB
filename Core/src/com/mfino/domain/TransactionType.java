@@ -41,41 +41,6 @@ public class TransactionType extends Base implements java.io.Serializable {
 	public TransactionType() {
 	}
 
-	public TransactionType(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public TransactionType(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String transactionname,
-			String displayname, Set<ActorChannelMapping> actorChannelMappings,
-			Set<RuleKey> ruleKeys, Set<TransactionRule> transactionRules,
-			Set<MfaTransactionsInfo> mfaTransactionsInfos,
-			Set<ServiceTransaction> serviceTransactions) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionname = transactionname;
-		this.displayname = displayname;
-		this.actorChannelMappings = actorChannelMappings;
-		this.ruleKeys = ruleKeys;
-		this.transactionRules = transactionRules;
-		this.mfaTransactionsInfos = mfaTransactionsInfos;
-		this.serviceTransactions = serviceTransactions;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

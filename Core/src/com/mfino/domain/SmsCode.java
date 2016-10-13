@@ -34,39 +34,7 @@ public class SmsCode extends Base implements java.io.Serializable {
 	public SmsCode() {
 	}
 
-	public SmsCode(BigDecimal id, Brand brand, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String smscodetext, String servicename, String description,
-			long smscodestatus) {
-		this.id = id;
-		this.brand = brand;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.smscodetext = smscodetext;
-		this.servicename = servicename;
-		this.description = description;
-		this.smscodestatus = smscodestatus;
-	}
-
-	public SmsCode(BigDecimal id, Brand brand, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String smscodetext, String servicename, String description,
-			long smscodestatus, String shortcodes) {
-		this.id = id;
-		this.brand = brand;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.smscodetext = smscodetext;
-		this.servicename = servicename;
-		this.description = description;
-		this.smscodestatus = smscodestatus;
-		this.shortcodes = shortcodes;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BRANDID", nullable = false)

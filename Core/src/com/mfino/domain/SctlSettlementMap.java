@@ -41,43 +41,6 @@ public class SctlSettlementMap extends Base implements java.io.Serializable {
 	public SctlSettlementMap() {
 	}
 
-	public SctlSettlementMap(BigDecimal id, Service service,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal amount,
-			long status, BigDecimal mspid) {
-		this.id = id;
-		this.service = service;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.amount = amount;
-		this.status = status;
-		this.mspid = mspid;
-	}
-
-	public SctlSettlementMap(BigDecimal id, Partner partner, Service service,
-			SettlementTxnLog settlementTxnLog,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal amount,
-			long status, BigDecimal mspid) {
-		this.id = id;
-		this.partner = partner;
-		this.service = service;
-		this.settlementTxnLog = settlementTxnLog;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.amount = amount;
-		this.status = status;
-		this.mspid = mspid;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

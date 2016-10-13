@@ -31,38 +31,6 @@ public class AgentCashinTxnLog extends Base implements java.io.Serializable {
 	public AgentCashinTxnLog() {
 	}
 
-	public AgentCashinTxnLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public AgentCashinTxnLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal destpartnerid, String sourcemdn, String destmdn,
-			BigDecimal sourcepocketid, BigDecimal destpocketid,
-			BigDecimal amount, Long agentcashintrxnstatus,
-			String agentcashintrxnstatusreason, BigDecimal sctlid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.destpartnerid = destpartnerid;
-		this.sourcemdn = sourcemdn;
-		this.destmdn = destmdn;
-		this.sourcepocketid = sourcepocketid;
-		this.destpocketid = destpocketid;
-		this.amount = amount;
-		this.agentcashintrxnstatus = agentcashintrxnstatus;
-		this.agentcashintrxnstatusreason = agentcashintrxnstatusreason;
-		this.sctlid = sctlid;
-	}
-
-	
 	@Column(name = "DESTPARTNERID", scale = 0)
 	public BigDecimal getDestpartnerid() {
 		return this.destpartnerid;

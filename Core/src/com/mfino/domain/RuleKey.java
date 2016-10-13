@@ -40,24 +40,6 @@ public class RuleKey extends Base implements java.io.Serializable {
 	public RuleKey() {
 	}
 
-	public RuleKey(BigDecimal id, Service service,
-			TransactionType transactionType, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String txnrulekey, String txnrulekeytype, long txnrulekeypriority,
-			String txnrulekeycomparision) {
-		this.id = id;
-		this.service = service;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.txnrulekey = txnrulekey;
-		this.txnrulekeytype = txnrulekeytype;
-		this.txnrulekeypriority = txnrulekeypriority;
-		this.txnrulekeycomparision = txnrulekeycomparision;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

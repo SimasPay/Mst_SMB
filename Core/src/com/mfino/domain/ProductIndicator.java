@@ -36,42 +36,7 @@ public class ProductIndicator extends Base implements java.io.Serializable {
 	public ProductIndicator() {
 	}
 
-	public ProductIndicator(BigDecimal id, Company company,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			long transactionuicategory, long channelsourceapplication,
-			String productindicatorcode) {
-		this.id = id;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionuicategory = transactionuicategory;
-		this.channelsourceapplication = channelsourceapplication;
-		this.productindicatorcode = productindicatorcode;
-	}
-
-	public ProductIndicator(BigDecimal id, Company company,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			long transactionuicategory, long channelsourceapplication,
-			String requestorid, String productdescription, String channeltext,
-			String productindicatorcode) {
-		this.id = id;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionuicategory = transactionuicategory;
-		this.channelsourceapplication = channelsourceapplication;
-		this.requestorid = requestorid;
-		this.productdescription = productdescription;
-		this.channeltext = channeltext;
-		this.productindicatorcode = productindicatorcode;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COMPANYID", nullable = false)

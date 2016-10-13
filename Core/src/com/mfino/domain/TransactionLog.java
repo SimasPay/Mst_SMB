@@ -43,47 +43,7 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	public TransactionLog() {
 	}
 
-	public TransactionLog(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			Timestamp transactiontime, long messagecode, String messagedata) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactiontime = transactiontime;
-		this.messagecode = messagecode;
-		this.messagedata = messagedata;
-	}
-
-	public TransactionLog(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal parenttransactionid, Long multixid,
-			Timestamp transactiontime, long messagecode, String messagedata,
-			Set<CommodityTransfer> commodityTransfers,
-			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<LetterOfPurchase> letterOfPurchases) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.parenttransactionid = parenttransactionid;
-		this.multixid = multixid;
-		this.transactiontime = transactiontime;
-		this.messagecode = messagecode;
-		this.messagedata = messagedata;
-		this.commodityTransfers = commodityTransfers;
-		this.pendingCommodityTransfers = pendingCommodityTransfers;
-		this.letterOfPurchases = letterOfPurchases;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)

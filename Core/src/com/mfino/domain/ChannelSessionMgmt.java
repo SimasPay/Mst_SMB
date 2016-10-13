@@ -31,34 +31,6 @@ public class ChannelSessionMgmt extends Base implements java.io.Serializable {
 	public ChannelSessionMgmt() {
 	}
 
-	public ChannelSessionMgmt(BigDecimal id, SubscriberMdn subscriberMdn,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public ChannelSessionMgmt(BigDecimal id, SubscriberMdn subscriberMdn,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String sessionkey,
-			Long requestcountafterlogin, Timestamp lastrequesttime,
-			Timestamp lastlogintime) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sessionkey = sessionkey;
-		this.requestcountafterlogin = requestcountafterlogin;
-		this.lastrequesttime = lastrequesttime;
-		this.lastlogintime = lastlogintime;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

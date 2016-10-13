@@ -43,47 +43,7 @@ public class TransactionCharge  extends Base implements java.io.Serializable {
 	public TransactionCharge() {
 	}
 
-	public TransactionCharge(BigDecimal id, TransactionRule transactionRule,
-			ChargeType chargeType, MfinoServiceProvider mfinoServiceProvider,
-			ChargeDefinition chargeDefinition, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.transactionRule = transactionRule;
-		this.chargeType = chargeType;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.chargeDefinition = chargeDefinition;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public TransactionCharge(BigDecimal id, TransactionRule transactionRule,
-			ChargeType chargeType, MfinoServiceProvider mfinoServiceProvider,
-			ChargeDefinition chargeDefinition, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			Short isactive, Short ischrgdstrbapplicabletosrcsub,
-			Short ischrgdstrbapplicabletodestsub,
-			Set<SharePartner> sharePartners,
-			Set<TransactionChargeLog> transactionChargeLogs,
-			Set<TxnAmountDstrbLog> txnAmountDstrbLogs) {
-		this.id = id;
-		this.transactionRule = transactionRule;
-		this.chargeType = chargeType;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.chargeDefinition = chargeDefinition;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.isactive = isactive;
-		this.ischrgdstrbapplicabletosrcsub = ischrgdstrbapplicabletosrcsub;
-		this.ischrgdstrbapplicabletodestsub = ischrgdstrbapplicabletodestsub;
-		this.sharePartners = sharePartners;
-		this.transactionChargeLogs = transactionChargeLogs;
-		this.txnAmountDstrbLogs = txnAmountDstrbLogs;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TRANSACTIONRULEID", nullable = false)

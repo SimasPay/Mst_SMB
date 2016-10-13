@@ -40,37 +40,7 @@ public class Ledger extends Base implements java.io.Serializable {
 	public Ledger() {
 	}
 
-	public Ledger(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal commoditytransferid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.commoditytransferid = commoditytransferid;
-	}
-
-	public Ledger(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal commoditytransferid, String sourcemdn,
-			BigDecimal sourcepocketid, String sourcepocketbalance,
-			String destmdn, BigDecimal destpocketid, String destpocketbalance,
-			BigDecimal amount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.commoditytransferid = commoditytransferid;
-		this.sourcemdn = sourcemdn;
-		this.sourcepocketid = sourcepocketid;
-		this.sourcepocketbalance = sourcepocketbalance;
-		this.destmdn = destmdn;
-		this.destpocketid = destpocketid;
-		this.destpocketbalance = destpocketbalance;
-		this.amount = amount;
-	}
+	
 
 	
 	@Column(name = "COMMODITYTRANSFERID", nullable = false, scale = 0)

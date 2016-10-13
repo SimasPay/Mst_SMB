@@ -27,18 +27,7 @@ public class RetiredCardPANInfo extends Base implements java.io.Serializable {
 	public RetiredCardPANInfo() {
 	}
 
-	public RetiredCardPANInfo(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String cardpan, long retirecount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.cardpan = cardpan;
-		this.retirecount = retirecount;
-	}
-
+	
 	
 
 	@Column(name = "CARDPAN", unique = true, nullable = false, length = 1020)

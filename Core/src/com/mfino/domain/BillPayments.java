@@ -59,61 +59,6 @@ public class BillPayments extends Base implements java.io.Serializable {
 	public BillPayments() {
 	}
 
-	public BillPayments(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public BillPayments(BigDecimal id, ServiceChargeTxnLog serviceChargeTxnLog,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String billercode,
-			String invoicenumber, BigDecimal amount, BigDecimal charges,
-			Long billpaystatus, Long responsecode, Long noofretries,
-			String intxnid, String inresponsecode, String partnerbillercode,
-			String integrationcode, String sourcemdn, String originalintxnid,
-			String info1, String info2, String info3, Short chargesincluded,
-			BigDecimal nominalamount, String info4, String info5,
-			String operatormessage, BigDecimal operatorcharges, Clob billdata,
-			Timestamp transfertime, String info6, String info7, String info8) {
-		this.id = id;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.billercode = billercode;
-		this.invoicenumber = invoicenumber;
-		this.amount = amount;
-		this.charges = charges;
-		this.billpaystatus = billpaystatus;
-		this.responsecode = responsecode;
-		this.noofretries = noofretries;
-		this.intxnid = intxnid;
-		this.inresponsecode = inresponsecode;
-		this.partnerbillercode = partnerbillercode;
-		this.integrationcode = integrationcode;
-		this.sourcemdn = sourcemdn;
-		this.originalintxnid = originalintxnid;
-		this.info1 = info1;
-		this.info2 = info2;
-		this.info3 = info3;
-		this.chargesincluded = chargesincluded;
-		this.nominalamount = nominalamount;
-		this.info4 = info4;
-		this.info5 = info5;
-		this.operatormessage = operatormessage;
-		this.operatorcharges = operatorcharges;
-		this.billdata = billdata;
-		this.transfertime = transfertime;
-		this.info6 = info6;
-		this.info7 = info7;
-		this.info8 = info8;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

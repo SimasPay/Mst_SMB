@@ -41,35 +41,6 @@ public class Region extends Base implements java.io.Serializable {
 	public Region() {
 	}
 
-	public Region(BigDecimal id, Company company, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String regionname, String regioncode) {
-		this.id = id;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.regionname = regionname;
-		this.regioncode = regioncode;
-	}
-
-	public Region(BigDecimal id, Company company, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String regionname, String regioncode, String description,
-			Set<Merchant> merchants) {
-		this.id = id;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.regionname = regionname;
-		this.regioncode = regioncode;
-		this.description = description;
-		this.merchants = merchants;
-	}
-
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COMPANYID", nullable = false)

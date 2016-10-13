@@ -33,35 +33,7 @@ public class ServiceDefualtConfig extends Base implements java.io.Serializable {
 	public ServiceDefualtConfig() {
 	}
 
-	public ServiceDefualtConfig(BigDecimal id, Service service,
-			Partner partner, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.service = service;
-		this.partner = partner;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public ServiceDefualtConfig(BigDecimal id, Service service,
-			Partner partner, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Long sourcepockettype,
-			Long destpockettype,
-			Set<PartnerDefaultServices> partnerDefaultServiceses) {
-		this.id = id;
-		this.service = service;
-		this.partner = partner;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sourcepockettype = sourcepockettype;
-		this.destpockettype = destpockettype;
-		this.partnerDefaultServiceses = partnerDefaultServiceses;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SERVICEID", nullable = false)

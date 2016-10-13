@@ -30,18 +30,7 @@ public class IpMapping extends Base implements java.io.Serializable {
 	public IpMapping() {
 	}
 
-	public IpMapping(BigDecimal id,
-			IntegrationPartnerMap integrationPartnerMap,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String ipaddress) {
-		this.id = id;
-		this.integrationPartnerMap = integrationPartnerMap;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.ipaddress = ipaddress;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

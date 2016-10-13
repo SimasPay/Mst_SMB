@@ -37,35 +37,7 @@ public class PartnerRestrictions extends Base implements java.io.Serializable {
 	public PartnerRestrictions() {
 	}
 
-	public PartnerRestrictions(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long dctid, long partnerid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.dctid = dctid;
-		this.partnerid = partnerid;
-	}
-
-	public PartnerRestrictions(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long dctid, long partnerid, Long transactiontypeid,
-			Long relationshiptype, Short isallowed, Short isvalid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.dctid = dctid;
-		this.partnerid = partnerid;
-		this.transactiontypeid = transactiontypeid;
-		this.relationshiptype = relationshiptype;
-		this.isallowed = isallowed;
-		this.isvalid = isvalid;
-	}
-
+	
 	
 	@Column(name = "DCTID", nullable = false, precision = 10, scale = 0)
 	public long getDctid() {

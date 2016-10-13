@@ -37,37 +37,6 @@ public class IntegrationSummary  extends Base implements java.io.Serializable {
 	public IntegrationSummary() {
 	}
 
-	public IntegrationSummary(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-	}
-
-	public IntegrationSummary(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, String integrationtype, String reconcilationid1,
-			String reconcilationid2, String reconcilationid3,
-			String reconcilationid4, BigDecimal pctid, String institutionid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.integrationtype = integrationtype;
-		this.reconcilationid1 = reconcilationid1;
-		this.reconcilationid2 = reconcilationid2;
-		this.reconcilationid3 = reconcilationid3;
-		this.reconcilationid4 = reconcilationid4;
-		this.pctid = pctid;
-		this.institutionid = institutionid;
-	}
-
 	
 
 	@Column(name = "SCTLID", nullable = false, scale = 0)

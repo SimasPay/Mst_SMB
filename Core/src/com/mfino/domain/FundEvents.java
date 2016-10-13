@@ -36,36 +36,7 @@ public class FundEvents extends Base implements java.io.Serializable {
 	public FundEvents() {
 	}
 
-	public FundEvents(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-	}
-
-	public FundEvents(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, Long fundeventtype, String fundeventdescription,
-			Set<FundDefinition> fundDefinitionsForOnfundallocationtimeexpiry,
-			Set<FundDefinition> fundDefinitionsForGenerationofotponfailure,
-			Set<FundDefinition> fundDefinitionsForOnfailedattemptsexceeded) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.fundeventtype = fundeventtype;
-		this.fundeventdescription = fundeventdescription;
-		this.fundDefinitionsForOnfundallocationtimeexpiry = fundDefinitionsForOnfundallocationtimeexpiry;
-		this.fundDefinitionsForGenerationofotponfailure = fundDefinitionsForGenerationofotponfailure;
-		this.fundDefinitionsForOnfailedattemptsexceeded = fundDefinitionsForOnfailedattemptsexceeded;
-	}
-
+	
 	
 
 	@Column(name = "MSPID", nullable = false, scale = 0)

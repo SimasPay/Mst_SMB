@@ -32,23 +32,6 @@ public class AgentCommissionFee extends Base implements java.io.Serializable {
 	public AgentCommissionFee() {
 	}
 
-	public AgentCommissionFee(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal partnerid, String month, long year,
-			BigDecimal customerbalancefee, BigDecimal openaccountfee) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.partnerid = partnerid;
-		this.month = month;
-		this.year = year;
-		this.customerbalancefee = customerbalancefee;
-		this.openaccountfee = openaccountfee;
-	}
-
-	
 
 	@Column(name = "PARTNERID", nullable = false, scale = 0)
 	public BigDecimal getPartnerid() {

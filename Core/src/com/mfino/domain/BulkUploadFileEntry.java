@@ -32,38 +32,7 @@ public class BulkUploadFileEntry extends Base implements java.io.Serializable {
 	public BulkUploadFileEntry() {
 	}
 
-	public BulkUploadFileEntry(BigDecimal id, BulkUploadFile bulkUploadFile,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Clob linedata,
-			long linenumber, long bulkuploadfileentrystatus) {
-		this.id = id;
-		this.bulkUploadFile = bulkUploadFile;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.linedata = linedata;
-		this.linenumber = linenumber;
-		this.bulkuploadfileentrystatus = bulkuploadfileentrystatus;
-	}
-
-	public BulkUploadFileEntry(BigDecimal id, BulkUploadFile bulkUploadFile,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Clob linedata,
-			long linenumber, long bulkuploadfileentrystatus,
-			String failurereason) {
-		this.id = id;
-		this.bulkUploadFile = bulkUploadFile;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.linedata = linedata;
-		this.linenumber = linenumber;
-		this.bulkuploadfileentrystatus = bulkuploadfileentrystatus;
-		this.failurereason = failurereason;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BULKUPLOADFILEID", nullable = false)

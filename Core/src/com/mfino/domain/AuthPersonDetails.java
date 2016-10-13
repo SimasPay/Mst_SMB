@@ -36,40 +36,7 @@ public class AuthPersonDetails extends Base implements java.io.Serializable {
 	public AuthPersonDetails() {
 	}
 
-	public AuthPersonDetails(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public AuthPersonDetails(BigDecimal id, Address address,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String firstname,
-			String lastname, String iddesc, String idnumber,
-			Timestamp dateofbirth, Set<Subscriber> subscribers) {
-		this.id = id;
-		this.address = address;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.iddesc = iddesc;
-		this.idnumber = idnumber;
-		this.dateofbirth = dateofbirth;
-		this.subscribers = subscribers;
-	}
-
-	
+		
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ADDRESSID")
 	public Address getAddress() {

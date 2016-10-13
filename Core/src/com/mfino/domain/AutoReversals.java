@@ -29,39 +29,7 @@ public class AutoReversals  extends Base implements java.io.Serializable {
 	public AutoReversals() {
 	}
 
-	public AutoReversals(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, BigDecimal sourcepocketid,
-			BigDecimal destpocketid, Integer autorevstatus) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.sourcepocketid = sourcepocketid;
-		this.destpocketid = destpocketid;
-		this.autorevstatus = autorevstatus;
-	}
-
-	public AutoReversals(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, BigDecimal sourcepocketid,
-			BigDecimal destpocketid, Integer autorevstatus, BigDecimal amount,
-			BigDecimal charges) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.sourcepocketid = sourcepocketid;
-		this.destpocketid = destpocketid;
-		this.autorevstatus = autorevstatus;
-		this.amount = amount;
-		this.charges = charges;
-	}
-
+	
 	
 
 	@Column(name = "SCTLID", nullable = false, precision = 20, scale = 0)

@@ -36,33 +36,7 @@ public class DctRestrictions extends Base implements java.io.Serializable {
 	public DctRestrictions() {
 	}
 
-	public DctRestrictions(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long dctid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.dctid = dctid;
-	}
-
-	public DctRestrictions(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long dctid, Long transactiontypeid, Long relationshiptype,
-			Long distributionlevel, Short isallowed) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.dctid = dctid;
-		this.transactiontypeid = transactiontypeid;
-		this.relationshiptype = relationshiptype;
-		this.distributionlevel = distributionlevel;
-		this.isallowed = isallowed;
-	}
-
+	
 	
 
 	@Column(name = "DCTID", nullable = false, precision = 10, scale = 0)

@@ -46,49 +46,7 @@ public class CardInfo extends Base implements java.io.Serializable {
 	public CardInfo() {
 	}
 
-	public CardInfo(BigDecimal id, Subscriber subscriber,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long cardstatus) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.cardstatus = cardstatus;
-	}
-
-	public CardInfo(BigDecimal id, Pocket pocket,
-			Address addressByBillingaddressid, Address addressByOldaddressid,
-			Address addressByOldbillingaddressid, Subscriber subscriber,
-			Address addressByAddressid, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String cardf6, String cardl4, String issuername, String nameoncard,
-			String oldcardf6, String oldcardl4, String oldissuername,
-			String oldnameoncard, long cardstatus, Short isconformationrequired) {
-		this.id = id;
-		this.pocket = pocket;
-		this.addressByBillingaddressid = addressByBillingaddressid;
-		this.addressByOldaddressid = addressByOldaddressid;
-		this.addressByOldbillingaddressid = addressByOldbillingaddressid;
-		this.subscriber = subscriber;
-		this.addressByAddressid = addressByAddressid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.cardf6 = cardf6;
-		this.cardl4 = cardl4;
-		this.issuername = issuername;
-		this.nameoncard = nameoncard;
-		this.oldcardf6 = oldcardf6;
-		this.oldcardl4 = oldcardl4;
-		this.oldissuername = oldissuername;
-		this.oldnameoncard = oldnameoncard;
-		this.cardstatus = cardstatus;
-		this.isconformationrequired = isconformationrequired;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "POCKETID")

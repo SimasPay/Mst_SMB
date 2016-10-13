@@ -31,36 +31,7 @@ public class KtpDetails extends Base implements java.io.Serializable {
 	public KtpDetails() {
 	}
 
-	public KtpDetails(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String mdn) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdn = mdn;
-	}
-
-	public KtpDetails(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String mdn, String ktpid, String fullname,
-			Timestamp dateofbirth, String agentmdn,
-			String bankresponsestatus, String bankresponse) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdn = mdn;
-		this.ktpid = ktpid;
-		this.fullname = fullname;
-		this.dateofbirth = dateofbirth;
-		this.agentmdn = agentmdn;
-		this.bankresponsestatus = bankresponsestatus;
-		this.bankresponse = bankresponse;
-	}
-
+	
 	
 	@Column(name = "MDN", nullable = false, length = 1020)
 	public String getMdn() {

@@ -41,47 +41,7 @@ public class SmsTransactionLog extends Base implements java.io.Serializable {
 	public SmsTransactionLog() {
 	}
 
-	public SmsTransactionLog(BigDecimal id, SmsPartner smsPartner,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			Timestamp transactiontime, String source, String destmdn,
-			String smscid, Clob messagedata) {
-		this.id = id;
-		this.smsPartner = smsPartner;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactiontime = transactiontime;
-		this.source = source;
-		this.destmdn = destmdn;
-		this.smscid = smscid;
-		this.messagedata = messagedata;
-	}
-
-	public SmsTransactionLog(BigDecimal id, SmsPartner smsPartner,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String fieldid,
-			Timestamp transactiontime, String source, String destmdn,
-			String smscid, String transactionstatus, String deliverystatus,
-			Clob messagedata, Long messagecode) {
-		this.id = id;
-		this.smsPartner = smsPartner;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.fieldid = fieldid;
-		this.transactiontime = transactiontime;
-		this.source = source;
-		this.destmdn = destmdn;
-		this.smscid = smscid;
-		this.transactionstatus = transactionstatus;
-		this.deliverystatus = deliverystatus;
-		this.messagedata = messagedata;
-		this.messagecode = messagecode;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARTNERID", nullable = false)

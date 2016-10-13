@@ -40,44 +40,7 @@ public class PendingTxnsFile extends Base implements java.io.Serializable {
 	public PendingTxnsFile() {
 	}
 
-	public PendingTxnsFile(BigDecimal id, Company company, String filename,
-			Clob filedata, long uploadfilestatus, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.company = company;
-		this.filename = filename;
-		this.filedata = filedata;
-		this.uploadfilestatus = uploadfilestatus;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public PendingTxnsFile(BigDecimal id, Company company, String filename,
-			Clob filedata, String description, Long recordcount,
-			Long totallinecount, Long errorlinecount, long uploadfilestatus,
-			Clob uploadreport, Long recordtype, Timestamp fileprocesseddate,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Long resolveas) {
-		this.id = id;
-		this.company = company;
-		this.filename = filename;
-		this.filedata = filedata;
-		this.description = description;
-		this.recordcount = recordcount;
-		this.totallinecount = totallinecount;
-		this.errorlinecount = errorlinecount;
-		this.uploadfilestatus = uploadfilestatus;
-		this.uploadreport = uploadreport;
-		this.recordtype = recordtype;
-		this.fileprocesseddate = fileprocesseddate;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.resolveas = resolveas;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

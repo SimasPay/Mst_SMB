@@ -25,30 +25,7 @@ public class VisafoneTxnGenerator extends Base implements java.io.Serializable {
 	public VisafoneTxnGenerator() {
 	}
 
-	public VisafoneTxnGenerator(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public VisafoneTxnGenerator(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			Timestamp txntimestamp, Long txncount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.txntimestamp = txntimestamp;
-		this.txncount = txncount;
-	}
-
-	
-
-	
+		
 	
 	@Column(name = "TXNTIMESTAMP")
 	public Timestamp getTxntimestamp() {

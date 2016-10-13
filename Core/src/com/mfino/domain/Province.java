@@ -32,33 +32,7 @@ public class Province extends Base implements java.io.Serializable {
 	public Province() {
 	}
 
-	public Province(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String provinceid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.provinceid = provinceid;
-	}
-
-	public Province(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String displaytext, String provinceid,
-			Set<ProvinceRegion> provinceRegions) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.displaytext = displaytext;
-		this.provinceid = provinceid;
-		this.provinceRegions = provinceRegions;
-	}
-
 	
-
 	
 	@Column(name = "DISPLAYTEXT", length = 800)
 	public String getDisplaytext() {

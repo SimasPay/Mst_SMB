@@ -44,39 +44,7 @@ public class Biller extends Base  implements java.io.Serializable {
 	public Biller() {
 	}
 
-	public Biller(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long bankcode,
-			String billercode, long billrefoffset) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.bankcode = bankcode;
-		this.billercode = billercode;
-		this.billrefoffset = billrefoffset;
-	}
-
-	public Biller(BigDecimal id, Company company, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long bankcode, String billercode, String billername,
-			String billertype, BigDecimal transactionfee, long billrefoffset,
-			Set<Denomination> denominations) {
-		this.id = id;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.bankcode = bankcode;
-		this.billercode = billercode;
-		this.billername = billername;
-		this.billertype = billertype;
-		this.transactionfee = transactionfee;
-		this.billrefoffset = billrefoffset;
-		this.denominations = denominations;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COMPANYID")

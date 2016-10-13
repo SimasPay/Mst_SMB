@@ -35,36 +35,7 @@ public class Bank extends Base implements java.io.Serializable {
 	public Bank() {
 	}
 
-	public Bank(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public Bank(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			Long bankcode, String header, String contactnumber,
-			String description, Long status, Timestamp statustime,
-			Set<BankAdmin> bankAdmins) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.bankcode = bankcode;
-		this.header = header;
-		this.contactnumber = contactnumber;
-		this.description = description;
-		this.status = status;
-		this.statustime = statustime;
-		this.bankAdmins = bankAdmins;
-	}
-
-	
+		
 	@Column(name = "NAME", length = 1020)
 	public String getName() {
 		return this.name;

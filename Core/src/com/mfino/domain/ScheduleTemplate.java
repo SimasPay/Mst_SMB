@@ -53,45 +53,7 @@ public class ScheduleTemplate extends Base implements java.io.Serializable {
 	public ScheduleTemplate() {
 	}
 
-	public ScheduleTemplate(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String name, String cron, BigDecimal mspid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.cron = cron;
-		this.mspid = mspid;
-	}
-
-	public ScheduleTemplate(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String name, String modetype, String dayofweek, String dayofmonth,
-			String cron, BigDecimal mspid, Long timervaluehh,
-			Long timervaluemm, Long month, String description,
-			Set<SettlementTemplate> settlementTemplatesForCutofftime,
-			Set<SettlementTemplate> settlementTemplatesForScheduletemplateid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.modetype = modetype;
-		this.dayofweek = dayofweek;
-		this.dayofmonth = dayofmonth;
-		this.cron = cron;
-		this.mspid = mspid;
-		this.timervaluehh = timervaluehh;
-		this.timervaluemm = timervaluemm;
-		this.month = month;
-		this.description = description;
-		this.settlementTemplatesForCutofftime = settlementTemplatesForCutofftime;
-		this.settlementTemplatesForScheduletemplateid = settlementTemplatesForScheduletemplateid;
-	}
-
+	
 	
 	@Column(name = "NAME", nullable = false)
 	public String getName() {

@@ -39,43 +39,6 @@ public class ChargePricing extends Base implements java.io.Serializable {
 	public ChargePricing() {
 	}
 
-	public ChargePricing(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			ChargeDefinition chargeDefinition, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.chargeDefinition = chargeDefinition;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public ChargePricing(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			ChargeDefinition chargeDefinition, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal minamount, BigDecimal maxamount,
-			BigDecimal chargeinfixed, BigDecimal chargeinpercentage,
-			Short isdefault, String charge, String mincharge, String maxcharge) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.chargeDefinition = chargeDefinition;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.minamount = minamount;
-		this.maxamount = maxamount;
-		this.chargeinfixed = chargeinfixed;
-		this.chargeinpercentage = chargeinpercentage;
-		this.isdefault = isdefault;
-		this.charge = charge;
-		this.mincharge = mincharge;
-		this.maxcharge = maxcharge;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

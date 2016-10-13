@@ -28,34 +28,7 @@ public class TxnPendingSummary extends Base implements java.io.Serializable {
 	public TxnPendingSummary() {
 	}
 
-	public TxnPendingSummary(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-	}
-
-	public TxnPendingSummary(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, Long csraction, Timestamp csractiontime,
-			BigDecimal csruserid, String csrusername, String csrcomment) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.csraction = csraction;
-		this.csractiontime = csractiontime;
-		this.csruserid = csruserid;
-		this.csrusername = csrusername;
-		this.csrcomment = csrcomment;
-	}
-
+	
 	
 	@Column(name = "SCTLID", nullable = false, scale = 0)
 	public BigDecimal getSctlid() {

@@ -60,56 +60,6 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	public UnregisteredTxnInfo() {
 	}
 
-	public UnregisteredTxnInfo(BigDecimal id,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public UnregisteredTxnInfo(BigDecimal id, SubscriberMdn subscriberMdn,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			FundDefinition fundDefinition, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal transferctid, BigDecimal cashoutsctlid,
-			BigDecimal cashoutctid, String digestedpin,
-			Long unregisteredtxnstatus, String transactionname,
-			BigDecimal amount, String failurereason, Long failurereasoncode,
-			String reversalreason, Timestamp expirytime,
-			BigDecimal availableamount, String withdrawalmdn,
-			Long withdrawalfailureattempt, String partnercode,
-			Set<FundDistributionInfo> fundDistributionInfos) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.fundDefinition = fundDefinition;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transferctid = transferctid;
-		this.cashoutsctlid = cashoutsctlid;
-		this.cashoutctid = cashoutctid;
-		this.digestedpin = digestedpin;
-		this.unregisteredtxnstatus = unregisteredtxnstatus;
-		this.transactionname = transactionname;
-		this.amount = amount;
-		this.failurereason = failurereason;
-		this.failurereasoncode = failurereasoncode;
-		this.reversalreason = reversalreason;
-		this.expirytime = expirytime;
-		this.availableamount = availableamount;
-		this.withdrawalmdn = withdrawalmdn;
-		this.withdrawalfailureattempt = withdrawalfailureattempt;
-		this.partnercode = partnercode;
-		this.fundDistributionInfos = fundDistributionInfos;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

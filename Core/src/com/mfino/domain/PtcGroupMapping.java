@@ -32,28 +32,7 @@ public class PtcGroupMapping extends Base implements java.io.Serializable {
 	public PtcGroupMapping() {
 	}
 
-	public PtcGroupMapping(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public PtcGroupMapping(BigDecimal id,
-			PocketTemplateConfig pocketTemplateConfig, Groups groups,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.pocketTemplateConfig = pocketTemplateConfig;
-		this.groups = groups;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PTCID")

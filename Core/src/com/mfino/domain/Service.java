@@ -48,45 +48,6 @@ public class Service extends Base implements java.io.Serializable {
 	public Service() {
 	}
 
-	public Service(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public Service(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String servicename,
-			String displayname, Set<TransactionRule> transactionRules,
-			Set<ActorChannelMapping> actorChannelMappings,
-			Set<MfaTransactionsInfo> mfaTransactionsInfos,
-			Set<ServiceDefualtConfig> serviceDefualtConfigs,
-			Set<PartnerServices> partnerServiceses,
-			Set<ServiceTransaction> serviceTransactions, Set<RuleKey> ruleKeys,
-			Set<SctlSettlementMap> sctlSettlementMaps) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.servicename = servicename;
-		this.displayname = displayname;
-		this.transactionRules = transactionRules;
-		this.actorChannelMappings = actorChannelMappings;
-		this.mfaTransactionsInfos = mfaTransactionsInfos;
-		this.serviceDefualtConfigs = serviceDefualtConfigs;
-		this.partnerServiceses = partnerServiceses;
-		this.serviceTransactions = serviceTransactions;
-		this.ruleKeys = ruleKeys;
-		this.sctlSettlementMaps = sctlSettlementMaps;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

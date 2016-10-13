@@ -41,50 +41,7 @@ public class InterbankTransfers extends Base implements java.io.Serializable {
 	public InterbankTransfers() {
 	}
 
-	public InterbankTransfers(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String destbankcode, BigDecimal amount, BigDecimal charges) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.destbankcode = destbankcode;
-		this.amount = amount;
-		this.charges = charges;
-	}
-
-	public InterbankTransfers(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String terminalid, String destbankcode, String sourceaccountname,
-			String destaccountname, String sourceaccountnumber,
-			String destaccountnumber, BigDecimal amount, BigDecimal charges,
-			BigDecimal transferid, BigDecimal sctlid, String sessionid,
-			String narration, String paymentreference, String nibresponsecode,
-			Long ibtstatus, String destbankname) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.terminalid = terminalid;
-		this.destbankcode = destbankcode;
-		this.sourceaccountname = sourceaccountname;
-		this.destaccountname = destaccountname;
-		this.sourceaccountnumber = sourceaccountnumber;
-		this.destaccountnumber = destaccountnumber;
-		this.amount = amount;
-		this.charges = charges;
-		this.transferid = transferid;
-		this.sctlid = sctlid;
-		this.sessionid = sessionid;
-		this.narration = narration;
-		this.paymentreference = paymentreference;
-		this.nibresponsecode = nibresponsecode;
-		this.ibtstatus = ibtstatus;
-		this.destbankname = destbankname;
-	}
-
+	
 	
 	@Column(name = "TERMINALID", length = 1020)
 	public String getTerminalid() {

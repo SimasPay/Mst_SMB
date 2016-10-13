@@ -32,32 +32,6 @@ public class Role extends Base implements java.io.Serializable {
 	public Role() {
 	}
 
-	public Role(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, short issystemuser) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.issystemuser = issystemuser;
-	}
-
-	public Role(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String enumcode,
-			String enumvalue, String displaytext, short issystemuser,
-			Short prioritylevel) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.enumcode = enumcode;
-		this.enumvalue = enumvalue;
-		this.displaytext = displaytext;
-		this.issystemuser = issystemuser;
-		this.prioritylevel = prioritylevel;
-	}
-
 	
 
 	@Column(name = "ENUMCODE", length = 1020)

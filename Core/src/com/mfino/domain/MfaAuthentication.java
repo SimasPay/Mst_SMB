@@ -32,35 +32,9 @@ public class MfaAuthentication extends Base implements java.io.Serializable {
 	public MfaAuthentication() {
 	}
 
-	public MfaAuthentication(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, long mfamode, String mfavalue) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.mfamode = mfamode;
-		this.mfavalue = mfavalue;
-	}
-
-	public MfaAuthentication(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, long mfamode, String mfavalue,
-			BigDecimal retryattempt) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.mfamode = mfamode;
-		this.mfavalue = mfavalue;
-		this.retryattempt = retryattempt;
-	}
-
 	
+
+		
 	@Column(name = "SCTLID", nullable = false, scale = 0)
 	public BigDecimal getSctlid() {
 		return this.sctlid;

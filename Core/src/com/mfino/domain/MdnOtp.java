@@ -31,35 +31,7 @@ public class MdnOtp extends Base implements java.io.Serializable {
 	public MdnOtp() {
 	}
 
-	public MdnOtp(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String mdn, String otp,
-			Timestamp otpexpirationtime, long status) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdn = mdn;
-		this.otp = otp;
-		this.otpexpirationtime = otpexpirationtime;
-		this.status = status;
-	}
-
-	public MdnOtp(BigDecimal id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String mdn, String otp,
-			Timestamp otpexpirationtime, long status, Long otpretrycount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdn = mdn;
-		this.otp = otp;
-		this.otpexpirationtime = otpexpirationtime;
-		this.status = status;
-		this.otpretrycount = otpretrycount;
-	}
-
+	
 	
 	@Column(name = "MDN", nullable = false, length = 1020)
 	public String getMdn() {

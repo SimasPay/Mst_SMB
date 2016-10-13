@@ -39,24 +39,7 @@ public class MonthlyBalance extends Base implements java.io.Serializable {
 	public MonthlyBalance() {
 	}
 
-	public MonthlyBalance(BigDecimal id, Pocket pocket,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String month, long year,
-			BigDecimal averagemonthlybalance, BigDecimal interestcalculated,
-			BigDecimal agentcommissioncalculated) {
-		this.id = id;
-		this.pocket = pocket;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.month = month;
-		this.year = year;
-		this.averagemonthlybalance = averagemonthlybalance;
-		this.interestcalculated = interestcalculated;
-		this.agentcommissioncalculated = agentcommissioncalculated;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

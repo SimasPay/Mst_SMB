@@ -30,32 +30,6 @@ public class FavoriteCategory extends Base implements java.io.Serializable {
 	public FavoriteCategory() {
 	}
 
-	public FavoriteCategory(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String categoryname, String displayname) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.categoryname = categoryname;
-		this.displayname = displayname;
-	}
-
-	public FavoriteCategory(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String categoryname, String displayname,
-			Set<SubscriberFavorite> subscriberFavorites) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.categoryname = categoryname;
-		this.displayname = displayname;
-		this.subscriberFavorites = subscriberFavorites;
-	}
-
 	
 
 	@Column(name = "CATEGORYNAME", nullable = false)

@@ -27,29 +27,7 @@ public class PermissionGroup extends Base implements java.io.Serializable {
 	public PermissionGroup() {
 	}
 
-	public PermissionGroup(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String permissiongroupname) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.permissiongroupname = permissiongroupname;
-	}
-
-	public PermissionGroup(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String permissiongroupname, Set<PermissionItem> permissionItems) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.permissiongroupname = permissiongroupname;
-		this.permissionItems = permissionItems;
-	}
-
+	
 	
 
 	@Column(name = "PERMISSIONGROUPNAME", nullable = false)

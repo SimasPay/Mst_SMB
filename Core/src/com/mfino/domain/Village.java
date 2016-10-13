@@ -30,32 +30,6 @@ public class Village extends Base implements java.io.Serializable {
 	public Village() {
 	}
 
-	public Village(BigDecimal id, District district,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String villageid) {
-		this.id = id;
-		this.district = district;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.villageid = villageid;
-	}
-
-	public Village(BigDecimal id, District district,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String villageid,
-			String displaytext) {
-		this.id = id;
-		this.district = district;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.villageid = villageid;
-		this.displaytext = displaytext;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -38,42 +38,7 @@ public class PendingTxnsEntry extends Base implements java.io.Serializable {
 	public PendingTxnsEntry() {
 	}
 
-	public PendingTxnsEntry(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal transactionsfileid, long linenumber, long status,
-			BigDecimal amount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionsfileid = transactionsfileid;
-		this.linenumber = linenumber;
-		this.status = status;
-		this.amount = amount;
-	}
-
-	public PendingTxnsEntry(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal transactionsfileid, long linenumber, long status,
-			String resolvefailurereason, Long notificationcode,
-			BigDecimal transferid, BigDecimal amount, String sourcemdn,
-			String destmdn) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionsfileid = transactionsfileid;
-		this.linenumber = linenumber;
-		this.status = status;
-		this.resolvefailurereason = resolvefailurereason;
-		this.notificationcode = notificationcode;
-		this.transferid = transferid;
-		this.amount = amount;
-		this.sourcemdn = sourcemdn;
-		this.destmdn = destmdn;
-	}
+	
 
 	
 	@Column(name = "TRANSACTIONSFILEID", nullable = false, scale = 0)

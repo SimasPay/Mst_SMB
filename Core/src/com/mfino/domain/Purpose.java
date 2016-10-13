@@ -31,30 +31,7 @@ public class Purpose extends Base implements java.io.Serializable {
 	public Purpose() {
 	}
 
-	public Purpose(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-	}
-
-	public Purpose(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, Long category, String code) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.category = category;
-		this.code = code;
-	}
-
+	
 	
 
 	@Column(name = "MSPID", nullable = false, scale = 0)

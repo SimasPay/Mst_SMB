@@ -32,33 +32,7 @@ public class MerchantPrefixCode extends Base implements java.io.Serializable {
 	public MerchantPrefixCode() {
 	}
 
-	public MerchantPrefixCode(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long merchantprefixcode, String billername, String vaservicename) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.merchantprefixcode = merchantprefixcode;
-		this.billername = billername;
-		this.vaservicename = vaservicename;
-	}
-
-	public MerchantPrefixCode(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long merchantprefixcode, String billername, BigDecimal companyid,
-			String vaservicename) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.merchantprefixcode = merchantprefixcode;
-		this.billername = billername;
-		this.companyid = companyid;
-		this.vaservicename = vaservicename;
-	}
+	
 
 	@Column(name = "MERCHANTPREFIXCODE", unique = true, nullable = false, precision = 10, scale = 0)
 	public long getMerchantprefixcode() {

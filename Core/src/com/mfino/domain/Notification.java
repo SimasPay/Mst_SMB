@@ -50,57 +50,7 @@ public class Notification extends Base implements java.io.Serializable {
 	public Notification() {
 	}
 
-	public Notification(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider, Company company,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long code,
-			String codename, long notificationmethod, Clob text, long language,
-			long status, Timestamp statustime) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.code = code;
-		this.codename = codename;
-		this.notificationmethod = notificationmethod;
-		this.text = text;
-		this.language = language;
-		this.status = status;
-		this.statustime = statustime;
-	}
-
-	public Notification(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider, Company company,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long code,
-			String codename, long notificationmethod, Clob text, Clob stkml,
-			long language, long status, Timestamp statustime,
-			String accesscode, String smsnotificationcode, Short isactive) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.code = code;
-		this.codename = codename;
-		this.notificationmethod = notificationmethod;
-		this.text = text;
-		this.stkml = stkml;
-		this.language = language;
-		this.status = status;
-		this.statustime = statustime;
-		this.accesscode = accesscode;
-		this.smsnotificationcode = smsnotificationcode;
-		this.isactive = isactive;
-	}
-
 	
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
 	public MfinoServiceProvider getMfinoServiceProvider() {

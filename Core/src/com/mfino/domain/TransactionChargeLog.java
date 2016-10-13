@@ -31,39 +31,7 @@ public class TransactionChargeLog extends Base implements java.io.Serializable {
 	public TransactionChargeLog() {
 	}
 
-	public TransactionChargeLog(BigDecimal id,
-			TransactionCharge transactionCharge, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal servicechargetransactionlogid,
-			BigDecimal calculatedcharge) {
-		this.id = id;
-		this.transactionCharge = transactionCharge;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.servicechargetransactionlogid = servicechargetransactionlogid;
-		this.calculatedcharge = calculatedcharge;
-	}
-
-	public TransactionChargeLog(BigDecimal id,
-			TransactionCharge transactionCharge,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal servicechargetransactionlogid,
-			BigDecimal calculatedcharge) {
-		this.id = id;
-		this.transactionCharge = transactionCharge;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.servicechargetransactionlogid = servicechargetransactionlogid;
-		this.calculatedcharge = calculatedcharge;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TRANSACTIONCHARGEID", nullable = false)

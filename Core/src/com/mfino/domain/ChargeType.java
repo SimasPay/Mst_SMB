@@ -42,40 +42,7 @@ public class ChargeType extends Base implements java.io.Serializable {
 	public ChargeType() {
 	}
 
-	public ChargeType(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-	}
-
-	public ChargeType(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			String description,
-			Set<ChargeDefinition> chargeDefinitionsForDependantchargetypeid,
-			Set<ChargeDefinition> chargeDefinitionsForChargetypeid,
-			Set<TransactionCharge> transactionCharges) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.description = description;
-		this.chargeDefinitionsForDependantchargetypeid = chargeDefinitionsForDependantchargetypeid;
-		this.chargeDefinitionsForChargetypeid = chargeDefinitionsForChargetypeid;
-		this.transactionCharges = transactionCharges;
-	}
-
 	
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
 	public MfinoServiceProvider getMfinoServiceProvider() {

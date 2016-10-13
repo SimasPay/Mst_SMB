@@ -28,35 +28,7 @@ public class ServiceTransaction extends Base implements java.io.Serializable {
 	public ServiceTransaction() {
 	}
 
-	public ServiceTransaction(BigDecimal id, Service service,
-			MfinoServiceProvider mfinoServiceProvider,
-			TransactionType transactionType, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.service = service;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public ServiceTransaction(BigDecimal id, Service service,
-			MfinoServiceProvider mfinoServiceProvider,
-			TransactionType transactionType, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			Short isreverseallowed) {
-		this.id = id;
-		this.service = service;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.isreverseallowed = isreverseallowed;
-	}
+	
 
 	
 

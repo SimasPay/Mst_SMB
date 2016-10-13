@@ -63,67 +63,7 @@ public class Company extends Base implements java.io.Serializable {
 	public Company() {
 	}
 
-	public Company(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String companyname, long companycode) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.companyname = companyname;
-		this.companycode = companycode;
-	}
-
-	public Company(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String companyname, long companycode, String customerservicenumber,
-			String smsc, Set<Brand> brands,
-			Set<BillPaymentTxn> billPaymentTxns,
-			Set<CreditCardTransaction> creditCardTransactions,
-			Set<Subscriber> subscribers,
-			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<BulkUpload> bulkUploads, Set<PendingTxnsFile> pendingTxnsFiles,
-			Set<Biller> billers,
-			Set<OfflineReportCompany> offlineReportCompanies,
-			Set<MfinoUser> mfinoUsers, Set<MerchantCode> merchantCodes,
-			Set<ProductIndicator> productIndicators, Set<Pocket> pockets,
-			Set<Region> regions, Set<ActivitiesLog> activitiesLogs,
-			Set<BulkUploadFile> bulkUploadFiles,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
-			Set<CommodityTransfer> commodityTransfers,
-			Set<Notification> notifications) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.companyname = companyname;
-		this.companycode = companycode;
-		this.customerservicenumber = customerservicenumber;
-		this.smsc = smsc;
-		this.brands = brands;
-		this.billPaymentTxns = billPaymentTxns;
-		this.creditCardTransactions = creditCardTransactions;
-		this.subscribers = subscribers;
-		this.pendingCommodityTransfers = pendingCommodityTransfers;
-		this.bulkUploads = bulkUploads;
-		this.pendingTxnsFiles = pendingTxnsFiles;
-		this.billers = billers;
-		this.offlineReportCompanies = offlineReportCompanies;
-		this.mfinoUsers = mfinoUsers;
-		this.merchantCodes = merchantCodes;
-		this.productIndicators = productIndicators;
-		this.pockets = pockets;
-		this.regions = regions;
-		this.activitiesLogs = activitiesLogs;
-		this.bulkUploadFiles = bulkUploadFiles;
-		this.letterOfPurchases = letterOfPurchases;
-		this.bulkLops = bulkLops;
-		this.commodityTransfers = commodityTransfers;
-		this.notifications = notifications;
-	}
-
+	
 	
 	@Column(name = "COMPANYNAME", unique = true, nullable = false, length = 1020)
 	public String getCompanyname() {

@@ -23,7 +23,7 @@ public class BookingDatedBalance extends Base implements java.io.Serializable {
 	public static final String FieldName_PocketID = "pocketid";
 	public static final String FieldName_BookingDate = "bookingdate";
 	
-	private BigDecimal pocketid;
+	private Long pocketid;
 	private Timestamp bookingdate;
 	private String openingbalance;
 	private String closingbalance;
@@ -34,33 +34,14 @@ public class BookingDatedBalance extends Base implements java.io.Serializable {
 	public BookingDatedBalance() {
 	}
 
-	public BookingDatedBalance(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal pocketid, Timestamp bookingdate,
-			String openingbalance, String closingbalance,
-			BigDecimal totalcredit, BigDecimal totaldebit,
-			BigDecimal netturnover) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.pocketid = pocketid;
-		this.bookingdate = bookingdate;
-		this.openingbalance = openingbalance;
-		this.closingbalance = closingbalance;
-		this.totalcredit = totalcredit;
-		this.totaldebit = totaldebit;
-		this.netturnover = netturnover;
-	}
-
+	
 	
 	@Column(name = "POCKETID", nullable = false, scale = 0)
-	public BigDecimal getPocketid() {
+	public Long getPocketid() {
 		return this.pocketid;
 	}
 
-	public void setPocketid(BigDecimal pocketid) {
+	public void setPocketid(Long pocketid) {
 		this.pocketid = pocketid;
 	}
 

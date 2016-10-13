@@ -25,27 +25,6 @@ public class DbParam extends Base implements java.io.Serializable {
 	public DbParam() {
 	}
 
-	public DbParam(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public DbParam(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String name, String value) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.value = value;
-	}
-
 	@Column(name = "NAME", length = 1020)
 	public String getName() {
 		return this.name;

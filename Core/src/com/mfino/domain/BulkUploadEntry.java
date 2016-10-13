@@ -45,49 +45,7 @@ public class BulkUploadEntry extends Base implements java.io.Serializable {
 	public BulkUploadEntry() {
 	}
 
-	public BulkUploadEntry(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal uploadid, long linenumber, long status, BigDecimal amount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.uploadid = uploadid;
-		this.linenumber = linenumber;
-		this.status = status;
-		this.amount = amount;
-	}
-
-	public BulkUploadEntry(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal uploadid, long linenumber, long status,
-			Long transferfailurereason, Long notificationcode,
-			BigDecimal transferid, BigDecimal amount, String destmdn,
-			String failurereason, BigDecimal servicechargetransactionlogid,
-			String firstname, String lastname, Short isunregistered,
-			Short istrftosuspense) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.uploadid = uploadid;
-		this.linenumber = linenumber;
-		this.status = status;
-		this.transferfailurereason = transferfailurereason;
-		this.notificationcode = notificationcode;
-		this.transferid = transferid;
-		this.amount = amount;
-		this.destmdn = destmdn;
-		this.failurereason = failurereason;
-		this.servicechargetransactionlogid = servicechargetransactionlogid;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.isunregistered = isunregistered;
-		this.istrftosuspense = istrftosuspense;
-	}
-
+	
 	
 
 	@Column(name = "UPLOADID", nullable = false, scale = 0)

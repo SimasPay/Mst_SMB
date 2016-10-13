@@ -26,28 +26,7 @@ public class CurrentBalanceInfo  extends Base implements java.io.Serializable {
 	public CurrentBalanceInfo() {
 	}
 
-	public CurrentBalanceInfo(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public CurrentBalanceInfo(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String currentbalance, BigDecimal subscriberid, BigDecimal kyclevel) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.currentbalance = currentbalance;
-		this.subscriberid = subscriberid;
-		this.kyclevel = kyclevel;
-	}
-
+	
 	
 	@Column(name = "CURRENTBALANCE")
 	public String getCurrentbalance() {

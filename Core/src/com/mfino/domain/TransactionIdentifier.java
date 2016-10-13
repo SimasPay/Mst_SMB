@@ -28,30 +28,6 @@ public class TransactionIdentifier extends Base implements java.io.Serializable 
 	public TransactionIdentifier() {
 	}
 
-	public TransactionIdentifier(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String transactionidentifier) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionidentifier = transactionidentifier;
-	}
-
-	public TransactionIdentifier(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String transactionidentifier,
-			BigDecimal servicechargetransactionlogid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.transactionidentifier = transactionidentifier;
-		this.servicechargetransactionlogid = servicechargetransactionlogid;
-	}
-
 	
 
 	@Column(name = "TRANSACTIONIDENTIFIER", nullable = false)

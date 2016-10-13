@@ -34,22 +34,7 @@ public class MdnRange extends Base implements java.io.Serializable {
 	public MdnRange() {
 	}
 
-	public MdnRange(BigDecimal id, Merchant merchant, Brand brand,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String startprefix,
-			String endprefix) {
-		this.id = id;
-		this.merchant = merchant;
-		this.brand = brand;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.startprefix = startprefix;
-		this.endprefix = endprefix;
-	}
-
-	
+		
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MERCHANTID", nullable = false)
 	public Merchant getMerchant() {

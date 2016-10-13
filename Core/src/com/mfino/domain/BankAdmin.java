@@ -29,19 +29,7 @@ public class BankAdmin extends Base implements java.io.Serializable {
 	public BankAdmin() {
 	}
 
-	public BankAdmin(BigDecimal id, MfinoUser mfinoUser, Bank bank,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.mfinoUser = mfinoUser;
-		this.bank = bank;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	
+		
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)

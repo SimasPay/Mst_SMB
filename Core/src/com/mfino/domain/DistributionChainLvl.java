@@ -49,50 +49,7 @@ public class DistributionChainLvl extends Base implements java.io.Serializable {
 	public DistributionChainLvl() {
 	}
 
-	public DistributionChainLvl(BigDecimal id,
-			DistributionChainTemp distributionChainTemp,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long distributionlevel,
-			long permissions) {
-		this.id = id;
-		this.distributionChainTemp = distributionChainTemp;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.distributionlevel = distributionlevel;
-		this.permissions = permissions;
-	}
-
-	public DistributionChainLvl(BigDecimal id,
-			DistributionChainTemp distributionChainTemp,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long distributionlevel,
-			long permissions, BigDecimal commission, BigDecimal maxcommission,
-			BigDecimal mincommission, BigDecimal maxweeklylopamount,
-			BigDecimal maxlopamount, Long transactiontypeid,
-			Set<CommodityTransfer> commodityTransfers,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
-			Set<PendingCommodityTransfer> pendingCommodityTransfers) {
-		this.id = id;
-		this.distributionChainTemp = distributionChainTemp;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.distributionlevel = distributionlevel;
-		this.permissions = permissions;
-		this.commission = commission;
-		this.maxcommission = maxcommission;
-		this.mincommission = mincommission;
-		this.maxweeklylopamount = maxweeklylopamount;
-		this.maxlopamount = maxlopamount;
-		this.transactiontypeid = transactiontypeid;
-		this.commodityTransfers = commodityTransfers;
-		this.letterOfPurchases = letterOfPurchases;
-		this.bulkLops = bulkLops;
-		this.pendingCommodityTransfers = pendingCommodityTransfers;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

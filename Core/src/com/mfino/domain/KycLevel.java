@@ -43,44 +43,7 @@ public class KycLevel extends Base implements java.io.Serializable {
 	public KycLevel() {
 	}
 
-	public KycLevel(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal kyclevel, String kyclevelname) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.kyclevel = kyclevel;
-		this.kyclevelname = kyclevelname;
-	}
-
-	public KycLevel(BigDecimal id, PocketTemplate pocketTemplate,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal kyclevel,
-			String kyclevelname, String kycleveldescription,
-			Set<TransactionRule> transactionRulesForDestkyc,
-			Set<TransactionRule> transactionRulesForSourcekyc,
-			Set<KycFields> kycFieldses, Set<Subscriber> subscribers,
-			Set<PocketTemplateConfig> pocketTemplateConfigs,
-			Set<ActorChannelMapping> actorChannelMappings) {
-		this.id = id;
-		this.pocketTemplate = pocketTemplate;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.kyclevel = kyclevel;
-		this.kyclevelname = kyclevelname;
-		this.kycleveldescription = kycleveldescription;
-		this.transactionRulesForDestkyc = transactionRulesForDestkyc;
-		this.transactionRulesForSourcekyc = transactionRulesForSourcekyc;
-		this.kycFieldses = kycFieldses;
-		this.subscribers = subscribers;
-		this.pocketTemplateConfigs = pocketTemplateConfigs;
-		this.actorChannelMappings = actorChannelMappings;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

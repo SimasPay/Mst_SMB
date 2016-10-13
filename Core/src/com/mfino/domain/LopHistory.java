@@ -30,35 +30,8 @@ public class LopHistory  extends Base implements java.io.Serializable {
 	public LopHistory() {
 	}
 
-	public LopHistory(BigDecimal id, LetterOfPurchase letterOfPurchase,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.letterOfPurchase = letterOfPurchase;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public LopHistory(BigDecimal id, LetterOfPurchase letterOfPurchase,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal olddiscount,
-			BigDecimal newdiscount, String discountchangedby,
-			Timestamp discountchangetime, String comments) {
-		this.id = id;
-		this.letterOfPurchase = letterOfPurchase;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.olddiscount = olddiscount;
-		this.newdiscount = newdiscount;
-		this.discountchangedby = discountchangedby;
-		this.discountchangetime = discountchangetime;
-		this.comments = comments;
-	}
-
+	
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LOPID", nullable = false)

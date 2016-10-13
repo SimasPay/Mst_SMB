@@ -28,19 +28,7 @@ public class Denomination extends Base implements java.io.Serializable {
 	public Denomination() {
 	}
 
-	public Denomination(BigDecimal id, Biller biller,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal denominationamount) {
-		this.id = id;
-		this.biller = biller;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.denominationamount = denominationamount;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BILLERID", nullable = false)

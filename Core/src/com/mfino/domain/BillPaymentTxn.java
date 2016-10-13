@@ -43,57 +43,7 @@ public class BillPaymentTxn  extends Base implements java.io.Serializable {
 	public BillPaymentTxn() {
 	}
 
-	public BillPaymentTxn(BigDecimal id, Subscriber subscriber,
-			Company company, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal parenttransactionid, long bankcode, String customerid,
-			long billpaymenttransactiontype) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.parenttransactionid = parenttransactionid;
-		this.bankcode = bankcode;
-		this.customerid = customerid;
-		this.billpaymenttransactiontype = billpaymenttransactiontype;
-	}
-
-	public BillPaymentTxn(BigDecimal id, Subscriber subscriber,
-			Company company, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal parenttransactionid, BigDecimal transactionid,
-			long bankcode, BigDecimal billerid, String billername,
-			String billpaymentreferenceid, BigDecimal amount,
-			String customerid, long billpaymenttransactiontype,
-			BigDecimal transactionfee, Long status, Long notificationcode,
-			String transactiondate, String billercode) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.parenttransactionid = parenttransactionid;
-		this.transactionid = transactionid;
-		this.bankcode = bankcode;
-		this.billerid = billerid;
-		this.billername = billername;
-		this.billpaymentreferenceid = billpaymentreferenceid;
-		this.amount = amount;
-		this.customerid = customerid;
-		this.billpaymenttransactiontype = billpaymenttransactiontype;
-		this.transactionfee = transactionfee;
-		this.status = status;
-		this.notificationcode = notificationcode;
-		this.transactiondate = transactiondate;
-		this.billercode = billercode;
-	}
-
-	
+		
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIBERID", nullable = false)

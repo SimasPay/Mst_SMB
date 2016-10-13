@@ -29,18 +29,6 @@ public class NlogDetails extends Base implements java.io.Serializable {
 	public NlogDetails() {
 	}
 
-	public NlogDetails(BigDecimal id, NotificationLog notificationLog,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long status) {
-		this.id = id;
-		this.notificationLog = notificationLog;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.status = status;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

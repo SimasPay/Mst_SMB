@@ -56,65 +56,6 @@ public class SubscriberAddiInfo extends Base implements java.io.Serializable {
 	public SubscriberAddiInfo() {
 	}
 
-	public SubscriberAddiInfo(BigDecimal id, Subscriber subscriber,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public SubscriberAddiInfo(BigDecimal id, Subscriber subscriber,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String proofofaddress,
-			String reference1, String reference2, String creditcheck,
-			String subscompanyname, String certofincorporation, String misc1,
-			String misc2, String nationality, String kinname, String kinmdn,
-			Long controllreference, String subscribermobilecompany,
-			String work, BigDecimal income, String goalofacctopening,
-			String sourceoffund, Long electonicdeviceused,
-			String agreementnumber, String agentcompanyname, String latitude,
-			String longitude, String userbankbranch, Long bankacountstatus,
-			Timestamp agrementdate, Timestamp implementatindate,
-			String otherwork) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.proofofaddress = proofofaddress;
-		this.reference1 = reference1;
-		this.reference2 = reference2;
-		this.creditcheck = creditcheck;
-		this.subscompanyname = subscompanyname;
-		this.certofincorporation = certofincorporation;
-		this.misc1 = misc1;
-		this.misc2 = misc2;
-		this.nationality = nationality;
-		this.kinname = kinname;
-		this.kinmdn = kinmdn;
-		this.controllreference = controllreference;
-		this.subscribermobilecompany = subscribermobilecompany;
-		this.work = work;
-		this.income = income;
-		this.goalofacctopening = goalofacctopening;
-		this.sourceoffund = sourceoffund;
-		this.electonicdeviceused = electonicdeviceused;
-		this.agreementnumber = agreementnumber;
-		this.agentcompanyname = agentcompanyname;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.userbankbranch = userbankbranch;
-		this.bankacountstatus = bankacountstatus;
-		this.agrementdate = agrementdate;
-		this.implementatindate = implementatindate;
-		this.otherwork = otherwork;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

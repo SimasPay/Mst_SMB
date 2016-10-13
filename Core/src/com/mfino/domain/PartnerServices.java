@@ -49,53 +49,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	public PartnerServices() {
 	}
 
-	public PartnerServices(BigDecimal id, Partner partnerByPartnerid,
-			Service service, MfinoServiceProvider mfinoServiceProvider,
-			Partner partnerByServiceproviderid, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long status) {
-		this.id = id;
-		this.partnerByPartnerid = partnerByPartnerid;
-		this.service = service;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.partnerByServiceproviderid = partnerByServiceproviderid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.status = status;
-	}
-
-	public PartnerServices(BigDecimal id, Partner partnerByPartnerid,
-			Service service, Partner partnerByParentid,
-			Pocket pocketByDestpocketid,
-			DistributionChainTemp distributionChainTemp,
-			MfinoServiceProvider mfinoServiceProvider,
-			Partner partnerByServiceproviderid, Pocket pocketBySourcepocket,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Long pslevel,
-			long status, BigDecimal collectorpocket, Long isservicechargeshare,
-			Set<ServiceSettlementCfg> serviceSettlementCfgs) {
-		this.id = id;
-		this.partnerByPartnerid = partnerByPartnerid;
-		this.service = service;
-		this.partnerByParentid = partnerByParentid;
-		this.pocketByDestpocketid = pocketByDestpocketid;
-		this.distributionChainTemp = distributionChainTemp;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.partnerByServiceproviderid = partnerByServiceproviderid;
-		this.pocketBySourcepocket = pocketBySourcepocket;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.pslevel = pslevel;
-		this.status = status;
-		this.collectorpocket = collectorpocket;
-		this.isservicechargeshare = isservicechargeshare;
-		this.serviceSettlementCfgs = serviceSettlementCfgs;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

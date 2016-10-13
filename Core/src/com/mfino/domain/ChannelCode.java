@@ -42,40 +42,7 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	public ChannelCode() {
 	}
 
-	public ChannelCode(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String channelcode, String channelname,
-			long channelsourceapplication) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.channelcode = channelcode;
-		this.channelname = channelname;
-		this.channelsourceapplication = channelsourceapplication;
-	}
-
-	public ChannelCode(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String channelcode, String channelname, String description,
-			long channelsourceapplication,
-			Set<MfaTransactionsInfo> mfaTransactionsInfos,
-			Set<TransactionRule> transactionRules,
-			Set<ActorChannelMapping> actorChannelMappings) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.channelcode = channelcode;
-		this.channelname = channelname;
-		this.description = description;
-		this.channelsourceapplication = channelsourceapplication;
-		this.mfaTransactionsInfos = mfaTransactionsInfos;
-		this.transactionRules = transactionRules;
-		this.actorChannelMappings = actorChannelMappings;
-	}
+	
 
 	
 	@Column(name = "CHANNELCODE", unique = true, nullable = false, length = 1020)

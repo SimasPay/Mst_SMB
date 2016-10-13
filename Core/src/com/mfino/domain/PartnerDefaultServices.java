@@ -28,19 +28,7 @@ public class PartnerDefaultServices  extends Base implements java.io.Serializabl
 	public PartnerDefaultServices() {
 	}
 
-	public PartnerDefaultServices(BigDecimal id,
-			ServiceDefualtConfig serviceDefualtConfig,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long businesspartnertype) {
-		this.id = id;
-		this.serviceDefualtConfig = serviceDefualtConfig;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.businesspartnertype = businesspartnertype;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SERVICEDEFAULTCONFIGURATIONID", nullable = false)

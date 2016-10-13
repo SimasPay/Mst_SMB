@@ -37,37 +37,6 @@ public class Person2Person extends Base implements java.io.Serializable {
 	public Person2Person() {
 	}
 
-	public Person2Person(BigDecimal id, Subscriber subscriber,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String mdn) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdn = mdn;
-	}
-
-	public Person2Person(BigDecimal id, Subscriber subscriber,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String mdn,
-			String peername, Timestamp activationtime) {
-		this.id = id;
-		this.subscriber = subscriber;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mdn = mdn;
-		this.peername = peername;
-		this.activationtime = activationtime;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

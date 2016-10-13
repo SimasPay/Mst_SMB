@@ -76,7 +76,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	public MfinoServiceProvider() {
 	}
 
-	public MfinoServiceProvider(BigDecimal id, Timestamp lastupdatetime,
+	public MfinoServiceProvider(Long id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby) {
 		this.id = id;
 		this.lastupdatetime = lastupdatetime;
@@ -85,7 +85,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 		this.createdby = createdby;
 	}
 
-	public MfinoServiceProvider(BigDecimal id, Timestamp lastupdatetime,
+	public MfinoServiceProvider(Long id, Timestamp lastupdatetime,
 			String updatedby, Timestamp createtime, String createdby,
 			String name, String description, Long status,
 			Timestamp statustime, Set<Person2Person> person2Persons,

@@ -44,41 +44,7 @@ public class Brand extends Base  implements java.io.Serializable {
 	public Brand() {
 	}
 
-	public Brand(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Company company, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			String internationalcountrycode, String prefixcode, String brandname) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.internationalcountrycode = internationalcountrycode;
-		this.prefixcode = prefixcode;
-		this.brandname = brandname;
-	}
-
-	public Brand(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Company company, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			String internationalcountrycode, String prefixcode,
-			String brandname, Set<SmsCode> smsCodes, Set<MdnRange> mdnRanges) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.internationalcountrycode = internationalcountrycode;
-		this.prefixcode = prefixcode;
-		this.brandname = brandname;
-		this.smsCodes = smsCodes;
-		this.mdnRanges = mdnRanges;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

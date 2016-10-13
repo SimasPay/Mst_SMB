@@ -44,47 +44,7 @@ public class MoneyClearanceGraved extends Base implements java.io.Serializable {
 	public MoneyClearanceGraved() {
 	}
 
-	public MoneyClearanceGraved(BigDecimal id, Pocket pocketByPocketid,
-			SubscriberMdn subscriberMdnByMdnid,
-			ServiceChargeTxnLog serviceChargeTxnLogBySctlid,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal amount,
-			long mcstatus) {
-		this.id = id;
-		this.pocketByPocketid = pocketByPocketid;
-		this.subscriberMdnByMdnid = subscriberMdnByMdnid;
-		this.serviceChargeTxnLogBySctlid = serviceChargeTxnLogBySctlid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.amount = amount;
-		this.mcstatus = mcstatus;
-	}
-
-	public MoneyClearanceGraved(BigDecimal id, Pocket pocketByPocketid,
-			ServiceChargeTxnLog serviceChargeTxnLogByRefundsctlid,
-			SubscriberMdn subscriberMdnByRefundmdnid,
-			SubscriberMdn subscriberMdnByMdnid, Pocket pocketByRefundpocketid,
-			ServiceChargeTxnLog serviceChargeTxnLogBySctlid,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal amount,
-			String refundaccountnumber, long mcstatus) {
-		this.id = id;
-		this.pocketByPocketid = pocketByPocketid;
-		this.serviceChargeTxnLogByRefundsctlid = serviceChargeTxnLogByRefundsctlid;
-		this.subscriberMdnByRefundmdnid = subscriberMdnByRefundmdnid;
-		this.subscriberMdnByMdnid = subscriberMdnByMdnid;
-		this.pocketByRefundpocketid = pocketByRefundpocketid;
-		this.serviceChargeTxnLogBySctlid = serviceChargeTxnLogBySctlid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.amount = amount;
-		this.refundaccountnumber = refundaccountnumber;
-		this.mcstatus = mcstatus;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

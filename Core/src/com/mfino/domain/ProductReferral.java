@@ -36,35 +36,7 @@ public class ProductReferral extends Base implements java.io.Serializable {
 	public ProductReferral() {
 	}
 
-	public ProductReferral(BigDecimal id, Timestamp createtime,
-			String createdby, String agentmdn, String fullname,
-			String subscribermdn, String productdesired) {
-		this.id = id;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.agentmdn = agentmdn;
-		this.fullname = fullname;
-		this.subscribermdn = subscribermdn;
-		this.productdesired = productdesired;
-	}
-
-	public ProductReferral(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String agentmdn, String fullname, String subscribermdn,
-			String email, String productdesired, String others) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.agentmdn = agentmdn;
-		this.fullname = fullname;
-		this.subscribermdn = subscribermdn;
-		this.email = email;
-		this.productdesired = productdesired;
-		this.others = others;
-	}
-
+	
 	
 
 	@Column(name = "AGENTMDN", nullable = false)

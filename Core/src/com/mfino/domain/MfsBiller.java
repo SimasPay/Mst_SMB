@@ -39,41 +39,7 @@ public class MfsBiller  extends Base implements java.io.Serializable {
 	public MfsBiller() {
 	}
 
-	public MfsBiller(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String mfsbillername,
-			String mfsbillercode, String mfsbillertype) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mfsbillername = mfsbillername;
-		this.mfsbillercode = mfsbillercode;
-		this.mfsbillertype = mfsbillertype;
-	}
-
-	public MfsBiller(BigDecimal id, MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String mfsbillername,
-			String mfsbillercode, String mfsbillertype,
-			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps,
-			Set<IntegrationPartnerMap> integrationPartnerMaps) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mfsbillername = mfsbillername;
-		this.mfsbillercode = mfsbillercode;
-		this.mfsbillertype = mfsbillertype;
-		this.mfsbillerPartnerMaps = mfsbillerPartnerMaps;
-		this.integrationPartnerMaps = integrationPartnerMaps;
-	}
-
-	
+		
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)
 	public MfinoServiceProvider getMfinoServiceProvider() {

@@ -41,49 +41,7 @@ public class SmsPartner extends Base implements java.io.Serializable {
 	public SmsPartner() {
 	}
 
-	public SmsPartner(BigDecimal id, MfinoUser mfinoUser,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String partnername,
-			String contactname, String contactphone, String contactemail,
-			String serverip, String apikey) {
-		this.id = id;
-		this.mfinoUser = mfinoUser;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.partnername = partnername;
-		this.contactname = contactname;
-		this.contactphone = contactphone;
-		this.contactemail = contactemail;
-		this.serverip = serverip;
-		this.apikey = apikey;
-	}
-
-	public SmsPartner(BigDecimal id, MfinoUser mfinoUser,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String partnername,
-			String contactname, String contactphone, String contactemail,
-			String serverip, String apikey, Short sendreport,
-			Set<SmscConfiguration> smscConfigurations,
-			Set<SmsTransactionLog> smsTransactionLogs) {
-		this.id = id;
-		this.mfinoUser = mfinoUser;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.partnername = partnername;
-		this.contactname = contactname;
-		this.contactphone = contactphone;
-		this.contactemail = contactemail;
-		this.serverip = serverip;
-		this.apikey = apikey;
-		this.sendreport = sendreport;
-		this.smscConfigurations = smscConfigurations;
-		this.smsTransactionLogs = smsTransactionLogs;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)

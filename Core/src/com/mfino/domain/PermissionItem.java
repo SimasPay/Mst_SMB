@@ -34,41 +34,7 @@ public class PermissionItem extends Base implements java.io.Serializable {
 	public PermissionItem() {
 	}
 
-	public PermissionItem(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long permission, long itemtype, String itemid, String fieldid,
-			String action) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.permission = permission;
-		this.itemtype = itemtype;
-		this.itemid = itemid;
-		this.fieldid = fieldid;
-		this.action = action;
-	}
-
-	public PermissionItem(BigDecimal id, PermissionGroup permissionGroup,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, long permission,
-			long itemtype, String itemid, String fieldid, String action,
-			String description) {
-		this.id = id;
-		this.permissionGroup = permissionGroup;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.permission = permission;
-		this.itemtype = itemtype;
-		this.itemid = itemid;
-		this.fieldid = fieldid;
-		this.action = action;
-		this.description = description;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PERMISSIONGROUPID")

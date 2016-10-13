@@ -44,44 +44,7 @@ public class NotificationLog extends Base implements java.io.Serializable {
 	public NotificationLog() {
 	}
 
-	public NotificationLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, long code, long notificationmethod,
-			String sourceaddress, long notificationreceivertype) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.code = code;
-		this.notificationmethod = notificationmethod;
-		this.sourceaddress = sourceaddress;
-		this.notificationreceivertype = notificationreceivertype;
-	}
-
-	public NotificationLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, long code, String text, long notificationmethod,
-			String sourceaddress, long notificationreceivertype,
-			String emailsubject, Short issensitivedata,
-			Set<NlogDetails> nlogDetailses) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.code = code;
-		this.text = text;
-		this.notificationmethod = notificationmethod;
-		this.sourceaddress = sourceaddress;
-		this.notificationreceivertype = notificationreceivertype;
-		this.emailsubject = emailsubject;
-		this.issensitivedata = issensitivedata;
-		this.nlogDetailses = nlogDetailses;
-	}
-
+	
 	
 	@Column(name = "SCTLID", nullable = false, scale = 0)
 	public BigDecimal getSctlid() {

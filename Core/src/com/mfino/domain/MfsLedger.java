@@ -34,24 +34,6 @@ public class MfsLedger extends Base implements java.io.Serializable {
 	public MfsLedger() {
 	}
 
-	public MfsLedger(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, BigDecimal commoditytransferid,
-			BigDecimal pocketid, BigDecimal amount, String ledgertype,
-			String ledgerstatus) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.commoditytransferid = commoditytransferid;
-		this.pocketid = pocketid;
-		this.amount = amount;
-		this.ledgertype = ledgertype;
-		this.ledgerstatus = ledgerstatus;
-	}
-
 	
 
 	@Column(name = "SCTLID", nullable = false, scale = 0)

@@ -50,60 +50,7 @@ public class BulkLop extends Base implements java.io.Serializable {
 	public BulkLop() {
 	}
 
-	public BulkLop(BigDecimal id, SubscriberMdn subscriberMdn,
-			Merchant merchant, Company company, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long sourceapplication) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.merchant = merchant;
-		this.company = company;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sourceapplication = sourceapplication;
-	}
-
-	public BulkLop(BigDecimal id, SubscriberMdn subscriberMdn,
-			DistributionChainTemp distributionChainTemp, Merchant merchant,
-			Company company, DistributionChainLvl distributionChainLvl,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Long levelpermissions,
-			String girorefid, String transferdate, BigDecimal actualamountpaid,
-			BigDecimal amountdistributed, String status, String distributedby,
-			Timestamp distributetime, String approvedby,
-			Timestamp approvaltime, String rejectedby,
-			Timestamp rejecttime, String lopcomment, Clob filedata,
-			long sourceapplication, Set<LetterOfPurchase> letterOfPurchases) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.distributionChainTemp = distributionChainTemp;
-		this.merchant = merchant;
-		this.company = company;
-		this.distributionChainLvl = distributionChainLvl;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.levelpermissions = levelpermissions;
-		this.girorefid = girorefid;
-		this.transferdate = transferdate;
-		this.actualamountpaid = actualamountpaid;
-		this.amountdistributed = amountdistributed;
-		this.status = status;
-		this.distributedby = distributedby;
-		this.distributetime = distributetime;
-		this.approvedby = approvedby;
-		this.approvaltime = approvaltime;
-		this.rejectedby = rejectedby;
-		this.rejecttime = rejecttime;
-		this.lopcomment = lopcomment;
-		this.filedata = filedata;
-		this.sourceapplication = sourceapplication;
-		this.letterOfPurchases = letterOfPurchases;
-	}
-
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID", nullable = false)

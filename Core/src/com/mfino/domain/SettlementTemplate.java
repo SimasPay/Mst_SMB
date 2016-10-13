@@ -38,44 +38,6 @@ public class SettlementTemplate extends Base implements java.io.Serializable {
 	public SettlementTemplate() {
 	}
 
-	public SettlementTemplate(BigDecimal id,
-			ScheduleTemplate scheduleTemplateByScheduletemplateid,
-			Partner partner, MfinoServiceProvider mfinoServiceProvider,
-			Pocket pocket, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String settlementname) {
-		this.id = id;
-		this.scheduleTemplateByScheduletemplateid = scheduleTemplateByScheduletemplateid;
-		this.partner = partner;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.pocket = pocket;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.settlementname = settlementname;
-	}
-
-	public SettlementTemplate(BigDecimal id,
-			ScheduleTemplate scheduleTemplateByScheduletemplateid,
-			Partner partner, MfinoServiceProvider mfinoServiceProvider,
-			ScheduleTemplate scheduleTemplateByCutofftime, Pocket pocket,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String settlementname,
-			Set<ServiceSettlementCfg> serviceSettlementCfgs) {
-		this.id = id;
-		this.scheduleTemplateByScheduletemplateid = scheduleTemplateByScheduletemplateid;
-		this.partner = partner;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.scheduleTemplateByCutofftime = scheduleTemplateByCutofftime;
-		this.pocket = pocket;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.settlementname = settlementname;
-		this.serviceSettlementCfgs = serviceSettlementCfgs;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

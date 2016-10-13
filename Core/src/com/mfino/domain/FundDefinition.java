@@ -44,45 +44,7 @@ public class FundDefinition extends Base implements java.io.Serializable {
 	public FundDefinition() {
 	}
 
-	public FundDefinition(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-	}
-
-	public FundDefinition(BigDecimal id,
-			FundEvents fundEventsByOnfailedattemptsexceeded,
-			FundEvents fundEventsByOnfundallocationtimeexpiry,
-			FundEvents fundEventsByGenerationofotponfailure,
-			ExpirationType expirationType, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, BigDecimal purposeid, Long faclength,
-			String facprefix, Long maxfailattemptsallowed,
-			Short ismultiplewithdrawalallowed,
-			Set<UnregisteredTxnInfo> unregisteredTxnInfos) {
-		this.id = id;
-		this.fundEventsByOnfailedattemptsexceeded = fundEventsByOnfailedattemptsexceeded;
-		this.fundEventsByOnfundallocationtimeexpiry = fundEventsByOnfundallocationtimeexpiry;
-		this.fundEventsByGenerationofotponfailure = fundEventsByGenerationofotponfailure;
-		this.expirationType = expirationType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.purposeid = purposeid;
-		this.faclength = faclength;
-		this.facprefix = facprefix;
-		this.maxfailattemptsallowed = maxfailattemptsallowed;
-		this.ismultiplewithdrawalallowed = ismultiplewithdrawalallowed;
-		this.unregisteredTxnInfos = unregisteredTxnInfos;
-	}
-
+	
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

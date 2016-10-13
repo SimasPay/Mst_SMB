@@ -34,40 +34,6 @@ public class MfsbillerPartnerMap extends Base implements java.io.Serializable {
 	public MfsbillerPartnerMap() {
 	}
 
-	public MfsbillerPartnerMap(BigDecimal id, Partner partner,
-			MfinoServiceProvider mfinoServiceProvider, MfsBiller mfsBiller,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.partner = partner;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.mfsBiller = mfsBiller;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public MfsbillerPartnerMap(BigDecimal id, Partner partner,
-			MfinoServiceProvider mfinoServiceProvider, MfsBiller mfsBiller,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			String partnerbillercode, Long billerpartnertype,
-			String integrationcode, Short chargesincluded) {
-		this.id = id;
-		this.partner = partner;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.mfsBiller = mfsBiller;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.partnerbillercode = partnerbillercode;
-		this.billerpartnertype = billerpartnertype;
-		this.integrationcode = integrationcode;
-		this.chargesincluded = chargesincluded;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

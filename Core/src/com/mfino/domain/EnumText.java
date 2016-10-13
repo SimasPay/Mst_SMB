@@ -40,39 +40,6 @@ public class EnumText extends Base implements java.io.Serializable {
 	public EnumText() {
 	}
 
-	public EnumText(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long language, String tagname, long tagid, String enumcode,
-			String enumvalue) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.language = language;
-		this.tagname = tagname;
-		this.tagid = tagid;
-		this.enumcode = enumcode;
-		this.enumvalue = enumvalue;
-	}
-
-	public EnumText(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			long language, String tagname, long tagid, String enumcode,
-			String enumvalue, String displaytext) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.language = language;
-		this.tagname = tagname;
-		this.tagid = tagid;
-		this.enumcode = enumcode;
-		this.enumvalue = enumvalue;
-		this.displaytext = displaytext;
-	}
-
 	
 
 	@Column(name = "LANGUAGE", nullable = false, precision = 10, scale = 0)

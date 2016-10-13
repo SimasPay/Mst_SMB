@@ -26,18 +26,7 @@ public class SapGroupid extends Base implements java.io.Serializable {
 	public SapGroupid() {
 	}
 
-	public SapGroupid(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String groupid, String groupidname) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.groupid = groupid;
-		this.groupidname = groupidname;
-	}
-
+	
 	
 	@Column(name = "GROUPID", nullable = false, length = 1020)
 	public String getGroupid() {

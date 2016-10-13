@@ -25,27 +25,6 @@ public class SubscriberGroups extends Base implements java.io.Serializable {
 	public SubscriberGroups() {
 	}
 
-	public SubscriberGroups(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public SubscriberGroups(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			Long subscriberid, Long groupid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.subscriberid = subscriberid;
-		this.groupid = groupid;
-	}
-
 	
 
 	@Column(name = "SUBSCRIBERID", precision = 10, scale = 0)

@@ -43,40 +43,7 @@ public class OfflineReport extends Base implements java.io.Serializable {
 	public OfflineReport() {
 	}
 
-	public OfflineReport(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String name) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-	}
-
-	public OfflineReport(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String name, Clob reportsql, String reportclass,
-			Short triggerenable, Short isdaily, Short ismonthly,
-			Short isonlinereport,
-			Set<OfflineReportReceiver> offlineReportReceivers,
-			Set<OfflineReportCompany> offlineReportCompanies) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.reportsql = reportsql;
-		this.reportclass = reportclass;
-		this.triggerenable = triggerenable;
-		this.isdaily = isdaily;
-		this.ismonthly = ismonthly;
-		this.isonlinereport = isonlinereport;
-		this.offlineReportReceivers = offlineReportReceivers;
-		this.offlineReportCompanies = offlineReportCompanies;
-	}
-
+	
 	
 	@Column(name = "NAME", nullable = false, length = 1020)
 	public String getName() {

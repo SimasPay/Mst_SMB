@@ -36,37 +36,6 @@ public class SubscriberFavorite extends Base implements java.io.Serializable {
 	public SubscriberFavorite() {
 	}
 
-	public SubscriberFavorite(BigDecimal id, FavoriteCategory favoriteCategory,
-			Subscriber subscriber, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String favoritelabel, String favoritevalue) {
-		this.id = id;
-		this.favoriteCategory = favoriteCategory;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.favoritelabel = favoritelabel;
-		this.favoritevalue = favoritevalue;
-	}
-
-	public SubscriberFavorite(BigDecimal id, FavoriteCategory favoriteCategory,
-			Subscriber subscriber, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String favoritelabel, String favoritevalue, String favoritecode) {
-		this.id = id;
-		this.favoriteCategory = favoriteCategory;
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.favoritelabel = favoritelabel;
-		this.favoritevalue = favoritevalue;
-		this.favoritecode = favoritecode;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

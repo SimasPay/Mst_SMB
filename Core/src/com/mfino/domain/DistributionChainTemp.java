@@ -45,43 +45,7 @@ public class DistributionChainTemp extends Base implements java.io.Serializable 
 	public DistributionChainTemp() {
 	}
 
-	public DistributionChainTemp(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			long serviceid) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.serviceid = serviceid;
-	}
-
-	public DistributionChainTemp(BigDecimal id,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			String description, long serviceid,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
-			Set<DistributionChainLvl> distributionChainLvls,
-			Set<PartnerServices> partnerServiceses) {
-		this.id = id;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.description = description;
-		this.serviceid = serviceid;
-		this.letterOfPurchases = letterOfPurchases;
-		this.bulkLops = bulkLops;
-		this.distributionChainLvls = distributionChainLvls;
-		this.partnerServiceses = partnerServiceses;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

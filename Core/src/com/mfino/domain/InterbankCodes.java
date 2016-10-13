@@ -26,18 +26,7 @@ public class InterbankCodes extends Base implements java.io.Serializable {
 	public InterbankCodes() {
 	}
 
-	public InterbankCodes(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String bankcode, String bankname, short iballowed) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.bankcode = bankcode;
-		this.bankname = bankname;
-		this.iballowed = iballowed;
-	}
+	
 
 	
 	@Column(name = "BANKCODE", nullable = false, length = 1020)

@@ -38,37 +38,7 @@ public class CloseAcctSetlMdn extends Base implements java.io.Serializable {
 	public CloseAcctSetlMdn() {
 	}
 
-	public CloseAcctSetlMdn(BigDecimal id, SubscriberMdn subscriberMdn,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public CloseAcctSetlMdn(BigDecimal id, SubscriberMdn subscriberMdn,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, Short tobankaccount,
-			String settlementmdn, String settlementaccountnumber,
-			Long approvalstate, Timestamp approveorrejecttime,
-			String approvedorrejectedby, String approveorrejectcomment) {
-		this.id = id;
-		this.subscriberMdn = subscriberMdn;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.tobankaccount = tobankaccount;
-		this.settlementmdn = settlementmdn;
-		this.settlementaccountnumber = settlementaccountnumber;
-		this.approvalstate = approvalstate;
-		this.approveorrejecttime = approveorrejecttime;
-		this.approvedorrejectedby = approvedorrejectedby;
-		this.approveorrejectcomment = approveorrejectcomment;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

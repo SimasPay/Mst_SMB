@@ -36,33 +36,6 @@ public class District extends Base implements java.io.Serializable {
 	public District() {
 	}
 
-	public District(BigDecimal id, ProvinceRegion provinceRegion,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String districtid) {
-		this.id = id;
-		this.provinceRegion = provinceRegion;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.districtid = districtid;
-	}
-
-	public District(BigDecimal id, ProvinceRegion provinceRegion,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String districtid,
-			String displaytext, Set<Village> villages) {
-		this.id = id;
-		this.provinceRegion = provinceRegion;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.districtid = districtid;
-		this.displaytext = displaytext;
-		this.villages = villages;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

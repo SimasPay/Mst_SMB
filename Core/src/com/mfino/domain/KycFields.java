@@ -32,32 +32,6 @@ public class KycFields extends Base implements java.io.Serializable {
 	public KycFields() {
 	}
 
-	public KycFields(BigDecimal id, KycLevel kycLevel,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String kycfieldsname) {
-		this.id = id;
-		this.kycLevel = kycLevel;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.kycfieldsname = kycfieldsname;
-	}
-
-	public KycFields(BigDecimal id, KycLevel kycLevel,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String kycfieldsname,
-			String kycfieldsdescription) {
-		this.id = id;
-		this.kycLevel = kycLevel;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.kycfieldsname = kycfieldsname;
-		this.kycfieldsdescription = kycfieldsdescription;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

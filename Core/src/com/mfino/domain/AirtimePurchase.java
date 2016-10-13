@@ -32,41 +32,6 @@ public class AirtimePurchase extends Base implements java.io.Serializable {
 	public AirtimePurchase() {
 	}
 
-	public AirtimePurchase(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-	}
-
-	public AirtimePurchase(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal sctlid, String partnercode, String incode,
-			String rechargemdn, String sourcemdn, BigDecimal amount,
-			BigDecimal charges, Long responsecode, String intxnid,
-			String inaccounttype, Long airtimepurchasestatus) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.sctlid = sctlid;
-		this.partnercode = partnercode;
-		this.incode = incode;
-		this.rechargemdn = rechargemdn;
-		this.sourcemdn = sourcemdn;
-		this.amount = amount;
-		this.charges = charges;
-		this.responsecode = responsecode;
-		this.intxnid = intxnid;
-		this.inaccounttype = inaccounttype;
-		this.airtimepurchasestatus = airtimepurchasestatus;
-	}
-
 	
 
 	@Column(name = "SCTLID", nullable = false, scale = 0)

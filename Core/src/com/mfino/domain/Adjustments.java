@@ -42,52 +42,6 @@ public class Adjustments extends Base implements java.io.Serializable {
 	public Adjustments() {
 	}
 
-	public Adjustments(BigDecimal id, Pocket pocketByDestpocketid,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			Pocket pocketBySourcepocketid, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal amount, long adjustmentstatus) {
-		this.id = id;
-		this.pocketByDestpocketid = pocketByDestpocketid;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.pocketBySourcepocketid = pocketBySourcepocketid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.amount = amount;
-		this.adjustmentstatus = adjustmentstatus;
-	}
-
-	public Adjustments(BigDecimal id, Pocket pocketByDestpocketid,
-			ServiceChargeTxnLog serviceChargeTxnLog,
-			Pocket pocketBySourcepocketid, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal amount, long adjustmentstatus,
-			Timestamp approveorrejecttime, String approvedorrejectedby,
-			String approveorrejectcomment, String appliedby,
-			Timestamp appliedtime, Long adjustmenttype, String description) {
-		this.id = id;
-		this.pocketByDestpocketid = pocketByDestpocketid;
-		this.serviceChargeTxnLog = serviceChargeTxnLog;
-		this.pocketBySourcepocketid = pocketBySourcepocketid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.amount = amount;
-		this.adjustmentstatus = adjustmentstatus;
-		this.approveorrejecttime = approveorrejecttime;
-		this.approvedorrejectedby = approvedorrejectedby;
-		this.approveorrejectcomment = approveorrejectcomment;
-		this.appliedby = appliedby;
-		this.appliedtime = appliedtime;
-		this.adjustmenttype = adjustmenttype;
-		this.description = description;
-	}
-
-	
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DESTPOCKETID", nullable = false)
 	public Pocket getPocketByDestpocketid() {

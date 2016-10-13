@@ -42,53 +42,6 @@ public class TxnAmountDstrbLog extends Base implements java.io.Serializable {
 	public TxnAmountDstrbLog() {
 	}
 
-	public TxnAmountDstrbLog(BigDecimal id, Pocket pocket,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal servicechargetransactionlogid, BigDecimal transactionid,
-			BigDecimal shareamount, long status) {
-		this.id = id;
-		this.pocket = pocket;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.servicechargetransactionlogid = servicechargetransactionlogid;
-		this.transactionid = transactionid;
-		this.shareamount = shareamount;
-		this.status = status;
-	}
-
-	public TxnAmountDstrbLog(BigDecimal id, Pocket pocket, Partner partner,
-			Subscriber subscriber, TransactionCharge transactionCharge,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby,
-			BigDecimal servicechargetransactionlogid, BigDecimal transactionid,
-			BigDecimal shareamount, BigDecimal taxamount, Short ispartofcharge,
-			Short isactualamount, Short ispartofsharedupchain, long status,
-			String failurereason) {
-		this.id = id;
-		this.pocket = pocket;
-		this.partner = partner;
-		this.subscriber = subscriber;
-		this.transactionCharge = transactionCharge;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.servicechargetransactionlogid = servicechargetransactionlogid;
-		this.transactionid = transactionid;
-		this.shareamount = shareamount;
-		this.taxamount = taxamount;
-		this.ispartofcharge = ispartofcharge;
-		this.isactualamount = isactualamount;
-		this.ispartofsharedupchain = ispartofsharedupchain;
-		this.status = status;
-		this.failurereason = failurereason;
-	}
-
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

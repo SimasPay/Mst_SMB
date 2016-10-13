@@ -37,24 +37,7 @@ public class MfaTransactionsInfo extends Base implements java.io.Serializable {
 	public MfaTransactionsInfo() {
 	}
 
-	public MfaTransactionsInfo(BigDecimal id, ChannelCode channelCode,
-			Service service, TransactionType transactionType,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, BigDecimal mspid,
-			long mfamode) {
-		this.id = id;
-		this.channelCode = channelCode;
-		this.service = service;
-		this.transactionType = transactionType;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.mfamode = mfamode;
-	}
-
-	
+		
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHANNELCODEID", nullable = false)
 	public ChannelCode getChannelCode() {

@@ -40,38 +40,7 @@ public class IntegrationPartnerMap extends Base implements java.io.Serializable 
 	public IntegrationPartnerMap() {
 	}
 
-	public IntegrationPartnerMap(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String institutionid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.institutionid = institutionid;
-	}
-
-	public IntegrationPartnerMap(BigDecimal id, Partner partner,
-			MfsBiller mfsBiller, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String institutionid,
-			String integrationname, String authenticationkey,
-			Short isauthenticationkeyenabled, Short isloginenabled,
-			Short isapptypecheckenabled, Set<IpMapping> ipMappings) {
-		this.id = id;
-		this.partner = partner;
-		this.mfsBiller = mfsBiller;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.institutionid = institutionid;
-		this.integrationname = integrationname;
-		this.authenticationkey = authenticationkey;
-		this.isauthenticationkeyenabled = isauthenticationkeyenabled;
-		this.isloginenabled = isloginenabled;
-		this.isapptypecheckenabled = isapptypecheckenabled;
-		this.ipMappings = ipMappings;
-	}
+	
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

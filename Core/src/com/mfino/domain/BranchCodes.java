@@ -26,28 +26,6 @@ public class BranchCodes extends Base implements java.io.Serializable {
 	public BranchCodes() {
 	}
 
-	public BranchCodes(BigDecimal id, Timestamp createtime,
-			String createdby, String branchcode, String branchname) {
-		this.id = id;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.branchcode = branchcode;
-		this.branchname = branchname;
-	}
-
-	public BranchCodes(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String branchcode, String branchname, String officecategory) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.branchcode = branchcode;
-		this.branchname = branchname;
-		this.officecategory = officecategory;
-	}
-
 	
 
 	@Column(name = "BRANCHCODE", nullable = false, length = 10)

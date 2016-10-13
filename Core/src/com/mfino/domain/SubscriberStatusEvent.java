@@ -32,37 +32,6 @@ public class SubscriberStatusEvent extends Base implements java.io.Serializable 
 	public SubscriberStatusEvent() {
 	}
 
-	public SubscriberStatusEvent(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal subscriberid, Timestamp pickupdatetime,
-			long statusonpickup, long subscribertype) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.subscriberid = subscriberid;
-		this.pickupdatetime = pickupdatetime;
-		this.statusonpickup = statusonpickup;
-		this.subscribertype = subscribertype;
-	}
-
-	public SubscriberStatusEvent(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal subscriberid, Timestamp pickupdatetime,
-			Short processingstatus, long statusonpickup, long subscribertype) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.subscriberid = subscriberid;
-		this.pickupdatetime = pickupdatetime;
-		this.processingstatus = processingstatus;
-		this.statusonpickup = statusonpickup;
-		this.subscribertype = subscribertype;
-	}
-
 	
 
 	@Column(name = "SUBSCRIBERID", nullable = false, scale = 0)

@@ -30,39 +30,6 @@ public class SettlementScheduleLog extends Base implements java.io.Serializable 
 	public SettlementScheduleLog() {
 	}
 
-	public SettlementScheduleLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, BigDecimal partnerservicesid) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.partnerservicesid = partnerservicesid;
-	}
-
-	public SettlementScheduleLog(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			BigDecimal mspid, BigDecimal partnerservicesid,
-			BigDecimal servicesettlementconfigid, String qrtzjobid,
-			Short isscheduled, String reasontext, Timestamp lastsettled,
-			Timestamp nextsettle) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mspid = mspid;
-		this.partnerservicesid = partnerservicesid;
-		this.servicesettlementconfigid = servicesettlementconfigid;
-		this.qrtzjobid = qrtzjobid;
-		this.isscheduled = isscheduled;
-		this.reasontext = reasontext;
-		this.lastsettled = lastsettled;
-		this.nextsettle = nextsettle;
-	}
-
 	
 
 	@Column(name = "MSPID", nullable = false, scale = 0)

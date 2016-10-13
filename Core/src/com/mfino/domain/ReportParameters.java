@@ -26,28 +26,6 @@ public class ReportParameters extends Base implements java.io.Serializable {
 	public ReportParameters() {
 	}
 
-	public ReportParameters(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public ReportParameters(BigDecimal id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String parametername, String parametervalue, String description) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.parametername = parametername;
-		this.parametervalue = parametervalue;
-		this.description = description;
-	}
-
 	
 
 	@Column(name = "PARAMETERNAME", length = 1020)

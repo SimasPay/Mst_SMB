@@ -47,50 +47,7 @@ public class ChargeDefinition extends Base implements java.io.Serializable {
 	public ChargeDefinition() {
 	}
 
-	public ChargeDefinition(BigDecimal id, ChargeType chargeTypeByChargetypeid,
-			MfinoServiceProvider mfinoServiceProvider,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			short ischargefromcustomer, short istaxable) {
-		this.id = id;
-		this.chargeTypeByChargetypeid = chargeTypeByChargetypeid;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.ischargefromcustomer = ischargefromcustomer;
-		this.istaxable = istaxable;
-	}
-
-	public ChargeDefinition(BigDecimal id, Pocket pocket,
-			ChargeType chargeTypeByChargetypeid, Partner partner,
-			MfinoServiceProvider mfinoServiceProvider,
-			ChargeType chargeTypeByDependantchargetypeid,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String name,
-			String description, short ischargefromcustomer, short istaxable,
-			Set<TransactionCharge> transactionCharges,
-			Set<ChargePricing> chargePricings) {
-		this.id = id;
-		this.pocket = pocket;
-		this.chargeTypeByChargetypeid = chargeTypeByChargetypeid;
-		this.partner = partner;
-		this.mfinoServiceProvider = mfinoServiceProvider;
-		this.chargeTypeByDependantchargetypeid = chargeTypeByDependantchargetypeid;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.description = description;
-		this.ischargefromcustomer = ischargefromcustomer;
-		this.istaxable = istaxable;
-		this.transactionCharges = transactionCharges;
-		this.chargePricings = chargePricings;
-	}
-
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "POCKETID")
