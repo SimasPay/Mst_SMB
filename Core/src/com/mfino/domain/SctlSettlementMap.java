@@ -36,7 +36,7 @@ public class SctlSettlementMap extends Base implements java.io.Serializable {
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private BigDecimal amount;
 	private long status;
-	private BigDecimal mspid;
+	private Long mspid;
 
 	public SctlSettlementMap() {
 	}
@@ -104,11 +104,11 @@ public class SctlSettlementMap extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "MSPID", nullable = false, scale = 0)
-	public BigDecimal getMspid() {
+	public Long getMspid() {
 		return this.mspid;
 	}
 
-	public void setMspid(BigDecimal mspid) {
+	public void setMspid(Long mspid) {
 		this.mspid = mspid;
 	}
 

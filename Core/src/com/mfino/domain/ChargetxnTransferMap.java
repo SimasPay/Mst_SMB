@@ -22,7 +22,7 @@ public class ChargetxnTransferMap extends Base implements java.io.Serializable {
 	public static final String FieldName_CommodityTransferID = "commoditytransferid";
 	
 	private BigDecimal sctlid;
-	private BigDecimal commoditytransferid;
+	private Long commoditytransferid;
 
 	public ChargetxnTransferMap() {
 	}
@@ -40,11 +40,11 @@ public class ChargetxnTransferMap extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "COMMODITYTRANSFERID", nullable = false, scale = 0)
-	public BigDecimal getCommoditytransferid() {
+	public Long getCommoditytransferid() {
 		return this.commoditytransferid;
 	}
 
-	public void setCommoditytransferid(BigDecimal commoditytransferid) {
+	public void setCommoditytransferid(Long commoditytransferid) {
 		this.commoditytransferid = commoditytransferid;
 	}
 

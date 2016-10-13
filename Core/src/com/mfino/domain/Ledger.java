@@ -28,12 +28,12 @@ public class Ledger extends Base implements java.io.Serializable {
 	public static final String FieldName_DestPocketID = "destpocketid";
 	public static final String FieldName_DestMDN = "destmdn";
 	
-	private BigDecimal commoditytransferid;
+	private Long commoditytransferid;
 	private String sourcemdn;
-	private BigDecimal sourcepocketid;
+	private Long sourcepocketid;
 	private String sourcepocketbalance;
 	private String destmdn;
-	private BigDecimal destpocketid;
+	private Long destpocketid;
 	private String destpocketbalance;
 	private BigDecimal amount;
 
@@ -44,11 +44,11 @@ public class Ledger extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "COMMODITYTRANSFERID", nullable = false, scale = 0)
-	public BigDecimal getCommoditytransferid() {
+	public Long getCommoditytransferid() {
 		return this.commoditytransferid;
 	}
 
-	public void setCommoditytransferid(BigDecimal commoditytransferid) {
+	public void setCommoditytransferid(Long commoditytransferid) {
 		this.commoditytransferid = commoditytransferid;
 	}
 
@@ -62,11 +62,11 @@ public class Ledger extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEPOCKETID", scale = 0)
-	public BigDecimal getSourcepocketid() {
+	public Long getSourcepocketid() {
 		return this.sourcepocketid;
 	}
 
-	public void setSourcepocketid(BigDecimal sourcepocketid) {
+	public void setSourcepocketid(Long sourcepocketid) {
 		this.sourcepocketid = sourcepocketid;
 	}
 
@@ -89,11 +89,11 @@ public class Ledger extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DESTPOCKETID", scale = 0)
-	public BigDecimal getDestpocketid() {
+	public Long getDestpocketid() {
 		return this.destpocketid;
 	}
 
-	public void setDestpocketid(BigDecimal destpocketid) {
+	public void setDestpocketid(Long destpocketid) {
 		this.destpocketid = destpocketid;
 	}
 

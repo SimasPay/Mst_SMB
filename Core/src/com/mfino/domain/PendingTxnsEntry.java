@@ -30,7 +30,7 @@ public class PendingTxnsEntry extends Base implements java.io.Serializable {
 	private long status;
 	private String resolvefailurereason;
 	private Long notificationcode;
-	private BigDecimal transferid;
+	private Long transferid;
 	private BigDecimal amount;
 	private String sourcemdn;
 	private String destmdn;
@@ -87,11 +87,11 @@ public class PendingTxnsEntry extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "TRANSFERID", scale = 0)
-	public BigDecimal getTransferid() {
+	public Long getTransferid() {
 		return this.transferid;
 	}
 
-	public void setTransferid(BigDecimal transferid) {
+	public void setTransferid(Long transferid) {
 		this.transferid = transferid;
 	}
 

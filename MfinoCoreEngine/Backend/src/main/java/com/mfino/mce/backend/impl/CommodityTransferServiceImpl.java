@@ -198,7 +198,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		pct.setStarttime(new Timestamp());
 		//TransactionLog tLog =  coreDataWrapper.getTransactionsLogById(requestFix.getTransactionID());
 		TransactionLog tLog = new TransactionLog();
-		tLog.setId(new BigDecimal(requestFix.getTransactionID()));
+		tLog.setId(requestFix.getTransactionID());
 		pct.setTransactionLog(tLog);
 		pct.setTransferstatus((int)initialTransferStatus);
 		pct.setLocalrevertrequired((short)1);
@@ -235,7 +235,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		//TODO code for has similar records using channel and uicategory
 		try{
-			pct.setId(new BigDecimal(commodityTransferSequenceGenerator.getNextTransferID()));
+			pct.setId(commodityTransferSequenceGenerator.getNextTransferID());
 			coreDataWrapper.save(pct);
 		}catch(Exception exp){
 			log.error(exp.getMessage(), exp);

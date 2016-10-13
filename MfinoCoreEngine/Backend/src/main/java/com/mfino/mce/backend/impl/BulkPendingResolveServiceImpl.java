@@ -215,7 +215,7 @@ public class BulkPendingResolveServiceImpl extends BaseServiceImpl implements
 					log.info("Processing Transactions File ID = " + ptID);
 					log.info("Processing Transfer ID = " + transferID);
 					pendingTransactionsEntry.setTransactionsfileid(new BigDecimal(ptID));
-					pendingTransactionsEntry.setTransferid(new BigDecimal(transferID));
+					pendingTransactionsEntry.setTransferid(transferID);
 					pendingTransactionsEntry.setSourcemdn(mdn);
 					pendingTransactionsEntry.setAmount(amount);
 					pendingTransactionsEntry.setLinenumber(linecount);

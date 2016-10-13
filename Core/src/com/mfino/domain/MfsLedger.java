@@ -26,7 +26,7 @@ public class MfsLedger extends Base implements java.io.Serializable {
 	
 	private BigDecimal sctlid;
 	private BigDecimal commoditytransferid;
-	private BigDecimal pocketid;
+	private Long pocketid;
 	private BigDecimal amount;
 	private String ledgertype;
 	private String ledgerstatus;
@@ -55,11 +55,11 @@ public class MfsLedger extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "POCKETID", nullable = false, scale = 0)
-	public BigDecimal getPocketid() {
+	public Long getPocketid() {
 		return this.pocketid;
 	}
 
-	public void setPocketid(BigDecimal pocketid) {
+	public void setPocketid(Long pocketid) {
 		this.pocketid = pocketid;
 	}
 

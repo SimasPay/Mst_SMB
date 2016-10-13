@@ -30,19 +30,19 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	
 	private Company company;
 	private BigDecimal parenttransactionid;
-	private BigDecimal transferid;
+	private Long transferid;
 	private Short issuccessful;
 	private Long errorcode;
 	private BigDecimal lopid;
 	private BigDecimal bulkuploadentryid;
 	private Long notificationcode;
 	private Long msgtype;
-	private BigDecimal sourcesubscriberid;
+	private Long sourcesubscriberid;
 	private String sourcesubscribername;
-	private BigDecimal sourcemdnid;
+	private Long sourcemdnid;
 	private String sourcemdn;
 	private String destmdn;
-	private BigDecimal sourcepocketid;
+	private Long sourcepocketid;
 	private Long sourcepockettype;
 	private Long sourceapplication;
 	private String servletpath;
@@ -84,11 +84,11 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "TRANSFERID", scale = 0)
-	public BigDecimal getTransferid() {
+	public Long getTransferid() {
 		return this.transferid;
 	}
 
-	public void setTransferid(BigDecimal transferid) {
+	public void setTransferid(Long transferid) {
 		this.transferid = transferid;
 	}
 
@@ -147,11 +147,11 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCESUBSCRIBERID", scale = 0)
-	public BigDecimal getSourcesubscriberid() {
+	public Long getSourcesubscriberid() {
 		return this.sourcesubscriberid;
 	}
 
-	public void setSourcesubscriberid(BigDecimal sourcesubscriberid) {
+	public void setSourcesubscriberid(Long sourcesubscriberid) {
 		this.sourcesubscriberid = sourcesubscriberid;
 	}
 
@@ -165,11 +165,11 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEMDNID", scale = 0)
-	public BigDecimal getSourcemdnid() {
+	public Long getSourcemdnid() {
 		return this.sourcemdnid;
 	}
 
-	public void setSourcemdnid(BigDecimal sourcemdnid) {
+	public void setSourcemdnid(Long sourcemdnid) {
 		this.sourcemdnid = sourcemdnid;
 	}
 
@@ -192,11 +192,11 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEPOCKETID", scale = 0)
-	public BigDecimal getSourcepocketid() {
+	public Long getSourcepocketid() {
 		return this.sourcepocketid;
 	}
 
-	public void setSourcepocketid(BigDecimal sourcepocketid) {
+	public void setSourcepocketid(Long sourcepocketid) {
 		this.sourcepocketid = sourcepocketid;
 	}
 

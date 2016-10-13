@@ -908,7 +908,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		if (pct != null) {
 			activitiesLog.setTransferid(pct.getId());
 		} else {
-			activitiesLog.setTransferid(new BigDecimal(requestFix.getTransactionID()));
+			activitiesLog.setTransferid(requestFix.getTransactionID());
 		}
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
 		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
