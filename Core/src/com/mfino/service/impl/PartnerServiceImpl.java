@@ -684,7 +684,7 @@ public class PartnerServiceImpl implements PartnerService {
           subMdndao.save(subscriberMDN);
           partnerDAO.save(partner);
           SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-          List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+          List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
           if(subscriberGroups!= null && subscriberGroups.size() > 0){
 				for(SubscriberGroups sg: subscriberGroups){
 					subscriberGroupDao.save(sg);
@@ -872,7 +872,7 @@ public class PartnerServiceImpl implements PartnerService {
     			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
     			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 
-    	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+    	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
     			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
     				SubscriberGroups sg = subscriberGroups.iterator().next();
     				if(sg.getGroupid() != Long.valueOf(partnerRegistration.getGroupID())){
@@ -898,7 +898,7 @@ public class PartnerServiceImpl implements PartnerService {
 		Subscriber subscriber = partner.getSubscriber();
 		SubscriberMdn subscriberMDN = subscriber.getSubscriberMdns().iterator().next();
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 		GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 		Groups group = groupDao.getById(subscriberGroups.iterator().next().getGroupid());
 		Map<Integer, Pocket> defaultPockets = getDefaultPocketsMap(partner);

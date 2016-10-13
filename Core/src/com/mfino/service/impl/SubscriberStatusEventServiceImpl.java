@@ -1,5 +1,6 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class SubscriberStatusEventServiceImpl implements
 		if (subscriberExistingEvent != null) {
 			if (Boolean.valueOf(subscriberExistingEvent.getProcessingstatus().toString())) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
-				statusNextEvent.setSubscriberid(subscriber.getId());
+				statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
 				Long temp = subscriber.getStatus();
 				Integer tempI = temp.intValue();
 				Timestamp nextTimeStamp = new Timestamp(
@@ -91,7 +92,7 @@ public class SubscriberStatusEventServiceImpl implements
 			}
 		}else if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscriber.getStatus())){
 			SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
-			statusNextEvent.setSubscriberid(subscriber.getId());
+			statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
 			Long temp = subscriber.getStatus();
 			Integer tempI = temp.intValue();
 			Timestamp nextTimeStamp = new Timestamp(
@@ -115,7 +116,7 @@ public class SubscriberStatusEventServiceImpl implements
 		SubscriberStatusEvent subscriberStatusEvent = null;
 		if (subscriber != null) {
 			SubscriberStatusEventDAO subscriberStatusEventDAO = DAOFactory.getInstance().getSubscriberStatusEventDAO();
-			List<SubscriberStatusEvent> subscriberStatusEvents = subscriberStatusEventDAO.getAllBySubscriberId(subscriber.getId());
+			List<SubscriberStatusEvent> subscriberStatusEvents = subscriberStatusEventDAO.getAllBySubscriberId(BigDecimal.valueOf(subscriber.getId()));
 			
 			if ((subscriberStatusEvents != null)
 					&& (subscriberStatusEvents.size() != 0)) {

@@ -81,7 +81,7 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 		
 		if(ServiceChargeTransactionLogID != null)
 		{
-			notificationLog.setId(new BigDecimal(ServiceChargeTransactionLogID));
+			notificationLog.setId(ServiceChargeTransactionLogID);
 			notificationLog.setNotificationmethod(notificationMethod);
 			notificationLog.setNotificationreceivertype(notificationReceiverType);
 			notificationLog.setCode(notificationCode);

@@ -56,7 +56,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	private BigDecimal transactionamount;
 	private String transactionmode;
 	private String invoiceno;
-	private BigDecimal transactionruleid;
+	private Long transactionruleid;
 	private BigDecimal calculatedcharge;
 	private BigDecimal commoditytransferid;
 	private long status;
@@ -230,11 +230,11 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "TRANSACTIONRULEID", scale = 0)
-	public BigDecimal getTransactionruleid() {
+	public Long getTransactionruleid() {
 		return this.transactionruleid;
 	}
 
-	public void setTransactionruleid(BigDecimal transactionruleid) {
+	public void setTransactionruleid(Long transactionruleid) {
 		this.transactionruleid = transactionruleid;
 	}
 

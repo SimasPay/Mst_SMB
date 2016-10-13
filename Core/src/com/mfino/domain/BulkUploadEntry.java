@@ -27,7 +27,7 @@ public class BulkUploadEntry extends Base implements java.io.Serializable {
 	public static final String FieldName_IsUnRegistered = "isunregistered";
 	public static final String FieldName_ServiceChargeTransactionLogID = "servicechargetransactionlogid";
 	
-	private BigDecimal uploadid;
+	private Long uploadid;
 	private long linenumber;
 	private long status;
 	private Long transferfailurereason;
@@ -49,11 +49,11 @@ public class BulkUploadEntry extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "UPLOADID", nullable = false, scale = 0)
-	public BigDecimal getUploadid() {
+	public Long getUploadid() {
 		return this.uploadid;
 	}
 
-	public void setUploadid(BigDecimal uploadid) {
+	public void setUploadid(Long uploadid) {
 		this.uploadid = uploadid;
 	}
 

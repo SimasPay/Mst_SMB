@@ -179,7 +179,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -386,7 +386,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty()){
 				
@@ -755,7 +755,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -1112,7 +1112,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		boolean emoneyPocketFound = false;
 		boolean lakupandaiPocketFound = false;
 		Long groupID = null;
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -1549,7 +1549,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		Pocket bankPocket = null;
 		boolean bankPocketFound = false;
 		Long groupID = null;
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

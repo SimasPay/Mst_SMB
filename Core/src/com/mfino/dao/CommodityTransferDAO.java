@@ -769,7 +769,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         	@Override
 			public int compare(CommodityTransfer ct1, CommodityTransfer ct2)
         	{
-				return ct2.getId().subtract(ct1.getId()).intValue();
+				return (BigDecimal.valueOf(ct2.getId()).subtract(BigDecimal.valueOf(ct1.getId()))).intValue();
 			}
         });
         List<CommodityTransfer> sortedMergedResult;

@@ -76,7 +76,7 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTxnLog>
     	Criteria criteria = createCriteria();
     		
     		if(query.getSourceChannelApplication()!=null){
-    			BigDecimal channelID=channelDao.getByChannelSourceApplication(query.getSourceChannelApplication()).getId();
+    			BigDecimal channelID=BigDecimal.valueOf(channelDao.getByChannelSourceApplication(query.getSourceChannelApplication()).getId());
     			criteria.add(Restrictions.eq(ServiceChargeTxnLog.FieldName_ChannelCodeID, channelID));
     		}
     		if(query.getDestMdn()!=null){
