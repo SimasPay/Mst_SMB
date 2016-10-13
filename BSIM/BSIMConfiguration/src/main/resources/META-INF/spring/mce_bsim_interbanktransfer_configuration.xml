@@ -25,11 +25,6 @@
 
 	<context:annotation-config />
 	
-	<import resource="classpath:META-INF/cxf/cxf.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-http-jetty.xml" />
-
-
 	<osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
 	<osgi:reference id="interbankService" interface="com.mfino.mce.interbank.InterBankService" />
 

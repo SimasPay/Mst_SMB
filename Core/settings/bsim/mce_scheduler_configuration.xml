@@ -30,7 +30,7 @@
 	<osgi:reference id="bulkResolveService"	interface="com.mfino.mce.backend.BulkPendingResolveService" />
 	<osgi:reference id="pctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransferClearance" />
 	<osgi:reference id="pct21ctClearanceService" interface="com.mfino.mce.backend.PendingCommodityTransfer21CtClearance" />	
-    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate3.HibernateTransactionManager" />
+    <osgi:reference id="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
     <osgi:reference id="sessionFactory" interface="org.hibernate.SessionFactory"/>
     <osgi:reference id="hibernateSessionHolder" interface="com.mfino.hibernate.session.HibernateSessionHolder"/>
 	
