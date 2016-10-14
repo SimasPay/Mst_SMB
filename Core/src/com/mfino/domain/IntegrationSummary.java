@@ -25,7 +25,7 @@ public class IntegrationSummary  extends Base implements java.io.Serializable {
 	public static final String FieldName_ReconcilationID2 = "reconcilationid2";
 	public static final String FieldName_ReconcilationID3 = "reconcilationid3";
 	
-	private BigDecimal sctlid;
+	private Long sctlid;
 	private String integrationtype;
 	private String reconcilationid1;
 	private String reconcilationid2;
@@ -40,11 +40,11 @@ public class IntegrationSummary  extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "SCTLID", nullable = false, scale = 0)
-	public BigDecimal getSctlid() {
+	public Long getSctlid() {
 		return this.sctlid;
 	}
 
-	public void setSctlid(BigDecimal sctlid) {
+	public void setSctlid(Long sctlid) {
 		this.sctlid = sctlid;
 	}
 

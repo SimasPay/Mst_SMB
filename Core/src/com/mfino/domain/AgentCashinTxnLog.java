@@ -18,11 +18,11 @@ import com.mfino.hibernate.Timestamp;
 @Table(name = "AGENT_CASHIN_TXN_LOG")
 public class AgentCashinTxnLog extends Base implements java.io.Serializable {
 
-	private BigDecimal destpartnerid;
+	private Long destpartnerid;
 	private String sourcemdn;
 	private String destmdn;
 	private BigDecimal sourcepocketid;
-	private BigDecimal destpocketid;
+	private Long destpocketid;
 	private BigDecimal amount;
 	private Long agentcashintrxnstatus;
 	private String agentcashintrxnstatusreason;
@@ -32,11 +32,11 @@ public class AgentCashinTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DESTPARTNERID", scale = 0)
-	public BigDecimal getDestpartnerid() {
+	public Long getDestpartnerid() {
 		return this.destpartnerid;
 	}
 
-	public void setDestpartnerid(BigDecimal destpartnerid) {
+	public void setDestpartnerid(Long destpartnerid) {
 		this.destpartnerid = destpartnerid;
 	}
 
@@ -68,11 +68,11 @@ public class AgentCashinTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DESTPOCKETID", scale = 0)
-	public BigDecimal getDestpocketid() {
+	public Long getDestpocketid() {
 		return this.destpocketid;
 	}
 
-	public void setDestpocketid(BigDecimal destpocketid) {
+	public void setDestpocketid(Long destpocketid) {
 		this.destpocketid = destpocketid;
 	}
 

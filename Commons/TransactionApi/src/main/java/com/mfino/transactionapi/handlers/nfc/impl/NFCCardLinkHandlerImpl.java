@@ -124,7 +124,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao=new DAOFactory().getInstance().getSubscriberGroupDao();
 		
-		Set<SubscriberGroups> subscriberGroups = (Set<SubscriberGroups>) subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		Set<SubscriberGroups> subscriberGroups = (Set<SubscriberGroups>) subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

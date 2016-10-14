@@ -73,7 +73,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String upgradeacctapprovedby;
 	private Timestamp upgradeaccttime;
 	private String upgradeacctcomments;
-	private BigDecimal closeagent;
+	private Long closeagent;
 	private String closeuser;
 	private String ktpid;
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(
@@ -465,11 +465,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CLOSEAGENT", scale = 0)
-	public BigDecimal getCloseagent() {
+	public Long getCloseagent() {
 		return this.closeagent;
 	}
 
-	public void setCloseagent(BigDecimal closeagent) {
+	public void setCloseagent(Long closeagent) {
 		this.closeagent = closeagent;
 	}
 

@@ -154,7 +154,7 @@ public class HierarchyTxnServiceImpl implements HierarchyTxnService{
                 try {
                 	suspensePocketTemplateId = systemParametersService.getLong(SystemParameterKeys.SUSPENCE_POCKET_TEMPLATE_ID_KEY);
                 	SubscriberMdn subscriberMdn = parent.getSubscriberMdns().iterator().next();
-					String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getId().toPlainString());
+					String suspensePocketCardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMdn.getId().toString());
 					suspensePocket = pocketService.createPocket(suspensePocketTemplateId, subscriberMdn, CmFinoFIX.PocketStatus_Active, 
 							true, suspensePocketCardPan);
 				} catch (Exception e1) {

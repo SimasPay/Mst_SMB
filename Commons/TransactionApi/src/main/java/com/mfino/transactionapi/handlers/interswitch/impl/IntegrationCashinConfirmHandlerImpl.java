@@ -1,5 +1,7 @@
 package com.mfino.transactionapi.handlers.interswitch.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +109,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 					cashinFirstTimeService.saveCashinFirstTime(cft);
 					
 					cft = cashinFirstTimeService.getByMDN(destMDN.getMdn());
-					destMDN.setCashinfirsttimeid(cft.getId());
+					destMDN.setCashinfirsttimeid(BigDecimal.valueOf(cft.getId()));
 					subscriberMdnService.saveSubscriberMDN(destMDN);
 				}
 			}

@@ -40,7 +40,7 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private FundDefinition fundDefinition;
 	private BigDecimal transferctid;
-	private BigDecimal cashoutsctlid;
+	private Long cashoutsctlid;
 	private BigDecimal cashoutctid;
 	private String digestedpin;
 	private Long unregisteredtxnstatus;
@@ -103,11 +103,11 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CASHOUTSCTLID", scale = 0)
-	public BigDecimal getCashoutsctlid() {
+	public Long getCashoutsctlid() {
 		return this.cashoutsctlid;
 	}
 
-	public void setCashoutsctlid(BigDecimal cashoutsctlid) {
+	public void setCashoutsctlid(Long cashoutsctlid) {
 		this.cashoutsctlid = cashoutsctlid;
 	}
 

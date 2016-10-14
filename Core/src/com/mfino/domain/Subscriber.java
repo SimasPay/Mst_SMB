@@ -86,7 +86,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private String aliasname;
 	private Short detailsrequired;
 	private Long registrationmedium;
-	private BigDecimal registeringpartnerid;
+	private Long registeringpartnerid;
 	private Long approvalidnumber;
 	private Timestamp lastnotificationtime;
 	private String nickname;
@@ -504,11 +504,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REGISTERINGPARTNERID", scale = 0)
-	public BigDecimal getRegisteringpartnerid() {
+	public Long getRegisteringpartnerid() {
 		return this.registeringpartnerid;
 	}
 
-	public void setRegisteringpartnerid(BigDecimal registeringpartnerid) {
+	public void setRegisteringpartnerid(Long registeringpartnerid) {
 		this.registeringpartnerid = registeringpartnerid;
 	}
 
