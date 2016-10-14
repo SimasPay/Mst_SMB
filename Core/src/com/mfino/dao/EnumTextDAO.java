@@ -23,7 +23,7 @@ public class EnumTextDAO extends BaseDAO<EnumText> {
 
         Criteria criteria = createCriteria();
         if (query.getTagId() != null) {
-            criteria.add(Restrictions.eq(EnumText.FieldName_TagID, query.getTagId()));
+            criteria.add(Restrictions.eq(EnumText.FieldName_TagID, new Long(query.getTagId())));
         }
 //        if (query.getLanguage() != null) {
 //            criteria.add(Restrictions.eq(EnumText.FieldName_Language, query.getLanguage()));
@@ -38,7 +38,7 @@ public class EnumTextDAO extends BaseDAO<EnumText> {
             addLikeStartRestriction(criteria, EnumText.FieldName_TagName, query.getTagName());
         }
         if (query.getLanguage() != null) {
-            criteria.add(Restrictions.eq(EnumText.FieldName_Language, query.getLanguage()));
+            criteria.add(Restrictions.eq(EnumText.FieldName_Language, new Long(query.getLanguage())));
         }
         if(query.getFieldName() != null)
         {

@@ -27,11 +27,11 @@ public class RolePermissionDAO extends BaseDAO<RolePermission> {
         }
         if(query.getUserRole() != null)
         {
-            criteria.add(Restrictions.eq(RolePermission.FieldName_Role, query.getUserRole()));
+            criteria.add(Restrictions.eq(RolePermission.FieldName_Role, new Long(query.getUserRole())));
         }
         if(query.getPermission() != null)
         {
-            criteria.add(Restrictions.eq(RolePermission.FieldName_Permission, query.getPermission()));
+            criteria.add(Restrictions.eq(RolePermission.FieldName_Permission, new Long(query.getPermission())));
         }
         if(query.getPermissionList() != null)
         {
