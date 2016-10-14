@@ -169,7 +169,6 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public MCEMessage ibtInquiryCompletionSourceToDestination(MCEMessage mceMessage) {
-		//FIXME: What ever need to be saved as part of ISO response is saved in BankService - Should come here ideally
 		
 		log.info("InterBankTransferServiceImpl :: interBankFundsTransferInquiryCompletionSourceToDestination mceMessage="+mceMessage);
 		CMInterBankTransferInquiryToBank interBankTransferInquiryToBank = (CMInterBankTransferInquiryToBank)mceMessage.getRequest();
@@ -376,7 +375,7 @@ public class InterBankTransferServiceImpl implements InterBankTransferService{
 		}
 		else{
 			iSummary = new IntegrationSummary();
-			iSummary.setSctlid(new BigDecimal(sctlId));
+			iSummary.setSctlid(sctlId);
 			iSummary.setReconcilationid2(de39);
 		}
 

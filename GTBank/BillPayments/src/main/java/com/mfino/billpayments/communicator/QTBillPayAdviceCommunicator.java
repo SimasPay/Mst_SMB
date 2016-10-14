@@ -63,7 +63,7 @@ public class QTBillPayAdviceCommunicator extends QuickTellerCommunicator{
 		String requestReference = QTBillPayUtil.getRequestReference(params.get(BillPayConstants.PREFIX), sctlId);
  	 	IntegrationSummaryDao integrationSummaryDao = DAOFactory.getInstance().getIntegrationSummaryDao();
 		IntegrationSummary integrationSummary = new IntegrationSummary();
-		integrationSummary.setSctlid(new BigDecimal(sctlId));
+		integrationSummary.setSctlid(sctlId);
 		integrationSummary.setReconcilationid1(requestReference);
 		integrationSummaryDao.save(integrationSummary);
 		
