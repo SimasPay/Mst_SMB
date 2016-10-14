@@ -130,7 +130,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringpartnerid(new BigDecimal(regPartnerID));
+				subscriber.setRegisteringpartnerid(regPartnerID);
 			}
 
 			fillSubscriberMandatoryFields(subscriber);
@@ -318,7 +318,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringpartnerid(new BigDecimal(regPartnerID));
+				subscriber.setRegisteringpartnerid(regPartnerID);
 			}
 
 			fillSubscriberMandatoryFields(subscriber);
@@ -710,7 +710,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringpartnerid(new BigDecimal(regPartnerID));
+				subscriber.setRegisteringpartnerid(regPartnerID);
 			}
 
 			fillSubscriberMandatoryFields(subscriber);
