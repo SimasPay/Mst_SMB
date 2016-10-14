@@ -2,14 +2,11 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 /**
@@ -51,6 +48,7 @@ public class MdnOtp extends Base implements java.io.Serializable {
 		this.otp = otp;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OTPEXPIRATIONTIME", nullable = false)
 	public Timestamp getOtpexpirationtime() {
 		return this.otpexpirationtime;

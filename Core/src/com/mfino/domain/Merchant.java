@@ -331,6 +331,7 @@ public class Merchant  implements java.io.Serializable {
 		this.currentweeklypurchaseamount = currentweeklypurchaseamount;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTLOPTIME")
 	public Timestamp getLastloptime() {
 		return this.lastloptime;
@@ -448,6 +449,7 @@ public class Merchant  implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME", nullable = false)
 	public Timestamp getStatustime() {
 		return this.statustime;
