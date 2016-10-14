@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +17,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Type;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.EnumTextDAO;
@@ -89,6 +89,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private Set<Partner> partners = new HashSet<Partner>(0);
 	private Set<BankAdmin> bankAdmins = new HashSet<BankAdmin>(0);
 	private Set<Integer> permissions;
+	
     private String languageCode;
     
     @Transient
@@ -104,6 +105,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
     /**
      * @return the languageCode
      */
+    @Transient
     public String getLanguageCode() {
         if (languageCode == null && (Long)getLanguage() != null) {
             EnumTextQuery query = new EnumTextQuery();
@@ -236,6 +238,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME", nullable = false)
 	public Timestamp getStatustime() {
 		return this.statustime;
@@ -263,6 +266,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.firsttimelogin = firsttimelogin;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTLOGINTIME")
 	public Timestamp getLastlogintime() {
 		return this.lastlogintime;
@@ -308,6 +312,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.securityanswer = securityanswer;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "CONFIRMATIONTIME")
 	public Timestamp getConfirmationtime() {
 		return this.confirmationtime;
@@ -317,6 +322,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.confirmationtime = confirmationtime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "USERACTIVATIONTIME")
 	public Timestamp getUseractivationtime() {
 		return this.useractivationtime;
@@ -326,6 +332,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.useractivationtime = useractivationtime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "REJECTIONTIME")
 	public Timestamp getRejectiontime() {
 		return this.rejectiontime;
@@ -335,6 +342,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.rejectiontime = rejectiontime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "EXPIRATIONTIME")
 	public Timestamp getExpirationtime() {
 		return this.expirationtime;
@@ -353,6 +361,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.confirmationcode = confirmationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DATEOFBIRTH")
 	public Timestamp getDateofbirth() {
 		return this.dateofbirth;
@@ -443,6 +452,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.oldlastname = oldlastname;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTPASSWORDCHANGETIME")
 	public Timestamp getLastpasswordchangetime() {
 		return this.lastpasswordchangetime;

@@ -26,6 +26,8 @@ import com.mfino.hibernate.Timestamp;
 public class Person2Person extends Base implements java.io.Serializable {
 
 	
+	private static final long serialVersionUID = 1L;
+	
 	public static final String FieldName_MDN = "mdn";
 	public static final String FieldName_PeerName = "peername";
 	private Subscriber subscriber;

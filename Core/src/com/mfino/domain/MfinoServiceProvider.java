@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.Type;
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -76,84 +77,6 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 	public MfinoServiceProvider() {
 	}
 
-	public MfinoServiceProvider(Long id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-	}
-
-	public MfinoServiceProvider(Long id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String name, String description, Long status,
-			Timestamp statustime, Set<Person2Person> person2Persons,
-			Set<BulkUpload> bulkUploads, Set<MfsBiller> mfsBillers,
-			Set<ServiceChargeTxnLog> serviceChargeTxnLogs,
-			Set<MfinoUser> mfinoUsers,
-			Set<TransactionCharge> transactionCharges,
-			Set<MfsbillerPartnerMap> mfsbillerPartnerMaps,
-			Set<TxnAmountDstrbLog> txnAmountDstrbLogs, Set<Partner> partners,
-			Set<ServiceSettlementCfg> serviceSettlementCfgs, Set<Brand> brands,
-			Set<DistributionChainTemp> distributionChainTemps,
-			Set<CommodityTransfer> commodityTransfers,
-			Set<PartnerServices> partnerServiceses,
-			Set<TransactionLog> transactionLogs,
-			Set<AuthPersonDetails> authPersonDetailses,
-			Set<TransactionChargeLog> transactionChargeLogs,
-			Set<PendingCommodityTransfer> pendingCommodityTransfers,
-			Set<Notification> notifications,
-			Set<ServiceTransaction> serviceTransactions,
-			Set<SharePartner> sharePartners, Set<Service> services,
-			Set<SettlementTemplate> settlementTemplates,
-			Set<ChargePricing> chargePricings, Set<Subscriber> subscribers,
-			Set<TransactionRule> transactionRules, Set<ChargeType> chargeTypes,
-			Set<ChargeDefinition> chargeDefinitions,
-			Set<PocketTemplate> pocketTemplates,
-			Set<TransactionType> transactionTypes) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.name = name;
-		this.description = description;
-		this.status = status;
-		this.statustime = statustime;
-		this.person2Persons = person2Persons;
-		this.bulkUploads = bulkUploads;
-		this.mfsBillers = mfsBillers;
-		this.serviceChargeTxnLogs = serviceChargeTxnLogs;
-		this.mfinoUsers = mfinoUsers;
-		this.transactionCharges = transactionCharges;
-		this.mfsbillerPartnerMaps = mfsbillerPartnerMaps;
-		this.txnAmountDstrbLogs = txnAmountDstrbLogs;
-		this.partners = partners;
-		this.serviceSettlementCfgs = serviceSettlementCfgs;
-		this.brands = brands;
-		this.distributionChainTemps = distributionChainTemps;
-		this.commodityTransfers = commodityTransfers;
-		this.partnerServiceses = partnerServiceses;
-		this.transactionLogs = transactionLogs;
-		this.authPersonDetailses = authPersonDetailses;
-		this.transactionChargeLogs = transactionChargeLogs;
-		this.pendingCommodityTransfers = pendingCommodityTransfers;
-		this.notifications = notifications;
-		this.serviceTransactions = serviceTransactions;
-		this.sharePartners = sharePartners;
-		this.services = services;
-		this.settlementTemplates = settlementTemplates;
-		this.chargePricings = chargePricings;
-		this.subscribers = subscribers;
-		this.transactionRules = transactionRules;
-		this.chargeTypes = chargeTypes;
-		this.chargeDefinitions = chargeDefinitions;
-		this.pocketTemplates = pocketTemplates;
-		this.transactionTypes = transactionTypes;
-	}
-
-	
 	@Column(name = "NAME", length = 1020)
 	public String getName() {
 		return this.name;
@@ -181,6 +104,7 @@ public class MfinoServiceProvider extends Base implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME")
 	public Timestamp getStatustime() {
 		return this.statustime;
