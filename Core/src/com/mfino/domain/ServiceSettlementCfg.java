@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -83,7 +85,7 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 	}
 
 	
-
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STARTDATE")
 	public Timestamp getStartdate() {
 		return this.startdate;
@@ -93,6 +95,7 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 		this.startdate = startdate;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "ENDDATE")
 	public Timestamp getEnddate() {
 		return this.enddate;

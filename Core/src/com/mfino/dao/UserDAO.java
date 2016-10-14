@@ -103,13 +103,13 @@ public class UserDAO extends BaseDAO<MfinoUser> {
             }
         }        
         if(query.getRole() != null) {
-            criteria.add(Restrictions.eq(MfinoUser.FieldName_Role, query.getRole()));
+            criteria.add(Restrictions.eq(MfinoUser.FieldName_Role, new Long(query.getRole())));
         }
         if(query.getRoles() != null) {
         	criteria.add(Restrictions.in(MfinoUser.FieldName_Role, query.getRoles()));
         }
         if(query.getNotequalsRole() != null) {
-            criteria.add(Restrictions.ne(MfinoUser.FieldName_Role, query.getNotequalsRole()));
+            criteria.add(Restrictions.ne(MfinoUser.FieldName_Role, new Long(query.getNotequalsRole())));
         }
         /*
          * Remove check to add Order to criteria... by default add order by RecordID
@@ -144,7 +144,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
         }
     }
     public int expireRegistrations(Date creationDate){
-        // TODO .. take care of update by
+       
           String queryString = "update user set username = concat(username,'" + EXPIRY_TAG + "', :currentDate)" +
                   ", Status = :expired , StatusTime = :currentDate, ExpirationTime = :currentDate " +
                   ", LastUpdateTime = :currentDate" + 

@@ -221,7 +221,7 @@ public class BaseDAO<T> {
     @Deprecated
     public T getById(long id, LockMode lockMode) {
         T entity;
-        entity = (T) getSession().get(getPersistentClass(), new BigDecimal(id), lockMode);
+        entity = (T) getSession().get(getPersistentClass(), new Long(id), lockMode);
         return entity;
     }
     

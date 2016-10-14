@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -251,6 +253,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.birthplace = birthplace;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DATEOFBIRTH")
 	public Timestamp getDateofbirth() {
 		return this.dateofbirth;
@@ -341,6 +344,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME", nullable = false)
 	public Timestamp getStatustime() {
 		return this.statustime;
@@ -350,6 +354,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.statustime = statustime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "ACTIVATIONTIME")
 	public Timestamp getActivationtime() {
 		return this.activationtime;
@@ -359,6 +364,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.activationtime = activationtime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "APPROVEORREJECTTIME")
 	public Timestamp getApproveorrejecttime() {
 		return this.approveorrejecttime;
@@ -395,6 +401,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.appliedby = appliedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "APPLIEDTIME")
 	public Timestamp getAppliedtime() {
 		return this.appliedtime;
@@ -457,7 +464,8 @@ public class Subscriber extends Base implements java.io.Serializable {
 	public void setUpgradestate(Long upgradestate) {
 		this.upgradestate = upgradestate;
 	}
-
+	
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "IDEXIPARETIONTIME")
 	public Timestamp getIdexiparetiontime() {
 		return this.idexiparetiontime;
@@ -521,6 +529,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.approvalidnumber = approvalidnumber;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTNOTIFICATIONTIME")
 	public Timestamp getLastnotificationtime() {
 		return this.lastnotificationtime;

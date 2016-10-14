@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -286,6 +288,7 @@ public class SubscriberAddiInfo extends Base implements java.io.Serializable {
 		this.bankacountstatus = bankacountstatus;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "AGREMENTDATE")
 	public Timestamp getAgrementdate() {
 		return this.agrementdate;
@@ -295,6 +298,7 @@ public class SubscriberAddiInfo extends Base implements java.io.Serializable {
 		this.agrementdate = agrementdate;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "IMPLEMENTATINDATE")
 	public Timestamp getImplementatindate() {
 		return this.implementatindate;

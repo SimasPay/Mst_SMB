@@ -1,13 +1,13 @@
 package com.mfino.domain;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
-
 import com.mfino.hibernate.Timestamp;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.hibernate.annotations.Type;
 
 @MappedSuperclass
 public class Base {
@@ -43,6 +43,8 @@ public class Base {
 	public void setVersion(long version) {
 		this.version = version;
 	}
+	@Type(type = "userDefinedTimeStamp")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LASTUPDATETIME", nullable = false)
 	public Timestamp getLastupdatetime() {
 		return this.lastupdatetime;
@@ -61,6 +63,8 @@ public class Base {
 		this.updatedby = updatedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATETIME", nullable = false)
 	public Timestamp getCreatetime() {
 		return this.createtime;

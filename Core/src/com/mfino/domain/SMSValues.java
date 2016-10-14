@@ -3,7 +3,6 @@
  */
 package com.mfino.domain;
 
-import java.math.BigDecimal;
 
 /**
  * @author Bala Sunku

@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -230,6 +232,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.mdnbrand = mdnbrand;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME", nullable = false)
 	public Timestamp getStatustime() {
 		return this.statustime;
@@ -239,6 +242,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.statustime = statustime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "ACTIVATIONTIME")
 	public Timestamp getActivationtime() {
 		return this.activationtime;
@@ -248,6 +252,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.activationtime = activationtime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTTRANSACTIONTIME")
 	public Timestamp getLasttransactiontime() {
 		return this.lasttransactiontime;
@@ -302,6 +307,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.otp = otp;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OTPEXPIRATIONTIME")
 	public Timestamp getOtpexpirationtime() {
 		return this.otpexpirationtime;
@@ -446,6 +452,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.upgradeacctapprovedby = upgradeacctapprovedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "UPGRADEACCTTIME")
 	public Timestamp getUpgradeaccttime() {
 		return this.upgradeaccttime;
