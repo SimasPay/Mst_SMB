@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -183,6 +185,7 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 		this.reversalreason = reversalreason;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "EXPIRYTIME")
 	public Timestamp getExpirytime() {
 		return this.expirytime;

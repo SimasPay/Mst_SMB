@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -43,6 +45,7 @@ public class SubscriberStatusEvent extends Base implements java.io.Serializable 
 		this.subscriberid = subscriberid;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "PICKUPDATETIME", nullable = false)
 	public Timestamp getPickupdatetime() {
 		return this.pickupdatetime;

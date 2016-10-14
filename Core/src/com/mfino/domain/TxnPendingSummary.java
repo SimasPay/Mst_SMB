@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -48,6 +50,7 @@ public class TxnPendingSummary extends Base implements java.io.Serializable {
 		this.csraction = csraction;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "CSRACTIONTIME")
 	public Timestamp getCsractiontime() {
 		return this.csractiontime;
