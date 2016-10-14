@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -149,7 +151,7 @@ public class Pocket extends Base implements java.io.Serializable {
 	}
 
 	
-
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTTRANSACTIONTIME")
 	public Timestamp getLasttransactiontime() {
 		return this.lasttransactiontime;
@@ -286,6 +288,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME", nullable = false)
 	public Timestamp getStatustime() {
 		return this.statustime;
@@ -295,6 +298,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.statustime = statustime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "ACTIVATIONTIME")
 	public Timestamp getActivationtime() {
 		return this.activationtime;
@@ -303,7 +307,8 @@ public class Pocket extends Base implements java.io.Serializable {
 	public void setActivationtime(Timestamp activationtime) {
 		this.activationtime = activationtime;
 	}
-
+	
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "POCKETTEMPLATECHANGETIME")
 	public Timestamp getPockettemplatechangetime() {
 		return this.pockettemplatechangetime;
@@ -332,6 +337,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.lowbalnotiftype = lowbalnotiftype;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LOWBALNOTIFTRIGGERTIME")
 	public Timestamp getLowbalnotiftriggertime() {
 		return this.lowbalnotiftriggertime;
@@ -350,6 +356,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.lowbalnotifregistered = lowbalnotifregistered;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LOWBALNOTIFQUERYTIME")
 	public Timestamp getLowbalnotifquerytime() {
 		return this.lowbalnotifquerytime;

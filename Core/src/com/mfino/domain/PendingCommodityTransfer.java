@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 
@@ -317,6 +319,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.notificationcode = notificationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STARTTIME", nullable = false)
 	public Timestamp getStarttime() {
 		return this.starttime;
@@ -326,6 +329,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.starttime = starttime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "ENDTIME")
 	public Timestamp getEndtime() {
 		return this.endtime;
@@ -632,6 +636,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.operatorcode = operatorcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OPERATORRESPONSETIME")
 	public Timestamp getOperatorresponsetime() {
 		return this.operatorresponsetime;
@@ -677,6 +682,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.operatorauthorizationcode = operatorauthorizationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OPERATORREVERSALRESPONSETIME")
 	public Timestamp getOperatorreversalresponsetime() {
 		return this.operatorreversalresponsetime;
@@ -725,6 +731,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.operatorreversalcount = operatorreversalcount;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OPERATORLASTREVERSALTIME")
 	public Timestamp getOperatorlastreversaltime() {
 		return this.operatorlastreversaltime;
@@ -763,6 +770,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.banksystemtraceauditnumber = banksystemtraceauditnumber;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "BANKRESPONSETIME")
 	public Timestamp getBankresponsetime() {
 		return this.bankresponsetime;
@@ -808,6 +816,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.bankauthorizationcode = bankauthorizationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "BANKREVERSALRESPONSETIME")
 	public Timestamp getBankreversalresponsetime() {
 		return this.bankreversalresponsetime;
@@ -864,6 +873,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.reversalcount = reversalcount;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTREVERSALTIME")
 	public Timestamp getLastreversaltime() {
 		return this.lastreversaltime;
@@ -882,6 +892,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 		this.csraction = csraction;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "CSRACTIONTIME")
 	public Timestamp getCsractiontime() {
 		return this.csractiontime;

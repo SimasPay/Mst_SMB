@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.sql.Clob;
 
 import javax.persistence.Column;
@@ -11,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -134,6 +135,7 @@ public class PendingTxnsFile extends Base implements java.io.Serializable {
 		this.recordtype = recordtype;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "FILEPROCESSEDDATE")
 	public Timestamp getFileprocesseddate() {
 		return this.fileprocesseddate;

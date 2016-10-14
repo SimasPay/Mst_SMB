@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -364,6 +366,7 @@ public class Partner extends Base implements java.io.Serializable {
 		this.closeacctapprovedby = closeacctapprovedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "CLOSEACCTTIME")
 	public Timestamp getCloseaccttime() {
 		return this.closeaccttime;
