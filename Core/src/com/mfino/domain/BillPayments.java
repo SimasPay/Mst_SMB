@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -279,6 +281,7 @@ public class BillPayments extends Base implements java.io.Serializable {
 		this.billdata = billdata;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "TRANSFERTIME")
 	public Timestamp getTransfertime() {
 		return this.transfertime;

@@ -2,14 +2,14 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -63,6 +63,7 @@ public class ChannelSessionMgmt extends Base implements java.io.Serializable {
 		this.requestcountafterlogin = requestcountafterlogin;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTREQUESTTIME")
 	public Timestamp getLastrequesttime() {
 		return this.lastrequesttime;
@@ -72,6 +73,7 @@ public class ChannelSessionMgmt extends Base implements java.io.Serializable {
 		this.lastrequesttime = lastrequesttime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTLOGINTIME")
 	public Timestamp getLastlogintime() {
 		return this.lastlogintime;

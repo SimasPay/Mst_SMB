@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -250,6 +252,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 		this.deliverystatus = deliverystatus;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DELIVERYDATE")
 	public Timestamp getDeliverydate() {
 		return this.deliverydate;
@@ -349,6 +352,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 		this.bankuploadtrycounter = bankuploadtrycounter;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "BANKUPLOADLASTTRYDATE")
 	public Timestamp getBankuploadlasttrydate() {
 		return this.bankuploadlasttrydate;
@@ -367,6 +371,7 @@ public class BulkUpload extends Base implements java.io.Serializable {
 		this.pin = pin;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "PAYMENTDATE")
 	public Timestamp getPaymentdate() {
 		return this.paymentdate;

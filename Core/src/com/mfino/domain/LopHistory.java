@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -72,6 +74,7 @@ public class LopHistory  extends Base implements java.io.Serializable {
 		this.discountchangedby = discountchangedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DISCOUNTCHANGETIME")
 	public Timestamp getDiscountchangetime() {
 		return this.discountchangetime;

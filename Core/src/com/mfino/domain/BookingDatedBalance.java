@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -45,6 +47,7 @@ public class BookingDatedBalance extends Base implements java.io.Serializable {
 		this.pocketid = pocketid;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "BOOKINGDATE", nullable = false)
 	public Timestamp getBookingdate() {
 		return this.bookingdate;

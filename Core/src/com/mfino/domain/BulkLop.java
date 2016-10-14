@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.mfino.hibernate.Timestamp;
 
 /**
@@ -168,6 +170,7 @@ public class BulkLop extends Base implements java.io.Serializable {
 		this.distributedby = distributedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DISTRIBUTETIME")
 	public Timestamp getDistributetime() {
 		return this.distributetime;
@@ -185,7 +188,9 @@ public class BulkLop extends Base implements java.io.Serializable {
 	public void setApprovedby(String approvedby) {
 		this.approvedby = approvedby;
 	}
-
+	
+	
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "APPROVALTIME")
 	public Timestamp getApprovaltime() {
 		return this.approvaltime;
@@ -204,6 +209,7 @@ public class BulkLop extends Base implements java.io.Serializable {
 		this.rejectedby = rejectedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "REJECTTIME")
 	public Timestamp getRejecttime() {
 		return this.rejecttime;

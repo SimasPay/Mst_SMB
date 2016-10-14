@@ -2,12 +2,11 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -60,6 +59,7 @@ public class KtpDetails extends Base implements java.io.Serializable {
 		this.fullname = fullname;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DATEOFBIRTH")
 	public Timestamp getDateofbirth() {
 		return this.dateofbirth;

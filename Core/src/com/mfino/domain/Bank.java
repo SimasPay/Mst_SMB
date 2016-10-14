@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -90,6 +91,7 @@ public class Bank extends Base implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STATUSTIME")
 	public Timestamp getStatustime() {
 		return this.statustime;

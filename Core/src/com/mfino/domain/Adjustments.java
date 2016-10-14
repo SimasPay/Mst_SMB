@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -127,7 +127,8 @@ public class Adjustments extends Base implements java.io.Serializable {
 	public void setAppliedby(String appliedby) {
 		this.appliedby = appliedby;
 	}
-
+	
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "APPLIEDTIME")
 	public Timestamp getAppliedtime() {
 		return this.appliedtime;

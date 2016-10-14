@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
 
@@ -213,6 +214,7 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 		this.distributedby = distributedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "DISTRIBUTETIME")
 	public Timestamp getDistributetime() {
 		return this.distributetime;
@@ -231,6 +233,7 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 		this.approvedby = approvedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "APPROVALTIME")
 	public Timestamp getApprovaltime() {
 		return this.approvaltime;
@@ -249,6 +252,7 @@ public class LetterOfPurchase extends Base implements java.io.Serializable {
 		this.rejectedby = rejectedby;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "REJECTTIME")
 	public Timestamp getRejecttime() {
 		return this.rejecttime;

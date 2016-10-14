@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.metadata.ClassMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -319,6 +320,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.notificationcode = notificationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "STARTTIME", nullable = false)
 	public Timestamp getStarttime() {
 		return this.starttime;
@@ -328,6 +330,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.starttime = starttime;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "ENDTIME")
 	public Timestamp getEndtime() {
 		return this.endtime;
@@ -634,6 +637,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.operatorcode = operatorcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OPERATORRESPONSETIME")
 	public Timestamp getOperatorresponsetime() {
 		return this.operatorresponsetime;
@@ -679,6 +683,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.operatorauthorizationcode = operatorauthorizationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OPERATORREVERSALRESPONSETIME")
 	public Timestamp getOperatorreversalresponsetime() {
 		return this.operatorreversalresponsetime;
@@ -727,6 +732,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.operatorreversalcount = operatorreversalcount;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "OPERATORLASTREVERSALTIME")
 	public Timestamp getOperatorlastreversaltime() {
 		return this.operatorlastreversaltime;
@@ -765,6 +771,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.banksystemtraceauditnumber = banksystemtraceauditnumber;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "BANKRESPONSETIME")
 	public Timestamp getBankresponsetime() {
 		return this.bankresponsetime;
@@ -810,6 +817,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.bankauthorizationcode = bankauthorizationcode;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "BANKREVERSALRESPONSETIME")
 	public Timestamp getBankreversalresponsetime() {
 		return this.bankreversalresponsetime;
@@ -866,6 +874,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.reversalcount = reversalcount;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "LASTREVERSALTIME")
 	public Timestamp getLastreversaltime() {
 		return this.lastreversaltime;
@@ -884,6 +893,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.csraction = csraction;
 	}
 
+	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "CSRACTIONTIME")
 	public Timestamp getCsractiontime() {
 		return this.csractiontime;
