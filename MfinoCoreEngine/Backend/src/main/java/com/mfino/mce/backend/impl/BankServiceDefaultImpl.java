@@ -291,9 +291,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							.getNotificationCode()));
 				}
 
-				if ((objSrcPocket.getPocketTemplate().getType()
+				if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_SVA) || isLakupandaiPocketType(objSrcPocket))
-						&& (objDestPocket.getPocketTemplate().getType()
+						&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
 								==(CmFinoFIX.PocketType_BankAccount))) {
 
 //					ledgerService.createLedgerEntry(suspensePocket,
@@ -314,9 +314,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							.getCurrentbalance())));
 					returnFix.setDestinationMDNBalance(BigDecimal.valueOf(-1));
 				}
-				if ((objSrcPocket.getPocketTemplate().getType()
+				if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_BankAccount))
-						&& (objDestPocket.getPocketTemplate().getType()
+						&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
 								==(CmFinoFIX.PocketType_SVA) || isLakupandaiPocketType(objDestPocket))) {
 					pct.setDestpocketbalance(objDestPocket.getCurrentbalance());
 //					ledgerService.createLedgerEntry(suspensePocket,
@@ -339,9 +339,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					returnFix.setDestinationMDNBalance(moneyService.round(new BigDecimal(objDestPocket
 							.getCurrentbalance())));
 				}
-				if ((objSrcPocket.getPocketTemplate().getType()
+				if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_BankAccount))
-						&& (objDestPocket.getPocketTemplate().getType()
+						&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
 								==(CmFinoFIX.PocketType_BankAccount))) {
 					returnFix.setSourceMDNBalance(BigDecimal.valueOf(-1));
 					returnFix.setDestinationMDNBalance(BigDecimal.valueOf(-1));
@@ -708,10 +708,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 						if (isNullorZero(returnFix.getInternalErrorCode())) {
 
-							if ((objSrcPocket.getPocketTemplate().getType()
+							if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 									 == CmFinoFIX.PocketType_SVA
 									.intValue() || isNFCPocketType(objSrcPocket) || isLakupandaiPocketType(objSrcPocket))
-									&& (objDestPocket.getPocketTemplate()
+									&& (objDestPocket.getPocketTemplateByPockettemplateid()
 											.getType() == CmFinoFIX.PocketType_SVA
 											.intValue() || isNFCPocketType(objDestPocket) || isLakupandaiPocketType(objDestPocket))) {
 								returnFix.setSourceMDN(objSrcSubMdn.getMdn());
@@ -799,7 +799,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 								if (CmFinoFIX.BankAccountCardType_SavingsAccount
 										.equals(objSrcPocket
-												.getPocketTemplate()
+												.getPocketTemplateByPockettemplateid()
 												.getBankaccountcardtype())) {
 									inquiryToBank.setSourceBankAccountType(""
 											+ CmFinoFIX.BankAccountType_Saving);
@@ -811,7 +811,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 								if (CmFinoFIX.BankAccountCardType_SavingsAccount
 										.equals(objDestPocket
-												.getPocketTemplate()
+												.getPocketTemplateByPockettemplateid()
 												.getBankaccountcardtype())) {
 									inquiryToBank
 											.setDestinationBankAccountType(""
@@ -824,7 +824,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 								if (CmFinoFIX.PocketType_SVA
 										.equals(objSrcPocket
-												.getPocketTemplate().getType()) || isLakupandaiPocketType(objSrcPocket)) {
+												.getPocketTemplateByPockettemplateid().getType()) || isLakupandaiPocketType(objSrcPocket)) {
 									inquiryToBank
 											.setSourceCardPAN(coreDataWrapper
 													.getGlobalAccountNumber());
@@ -835,7 +835,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 								if (CmFinoFIX.PocketType_SVA
 										.equals(objDestPocket
-												.getPocketTemplate().getType()) || isLakupandaiPocketType(objDestPocket)) {
+												.getPocketTemplateByPockettemplateid().getType()) || isLakupandaiPocketType(objDestPocket)) {
 									inquiryToBank
 											.setDestCardPAN(coreDataWrapper
 													.getGlobalAccountNumber());
@@ -845,7 +845,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								}
 
 								// this part is not required as we dont have pin
-								if (objSrcPocket.getPocketTemplate().getType()
+								if (objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 										 == CmFinoFIX.PocketType_BankAccount
 										.intValue()) {
 									inquiryToBank.setPin(requestFix.getPin());
@@ -903,7 +903,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(objSrcSubMdn.getId());
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
-		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 		if (pct != null) {
 			activitiesLog.setTransferid(pct.getId());
@@ -911,9 +911,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			activitiesLog.setTransferid(requestFix.getTransactionID());
 		}
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
-		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
+		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 // [Bala] Commented the Activities log creation
 //		coreDataWrapper.save(activitiesLog);
@@ -1205,7 +1205,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		CMExistingSubscriberReactivationToBank toBankFix = new CMExistingSubscriberReactivationToBank();
 		if (CmFinoFIX.BankAccountCardType_SavingsAccount
 				.equals(objSrcPocket
-						.getPocketTemplate()
+						.getPocketTemplateByPockettemplateid()
 						.getBankaccountcardtype())) {
 			toBankFix.setSourceBankAccountType(""
 							+ CmFinoFIX.BankAccountType_Saving);
@@ -1290,7 +1290,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			log.info("BankServiceDefaultImpl:onBalanceInquiry(): Source subscriber validation ErrorCode="
 					+ responseFix.getInternalErrorCode());
 			log.debug("BankServiceDefaultImpl:onBalanceInquiry(): Source Subscriber Pocket Type="
-					+ moneyPocket.getPocketTemplate().getType());
+					+ moneyPocket.getPocketTemplateByPockettemplateid().getType());
 		}
 		else
 		{
@@ -1300,7 +1300,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		}
 		if (isNullorZero(responseFix.getInternalErrorCode())) {
 			// NFC Card Balance
-			if (/*moneyPocket.getPocketTemplate().getType().equals(CmFinoFIX.PocketType_NFC) 
+			if (/*moneyPocket.getPocketTemplateByPockettemplateid().getType().equals(CmFinoFIX.PocketType_NFC) 
 					&& */ requestFix.getTransactionTypeName().equals(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_BALANCE)) {
 				CMBalanceInquiryToBank toBankFix = new CMBalanceInquiryToBank();
 				toBankFix.copy(requestFix);
@@ -1310,7 +1310,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				toBankFix.setTransactionTypeName(requestFix.getTransactionTypeName());
 				if(moneyPocket != null)
 				{
-					toBankFix.setBankCode(moneyPocket.getPocketTemplate().getBankcode().intValue());
+					toBankFix.setBankCode(moneyPocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
 					toBankFix.setSourceCardPAN(moneyPocket.getCardpan());
 					toBankFix.setCardAlias(moneyPocket.getCardalias());
 				}
@@ -1332,13 +1332,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				log.info("NFC Card Balance: toBankFix.getParentTransactionId()=" + toBankFix.getParentTransactionID());
 			}
 
-			else if (moneyPocket.getPocketTemplate().getType()
+			else if (moneyPocket.getPocketTemplateByPockettemplateid().getType()
 					==(CmFinoFIX.PocketType_BankAccount)) {
 				// Bank pocket
 				CMBalanceInquiryToBank toBankFix = new CMBalanceInquiryToBank();
 				toBankFix.copy(requestFix);
 				toBankFix.setSourceMDN(subscriberMdn.getMdn());
-				toBankFix.setBankCode(moneyPocket.getPocketTemplate()
+				toBankFix.setBankCode(moneyPocket.getPocketTemplateByPockettemplateid()
 						.getBankcode().intValue());
 				toBankFix.setLanguage((int)subscriber.getLanguage());
 				toBankFix.setPin(requestFix.getPin());
@@ -1349,7 +1349,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						+ requestFix.getTransactionID());
 				toBankFix.setTransactionID(requestFix.getTransactionID());
 
-				if (moneyPocket.getPocketTemplate().getBankaccountcardtype()
+				if (moneyPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype()
 						.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)) {
 					toBankFix.setSourceBankAccountType(""
 							+ CmFinoFIX.BankAccountType_Saving);
@@ -1359,7 +1359,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				}
 
 				if (CmFinoFIX.PocketType_SVA.equals(moneyPocket
-						.getPocketTemplate().getType())) {
+						.getPocketTemplateByPockettemplateid().getType())) {
 					toBankFix.setSourceCardPAN(coreDataWrapper
 							.getGlobalAccountNumber());
 					toBankFix.setSourceBankAccountType(""
@@ -1396,7 +1396,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				activitiesLog
 						.setNotificationcode(Long.valueOf(NotificationCodes.E_Money_CheckBalance
 								.getNotificationCode()));
-				if (CmFinoFIX.PocketType_NFC.equals(moneyPocket.getPocketTemplate().getType())) {
+				if (CmFinoFIX.PocketType_NFC.equals(moneyPocket.getPocketTemplateByPockettemplateid().getType())) {
 					responseFix.setInternalErrorCode(NotificationCodes.NFC_Pocket_Balance.getInternalErrorCode());
 					activitiesLog.setNotificationcode(Long.valueOf(NotificationCodes.NFC_Pocket_Balance.getNotificationCode()));
 				}
@@ -1429,9 +1429,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		if(moneyPocket != null)
 		{
 			activitiesLog.setSourcepocketid(moneyPocket.getId());
-			activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplate().getType());
-			if (moneyPocket.getPocketTemplate().getBankcode() != null) {
-				activitiesLog.setIso8583Acquiringinstidcode(moneyPocket.getPocketTemplate().getBankcode());
+			activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplateByPockettemplateid().getType());
+			if (moneyPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
+				activitiesLog.setIso8583Acquiringinstidcode(moneyPocket.getPocketTemplateByPockettemplateid().getBankcode());
 			}
 		}
 		activitiesLog.setCompany(subscriber.getCompany());		
@@ -1600,17 +1600,17 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								if (confirmationToBank.getConfirmed()) {
 
 									log.debug("Source Pocket Type="
-											+ objSrcPocket.getPocketTemplate()
+											+ objSrcPocket.getPocketTemplateByPockettemplateid()
 													.getType()
 											+ ", Destination Pocket Type="
-											+ objDestPocket.getPocketTemplate()
+											+ objDestPocket.getPocketTemplateByPockettemplateid()
 													.getType());
 
-									if ((objSrcPocket.getPocketTemplate()
+									if ((objSrcPocket.getPocketTemplateByPockettemplateid()
 											.getType() == CmFinoFIX.PocketType_SVA
 											.intValue() || isNFCPocketType(objSrcPocket) || isLakupandaiPocketType(objSrcPocket))
 											&& (objDestPocket
-													.getPocketTemplate()
+													.getPocketTemplateByPockettemplateid()
 													.getType() == CmFinoFIX.PocketType_SVA
 													.intValue() || isNFCPocketType(objDestPocket) || isLakupandaiPocketType(objDestPocket))) {
 										returnFix.setSourcePocketId(objSrcPocket.getId().longValue());
@@ -1754,11 +1754,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												.setIssuccessful((short)1);
 
 									} else if ((objSrcPocket
-											.getPocketTemplate().getType()
+											.getPocketTemplateByPockettemplateid().getType()
 											 == CmFinoFIX.PocketType_SVA
 											 || isLakupandaiPocketType(objSrcPocket))
 											&& (objDestPocket
-													.getPocketTemplate()
+													.getPocketTemplateByPockettemplateid()
 													.getType() == CmFinoFIX.PocketType_BankAccount
 													)) {
 										pct.setSourcepocketbalance(objSrcPocket
@@ -1860,7 +1860,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											}
 //											if (CmFinoFIX.BankAccountCardType_SavingsAccount
 //													.equals(objSrcPocket
-//															.getPocketTemplate()
+//															.getPocketTemplateByPockettemplateid()
 //															.getBankAccountCardType())) {
 //												moneyTransferToBank
 //														.setSourceBankAccountType(""
@@ -1873,7 +1873,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 											if (CmFinoFIX.BankAccountCardType_SavingsAccount
 													.equals(objDestPocket
-															.getPocketTemplate()
+															.getPocketTemplateByPockettemplateid()
 															.getBankaccountcardtype())) {
 												moneyTransferToBank
 														.setDestinationBankAccountType(""
@@ -1887,11 +1887,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											isoFix = moneyTransferToBank;
 										
 									} else if ((objSrcPocket
-											.getPocketTemplate().getType()
+											.getPocketTemplateByPockettemplateid().getType()
 											 == CmFinoFIX.PocketType_BankAccount
 											)
 											&& (objDestPocket
-													.getPocketTemplate()
+													.getPocketTemplateByPockettemplateid()
 													.getType() == CmFinoFIX.PocketType_SVA
 													|| isLakupandaiPocketType(objDestPocket))) {
 										log.info("BankServiceDefaultImpl :: onTransferConfirmationToBank : Bank 2 E-Money");
@@ -1982,7 +1982,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											}
 											if (CmFinoFIX.BankAccountCardType_SavingsAccount
 													.equals(objSrcPocket
-															.getPocketTemplate()
+															.getPocketTemplateByPockettemplateid()
 															.getBankaccountcardtype())) {
 												moneyTransferToBank
 														.setSourceBankAccountType(""
@@ -1995,7 +1995,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 //											if (CmFinoFIX.BankAccountCardType_SavingsAccount
 //													.equals(objDestPocket
-//															.getPocketTemplate()
+//															.getPocketTemplateByPockettemplateid()
 //															.getBankAccountCardType())) {
 //												moneyTransferToBank
 //														.setDestinationBankAccountType(""
@@ -2009,11 +2009,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											isoFix = moneyTransferToBank;
 										
 									} else if ((objSrcPocket
-											.getPocketTemplate().getType()
+											.getPocketTemplateByPockettemplateid().getType()
 											 == CmFinoFIX.PocketType_BankAccount
 											)
 											&& (objDestPocket
-													.getPocketTemplate()
+													.getPocketTemplateByPockettemplateid()
 													.getType() == CmFinoFIX.PocketType_BankAccount
 													)) {
 
@@ -2082,7 +2082,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										}
 										if (CmFinoFIX.BankAccountCardType_SavingsAccount
 												.equals(objSrcPocket
-														.getPocketTemplate()
+														.getPocketTemplateByPockettemplateid()
 														.getBankaccountcardtype())) {
 											moneyTransferToBank
 													.setSourceBankAccountType(""
@@ -2095,7 +2095,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 										if (CmFinoFIX.BankAccountCardType_SavingsAccount
 												.equals(objDestPocket
-														.getPocketTemplate()
+														.getPocketTemplateByPockettemplateid()
 														.getBankaccountcardtype())) {
 											moneyTransferToBank
 													.setDestinationBankAccountType(""
@@ -2175,12 +2175,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcemdnid(objSrcSubMdn.getId());
 		activitiesLog.setSourcesubscriberid(objSourceSubscriber.getId());
 		activitiesLog.setSourcesubscriberid(objSrcPocket.getId());
-		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 
-		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
+		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 
 		if (pct != null)
@@ -2237,9 +2237,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				+ sourcePocket
 				+ ", destinationPocket=" + destinationPocket);
 		
-		if (CmFinoFIX.PocketType_SVA.intValue() != sourcePocket.getPocketTemplate().getType()) {
+		if (CmFinoFIX.PocketType_SVA.intValue() != sourcePocket.getPocketTemplateByPockettemplateid().getType()) {
 			returnFix.setInternalErrorCode(NotificationCodes.SourceMoneyPocketNotFound.getInternalErrorCode());
-		} else if ((CmFinoFIX.PocketType_SVA.intValue() != destinationPocket.getPocketTemplate().getType()) &&
+		} else if ((CmFinoFIX.PocketType_SVA.intValue() != destinationPocket.getPocketTemplateByPockettemplateid().getType()) &&
 				!isLakupandaiPocketType(destinationPocket)) {
 			returnFix.setInternalErrorCode(NotificationCodes.DestinationEMoneyPocketNotFound.getInternalErrorCode());
 		} else if (isNullorZero(returnFix.getInternalErrorCode())) {
@@ -2405,12 +2405,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				+ ", destinationPocket=" + destinationPocket);
 
 		if (CmFinoFIX.PocketType_SVA.intValue() != sourcePocket
-				.getPocketTemplate().getType()) {
+				.getPocketTemplateByPockettemplateid().getType()) {
 			returnFix
 					.setInternalErrorCode(NotificationCodes.DefaultBankAccountPocketNotFound
 							.getInternalErrorCode());
 		} else if (CmFinoFIX.PocketType_SVA.intValue() != destinationPocket
-				.getPocketTemplate().getType()) {
+				.getPocketTemplateByPockettemplateid().getType()) {
 			returnFix
 					.setInternalErrorCode(NotificationCodes.DestinationEMoneyPocketNotFound
 							.getInternalErrorCode());
@@ -2591,12 +2591,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcemdnid(sourceSubcriberMdn.getId());
 		activitiesLog.setSourcesubscriberid(sourceSubscriber.getId());
 		activitiesLog.setSourcepocketid(sourcePocket.getId());
-		activitiesLog.setSourcepockettype(sourcePocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(sourcePocket.getPocketTemplateByPockettemplateid()
 				.getType());
 
-		if (sourcePocket.getPocketTemplate().getBankcode() != null) {
+		if (sourcePocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(sourcePocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 
 		if (pct != null)
@@ -2648,7 +2648,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				+ ", destinationPocket=" + destinationPocket);
 
 		if (CmFinoFIX.PocketType_SVA.intValue() != sourcePocket
-				.getPocketTemplate().getType()) {
+				.getPocketTemplateByPockettemplateid().getType()) {
 			returnFix
 					.setInternalErrorCode(NotificationCodes.DefaultBankAccountPocketNotFound
 							.getInternalErrorCode());
@@ -2729,11 +2729,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							
 
 							if (isNullorZero(returnFix.getInternalErrorCode())) {
-								if ((sourcePocket.getPocketTemplate().getType()
+								if ((sourcePocket.getPocketTemplateByPockettemplateid().getType()
 										 == CmFinoFIX.PocketType_SVA
 										.intValue())
 										&& (destinationPocket
-												.getPocketTemplate().getType()
+												.getPocketTemplateByPockettemplateid().getType()
 												 == CmFinoFIX.PocketType_SVA
 												.intValue())) {
 									pct.setSourcepocketbalance(sourcePocket
@@ -2773,11 +2773,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyCompleteToSender.getInternalErrorCode());
 									activitiesLog.setIssuccessful((short)1);
 
-								} else if ((sourcePocket.getPocketTemplate()
+								} else if ((sourcePocket.getPocketTemplateByPockettemplateid()
 										.getType() == CmFinoFIX.PocketType_SVA
 										.intValue())
 										&& (destinationPocket
-												.getPocketTemplate().getType()
+												.getPocketTemplateByPockettemplateid().getType()
 												 == CmFinoFIX.PocketType_BankAccount
 												.intValue())) {
 
@@ -2862,7 +2862,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 //										if (CmFinoFIX.BankAccountCardType_SavingsAccount
 //												.equals(sourcePocket
-//														.getPocketTemplate()
+//														.getPocketTemplateByPockettemplateid()
 //														.getBankAccountCardType())) {
 //											moneyTransferToBank
 //													.setSourceBankAccountType(""
@@ -2875,7 +2875,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 										if (CmFinoFIX.BankAccountCardType_SavingsAccount
 												.equals(destinationPocket
-														.getPocketTemplate()
+														.getPocketTemplateByPockettemplateid()
 														.getBankaccountcardtype())) {
 											moneyTransferToBank
 													.setDestinationBankAccountType(""
@@ -2972,12 +2972,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcemdnid(sourceSubcriberMdn.getId());
 		activitiesLog.setSourcesubscriberid(sourceSubscriber.getId());
 		activitiesLog.setSourcepocketid(sourcePocket.getId());
-		activitiesLog.setSourcepockettype(sourcePocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(sourcePocket.getPocketTemplateByPockettemplateid()
 				.getType());
 
-		if (sourcePocket.getPocketTemplate().getBankcode() != null) {
+		if (sourcePocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(sourcePocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 
 		if (pct != null)
@@ -3471,19 +3471,19 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		log.info("BankServiceDefaultImpl:onGetBankHistory(): Source subscriber validation ErrorCode="
 				+ responseFix.getInternalErrorCode());
 		log.debug("BankServiceDefaultImpl:onGetBankHistory(): Source Subscriber Pocket Type="
-				+ moneyPocket.getPocketTemplate().getType());
+				+ moneyPocket.getPocketTemplateByPockettemplateid().getType());
 
 		if (isNullorZero(responseFix.getInternalErrorCode())) {
 			// assuming that this pocket is a bank pocket or NFC Pocket
-			if (moneyPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount) || 
-				moneyPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_NFC)) {
+			if (moneyPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount) || 
+				moneyPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_NFC)) {
 				// Bank pocket or NFC Pocket
 				CMGetLastTransactionsToBank toBankFix = new CMGetLastTransactionsToBank();
 				toBankFix.copy(getBankAccountTransations);
 				toBankFix.setLanguage((int)subscriber.getLanguage());
 				toBankFix.setSourceMDN(subscriberMdn.getMdn());
 				toBankFix.setPin(getBankAccountTransations.getPin());
-				toBankFix.setBankCode(moneyPocket.getPocketTemplate()
+				toBankFix.setBankCode(moneyPocket.getPocketTemplateByPockettemplateid()
 						.getBankcode().intValue());
 				toBankFix.setSourceCardPAN(moneyPocket.getCardpan());
 				toBankFix.setCardAlias(moneyPocket.getCardalias());
@@ -3500,7 +3500,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				toBankFix.setParentTransactionID(getBankAccountTransations
 						.getParentTransactionID());
 				if (CmFinoFIX.BankAccountCardType_SavingsAccount
-						.equals(moneyPocket.getPocketTemplate()
+						.equals(moneyPocket.getPocketTemplateByPockettemplateid()
 								.getBankaccountcardtype())) {
 					toBankFix.setSourceBankAccountType(""
 							+ CmFinoFIX.BankAccountType_Saving);
@@ -3552,13 +3552,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(subscriber.getId());
 		activitiesLog.setSourcesubscriberid(subscriber.getCompany().getId());
 		activitiesLog.setSourcepocketid(moneyPocket.getId());
-		activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 		activitiesLog.setCompany(subscriber.getCompany());
 
-		if (moneyPocket.getPocketTemplate().getBankcode() != null) {
+		if (moneyPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(moneyPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 
 		log.debug("before save activities log BankServiceDefaultImpl:onGetBankHistory:: isoFix==null="
@@ -3834,14 +3834,14 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(objSrcSubMdn.getId());
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
-		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 		activitiesLog.setTransferid(pendingTransfer.getId());
 
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
-		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
+		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 		pendingTransfer.setLocalbalancerevertrequired((short)0);
 		if (updatePCT) {
@@ -3957,14 +3957,14 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(objSrcSubMdn.getId());
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
-		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 		activitiesLog.setTransferid(pendingTransfer.getId());
 
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
-		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
+		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 		pendingTransfer.setLocalbalancerevertrequired((short)0);
 		pendingTransfer.setLocalbalancerevertrequired((short)0);
@@ -4026,9 +4026,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// FIXME:: Check if new message type is needed here
 		returnFix.setMessageType((int)pendingTransfer.getMsgtype());
 
-		if ((objSrcPocket.getPocketTemplate().getType()
+		if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 				==(CmFinoFIX.PocketType_SVA))
-				&& (objDestPocket.getPocketTemplate().getType()
+				&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_BankAccount))) {
 
 //			ledgerService.createLedgerEntry(suspensePocket, chargesPocket,
@@ -4046,9 +4046,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			log.info(":: onResolveCompleteOfTransfer() Completed SVA to Bank transfer: "
 					+ pendingTransferID);
 		}
-		if ((objSrcPocket.getPocketTemplate().getType()
+		if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 				==(CmFinoFIX.PocketType_BankAccount))
-				&& (objDestPocket.getPocketTemplate().getType()
+				&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_SVA))) {
 			pendingTransfer.setDestpocketbalance(objDestPocket
 					.getCurrentbalance());
@@ -4070,9 +4070,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			log.info(":: onResolveCompleteOfTransfer() Completed Bank to SVA transfer: "
 					+ pendingTransferID);
 		}
-		if ((objSrcPocket.getPocketTemplate().getType()
+		if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 				==(CmFinoFIX.PocketType_SVA))
-				&& (objDestPocket.getPocketTemplate().getType()
+				&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_SVA))) {
 			log.info(":: onResolveCompleteOfTransfer() SVA to SVA transfer: "
 					+ pendingTransferID);
@@ -4101,14 +4101,14 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(objSrcSubMdn.getId());
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
-		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 		activitiesLog.setTransferid(pendingTransfer.getId());
 
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
-		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
+		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 		coreDataWrapper.save(pendingTransfer);
 		handlePCTonSuccess(pendingTransfer);
@@ -4162,9 +4162,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		BigDecimal charges = pct.getCharges();
 //		BigDecimal transferAmountWithCharges = amount.add(charges);
 
-		if (((objSrcPocket.getPocketTemplate().getType()
+		if (((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
 				==(CmFinoFIX.PocketType_SVA)))
-				&& ((objDestPocket.getPocketTemplate().getType()
+				&& ((objDestPocket.getPocketTemplateByPockettemplateid().getType()
 						==(CmFinoFIX.PocketType_SVA)))) {
 			returnFix = validationService.validateBankAccountSubscriber(
 					objSourceSubscriber, objSrcSubMdn, objSrcPocket,
@@ -4255,12 +4255,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcemdnid(objSrcSubMdn.getId());
 		activitiesLog.setSourcesubscriberid(objSourceSubscriber.getId());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
-		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplate()
+		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
 				.getType());
 
-		if (objSrcPocket.getPocketTemplate().getBankcode() != null) {
+		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplate().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 
 		if (pct != null)
@@ -4400,14 +4400,14 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		return null;
 	}
 	private boolean isNFCPocketType(Pocket pocket){
-		if (pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_NFC.intValue()) {
+		if (pocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_NFC.intValue()) {
 			return true;
 		}
 		return false;
 	}
 	
 	private boolean isLakupandaiPocketType(Pocket pocket){
-		if (pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_LakuPandai.intValue()) {
+		if (pocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_LakuPandai.intValue()) {
 			return true;
 		}
 		return false;

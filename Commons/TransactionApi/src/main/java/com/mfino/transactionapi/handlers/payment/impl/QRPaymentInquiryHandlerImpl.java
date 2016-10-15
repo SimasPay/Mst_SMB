@@ -258,7 +258,7 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		if(subPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
+		if(subPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 
 			if(!systemParametersService.getBankServiceStatus())	{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);

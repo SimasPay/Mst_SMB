@@ -497,9 +497,9 @@ public class PartnerServiceImpl implements PartnerService {
 			Long tempStatusL = pocket.getStatus();
 			Integer tempStatusLI = tempStatusL.intValue();
 			if(tempStatusLI.equals(CmFinoFIX.PocketStatus_Initialized)&&
-					(pocket.getPocketTemplate().getIscollectorpocket() != 0
-							|| pocket.getPocketTemplate().getIssuspencepocket() != 0
-							|| pocket.getPocketTemplate().getIssystempocket() != 0)){
+					(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket() != 0
+							|| pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != 0
+							|| pocket.getPocketTemplateByPockettemplateid().getIssystempocket() != 0)){
 					
 				pocket.setActivationtime(new Timestamp());
 //				pocket.setIsDefault(true);
@@ -1040,7 +1040,7 @@ public class PartnerServiceImpl implements PartnerService {
 					||CmFinoFIX.PocketStatus_Active.equals(pocket.getStatus()))
 					&&!Boolean.valueOf(pocket.getIsdefault().toString()))
 				continue;
-			PocketTemplate pocketTemplate = pocket.getPocketTemplate();
+			PocketTemplate pocketTemplate = pocket.getPocketTemplateByPockettemplateid();
 			if(Boolean.valueOf(pocketTemplate.getIscollectorpocket().toString())){
 				if(!collectorFound)
 					pocketMap.put(CmFinoFIX.ServicePocketType_Collector, pocket);

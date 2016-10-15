@@ -204,7 +204,7 @@ public class CommodityTransferDAOTest {
         poc.setStatustime(new Timestamp());
         poc.setUpdatedby("sas");
         poc.setSubscriberMdn(mdn1);
-        poc.setPocketTemplate(pt);
+        poc.setPocketTemplateByPockettemplateid(pt);
 
         pocDao.save(poc);
 

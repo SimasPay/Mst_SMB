@@ -39,8 +39,8 @@ public class DefaultBOBPocketValidator implements IValidator {
 
         
         for (Pocket pocket : pocketSet) {
-            if (pocket.getPocketTemplate() != null) {
-                PocketTemplate pTemplate = pocket.getPocketTemplate();
+            if (pocket.getPocketTemplateByPockettemplateid() != null) {
+                PocketTemplate pTemplate = pocket.getPocketTemplateByPockettemplateid();
                 
                 Long tempTypeL = pTemplate.getType();
 				Integer tempTypeLI = tempTypeL.intValue();
@@ -64,7 +64,7 @@ public class DefaultBOBPocketValidator implements IValidator {
         if (!CmFinoFIX.SubscriberRestrictions_None.equals(defaultBOBPocket.getRestrictions())) {
             return CmFinoFIX.NotificationCode_BOBPocketIsRestricted;
         }
-        if (defaultBOBPocket.getPocketTemplate().getOperatorcode() == null) {
+        if (defaultBOBPocket.getPocketTemplateByPockettemplateid().getOperatorcode() == null) {
             return CmFinoFIX.NotificationCode_PocketTemplateOperatorCodeMissing;
         }
         return CmFinoFIX.ResponseCode_Success;

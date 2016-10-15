@@ -86,7 +86,7 @@ public class PocketServiceImpl implements PocketService{
 
 		// If the pokcet type is of BankAccount
 		// Status is set to "Initialized".
-		Long typeL = pocket.getPocketTemplate().getType();
+		Long typeL = pocket.getPocketTemplateByPockettemplateid().getType();
 		Integer typeLI = typeL.intValue();
 		
 		if (typeLI.equals(CmFinoFIX.PocketType_BankAccount)) {
@@ -104,7 +104,7 @@ public class PocketServiceImpl implements PocketService{
 	public Pocket createActivePocket(PocketTemplate defaultPocketTemplate, SubscriberMdn subscriberMDN, boolean isDefault) {
 		Pocket pocket = new Pocket();
 
-		pocket.setPocketTemplate(defaultPocketTemplate);
+		pocket.setPocketTemplateByPockettemplateid(defaultPocketTemplate);
 		pocket.setSubscriberMdn(subscriberMDN);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
@@ -128,13 +128,13 @@ public class PocketServiceImpl implements PocketService{
 	public boolean isDefaultAirTimeSVA(Pocket p) {
 		Boolean bool_true = Boolean.valueOf(true);
 		
-		Long tempPocketL = p.getPocketTemplate().getType();
+		Long tempPocketL = p.getPocketTemplateByPockettemplateid().getType();
 		Integer tempPocketLI = tempPocketL.intValue();
 		
-		Long tempCOmoditytL = p.getPocketTemplate().getCommodity();
+		Long tempCOmoditytL = p.getPocketTemplateByPockettemplateid().getCommodity();
 		Integer tempCOmoditytL1 = tempCOmoditytL.intValue();
 		
-		if (p != null && p.getPocketTemplate() != null && tempPocketLI.equals(CmFinoFIX.PocketType_SVA)
+		if (p != null && p.getPocketTemplateByPockettemplateid() != null && tempPocketLI.equals(CmFinoFIX.PocketType_SVA)
 		        && tempCOmoditytL1 != null && tempCOmoditytL1.equals(CmFinoFIX.Commodity_Airtime)
 		        && bool_true.equals(p.getIsdefault())) {
 			return true;
@@ -559,7 +559,7 @@ public class PocketServiceImpl implements PocketService{
 	public Pocket createDefaultActivePocket(PocketTemplate pocketTemplate, SubscriberMdn subscriberMdn) {
 		Pocket pocket = new Pocket();
 
-		pocket.setPocketTemplate(pocketTemplate);
+		pocket.setPocketTemplateByPockettemplateid(pocketTemplate);
 		pocket.setSubscriberMdn(subscriberMdn);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
@@ -585,7 +585,7 @@ public class PocketServiceImpl implements PocketService{
 		PocketTemplateDAO ptDao = DAOFactory.getInstance().getPocketTemplateDao();
 		PocketTemplate pocketTemplate = ptDao.getById(pocketTemplateID);
 		Pocket pocket = new Pocket();
-		pocket.setPocketTemplate(pocketTemplate);
+		pocket.setPocketTemplateByPockettemplateid(pocketTemplate);
 		pocket.setSubscriberMdn(subscriberMDN);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
@@ -627,7 +627,7 @@ public class PocketServiceImpl implements PocketService{
 	public Pocket createPocket(PocketTemplate pocketTemplate,
 			SubscriberMdn subscriberMDN, Integer pocketstatus,boolean isDefault,String CardPan) {
 				Pocket pocket = new Pocket();
-		pocket.setPocketTemplate(pocketTemplate);
+		pocket.setPocketTemplateByPockettemplateid(pocketTemplate);
 		pocket.setSubscriberMdn(subscriberMDN);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(pocketstatus);
@@ -891,7 +891,7 @@ public class PocketServiceImpl implements PocketService{
 		Set<Pocket> pockets = subMdn.getPockets();
 		int count = 0;
 		for(Pocket pocket:pockets){
-			if(pocketTemplate.equals(pocket.getPocketTemplate())
+			if(pocketTemplate.equals(pocket.getPocketTemplateByPockettemplateid())
 					&&(CmFinoFIX.PocketStatus_Active.equals(pocket.getStatus())||CmFinoFIX.PocketStatus_Initialized.equals(pocket.getStatus()))){
 				count++;
 			}

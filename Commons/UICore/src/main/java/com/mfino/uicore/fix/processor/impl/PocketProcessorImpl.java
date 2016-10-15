@@ -852,20 +852,17 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setSubsMDN(thePocket.getSubscriberMdn().getMdn());
         }
 
-        if (null != thePocket.getCurrentbalance()) {
-            theEntries.setCurrentBalance(BigDecimal.valueOf(thePocket.getCurrentbalance()));
-        }
 
         Timestamp lastTransactionTime = thePocket.getLasttransactiontime();
         if (null != lastTransactionTime) {
             theEntries.setLastTransactionTime(lastTransactionTime);
         }
 
-        BigDecimal currentBalance = new BigDecimal(thePocket.getCurrentbalance());
+       /* BigDecimal currentBalance = new BigDecimal(thePocket.getCurrentbalance());
         if (null != currentBalance) {
             theEntries.setCurrentBalance(currentBalance);
         }
-
+*/
         BigDecimal currentDailyExpenditure = thePocket.getCurrentdailyexpenditure();
         if (null != currentDailyExpenditure) {
             theEntries.setCurrentDailyExpenditure(currentDailyExpenditure);

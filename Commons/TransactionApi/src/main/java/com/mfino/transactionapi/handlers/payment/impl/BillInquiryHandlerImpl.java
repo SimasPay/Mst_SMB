@@ -166,7 +166,7 @@ public class BillInquiryHandlerImpl extends FIXMessageHandler implements BillInq
 		
 		billInquiry.setSourceBankAccountNo(subPocket.getCardpan());
 		billInquiry.setSourcePocketID(subPocket.getId().longValue());
-		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(subPocket.getPocketTemplate().getBankaccountcardtype()))
+		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(subPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype()))
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 		
 		CFIXMsg response = super.process(billInquiry);

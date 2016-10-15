@@ -540,13 +540,13 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getActiveAccountType())) {
 			Pocket p = getDefaultPocket(mdn.getId().longValue(), CmFinoFIX.PocketType_BOBAccount, CmFinoFIX.Commodity_Airtime);
 			if (p != null) {
-				PocketTemplate old = p.getPocketTemplate();
+				PocketTemplate old = p.getPocketTemplateByPockettemplateid();
 				if (CmFinoFIX.BillingType_PrePaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(POSTPAID)) {
-					p.setPocketTemplate(cbossPostpaid);
+					p.setPocketTemplateByPockettemplateid(cbossPostpaid);
 					p.setPocketTemplateByOldpockettemplateid(cbossPrepaid);
 					p.setPockettemplatechangetime(new Timestamp());
 				} else if (CmFinoFIX.BillingType_PostPaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(PREPAID)) {
-					p.setPocketTemplate(cbossPrepaid);
+					p.setPocketTemplateByPockettemplateid(cbossPrepaid);
 					p.setPocketTemplateByOldpockettemplateid(cbossPostpaid);
 					p.setPockettemplatechangetime(new Timestamp());
 				} else if ((CmFinoFIX.BillingType_PrePaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(PREPAID)) || (CmFinoFIX.BillingType_PostPaid.equals(old.getBillingtype()) && subscriberSyncRecord.getActiveAccountType().equalsIgnoreCase(POSTPAID))) {
@@ -648,7 +648,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 	public void createPocket(PocketTemplate pTemplate, SubscriberMdn subMDN) {
 		Pocket pocket = new Pocket();
 		PocketDAO pocketDAO = daoFactory.getPocketDAO();
-		pocket.setPocketTemplate(pTemplate);
+		pocket.setPocketTemplateByPockettemplateid(pTemplate);
 		pocket.setSubscriberMdn(subMDN);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);

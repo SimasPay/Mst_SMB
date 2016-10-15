@@ -215,8 +215,8 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		result.setCardPan(sourcePocket.getCardpan());
 		result.setCardAlias(sourcePocket.getCardalias());
 		result.setLanguage((int)sourceMDN.getSubscriber().getLanguage());
-		result.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
-		if(!(sourcePocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_NFC)))
+		result.setBankCode(sourcePocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
+		if(!(sourcePocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_NFC)))
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NotNFCAccount);
 			return result;
@@ -229,8 +229,8 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 			return result;
 		}		
 
-		log.info("Pocket Type = " + sourcePocket.getPocketTemplate().getType());
-		result.setPocketDescription(sourcePocket.getPocketTemplate().getDescription());
+		log.info("Pocket Type = " + sourcePocket.getPocketTemplateByPockettemplateid().getType());
+		result.setPocketDescription(sourcePocket.getPocketTemplateByPockettemplateid().getDescription());
 
 		ServiceChargeTxnLog sctl;
 		Transaction transaction = null;
@@ -273,7 +273,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		}
 		
 		transactionsHistory.setPocketID(sourcePocket.getId().longValue());
-		transactionsHistory.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
+		transactionsHistory.setBankCode(sourcePocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
 		transactionsHistory.setServiceChargeTransactionLogID(sctl.getId().longValue());
 				
 		try {

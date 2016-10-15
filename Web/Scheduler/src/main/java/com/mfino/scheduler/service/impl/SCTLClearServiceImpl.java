@@ -429,7 +429,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 									&&txnInfo!=null
 									&&CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(txnInfo.getUnregisteredtxnstatus())){
 								txnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED));
-								txnInfo.setCashoutctid(ct.getId());
+								txnInfo.setCashoutctid(new BigDecimal(ct.getId()));
 								unRegisteredTxnInfoService.save(txnInfo);
 							}
 						} else if (CmFinoFIX.TransferStatus_Failed.intValue() == ct.getTransferstatus()) {
@@ -439,7 +439,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 										||CmFinoFIX.TransactionUICategory_Cashout_To_UnRegistered.equals(ct.getUicategory())){
 									transactionChargingService.failTheTransaction(sctl,enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, ct.getTransferfailurereason()));
 									if(txnInfo!=null){
-										txnInfo.setCashoutctid(ct.getId());
+										txnInfo.setCashoutctid(new BigDecimal(ct.getId()));
 										txnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
 										unRegisteredTxnInfoService.save(txnInfo);
 									}

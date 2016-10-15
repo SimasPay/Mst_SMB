@@ -347,7 +347,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		if(subPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
+		if(subPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 
 			if(!systemParametersService.getBankServiceStatus())	{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
@@ -512,7 +512,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 		billInquiry.setSourceCardPAN(billPayInquiry.getSourceBankAccountNo());
 		billInquiry.setAmount(billPayInquiry.getAmount());
 		
-		if (CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplate().getBankaccountcardtype())) {
+		if (CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
 			
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 			
@@ -521,7 +521,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Checking);
 		}
 		
-		if (CmFinoFIX.PocketType_LakuPandai.equals(srcPocket.getPocketTemplate().getType())) {
+		if (CmFinoFIX.PocketType_LakuPandai.equals(srcPocket.getPocketTemplateByPockettemplateid().getType())) {
 
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Lakupandai);
 		}

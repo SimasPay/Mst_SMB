@@ -179,7 +179,7 @@ public class PurchaseInquiryHandlerImpl extends FIXMessageHandler implements Pur
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		if(srcSubscriberPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||destMerchantPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
+		if(srcSubscriberPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)||destMerchantPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 			if(!systemParametersService.getBankServiceStatus())
 			{

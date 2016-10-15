@@ -70,7 +70,7 @@ public class SubscriberDAOTest extends TestCase {
         mdn1.setUpdatedby("dsd");
         mdn1.setWrongpincount(Integer.MAX_VALUE);
 
-        pocket.setPocketTemplate(pocktTemplateDAO.getById(3L));
+        pocket.setPocketTemplateByPockettemplateid(pocktTemplateDAO.getById(3L));
         pocket.setSubscriberMdn(mdn1);
         pocket.setStatustime(new Timestamp());
 

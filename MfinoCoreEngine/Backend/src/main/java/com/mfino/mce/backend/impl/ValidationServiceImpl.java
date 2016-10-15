@@ -141,9 +141,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return returnFix;
 		}
 				
-		if((CmFinoFIX.PocketType_SVA.intValue() == pocket.getPocketTemplate().getType()) ||
-				(CmFinoFIX.PocketType_NFC.intValue() == pocket.getPocketTemplate().getType()) ||
-				(CmFinoFIX.PocketType_LakuPandai.intValue() == pocket.getPocketTemplate().getType())){
+		if((CmFinoFIX.PocketType_SVA.intValue() == pocket.getPocketTemplateByPockettemplateid().getType()) ||
+				(CmFinoFIX.PocketType_NFC.intValue() == pocket.getPocketTemplateByPockettemplateid().getType()) ||
+				(CmFinoFIX.PocketType_LakuPandai.intValue() == pocket.getPocketTemplateByPockettemplateid().getType())){
 			log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() SVA Pocket");
 			
 			if(!isValidSVAPocketStatus(subscriber, pocket, isSource))
@@ -173,7 +173,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			
 			return returnFix;
 		}
-		else if(CmFinoFIX.PocketType_BankAccount.intValue() == pocket.getPocketTemplate().getType()){
+		else if(CmFinoFIX.PocketType_BankAccount.intValue() == pocket.getPocketTemplateByPockettemplateid().getType()){
 
 			log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() Bank Pocket#");
 
@@ -205,7 +205,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 					returnFix.setInternalErrorCode(NotificationCodes.DestinationBankAccountCardPANMissing.getInternalErrorCode());
 				}
 			}	
-			else if(pocket.getPocketTemplate().getBankcode() == null)
+			else if(pocket.getPocketTemplateByPockettemplateid().getBankcode() == null)
 			{
 				log.debug("ValidationServiceImpl :: validateBankAccountSubscriber() PocketTemplateBankCodeMissing");
 				if(isSource){
@@ -382,7 +382,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 							}	
 							else
 							{
-								if(isSource	&& defaultBobPocket.getPocketTemplate().getOperatorcode() == null)
+								if(isSource	&& defaultBobPocket.getPocketTemplateByPockettemplateid().getOperatorcode() == null)
 								{
 									log.debug("ValidationServiceImpl :: validateSubscriber() Operator code missing");
 									responseFix.setInternalErrorCode(NotificationCodes.PocketTemplateOperatorCodeMissing.getInternalErrorCode());
@@ -405,14 +405,14 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 
 		BackendResponse responseFix = createResponseObject();
 		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType()) && 
-				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplate().getType()) ) {
+				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplateByPockettemplateid().getType()) ) {
 			responseFix.setInternalErrorCode(null);
 		} else {
 			responseFix = validateRisksAndLimits(sourcePocket, debitAmount, true);
 		}
 		if(responseFix!=null && isNullorZero(responseFix.getInternalErrorCode())){
 			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType()) && 
-					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplate().getType())) ||
+					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplateByPockettemplateid().getType())) ||
 					(destSubscriberMdn.getMdn().equals(dummySubMdn))) {
 				responseFix.setInternalErrorCode(null);
 			} else {
@@ -441,21 +441,21 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return null;
 		}
 		
-		if(pocket.getPocketTemplate().getIscollectorpocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
-		if(pocket.getPocketTemplate().getIssuspencepocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
-		if(pocket.getPocketTemplate().getIssystempocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
@@ -496,7 +496,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			} 
 		}
 		
-		if(pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA){
+		if(pocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA){
 			if(null == pocket.getCurrentbalance()){
 				pocket.setCurrentbalance("0");
 			}
@@ -531,46 +531,46 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				notificationCode = NotificationCodes.ReceiverSVAPocketRestricted.getInternalErrorCode();
 			}
 		}
-		else if(isSource && (pocket.getPocketTemplate().getMintimebetweentransactions() > 0) && 
-				(pocket.getPocketTemplate().getMintimebetweentransactions()*1000 > (now.getTime() - pocket.getLasttransactiontime().getTime()))){
+		else if(isSource && (pocket.getPocketTemplateByPockettemplateid().getMintimebetweentransactions() > 0) && 
+				(pocket.getPocketTemplateByPockettemplateid().getMintimebetweentransactions()*1000 > (now.getTime() - pocket.getLasttransactiontime().getTime()))){
 			notificationCode = NotificationCodes.TransactionFailedDueToTimeLimitTransactionReached.getInternalErrorCode();
 		}
-		else if((pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_SVA || 
-				 pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_LakuPandai)
+		else if((pocket.getPocketTemplateByPockettemplateid().getType() ==	CmFinoFIX.PocketType_SVA || 
+				 pocket.getPocketTemplateByPockettemplateid().getType() ==	CmFinoFIX.PocketType_LakuPandai)
 				&& ledgerService.isImmediateUpdateRequiredForPocket(pocket)){
 			if(isSource){
-				if(((new BigDecimal(pocket.getCurrentbalance()).subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumstoredvalue())) == -1)){
+				if(((new BigDecimal(pocket.getCurrentbalance()).subtract(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)){
 					notificationCode = NotificationCodes.BalanceTooLow.getInternalErrorCode();
 				}
 			}
-			else if(((new BigDecimal(pocket.getCurrentbalance()).add(amount).compareTo(pocket.getPocketTemplate().getMaximumstoredvalue())) == 1)){
+			else if(((new BigDecimal(pocket.getCurrentbalance()).add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaximumstoredvalue())) == 1)){
 				notificationCode = NotificationCodes.BalanceTooHigh.getInternalErrorCode();
 			}
 		}
-		if(amount.compareTo(pocket.getPocketTemplate().getMaxamountpertransaction()) == 1){
+		if(amount.compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountpertransaction()) == 1){
 			notificationCode = NotificationCodes.TransferAmountAboveMaximumAllowed.getInternalErrorCode();
-			responseFix.setMaxTransactionLimit(pocket.getPocketTemplate().getMaxamountpertransaction());
+			responseFix.setMaxTransactionLimit(pocket.getPocketTemplateByPockettemplateid().getMaxamountpertransaction());
 		}
-		else if(amount.compareTo(pocket.getPocketTemplate().getMinamountpertransaction()) == -1){ 
+		else if(amount.compareTo(pocket.getPocketTemplateByPockettemplateid().getMinamountpertransaction()) == -1){ 
 			notificationCode = NotificationCodes.TransferAmountBelowMinimumAllowed.getInternalErrorCode();
-			responseFix.setMinTransactionLimit(pocket.getPocketTemplate().getMinamountpertransaction());
+			responseFix.setMinTransactionLimit(pocket.getPocketTemplateByPockettemplateid().getMinamountpertransaction());
 		}
-		else if(pocket.getCurrentdailytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionsperday()){
+		else if(pocket.getCurrentdailytxnscount()	>=	pocket.getPocketTemplateByPockettemplateid().getMaxtransactionsperday()){
 			notificationCode = NotificationCodes.AboveDailyTransactionsCountLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentweeklytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionsperweek()){
+		else if(pocket.getCurrentweeklytxnscount()	>=	pocket.getPocketTemplateByPockettemplateid().getMaxtransactionsperweek()){
 			notificationCode = NotificationCodes.AboveWeeklyTransactionsCountLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentmonthlytxnscount()	>=	pocket.getPocketTemplate().getMaxtransactionspermonth()){
+		else if(pocket.getCurrentmonthlytxnscount()	>=	pocket.getPocketTemplateByPockettemplateid().getMaxtransactionspermonth()){
 			notificationCode = NotificationCodes.AboveMonthlyTransactionsCountLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentdailyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountperday()) == 1){
+		else if(pocket.getCurrentdailyexpenditure().add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountperday()) == 1){
 			notificationCode = NotificationCodes.AboveDailyExpenditureLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentweeklyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountperweek()) == 1){
+		else if(pocket.getCurrentweeklyexpenditure().add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountperweek()) == 1){
 			notificationCode = NotificationCodes.AboveWeeklyExpenditureLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentmonthlyexpenditure().add(amount).compareTo(pocket.getPocketTemplate().getMaxamountpermonth()) == 1){
+		else if(pocket.getCurrentmonthlyexpenditure().add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountpermonth()) == 1){
 			notificationCode = NotificationCodes.AboveMonthlyExpenditureLimit.getInternalErrorCode();
 		}
 	
@@ -599,10 +599,10 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		else if (destPocket.getRestrictions() != 0) {
 			notificationCode = NotificationCodes.ReceiverSVAPocketRestricted.getInternalErrorCode();
 		}
-		else if((srcPocket.getPocketTemplate().getType()	==	CmFinoFIX.PocketType_SVA ||
-				 srcPocket.getPocketTemplate().getType()==	CmFinoFIX.PocketType_LakuPandai) 
+		else if((srcPocket.getPocketTemplateByPockettemplateid().getType()	==	CmFinoFIX.PocketType_SVA ||
+				 srcPocket.getPocketTemplateByPockettemplateid().getType()==	CmFinoFIX.PocketType_LakuPandai) 
 				&& ledgerService.isImmediateUpdateRequiredForPocket(srcPocket)) {
-			if(((new BigDecimal(srcPocket.getCurrentbalance()).subtract(amount).compareTo(srcPocket.getPocketTemplate().getMinimumstoredvalue())) == -1)) {
+			if(((new BigDecimal(srcPocket.getCurrentbalance()).subtract(amount).compareTo(srcPocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)) {
 				notificationCode = NotificationCodes.BalanceTooLow.getInternalErrorCode();
 			}
 		}
@@ -624,7 +624,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return null;
 		}
 		
-		if(pocket.getPocketTemplate().getIscollectorpocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1){
 			responseFix.setInternalErrorCode(null);
 			pocket.setLasttransactiontime(now);
 			return responseFix;
@@ -643,11 +643,11 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				notificationCode = NotificationCodes.ReceiverSVAPocketRestricted.getInternalErrorCode();
 			}
 		}
-		else if(isSource && (pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_SVA || 
-				             pocket.getPocketTemplate().getType() ==	CmFinoFIX.PocketType_LakuPandai)
+		else if(isSource && (pocket.getPocketTemplateByPockettemplateid().getType() ==	CmFinoFIX.PocketType_SVA || 
+				             pocket.getPocketTemplateByPockettemplateid().getType() ==	CmFinoFIX.PocketType_LakuPandai)
 				&& ledgerService.isImmediateUpdateRequiredForPocket(pocket)) 
 		{
-			if(((new BigDecimal(pocket.getCurrentbalance()).subtract(amount).compareTo(pocket.getPocketTemplate().getMinimumstoredvalue())) == -1)) 
+			if(((new BigDecimal(pocket.getCurrentbalance()).subtract(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)) 
 			{
 				notificationCode = NotificationCodes.BalanceTooLow.getInternalErrorCode();
 			}
@@ -681,17 +681,17 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			log.info("pct with ID="+pct.getId()+" invalidated.Supplied destpocket with ID="+destinationPocket.getId()+" pct destpocketid="+pct.getDestpocketid() +" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferRecordNotFound.getInternalErrorCode());
 			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
-		}else if((sourcePocket != null) && (CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplate().getType()) || 
-				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplate().getType())) 
+		}else if((sourcePocket != null) && (CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType()) || 
+				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType())) 
 				&& ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)
-				&&((new BigDecimal(sourcePocket.getCurrentbalance()).subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplate().getMinimumstoredvalue())) == -1)){
+				&&((new BigDecimal(sourcePocket.getCurrentbalance()).subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)){
 			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be below the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooLow.getInternalErrorCode());
 					pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));
 					pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooLow));
-		}else if((destinationPocket != null) && (CmFinoFIX.PocketType_SVA.equals(destinationPocket.getPocketTemplate().getType()) ||
-				CmFinoFIX.PocketType_LakuPandai.equals(destinationPocket.getPocketTemplate().getType()))
-				&&((new BigDecimal(destinationPocket.getCurrentbalance()).add(pct.getAmount()).compareTo(destinationPocket.getPocketTemplate().getMaximumstoredvalue())) == 1)){
+		}else if((destinationPocket != null) && (CmFinoFIX.PocketType_SVA.equals(destinationPocket.getPocketTemplateByPockettemplateid().getType()) ||
+				CmFinoFIX.PocketType_LakuPandai.equals(destinationPocket.getPocketTemplateByPockettemplateid().getType()))
+				&&((new BigDecimal(destinationPocket.getCurrentbalance()).add(pct.getAmount()).compareTo(destinationPocket.getPocketTemplateByPockettemplateid().getMaximumstoredvalue())) == 1)){
 			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be above the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooHigh.getInternalErrorCode());
 			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));//change it destination pocket limits
@@ -706,10 +706,10 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	public BackendResponse validatePctForSourcePocketBalance(PendingCommodityTransfer pct,Pocket sourcePocket) {
 		BackendResponse responseFix = createResponseObject();
 		
-		if((CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplate().getType()) || 
-				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplate().getType()))
+		if((CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType()) || 
+				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType()))
 			&& ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)
-			&&((new BigDecimal(sourcePocket.getCurrentbalance()).subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplate().getMinimumstoredvalue())) == -1)){
+			&&((new BigDecimal(sourcePocket.getCurrentbalance()).subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)){
 			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be below the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooLow.getInternalErrorCode());
 			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));

@@ -350,7 +350,7 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)||destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 			if(!systemParametersService.getBankServiceStatus())
 			{

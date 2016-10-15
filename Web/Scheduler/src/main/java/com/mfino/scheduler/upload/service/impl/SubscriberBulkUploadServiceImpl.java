@@ -387,7 +387,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			//the default group will be used in calculating of pocket templates.
 			Long groupID = defaultGroup.getId().longValue(); 
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
 			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
@@ -413,14 +413,14 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 				return response;
 			}
 			
-			if (emoneyPocket.getPocketTemplate().equals(upgradeTemplate)) {
+			if (emoneyPocket.getPocketTemplateByPockettemplateid().equals(upgradeTemplate)) {
 				response.setErrorCode(SubscriberSyncErrors.PocketAlreadyUpgraded);
 				response.setErrorDescription("Pocket already upgraded");
 				log.error("Pocket already upgraded");
 				return response;
 			}
-			emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplate());
-			emoneyPocket.setPocketTemplate(upgradeTemplate);
+			emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplateByPockettemplateid());
+			emoneyPocket.setPocketTemplateByPockettemplateid(upgradeTemplate);
 			emoneyPocket.setPockettemplatechangedby(userName);
 			emoneyPocket.setPockettemplatechangetime(new Timestamp());
 			
@@ -620,7 +620,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		}
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -693,8 +693,8 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 					if(unregPocketTempId>0){
 						Pocket emoney = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), unregPocketTempId);
 						if(emoney!=null&&emoney.getStatus()==(CmFinoFIX.PocketStatus_OneTimeActive)){
-							emoney.setPocketTemplateByOldpockettemplateid(emoney.getPocketTemplate());
-							emoney.setPocketTemplate(eMoneyPocketTemplate);
+							emoney.setPocketTemplateByOldpockettemplateid(emoney.getPocketTemplateByPockettemplateid());
+							emoney.setPocketTemplateByPockettemplateid(eMoneyPocketTemplate);
 							emoney.setPockettemplatechangedby(uploadedBy);
 							emoney.setStatus(CmFinoFIX.PocketStatus_Initialized);
 							emoney.setStatustime(new Timestamp());

@@ -31,7 +31,7 @@ public class MerchantCheckBalanceXMLResult extends XMLResult {
 
 				getXmlWriter().writeStartElement("commodityType");
 				getXmlWriter().writeCharacters(
-				        enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, pocket.getPocketTemplate().getCommodity()),false);
+				        enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, pocket.getPocketTemplateByPockettemplateid().getCommodity()),false);
 				getXmlWriter().writeEndElement();
 
 				getXmlWriter().writeStartElement("balance");

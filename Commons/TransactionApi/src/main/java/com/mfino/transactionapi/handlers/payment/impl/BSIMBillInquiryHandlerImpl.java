@@ -218,7 +218,7 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		}
-		if(subPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
+		if(subPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)||agentPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 
 			if(!systemParametersService.getBankServiceStatus())
@@ -230,7 +230,7 @@ public class BSIMBillInquiryHandlerImpl extends FIXMessageHandler implements BSI
 		billInquiry.setNarration("online");
 		billInquiry.setSourceBankAccountNo(srcPocket.getCardpan());
 		billInquiry.setSourcePocketID(srcPocket.getId().longValue());
-		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplate().getBankaccountcardtype()))
+		if(CmFinoFIX.BankAccountCardType_SavingsAccount.equals(srcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype()))
 	    billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 		billInquiry.setDestPocketID(agentPocket.getId().longValue());
 		billInquiry.setDestMDN(agentmdn.getMdn());

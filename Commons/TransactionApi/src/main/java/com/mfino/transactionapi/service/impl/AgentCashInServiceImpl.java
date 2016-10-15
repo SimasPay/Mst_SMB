@@ -189,7 +189,7 @@ public class AgentCashInServiceImpl extends FIXMessageHandler implements AgentCa
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
-			if(CmFinoFIX.PocketType_BankAccount.equals(agentPocket.getPocketTemplate().getType())){
+			if(CmFinoFIX.PocketType_BankAccount.equals(agentPocket.getPocketTemplateByPockettemplateid().getType())){
 				log.error("Agent service has bank pocket as outgoing pocket. Cash-in to agent cannot be done");
 				errorMsg.setErrorDescription(MessageText._("Agent service has bank pocket as outgoing pocket. Cash-in to agent cannot be done"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);

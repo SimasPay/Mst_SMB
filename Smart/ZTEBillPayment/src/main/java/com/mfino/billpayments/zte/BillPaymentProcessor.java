@@ -145,7 +145,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 
 			IntegrationSummaryDao isdao = getCoreDataWrapper().getIntegrationSummaryDao();
 			IntegrationSummary isummary = new IntegrationSummary();
-			isummary.setSctlid(new BigDecimal(sctlID));
+			isummary.setSctlid(sctlID);
 			isummary.setReconcilationid1(transactionID);
 			isdao.save(isummary);
 		}
@@ -177,7 +177,7 @@ public class BillPaymentProcessor implements ZteProcessor {
 		}
 		else{
 			iSummary = new IntegrationSummary();
-			iSummary.setSctlid(new BigDecimal(sctlId));
+			iSummary.setSctlid(sctlId);
 			iSummary.setReconcilationid2(de39);
 		}
 

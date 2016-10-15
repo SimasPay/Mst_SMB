@@ -150,7 +150,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		SettlementTxnLog settlementTransactionLog = new SettlementTxnLog();
 		settlementTransactionLog.setMspid(BigDecimal.valueOf(1L));
 		settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.INITIALIZED.getTransferStatus()));
-		settlementTransactionLog.setPartnerservicesid(partnerService.getId());
+		settlementTransactionLog.setPartnerservicesid(new BigDecimal(partnerService.getId()));
 		settlementTransactionLog.setAmount(ZERO);
 		settlementTransactionLog.setDescription("");
 		
@@ -198,7 +198,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		
 		log.info("PartnerSettlementService :: doSettlement() Settlement Config ID="+settlementConfig.getId());
 		
-		settlementTransactionLog.setServicesettlementconfigid(settlementConfig.getId());
+		settlementTransactionLog.setServicesettlementconfigid(new BigDecimal(settlementConfig.getId()));
 		settlementPocket = settlementConfig.getSettlementTemplate().getPocket();
 		
 		//For CutoffTime
@@ -213,14 +213,14 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			return;
 		} else{
-			if(!(collectorPocket.getPocketTemplate().getCommodity()==(CmFinoFIX.Commodity_Money))){
+			if(!(collectorPocket.getPocketTemplateByPockettemplateid().getCommodity()==(CmFinoFIX.Commodity_Money))){
 				log.info("PartnerSettlementService :: doSettlement() Collector pocket commodity type should be money");
 				settlementTransactionLog.setResponse("Collector pocket commodity type should be money");
 				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
 				settlementTransactionLogsService.save(settlementTransactionLog);
 				return;
 			}
-			if(!(collectorPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA))){
+			if(!(collectorPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA))){
 				log.info("PartnerSettlementService :: doSettlement() Collector pocket type should be SVA");				
 				settlementTransactionLog.setResponse("Collector pocket type should be SVA");
 				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
@@ -236,7 +236,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			settlementTransactionLogsService.save(settlementTransactionLog);
 			return;
 		} else{
-			if(!(settlementPocket.getPocketTemplate().getCommodity()==(CmFinoFIX.Commodity_Money))){
+			if(!(settlementPocket.getPocketTemplateByPockettemplateid().getCommodity()==(CmFinoFIX.Commodity_Money))){
 				log.info("PartnerSettlementService :: doSettlement() Settlement pocket commodity type should be money");
 				settlementTransactionLog.setResponse("Settlement pocket commodity type should be money");
 				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
@@ -244,8 +244,8 @@ public class SettlementHandlerImpl implements SettlementHandler{
 				return;
 			}
 			//Settlement Pocket could be either an Emoney or a Bank Account			
-			if(!(settlementPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))&&
-					!((settlementPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)))){
+			if(!(settlementPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))&&
+					!((settlementPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)))){
 				log.info("PartnerSettlementService :: doSettlement() Settlement pocket type should be Bank or SVA Account");
 				settlementTransactionLog.setResponse("Settlement pocket type should be Bank or SVA Account");
 				settlementTransactionLog.setTransferstatus(Long.valueOf(TransferStatus.VALIDATION_FAILED.getTransferStatus()));
@@ -254,9 +254,9 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			}
 		}
 		
-//		Long minimumBalance = collectorPocket.getPocketTemplate().getMinimumStoredValue() == null ? 0 : collectorPocket.getPocketTemplate().getMinimumStoredValue();
+//		Long minimumBalance = collectorPocket.getPocketTemplateByPockettemplateid().getMinimumStoredValue() == null ? 0 : collectorPocket.getPocketTemplateByPockettemplateid().getMinimumStoredValue();
 //		Long settlementAmount = 0L; 
-		BigDecimal minimumBalance = collectorPocket.getPocketTemplate().getMinimumstoredvalue() == null ? ZERO : collectorPocket.getPocketTemplate().getMinimumstoredvalue();
+		BigDecimal minimumBalance = collectorPocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue() == null ? ZERO : collectorPocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue();
 
 		//BigDecimal pendingAmount = getPendingAmount(partner.getID(), collectorPocket);
 		BigDecimal pendingAmount = getPendingAmount(partner.getId().longValue(), collectorPocket, stlID, stID);
@@ -315,7 +315,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		
 		try{
 			sctl.setCalculatedcharge(BigDecimal.ZERO);
-			sctl.setChannelcodeid(cc.getId());
+			sctl.setChannelcodeid(new BigDecimal(cc.getId()));
 			sctl.setSourcemdn(settlementFixMessage.getSourceMDN());
 			sctl.setDestmdn(settlementFixMessage.getSourceMDN());
 			sctl.setServiceid(BigDecimal.valueOf(transactionChargingService.getServiceId(settlementFixMessage.getServiceName())));
@@ -323,8 +323,8 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Processing);
 			sctl.setTransactionamount(settlementFixMessage.getAmount());
 			sctl.setTransactiontypeid(BigDecimal.valueOf(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_CHARGE_SETTLEMENT)));
-			sctl.setTransactionid(transactionsLog.getId());
-			sctl.setDestpartnerid(partner.getId());
+			sctl.setTransactionid(new BigDecimal(transactionsLog.getId()));
+			sctl.setDestpartnerid(new BigDecimal(partner.getId()));
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			return;
@@ -346,7 +346,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		stsm.setServiceChargeTxnLog(sctl);
 		stsm.setSettlementTxnLog(settlementTransactionLog);
         MfinoServiceProvider msp = mfinoServiceProviderService.getMFSPbyID(1);
-        stsm.setMspid(msp.getId());
+        stsm.setMspid(new BigDecimal(msp.getId()));
 		
 		if(settlementAmount != null){
 			settlementTransactionLog.setAmount(settlementAmount);

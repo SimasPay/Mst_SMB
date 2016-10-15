@@ -199,7 +199,7 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 		
 		try{
 			sctl.setCalculatedcharge(BigDecimal.ZERO);
-			sctl.setChannelcodeid(chanelCode.getId());
+			sctl.setChannelcodeid(new BigDecimal(chanelCode.getId()));
 			sctl.setSourcemdn(transferInquiry.getSourceMDN());
 			sctl.setDestmdn(transferInquiry.getSourceMDN());
 			sctl.setServiceid(BigDecimal.valueOf(transactionChargingService.getServiceId(transferInquiry.getServiceName())));
@@ -207,7 +207,7 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Processing);
 			sctl.setTransactionamount(transferInquiry.getAmount());
 			sctl.setTransactiontypeid(BigDecimal.valueOf(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_FUNDREIMBURSE)));
-			sctl.setTransactiontypeid(transactionsLog.getId());
+			sctl.setTransactiontypeid(new BigDecimal(transactionsLog.getId()));
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			result[0]=CmFinoFIX.NotificationCode_ServiceNotAvailable.toString();

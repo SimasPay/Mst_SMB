@@ -30,7 +30,7 @@ public class SubscriberServiceTest extends TestCase {
         SubscriberMdn sub = mock(SubscriberMdn.class);
         Pocket p = mock(Pocket.class);
         PocketTemplate template = mock(PocketTemplate.class);
-        when(p.getPocketTemplate()).thenReturn(template);
+        when(p.getPocketTemplateByPockettemplateid()).thenReturn(template);
         when(p.getStatus()).thenReturn(CmFinoFIX.PocketStatus_Active.longValue());
         when(template.getType()).thenReturn(CmFinoFIX.PocketType_BOBAccount.longValue());
         HashSet<Pocket> pockets = new HashSet<Pocket>();

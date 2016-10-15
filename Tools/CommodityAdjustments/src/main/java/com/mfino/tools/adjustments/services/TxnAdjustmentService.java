@@ -182,7 +182,7 @@ public class TxnAdjustmentService {
 			Pocket pocket = pocketDAO.getById(pocketID);
 			if(pocket!=null)
 			{
-				PocketTemplate pocketTemplate = pocket.getPocketTemplate();
+				PocketTemplate pocketTemplate = pocket.getPocketTemplateByPockettemplateid();
 
 				return (pocketTemplate.getIssuspencepocket() != null && pocketTemplate.getIssuspencepocket() != 0);
 			}

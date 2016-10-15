@@ -38,7 +38,7 @@ public class BackendUtil {
 		if(messageType != null){
 			if(requestFix instanceof CMDSTVPaymentInquiry)
 			{
-				if(sourcePocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue())
+				if(sourcePocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA.intValue())
 				{
 					uiCategory = CmFinoFIX.TransactionUICategory_Bill_Payment_Emoney;
 				}
@@ -59,15 +59,15 @@ public class BackendUtil {
 				else if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(sourceMsg)) {
 					uiCategory = CmFinoFIX.TransactionUICategory_Settle_Bulk_Transfer;
 				}
-				else if(sourcePocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_SVA.intValue() && 
-						destinationPocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_BankAccount.intValue()){
-					if(((destinationPocket.getPocketTemplate().getAllowance() & CmFinoFIX.PocketAllowance_MerchantDompet) == 1) ||
+				else if(sourcePocket.getPocketTemplateByPockettemplateid().getType()== CmFinoFIX.PocketType_SVA.intValue() && 
+						destinationPocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_BankAccount.intValue()){
+					if(((destinationPocket.getPocketTemplateByPockettemplateid().getAllowance() & CmFinoFIX.PocketAllowance_MerchantDompet) == 1) ||
 							CmFinoFIX.MessageType_PurchaseInquiry == messageType.intValue() || 
 							CmFinoFIX.MessageType_Purchase == messageType.intValue()) 
 					{
 						uiCategory = CmFinoFIX.TransactionUICategory_EMoney_Purchase;
 					} 
-					else if(((destinationPocket.getPocketTemplate().getAllowance() & CmFinoFIX.PocketAllowance_CashOutDompet) == 1) ||
+					else if(((destinationPocket.getPocketTemplateByPockettemplateid().getAllowance() & CmFinoFIX.PocketAllowance_CashOutDompet) == 1) ||
 							CmFinoFIX.MessageType_CashOutInquiry == messageType.intValue() ||
 							CmFinoFIX.MessageType_CashOut == messageType.intValue()) 
 					{
@@ -78,8 +78,8 @@ public class BackendUtil {
 						uiCategory = CmFinoFIX.TransactionUICategory_EMoney_Dompet_Trf;
 					}
 				} 
-				else if((sourcePocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue()) && 
-						(destinationPocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue())) 
+				else if((sourcePocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA.intValue()) && 
+						(destinationPocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA.intValue())) 
 				{
 					if (CmFinoFIX.MessageType_CashInInquiry == messageType.intValue() ||
 							CmFinoFIX.MessageType_CashIn == messageType.intValue()) 
@@ -96,10 +96,10 @@ public class BackendUtil {
 						uiCategory = CmFinoFIX.TransactionUICategory_EMoney_EMoney_Trf;
 					}
 				} 
-				else if((sourcePocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_BankAccount.intValue()) && 
-						(destinationPocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_SVA.intValue())) 
+				else if((sourcePocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_BankAccount.intValue()) && 
+						(destinationPocket.getPocketTemplateByPockettemplateid().getType()== CmFinoFIX.PocketType_SVA.intValue())) 
 				{
-					if(((sourcePocket.getPocketTemplate().getAllowance() & CmFinoFIX.PocketAllowance_CashInDompet) == 1) ||
+					if(((sourcePocket.getPocketTemplateByPockettemplateid().getAllowance() & CmFinoFIX.PocketAllowance_CashInDompet) == 1) ||
 							CmFinoFIX.MessageType_CashInInquiry == messageType.intValue() ||
 							CmFinoFIX.MessageType_CashIn == messageType.intValue()) 
 					{
@@ -129,7 +129,7 @@ public class BackendUtil {
 	}
 	
 	public static void setPocketLimits(Pocket pocket, BigDecimal transactionAmount){
-		if(!((pocket.getPocketTemplate().getIscollectorpocket()==1) || (pocket.getPocketTemplate().getIssuspencepocket()==1) || (pocket.getPocketTemplate().getIssystempocket()==1) )){
+		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1) )){
 			pocket.setCurrentdailyexpenditure(pocket.getCurrentdailyexpenditure().add(transactionAmount));
 			pocket.setCurrentdailytxnscount(pocket.getCurrentdailytxnscount() + 1);
 			pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().add(transactionAmount));
@@ -160,7 +160,7 @@ public class BackendUtil {
 		
 		long mod = diffMilliSecs / milliSecsForDay;
 
-		if(!((pocket.getPocketTemplate().getIscollectorpocket()==1) || (pocket.getPocketTemplate().getIssuspencepocket()==1) || (pocket.getPocketTemplate().getIssystempocket()==1) )){
+		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1) )){
 			if(mod <= 30){
 				//Within a month
 				pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().subtract(transactionAmount));

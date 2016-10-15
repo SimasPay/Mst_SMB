@@ -167,7 +167,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 				return result;
 			}
 
-			if(srcSubscriberPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
+			if(srcSubscriberPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))
 			{
 				if(!systemParametersService.getBankServiceStatus())
 				{

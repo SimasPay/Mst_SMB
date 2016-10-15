@@ -239,8 +239,8 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
 			return result;
 		}
-		if(destSubscriberPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount) || 
-				srcAgentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
+		if(destSubscriberPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount) || 
+				srcAgentPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 			if(!systemParametersService.getBoolean("SystemParameterKeys.BANK_SERVICE_STATUS"))
 			{

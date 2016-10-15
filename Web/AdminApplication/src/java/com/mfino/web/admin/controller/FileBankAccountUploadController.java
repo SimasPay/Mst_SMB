@@ -236,7 +236,7 @@ public class FileBankAccountUploadController {
 								Pocket newPocket = new Pocket();
 								newPocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
 								newPocket.setStatustime(new Timestamp());
-								newPocket.setPocketTemplate(bankAccountTemplate);
+								newPocket.setPocketTemplateByPockettemplateid(bankAccountTemplate);
 								newPocket.setCardpan(bankAccount);
 								newPocket.setIsdefault((short)1);
 								newPocket.setSubscriberMdn(mdnResults.get(0));
@@ -255,7 +255,7 @@ public class FileBankAccountUploadController {
 							}
 							Pocket oldPocket = null;
 							for(Pocket pocket: pockets){
-								PocketTemplate template = pocket.getPocketTemplate();
+								PocketTemplate template = pocket.getPocketTemplateByPockettemplateid();
 								// *FindbugsChange*
 					        	// Previous -- if(template!=null && (bankAccountTemplate.getID() == (template.getID()))){
 								if(bankAccountTemplate.getId().equals(template.getId())){

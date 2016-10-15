@@ -968,7 +968,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		String processingCodePrefix = billPayrevtobank.getProcessingCode();
 		log.info("BillPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
 		if(sourcePocket!=null){
-			pocketTemplate = sourcePocket.getPocketTemplate();
+			pocketTemplate = sourcePocket.getPocketTemplateByPockettemplateid();
 			pocketTempType = pocketTemplate.getBankaccountcardtype().intValue();
 			if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
 				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;
@@ -1080,7 +1080,7 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		String processingCodePrefix = "50";
 		log.info("QRPaymentReversalToBankProcessor :: process appending processing Code Prefix as :"+processingCodePrefix);
 		if(sourcePocket!=null){
-			pocketTemplate = sourcePocket.getPocketTemplate();
+			pocketTemplate = sourcePocket.getPocketTemplateByPockettemplateid();
 			pocketTempType = pocketTemplate.getBankaccountcardtype().intValue();
 			if(pocketTempType.equals(CmFinoFIX.BankAccountCardType_SavingsAccount)){
 				defaultDE3=processingCodePrefix+CmFinoFIX.BankAccountCardType_SavingsAccount.toString()+"00"; ;

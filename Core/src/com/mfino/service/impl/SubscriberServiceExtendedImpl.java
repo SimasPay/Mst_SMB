@@ -272,7 +272,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					while (pocketIterator.hasNext()) {
 						pocket = pocketIterator.next();
 						if (pocket
-								.getPocketTemplate()
+								.getPocketTemplateByPockettemplateid()
 								.getId()
 								.equals(systemParametersService
 										.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
@@ -280,7 +280,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						}
 					}
 					if (pocket != null) {
-						pocket.setPocketTemplate(emoneyTemplate);
+						pocket.setPocketTemplateByPockettemplateid(emoneyTemplate);
 						pocket.setStatus(pocketStatus);
 						pocketDao.save(pocket);
 						return CmFinoFIX.ResponseCode_Success;
@@ -674,7 +674,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				if (pockets.size() == 1) {
 					Pocket pocket = pockets.iterator().next();
 					if (pocket != null) {
-						pocket.setPocketTemplate(svaPocketTemplate);
+						pocket.setPocketTemplateByPockettemplateid(svaPocketTemplate);
 						pocket.setStatus(CmFinoFIX.PocketStatus_Active);
 						pocketDao.save(pocket);
 						return CmFinoFIX.ResponseCode_Success;
@@ -873,7 +873,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					while (pocketIterator.hasNext()) {
 						pocket = pocketIterator.next();
 						if (pocket
-								.getPocketTemplate()
+								.getPocketTemplateByPockettemplateid()
 								.getId()
 								.equals(systemParametersService
 										.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED))) {
@@ -881,7 +881,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						}
 					}
 					if (pocket != null) {
-						pocket.setPocketTemplate(emoneyTemplate);
+						pocket.setPocketTemplateByPockettemplateid(emoneyTemplate);
 						pocket.setStatus(pocketStatus);
 						pocketDao.save(pocket);
 						return CmFinoFIX.ResponseCode_Success;
@@ -1130,10 +1130,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		
 		for (Pocket pocket : pockets) {
-			Long tempPocketTemplateL = pocket.getPocketTemplate().getType();
+			Long tempPocketTemplateL = pocket.getPocketTemplateByPockettemplateid().getType();
 			Integer tempPocketTemplateLI = tempPocketTemplateL.intValue();
 			
-			Long tempPocketSTatusL = pocket.getPocketTemplate().getType();
+			Long tempPocketSTatusL = pocket.getPocketTemplateByPockettemplateid().getType();
 			Integer tempPocketSTatusLI = tempPocketSTatusL.intValue();
 			
 			if (!bankPocketFound
@@ -1159,7 +1159,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				continue;
 			}			
 			
-			Long tempPocketComodityL = pocket.getPocketTemplate().getCommodity();
+			Long tempPocketComodityL = pocket.getPocketTemplateByPockettemplateid().getCommodity();
 			Integer tempPocketComodityLI = tempPocketComodityL.intValue();
 			
 			if (!emoneyPocketFound
@@ -1170,7 +1170,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					&& (tempPocketSTatusLI.equals(
 							CmFinoFIX.PocketStatus_Initialized) || tempPocketSTatusLI.equals(CmFinoFIX.PocketStatus_Active))
 					&& pocket
-							.getPocketTemplate()
+							.getPocketTemplateByPockettemplateid()
 							.getId()
 							.equals(svaPocketTemplate.getId())) {
 				emoneyPocketFound = true;
@@ -1222,7 +1222,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (pocketList.size() > 0) {
 				emoneyPocket = pocketList.get(0);
 				subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-				emoneyPocket.setPocketTemplate(svaPocketTemplate);
+				emoneyPocket.setPocketTemplateByPockettemplateid(svaPocketTemplate);
 				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				emoneyPocket.setActivationtime(new Timestamp());
 				emoneyPocket.setIsdefault((short) Boolean.compare(true, false));
@@ -1566,7 +1566,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		
 		for (Pocket pocket : pockets) {
-			Long pocketTypeL = pocket.getPocketTemplate().getType();
+			Long pocketTypeL = pocket.getPocketTemplateByPockettemplateid().getType();
 			Integer pocketTypeLI = pocketTypeL.intValue();
 			
 			Long pocketStatusL = pocket.getStatus();

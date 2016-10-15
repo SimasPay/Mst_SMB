@@ -205,17 +205,17 @@ public class MfinoUtil {
 	public static String getPocketDisplayText(Pocket pocket) {
 		String result = "";
 		if (pocket != null) {
-			if (StringUtils.isNotBlank(pocket.getCardpan()) && pocket.getPocketTemplate() != null) {
+			if (StringUtils.isNotBlank(pocket.getCardpan()) && pocket.getPocketTemplateByPockettemplateid() != null) {
 				String cPan = pocket.getCardpan();
-				Long temp = pocket.getPocketTemplate().getCardpansuffixlength() != null ? pocket.getPocketTemplate().getCardpansuffixlength() : 6;
+				Long temp = pocket.getPocketTemplateByPockettemplateid().getCardpansuffixlength() != null ? pocket.getPocketTemplateByPockettemplateid().getCardpansuffixlength() : 6;
 				int cardpanSuffixlength = temp.intValue();
 				if (cPan.length() > cardpanSuffixlength) {
 					cPan = cPan.substring(cPan.length() - cardpanSuffixlength);
 				}
-				result = pocket.getPocketTemplate().getDescription() + " - " + cPan;
+				result = pocket.getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan;
 			}
-			else if (pocket.getPocketTemplate() != null) {
-				result = pocket.getPocketTemplate().getDescription();
+			else if (pocket.getPocketTemplateByPockettemplateid() != null) {
+				result = pocket.getPocketTemplateByPockettemplateid().getDescription();
 			}
 		}
 		return result;

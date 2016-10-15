@@ -176,7 +176,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
  			
 				for (Pocket pocket : pockets) {
 					if (!bankPocketFound 
-							&& pocket.getPocketTemplate().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())
+							&& pocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())
 							&& pocket.getCardpan() != null
 							&& (pocket.getStatus() == (CmFinoFIX.PocketStatus_Active.longValue()) || 
 								pocket.getStatus() == (CmFinoFIX.PocketStatus_Initialized.longValue()))) {

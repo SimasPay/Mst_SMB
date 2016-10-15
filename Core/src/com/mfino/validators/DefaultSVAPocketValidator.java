@@ -54,8 +54,8 @@ public class DefaultSVAPocketValidator implements IValidator {
 		}
 
 		for (Pocket pocket : pocketSet) {
-			if (pocket.getPocketTemplate() != null) {
-				PocketTemplate pTemplate = pocket.getPocketTemplate();
+			if (pocket.getPocketTemplateByPockettemplateid() != null) {
+				PocketTemplate pTemplate = pocket.getPocketTemplateByPockettemplateid();
 				
 				Long tempTypeL = pTemplate.getType();
 				Integer tempTypeLI = tempTypeL.intValue();
@@ -83,7 +83,7 @@ public class DefaultSVAPocketValidator implements IValidator {
 		{
 			return CmFinoFIX.NotificationCode_SenderSVAPocketRestricted;
 		}
-		if (defaultSVAPocket.getPocketTemplate().getOperatorcode() == null) {
+		if (defaultSVAPocket.getPocketTemplateByPockettemplateid().getOperatorcode() == null) {
 			return CmFinoFIX.NotificationCode_PocketTemplateOperatorCodeMissing;
 		}
 		return CmFinoFIX.ResponseCode_Success;

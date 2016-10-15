@@ -153,7 +153,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 		}
 
 		ssLog.setMspid(BigDecimal.valueOf(1L));
-		ssLog.setPartnerservicesid(partnerService.getId());
+		ssLog.setPartnerservicesid(new BigDecimal(partnerService.getId()));
 		ssLog.setIsscheduled((short)0);
 
 		Set<ServiceSettlementCfg> settlementConfigs = partnerService.getServiceSettlementCfgs();
@@ -179,7 +179,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			return ssLog;
 		}
 
-		ssLog.setServicesettlementconfigid(settlementConfig.getId());
+		ssLog.setServicesettlementconfigid(new BigDecimal(settlementConfig.getId()));
 
 		SettlementTemplate settlementTemplate = settlementConfig.getSettlementTemplate();
 
@@ -206,7 +206,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 			}else{
 				log.info("Similar Settlement Config is already scheduled:"+similarConfig.getId()+" for PartnerService:"+partnerService.getId());
 				settlementConfig.setSchedulerstatus(Long.valueOf(CmFinoFIX.SchedulerStatus_SimilarConfigScheduled));
-				settlementConfig.setSimilarconfigid(similarConfig.getId());
+				settlementConfig.setSimilarconfigid(new BigDecimal(similarConfig.getId()));
 				serviceSettlementConfigCoreService.save(settlementConfig);
 				
 				ssLog.setReasontext("Similar Settlement already scheduled");

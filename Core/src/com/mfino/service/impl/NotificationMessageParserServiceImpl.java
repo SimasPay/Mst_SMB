@@ -303,14 +303,14 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 		notificationBuilder.append("881");
                 	}
                 } else if (CmFinoFIX.NotificationVariables_MinimumTransactionAmountLimit.equals(notificationVariable)) {
-                    if (sourcePocket != null && sourcePocket.getPocketTemplate() != null && sourcePocket.getPocketTemplate().getMinamountpertransaction() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMinamountpertransaction());
+                    if (sourcePocket != null && sourcePocket.getPocketTemplateByPockettemplateid() != null && sourcePocket.getPocketTemplateByPockettemplateid().getMinamountpertransaction() != null) {
+                        notificationBuilder.append(sourcePocket.getPocketTemplateByPockettemplateid().getMinamountpertransaction());
                     } else {
                         notificationBuilder.append(textPart.text);
                     }
                 } else if (CmFinoFIX.NotificationVariables_MaximumTransactionAmountLimit.equals(notificationVariable)) {
-                    if (sourcePocket != null && sourcePocket.getPocketTemplate() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMaxamountpertransaction());
+                    if (sourcePocket != null && sourcePocket.getPocketTemplateByPockettemplateid() != null) {
+                        notificationBuilder.append(sourcePocket.getPocketTemplateByPockettemplateid().getMaxamountpertransaction());
                     } else {
                         notificationBuilder.append(textPart.text);
                     }
@@ -335,14 +335,14 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
                 } else if (CmFinoFIX.NotificationVariables_TransferStatus.equals(notificationVariable)) {
                     notificationBuilder.append(buildTransferStatusString(notificationWrapper));
                 } else if (CmFinoFIX.NotificationVariables_MinimumBalanceAllowed.equals(notificationVariable)) {
-                    if (sourcePocket != null && sourcePocket.getPocketTemplate() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMinimumstoredvalue());
+                    if (sourcePocket != null && sourcePocket.getPocketTemplateByPockettemplateid() != null) {
+                        notificationBuilder.append(sourcePocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue());
                     } else {
                         notificationBuilder.append(0);
                     }
                 } else if (CmFinoFIX.NotificationVariables_MaximumBalanceAllowed.equals(notificationVariable)) {
-                    if (notificationWrapper.getSourcePocket() != null && notificationWrapper.getSourcePocket().getPocketTemplate() != null) {
-                        notificationBuilder.append(sourcePocket.getPocketTemplate().getMaximumstoredvalue());
+                    if (notificationWrapper.getSourcePocket() != null && notificationWrapper.getSourcePocket().getPocketTemplateByPockettemplateid() != null) {
+                        notificationBuilder.append(sourcePocket.getPocketTemplateByPockettemplateid().getMaximumstoredvalue());
                     } else {
                         notificationBuilder.append(0);
                     }
@@ -619,7 +619,7 @@ public class NotificationMessageParserServiceImpl implements NotificationMessage
         if (notificationWrapper.getCommodityTransfer() != null) {
             returnValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, notificationWrapper.getLanguage(), notificationWrapper.getCommodityTransfer().getCommodity());
         } else if (notificationWrapper.getSourcePocket() != null) {
-            returnValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, notificationWrapper.getLanguage(), notificationWrapper.getSourcePocket().getPocketTemplate().getCommodity());
+            returnValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, notificationWrapper.getLanguage(), notificationWrapper.getSourcePocket().getPocketTemplateByPockettemplateid().getCommodity());
         }
         return returnValue;
     }

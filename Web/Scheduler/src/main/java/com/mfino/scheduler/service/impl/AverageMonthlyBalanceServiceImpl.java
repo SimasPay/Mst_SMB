@@ -214,7 +214,7 @@ public class AverageMonthlyBalanceServiceImpl  implements AverageMonthlyBalanceS
 			BigDecimal avgMonthlyBalance = totalMonthlyBalance.divide(new BigDecimal(endDay), 2, RoundingMode.HALF_EVEN);
 			mBalance.setAveragemonthlybalance(avgMonthlyBalance);
 			
-			BigDecimal roi = p.getPocketTemplate().getInterestrate();
+			BigDecimal roi = p.getPocketTemplateByPockettemplateid().getInterestrate();
 			if (roi == null) {
 				roi = BigDecimal.ZERO;
 			}

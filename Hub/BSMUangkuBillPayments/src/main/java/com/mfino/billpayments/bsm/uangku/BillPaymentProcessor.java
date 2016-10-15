@@ -122,7 +122,7 @@ public class BillPaymentProcessor implements BSMProcessor {
  	private void saveIntegrationSummary(String transactionID, Long sctlID) {
  		IntegrationSummaryDao isdao = getCoreDataWrapper().getIntegrationSummaryDao();
  		IntegrationSummary isummary = new IntegrationSummary();
- 		isummary.setSctlid(new BigDecimal(sctlID));
+ 		isummary.setSctlid(sctlID);
  		isummary.setReconcilationid1(transactionID);
  		isdao.save(isummary);
  	}
@@ -144,7 +144,7 @@ public class BillPaymentProcessor implements BSMProcessor {
  		}
  		else{
  			iSummary = new IntegrationSummary();
- 			iSummary.setSctlid(new BigDecimal(sctlId));
+ 			iSummary.setSctlid(sctlId);
  			iSummary.setReconcilationid2(de39);
  		}
 

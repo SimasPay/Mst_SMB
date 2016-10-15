@@ -237,7 +237,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 		transactionDetails.setSourceMDN(transactionDetails.getDestMDN());
 		transactionDetails.setSourcePocketCode(String.valueOf(CmFinoFIX.PocketType_SVA));
 		transactionDetails.setDestMDN(destMDN.getMdn());
-		transactionDetails.setDestPocketCode(String.valueOf(destNationalTreasuryPocket.getPocketTemplate().getType()));
+		transactionDetails.setDestPocketCode(String.valueOf(destNationalTreasuryPocket.getPocketTemplateByPockettemplateid().getType()));
 		transactionDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_TREASURY_INQUIRY);
 		transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 		transactionDetails.setSourcePIN("1");
@@ -251,7 +251,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 
         for (Pocket eachPocket : resultantPockets) {
         	
-        	if(eachPocket.getPocketTemplate().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())) {
+        	if(eachPocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())) {
         		
         		continue;
         	}

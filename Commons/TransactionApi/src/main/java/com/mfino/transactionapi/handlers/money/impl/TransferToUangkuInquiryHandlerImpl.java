@@ -122,8 +122,8 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)
-				||destPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)
+				||destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 
 			if(!systemParametersService.getBankServiceStatus()){
 				

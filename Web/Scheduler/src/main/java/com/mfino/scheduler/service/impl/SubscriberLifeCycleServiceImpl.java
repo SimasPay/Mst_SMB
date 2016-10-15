@@ -414,7 +414,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							return;
 						}
 						//The system collector pocket need to be suspense pocket
-						if(destSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != (short) 1){
+						if(destSystemProviderPocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != (short) 1){
 							log.info("Failed to move balance in all/some of the EMoney Pockets of Retired Subscriber with subscriber ID --> " 
 									+ subscriber.getId() + " as the system provider pocket is not of suspense type and hence the subscriber will not be graved");
 							return;
@@ -428,11 +428,11 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 						//txnDetails.setSourcePocketCode("1");
 						txnDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 						txnDetails.setTransactionName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_SYSTEM_INQUIRY);
-						txnDetails.setDestPocketId(destSystemProviderPocket.getId().toPlainString());
+						txnDetails.setDestPocketId(destSystemProviderPocket.getId().toString());
 						for(Pocket sourcePocket:srcPocketList){
 							moneyMovedSuccessfully = false;
-							txnDetails.setSourcePocketCode(String.valueOf(sourcePocket.getPocketTemplate().getType()));
-							txnDetails.setDestPocketCode(String.valueOf(destSystemProviderPocket.getPocketTemplate().getType()));
+							txnDetails.setSourcePocketCode(String.valueOf(sourcePocket.getPocketTemplateByPockettemplateid().getType()));
+							txnDetails.setDestPocketCode(String.valueOf(destSystemProviderPocket.getPocketTemplateByPockettemplateid().getType()));
 							txnDetails.setSrcPocketId(sourcePocket.getId().longValue());
 							txnDetails.setSourcePIN("1503");
 							txnDetails.setCc(channelCode);
@@ -478,7 +478,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 								+ subscriber.getId()) ;
 						return;
 					}
-					if(srcSystemProviderPocket.getPocketTemplate().getIssuspencepocket() != 1){
+					if(srcSystemProviderPocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != 1){
 						log.info("Failed to move money from system collector pocket to National Treasury for subscriber ID -->" 
 								+ subscriber.getId() + " as the system provider pocket is not of suspense type");
 						return;

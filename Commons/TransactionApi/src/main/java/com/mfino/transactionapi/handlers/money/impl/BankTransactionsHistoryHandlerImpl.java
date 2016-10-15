@@ -140,8 +140,8 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 			return result;
 		}
 
-		result.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
-		if(!(sourcePocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)))
+		result.setBankCode(sourcePocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
+		if(!(sourcePocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)))
 		{
 			result.setNotificationCode(CmFinoFIX.NotificationCode_NotBankAccount);
 			return result;
@@ -154,8 +154,8 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 			return result;
 		}		
 		if (sourcePocket != null) {
-			log.info("Pocket Type = " + sourcePocket.getPocketTemplate().getType());
-			result.setPocketDescription(sourcePocket.getPocketTemplate().getDescription());
+			log.info("Pocket Type = " + sourcePocket.getPocketTemplateByPockettemplateid().getType());
+			result.setPocketDescription(sourcePocket.getPocketTemplateByPockettemplateid().getDescription());
 		}
 
 		Transaction transaction = null;
@@ -188,7 +188,7 @@ public class BankTransactionsHistoryHandlerImpl extends FIXMessageHandler implem
 		bankTransactionsReq.setPin(transactionsHistory.getPin());
 		bankTransactionsReq.setSourceApplication(transactionsHistory.getSourceApplication());
 		bankTransactionsReq.setServletPath(CmFinoFIX.ServletPath_Subscribers);
-		bankTransactionsReq.setBankCode(sourcePocket.getPocketTemplate().getBankcode().intValue());
+		bankTransactionsReq.setBankCode(sourcePocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
 		bankTransactionsReq.setPocketID(sourcePocket.getId().longValue());
 		bankTransactionsReq.setTransactionID(transactionsLog.getId().longValue());
 		bankTransactionsReq.setServiceChargeTransactionLogID(sctl.getId().longValue());

@@ -365,7 +365,7 @@ public class MerchantDAO extends BaseDAO<Merchant> {
         HashMap hm = new HashMap();
         Merchant merchant = getById(merchantParentId);
 
-        while (merchant != null && merchant.getId().compareTo(new BigDecimal(0)) != 0 && merchant.getDistributionchaintemplateid() == null) {
+        while (merchant != null && new BigDecimal(merchant.getId()).compareTo(new BigDecimal(0)) != 0 && merchant.getDistributionchaintemplateid() == null) {
             Merchant tempMerchant = merchant.getMerchant();
             if (tempMerchant == null) {
                 break;
@@ -374,7 +374,7 @@ public class MerchantDAO extends BaseDAO<Merchant> {
             }
             level++;
         }
-        if (merchant != null && merchant.getId().compareTo(new BigDecimal(0)) != 0 && merchant.getDistributionchaintemplateid() != null) {
+        if (merchant != null && new BigDecimal(merchant.getId()).compareTo(new BigDecimal(0)) != 0 && merchant.getDistributionchaintemplateid() != null) {
             DCTID = merchant.getDistributionchaintemplateid().longValue();
         } else {
             DCTID = -1;

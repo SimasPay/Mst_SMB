@@ -155,10 +155,10 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 			Pocket destPocket = null;
 			
 			for(Pocket pocket: pockets){
-				if((pocket.getPocketTemplate().getType() == CmFinoFIX.PocketType_SVA.intValue()) && (!(pocket.getPocketTemplate().getIscollectorpocket() != 0) )){
+				if((pocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA.intValue()) && (!(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket() != 0) )){
 					sourcePocket = pocket;
 				}
-				else if((pocket.getPocketTemplate().getType()== CmFinoFIX.PocketType_BankAccount.intValue())){
+				else if((pocket.getPocketTemplateByPockettemplateid().getType()== CmFinoFIX.PocketType_BankAccount.intValue())){
 					destPocket = pocket;
 				}
 			}
@@ -197,7 +197,7 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 						
 						
 						for(ServiceChargeTxnLog sctl: tellerSctls){
-							sctl.setParentsctlid(tellerClearanceSctl.getId());
+							sctl.setParentsctlid(new BigDecimal(tellerClearanceSctl.getId()));
 						}
 						transactionDetails = new TransactionDetails();
 						transactionDetails.setCc(channelCode);

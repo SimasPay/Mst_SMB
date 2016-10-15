@@ -260,12 +260,12 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 	private int updatePockets(Subscriber subscriber, Pocket emoneyPocket,
 			Pocket bankPocket, Integer adminAction,
 			PocketTemplate upgradetemplate) {
-		if (emoneyPocket.getPocketTemplate().equals(upgradetemplate)) {
+		if (emoneyPocket.getPocketTemplateByPockettemplateid().equals(upgradetemplate)) {
 			log.info("Pocket already upgraded");
 		}
-		log.info("EMONEYpOCKET id="+emoneyPocket.getPocketTemplate()+upgradetemplate);
-		emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplate());
-		emoneyPocket.setPocketTemplate(upgradetemplate);
+		log.info("EMONEYpOCKET id="+emoneyPocket.getPocketTemplateByPockettemplateid()+upgradetemplate);
+		emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplateByPockettemplateid());
+		emoneyPocket.setPocketTemplateByPockettemplateid(upgradetemplate);
 		emoneyPocket.setPockettemplatechangetime(new Timestamp());
 		pocketService.save(emoneyPocket);
 		log.info("in update pocket");

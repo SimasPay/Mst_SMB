@@ -252,7 +252,7 @@ public class KYCUpgradeHandlerImpl extends FIXMessageHandler implements KYCUpgra
 		srcSub.setAddressBySubscriberaddressid(address);
 		srcMDN.setIdtype(transactionDetails.getIdType());
 		srcMDN.setIdnumber(idNumber);
-		srcPocket.setPocketTemplate(pkTem);
+		srcPocket.setPocketTemplateByPockettemplateid(pkTem);
 		
 		sctl.setCalculatedcharge(BigDecimal.ZERO);
 		transactionChargingService.completeTheTransaction(sctl);

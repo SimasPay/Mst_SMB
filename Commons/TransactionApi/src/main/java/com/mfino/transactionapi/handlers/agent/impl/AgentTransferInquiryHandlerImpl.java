@@ -185,7 +185,7 @@ public class AgentTransferInquiryHandlerImpl extends FIXMessageHandler implement
 			result.setNotificationCode(validationResult);
 			return result;
 		}
-		if(srcPocket.getPocketTemplate().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())||destPocket.getPocketTemplate().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())){
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())||destPocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())){
 
 			if(!systemParametersService.getBankServiceStatus())	{
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);

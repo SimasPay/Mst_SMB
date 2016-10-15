@@ -69,8 +69,8 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 							if (thereIsAlreadyAnotherDefault > 1) {
 								// if there are more than one that is default,
 								// log error and correct the situation
-								log.error("More than one default pocket for type: " + pocket.getPocketTemplate().getType()
-										+ " and commodity: " + pocket.getPocketTemplate().getCommodity());
+								log.error("More than one default pocket for type: " + pocket.getPocketTemplateByPockettemplateid().getType()
+										+ " and commodity: " + pocket.getPocketTemplateByPockettemplateid().getCommodity());
 								simillarPocket.setIsdefault((short) Boolean.compare(false, true));
 								pocketDAO.save(simillarPocket);
 							}
@@ -98,11 +98,11 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 		PocketQuery query = new PocketQuery();
 		query.setMdnIDSearch(p.getSubscriberMdn().getId().longValue());
 		
-		Long pocketTypeL = p.getPocketTemplate().getType();
+		Long pocketTypeL = p.getPocketTemplateByPockettemplateid().getType();
 		Integer pocketTypeLI = pocketTypeL.intValue();
 		query.setPocketType(pocketTypeLI);
-		query.setIsCollectorPocket(Boolean.valueOf(p.getPocketTemplate().getIscollectorpocket().toString()));
-		query.setIsSuspencePocketAllowed(Boolean.valueOf(p.getPocketTemplate().getIssuspencepocket().toString()));
+		query.setIsCollectorPocket(Boolean.valueOf(p.getPocketTemplateByPockettemplateid().getIscollectorpocket().toString()));
+		query.setIsSuspencePocketAllowed(Boolean.valueOf(p.getPocketTemplateByPockettemplateid().getIssuspencepocket().toString()));
 		return pocketDAO.get(query);
 	}
 }

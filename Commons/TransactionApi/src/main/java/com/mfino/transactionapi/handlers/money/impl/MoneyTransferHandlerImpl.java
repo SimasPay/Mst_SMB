@@ -213,19 +213,19 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
 		 */
 		
-		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai)){
-			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
+			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER;
 			}
-			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)){
+			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2LTRANSFER;
 			}
 		}
-		if(srcPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
-			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)){
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
+			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
 			}
-			if(destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_SVA)){
+			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai) || destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER;
 			}
 		}		

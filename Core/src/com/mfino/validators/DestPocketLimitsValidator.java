@@ -32,7 +32,7 @@ public class DestPocketLimitsValidator implements IValidator {
 	public Integer validate() {
 		
 		try{
-            PocketTemplate pocketTemplate = pocket.getPocketTemplate();
+            PocketTemplate pocketTemplate = pocket.getPocketTemplateByPockettemplateid();
             
 			
 //		if(amount<pocketTemplate.getMinAmountPerTransaction()){

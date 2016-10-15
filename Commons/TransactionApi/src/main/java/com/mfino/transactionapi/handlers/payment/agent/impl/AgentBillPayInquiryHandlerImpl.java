@@ -274,7 +274,7 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 			return result;
 		log.info("ID of the incoming funds pocket for agent services="+destBillerPartnerPocket.getId());
 		
-		if(srcAgentPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount)||destBillerPartnerPocket.getPocketTemplate().getType()==(CmFinoFIX.PocketType_BankAccount))
+		if(srcAgentPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)||destBillerPartnerPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount))
 		{
 			if(!systemParametersService.getBankServiceStatus())
 			{
