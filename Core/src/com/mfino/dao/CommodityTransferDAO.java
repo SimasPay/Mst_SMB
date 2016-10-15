@@ -47,8 +47,8 @@ import com.mfino.util.ConfigurationUtil;
  */
 public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 
-    private static final String SubscriberMDNBySourceMDNID = "SubscriberMDNBySourceMDNID";
-    private static final String PocketBySourcePocketID = "PocketBySourcePocketID";
+    private static final String SubscriberMDNBySourceMDNID = "subscriberMdn";
+    private static final String PocketBySourcePocketID = "pocket";
     private CompanyDAO companyDao = DAOFactory.getInstance().getCompanyDAO();
     
     private Logger log = LoggerFactory.getLogger(getClass());

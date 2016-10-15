@@ -197,7 +197,7 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                 //We are to Search on Commodity Transfer Table
                 //state = enumService.getEnumTextValue(CmFinoFIX.TagID_TransferState, null, CmFinoFIX.TransferState_Complete);
                 state = CmFinoFIX.TransferStateValue_Complete;
-                query.setSortString(CmFinoFIX.CRCommodityTransfer.FieldName_EndTime+":desc,"+CmFinoFIX.CRCommodityTransfer.FieldName_RecordID+":desc");
+                query.setSortString(CommodityTransfer.FieldName_EndTime+":desc,"+CommodityTransfer.FieldName_RecordID+":desc");
                 results = dao.get(query);
                 
             } else if (CmFinoFIX.TransferState_Pending.equals(realMsg.getTransferState())) {

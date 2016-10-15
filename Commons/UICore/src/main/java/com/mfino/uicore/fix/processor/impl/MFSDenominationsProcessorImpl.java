@@ -28,7 +28,7 @@ public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements M
 	
 	private void updateEntity(MfsDenominations md, CMJSMFSDenominations.CGEntries e) {		
 		if(e.getMFSID() != null){
-			md.setMfsid(new BigDecimal(e.getMFSID()));
+			md.setMfsid(e.getMFSID());
 		}
 		if(e.getDenominationAmount() != null){
 			md.setDenominationamount(e.getDenominationAmount());

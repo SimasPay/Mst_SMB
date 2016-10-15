@@ -32,9 +32,9 @@ public class AdjustmentsPocketProcessorImpl extends BaseFixProcessor implements 
 	
 	private void updateMessage(Pocket pocket, CmFinoFIX.CMJSAdjustmentsPocket.CGEntries entry) {
 		entry.setPocketID(pocket.getId().longValue());
-		if(pocket.getPocketTemplate() != null) {
-			entry.setPocketTemplateID(pocket.getPocketTemplate().getId().longValue());
-			entry.setPocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getId() + ")");
+		if(pocket.getPocketTemplateByPockettemplateid() != null) {
+			entry.setPocketTemplateID(pocket.getPocketTemplateByPockettemplateid().getId().longValue());
+			entry.setPocketTemplateDescription(pocket.getPocketTemplateByPockettemplateid().getDescription() + "(ID:" + pocket.getId() + ")");
 		}		
 	}
 	

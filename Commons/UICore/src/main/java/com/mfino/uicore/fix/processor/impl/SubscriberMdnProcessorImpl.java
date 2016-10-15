@@ -506,7 +506,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getSubscriber().getId()));
 			
 			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
 				SubscriberGroups sg = subscriberGroups.iterator().next();
@@ -676,7 +676,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			entry.setH2HAllowedIP(s.getH2hallowedip());
 		}
 
-		if ((Long) s.getLasttransactionid().longValue() != null) {
+		if ( s.getLasttransactionid() != null) {
 			entry.setLastTransactionID(s.getLasttransactionid().longValue());
 		}
 
@@ -827,7 +827,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					Pocket p = subscriberService.getDefaultPocket(s.getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 					entry.setDompetMerchant(Boolean.FALSE);
 					if (p != null) {
-						if ((Long.valueOf(p.getPocketTemplate().getAllowance()).intValue() & CmFinoFIX.PocketAllowance_MerchantDompet.intValue()) > 0) {
+						if ((Long.valueOf(p.getPocketTemplateByPockettemplateid().getAllowance()).intValue() & CmFinoFIX.PocketAllowance_MerchantDompet.intValue()) > 0) {
 							entry.setDompetMerchant(Boolean.TRUE);
 						}
 						if( p.getCardpan() != null ) {
@@ -1016,7 +1016,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					entry.setIsDomesticAddrIdentity(false);
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getSubscriber().getId()));
 				if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
 					SubscriberGroups sg = subscriberGroups.iterator().next();
 					GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
@@ -1184,7 +1184,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					
 					Pocket pocket = (Pocket) iterator.next();
 					
-					if(Integer.valueOf(Long.valueOf(pocket.getPocketTemplate().getType()).intValue()).equals(CmFinoFIX.PocketType_LakuPandai)) {
+					if(Integer.valueOf(Long.valueOf(pocket.getPocketTemplateByPockettemplateid().getType()).intValue()).equals(CmFinoFIX.PocketType_LakuPandai)) {
 						
 						isLakuapandiaSubscriber = true;
 					}
@@ -1702,7 +1702,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					mailService.generateEmailVerificationMail(s, e.getEmail());
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getId()));
 				if(subscriberGroups.size() > 0){
 					for(SubscriberGroups sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
@@ -1886,7 +1886,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -1897,8 +1897,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		Pocket pocket = subscriberService.getDefaultPocket(s.getId().longValue(),unregTemplateID);
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		if(pocket!=null){
-			pocket.setPocketTemplateByOldpockettemplateid(pocket.getPocketTemplate());
-			pocket.setPocketTemplate(template);
+			pocket.setPocketTemplateByOldpockettemplateid(pocket.getPocketTemplateByPockettemplateid());
+			pocket.setPocketTemplateByPockettemplateid(template);
 			pocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
 			pocket.setPockettemplatechangetime(new Timestamp());
 			pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);

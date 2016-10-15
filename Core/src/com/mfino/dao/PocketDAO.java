@@ -32,7 +32,7 @@ import com.mfino.fix.CmFinoFIX;
  */
 public class PocketDAO extends BaseDAO<Pocket> {
 
-    public static final String POCKETTEMPLATETABLE = "PocketTemplate";
+    public static final String POCKETTEMPLATETABLE = "pocketTemplateByPockettemplateid";
     public static final String POCKETTEMPLATE_ALIAS = "PocketTemplateAlias";
 
     public PocketDAO() {
@@ -44,11 +44,11 @@ public class PocketDAO extends BaseDAO<Pocket> {
 
         if (query.getMdnIDSearch() != null) {
             //TODO : make the associate entity name a constant in the codegen
-            criteria.createCriteria("SubscriberMDNByMDNID").add(Restrictions.eq(SubscriberMdn.FieldName_RecordID, query.getMdnIDSearch()));
+            criteria.createCriteria("subscriberMdn").add(Restrictions.eq(SubscriberMdn.FieldName_RecordID, query.getMdnIDSearch()));
         }
 
         if (query.isIsDefault() != null) {
-            criteria.add(Restrictions.eq(Pocket.FieldName_IsDefault, query.isIsDefault()));
+            criteria.add(Restrictions.eq(Pocket.FieldName_IsDefault, (short)(query.isIsDefault()?1:0)));
         }
 
         if (StringUtils.isNotBlank(query.getCardPan())) {
@@ -75,10 +75,10 @@ public class PocketDAO extends BaseDAO<Pocket> {
                 criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_RecordID, query.getPocketTemplateID()));
             }
             if (query.getPocketType() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_PocketType, query.getPocketType()));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_PocketType, new Long(query.getPocketType())));
             }
             if (query.getCommodity() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_Commodity, query.getCommodity()));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_Commodity, new Long(query.getCommodity())));
             }
             if (query.getIsCollectorPocket() != null) {
             	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + 
@@ -86,12 +86,12 @@ public class PocketDAO extends BaseDAO<Pocket> {
             }
             else  if(query.IsCollectorPocketAllowed()==null||!query.IsCollectorPocketAllowed()){
             	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + 
-            			PocketTemplate.FieldName_IsCollectorPocket, false));
+            			PocketTemplate.FieldName_IsCollectorPocket, (short)0));
             }
             if (query.getIsSuspencePocketAllowed() == null || !query.getIsSuspencePocketAllowed()) {
-            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, false));
+            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, (short)0));
             } else {
-            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, true));
+            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, (short)1));
             }
         }
         if (query.getCompany() != null) {
@@ -120,8 +120,8 @@ public class PocketDAO extends BaseDAO<Pocket> {
     }
 
     public List<Pocket> getDompetMerchantByHQL(Long companyId) {
-        String hqlString = "Select p from Pocket as p join p.PocketTemplate as pt where bitwise_and(pt.Allowance " + "," + CmFinoFIX.PocketAllowance_MerchantDompet + ") > 0 " +
-                "and p.Company = :companyid";
+        String hqlString = "Select p from Pocket as p join p.pocketTemplate as pt where bitwise_and(pt.Allowance " + "," + CmFinoFIX.PocketAllowance_MerchantDompet + ") > 0 " +
+                "and p.company = :companyid";
 
         Query queryObj = getQuery(hqlString);
         queryObj.setLong("companyid", companyId);

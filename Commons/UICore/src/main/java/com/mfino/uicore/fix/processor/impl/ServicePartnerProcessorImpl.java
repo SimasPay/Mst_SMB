@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -29,13 +30,13 @@ import com.mfino.domain.Address;
 import com.mfino.domain.Company;
 import com.mfino.domain.Groups;
 import com.mfino.domain.KycLevel;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.MfinoUser;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.fix.CFIXMsg;
@@ -453,7 +454,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 if(e.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(subscriber, e.getAuthorizedEmail());
 				}
-                List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+                List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
 				if(subscriberGroups != null && subscriberGroups.size() > 0){
 					SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 					for(SubscriberGroups sg: subscriberGroups){
@@ -490,8 +491,8 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 	if(epocket!=null&&!(Integer.valueOf(Long.valueOf(epocket.getStatus()).intValue()).equals(CmFinoFIX.PocketStatus_PendingRetirement)||Integer.valueOf(Long.valueOf(epocket.getStatus()).intValue()).equals(CmFinoFIX.PocketStatus_Retired))){
                 		epocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
                 		epocket.setStatustime(new Timestamp());
-                		epocket.setPocketTemplateByOldpockettemplateid(epocket.getPocketTemplate());
-                		epocket.setPocketTemplate(svaPocketTemplate);
+                		epocket.setPocketTemplateByOldpockettemplateid(epocket.getPocketTemplateByPockettemplateid());
+                		epocket.setPocketTemplateByPockettemplateid(svaPocketTemplate);
                 		epocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
                 		epocket.setPockettemplatechangetime(new Timestamp());
                 		pocketDao.save(epocket);
@@ -852,7 +853,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         			
         			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
         			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-        			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+        			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
         			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroups sg = subscriberGroups.iterator().next();
         				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
@@ -1055,7 +1056,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        if(subscriber.getApproveorrejectcomment()!=null){
 	        	entry.setApproveOrRejectComment(subscriber.getApproveorrejectcomment());
 	        }
-	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
 			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
 				SubscriberGroups sg = subscriberGroups.iterator().next();
 				Groups groups = groupDao.getById(sg.getGroupid());

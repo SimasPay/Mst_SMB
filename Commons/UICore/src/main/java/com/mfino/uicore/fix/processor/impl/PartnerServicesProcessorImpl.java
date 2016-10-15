@@ -160,14 +160,14 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			e.setCollectorPocket(ps.getCollectorpocket().longValue());
 			e.setCollectorCardPAN(pocket.getCardpan());
 			if (StringUtils.isNotBlank(pocket.getCardpan()) && 
-					pocket.getPocketTemplate() != null) {
+					pocket.getPocketTemplateByPockettemplateid() != null) {
 	        	String cPan = pocket.getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	e.setCollectorPocketDispText(pocket.getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (pocket.getPocketTemplate() != null) {
-				e.setCollectorPocketDispText(pocket.getPocketTemplate().getDescription());
+	        	e.setCollectorPocketDispText(pocket.getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan);
+			} else if (pocket.getPocketTemplateByPockettemplateid() != null) {
+				e.setCollectorPocketDispText(pocket.getPocketTemplateByPockettemplateid().getDescription());
 			}
 		}
 		
@@ -175,14 +175,14 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			e.setSourcePocket(ps.getPocketBySourcepocket().getId().longValue());
 			e.setSourceCardPAN(ps.getPocketBySourcepocket().getCardpan());
 			if (StringUtils.isNotBlank(ps.getPocketBySourcepocket().getCardpan()) && 
-					ps.getPocketBySourcepocket().getPocketTemplate() != null) {
+					ps.getPocketBySourcepocket().getPocketTemplateByPockettemplateid() != null) {
 	        	String cPan = ps.getPocketBySourcepocket().getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	e.setSourcePocketDispText(ps.getPocketBySourcepocket().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (ps.getPocketBySourcepocket().getPocketTemplate() != null) {
-				e.setSourcePocketDispText(ps.getPocketBySourcepocket().getPocketTemplate().getDescription());
+	        	e.setSourcePocketDispText(ps.getPocketBySourcepocket().getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan);
+			} else if (ps.getPocketBySourcepocket().getPocketTemplateByPockettemplateid() != null) {
+				e.setSourcePocketDispText(ps.getPocketBySourcepocket().getPocketTemplateByPockettemplateid().getDescription());
 			}
 		}
 		
@@ -190,14 +190,14 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			e.setDestPocketID(ps.getPocketByDestpocketid().getId().longValue());
 			e.setDestCardPAN(ps.getPocketByDestpocketid().getCardpan());
 			if (StringUtils.isNotBlank(ps.getPocketByDestpocketid().getCardpan()) && 
-					ps.getPocketByDestpocketid().getPocketTemplate() != null) {
+					ps.getPocketByDestpocketid().getPocketTemplateByPockettemplateid() != null) {
 	        	String cPan = ps.getPocketByDestpocketid().getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	e.setDestPocketDispText(ps.getPocketByDestpocketid().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (ps.getPocketByDestpocketid().getPocketTemplate() != null) {
-				e.setDestPocketDispText(ps.getPocketByDestpocketid().getPocketTemplate().getDescription());
+	        	e.setDestPocketDispText(ps.getPocketByDestpocketid().getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan);
+			} else if (ps.getPocketByDestpocketid().getPocketTemplateByPockettemplateid() != null) {
+				e.setDestPocketDispText(ps.getPocketByDestpocketid().getPocketTemplateByPockettemplateid().getDescription());
 			}
 		}
 		

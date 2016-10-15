@@ -40,7 +40,7 @@ public class Merchant  implements java.io.Serializable {
 	public static final String FieldName_MerchantByParentID = "merchant";
 	public static final String FieldName_GroupID = "groupid";
 	public static final String FieldName_StatusTime = "statustime";
-	private BigDecimal id;
+	private Long id;
 	private long version;
 	private Timestamp lastupdatetime;
 	private String updatedby;
@@ -154,11 +154,11 @@ public class Merchant  implements java.io.Serializable {
 	@Id
 	@GeneratedValue(generator = "generator")
 	@Column(name = "ID", unique = true, nullable = false, scale = 0)
-	public BigDecimal getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(BigDecimal id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

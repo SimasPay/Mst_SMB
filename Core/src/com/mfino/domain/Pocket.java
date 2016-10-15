@@ -33,11 +33,10 @@ public class Pocket extends Base implements java.io.Serializable {
 	public static final String FieldName_CardAlias = "cardalias";
 	public static final String FieldName_PocketStatus = "status";
 	public static final String FieldName_Company = "company";
-	public static final String FieldName_PocketTemplate = "pocketTemplate";
+	public static final String FieldName_PocketTemplate = "pocketTemplateByPockettemplateid";
 	public static final String FieldName_SubscriberMDNByMDNID = "subscriberMdn";
 	
 	private SubscriberMdn subscriberMdn;
-	private PocketTemplate pocketTemplate;
 	private PocketTemplate pocketTemplateByPockettemplateid;
 	private Company company;
 	private PocketTemplate pocketTemplateByOldpockettemplateid;
@@ -110,13 +109,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.subscriberMdn = subscriberMdn;
 	}
 
-	public PocketTemplate getPocketTemplate() {
-		return pocketTemplate;
-	}
-
-	public void setPocketTemplate(PocketTemplate pocketTemplate) {
-		this.pocketTemplate = pocketTemplate;
-	}
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "POCKETTEMPLATEID", nullable = false)

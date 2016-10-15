@@ -26,7 +26,7 @@ public class SubscriberGroupDao extends BaseDAO<SubscriberGroups>{
 	
 	public List<SubscriberGroups> getAllBySubscriberID(BigDecimal subscriberID) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(SubscriberGroups.FieldName_Subscriber, subscriberID));
+        criteria.add(Restrictions.eq(SubscriberGroups.FieldName_Subscriber, subscriberID.longValue()));
         @SuppressWarnings("unchecked")
 		List<SubscriberGroups> lst = criteria.list();
 		if(criteria.list()==null||criteria.list().isEmpty())

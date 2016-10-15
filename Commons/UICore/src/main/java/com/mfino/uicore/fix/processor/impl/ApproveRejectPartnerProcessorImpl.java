@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -25,13 +26,13 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.KycLevel;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectPartner;
@@ -168,7 +169,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		
 		Long groupID = null;
 		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = sgDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = sgDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty()) {
 			
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

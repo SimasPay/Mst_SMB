@@ -123,8 +123,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         if (c.getSourcepocketbalance() != null) {
             entry.setSourcePocketBalance(new BigDecimal(c.getSourcepocketbalance()));
         }
-        if (c.getPocket() != null && c.getPocket().getPocketTemplate() != null) {
-            entry.setSourcePocketTemplateDescription(c.getPocket().getPocketTemplate().getDescription());
+        if (c.getPocket() != null && c.getPocket().getPocketTemplateByPockettemplateid() != null) {
+            entry.setSourcePocketTemplateDescription(c.getPocket().getPocketTemplateByPockettemplateid().getDescription());
             if (c.getSourcecardpan() != null) {
 //              entry.setSourceCardPAN(c.getSourceCardPAN());
           	 entry.setSourceCardPAN(c.getPocket().getCardpan()!=null?c.getPocket().getCardpan():"");
@@ -162,8 +162,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         }
         if (c.getDestpocketid() != null) {
             Pocket destPocket = this.pocketDao.getById(c.getDestpocketid().longValue());
-            if (destPocket != null && destPocket.getPocketTemplate() != null) {
-                entry.setDestPocketTemplateDescription(destPocket.getPocketTemplate().getDescription());
+            if (destPocket != null && destPocket.getPocketTemplateByPockettemplateid() != null) {
+                entry.setDestPocketTemplateDescription(destPocket.getPocketTemplateByPockettemplateid().getDescription());
             }
             if (c.getDestcardpan() != null) {
 //              entry.setDestCardPAN(c.getDestCardPAN());

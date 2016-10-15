@@ -4,9 +4,9 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +154,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		Pocket emoneyPocket = null;
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -361,16 +361,16 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 
 		isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 		if(isEMoneyPocketRequired == true){
-		boolean isCompatible = pocketTemplateService.areCompatible(emoneyPocket.getPocketTemplate(), upgradetemplate);
+		boolean isCompatible = pocketTemplateService.areCompatible(emoneyPocket.getPocketTemplateByPockettemplateid(), upgradetemplate);
 		if (!isCompatible) {
 			return SubscriberSyncErrors.PocketTemplatesIncompatible;
 		}
-		if (emoneyPocket.getPocketTemplate().equals(upgradetemplate)) {
+		if (emoneyPocket.getPocketTemplateByPockettemplateid().equals(upgradetemplate)) {
 			// return SubscriberSyncErrors.PocketAlreadyUpgraded;
 			log.info("Pocket already upgraded");
 		}
-		emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplate());
-		emoneyPocket.setPocketTemplate(upgradetemplate);
+		emoneyPocket.setPocketTemplateByOldpockettemplateid(emoneyPocket.getPocketTemplateByPockettemplateid());
+		emoneyPocket.setPocketTemplateByPockettemplateid(upgradetemplate);
 //		emoneyPocket.setStatus(subscriber.getStatus());
 		emoneyPocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
 		emoneyPocket.setPockettemplatechangetime(new Timestamp());

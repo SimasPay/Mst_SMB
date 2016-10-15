@@ -71,14 +71,14 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 		e.setSettlementPocket(st.getPocket().getId().longValue());
 		e.setCardPAN(st.getPocket().getCardpan());
 		if (StringUtils.isNotBlank(st.getPocket().getCardpan()) && 
-				st.getPocket().getPocketTemplate() != null) {
+				st.getPocket().getPocketTemplateByPockettemplateid() != null) {
         	String cPan = st.getPocket().getCardpan();
         	if (cPan.length() > 6) {
         		cPan = cPan.substring(cPan.length()-6);
         	}
-        	e.setPocketDispText(st.getPocket().getPocketTemplate().getDescription() + " - " + cPan);
-		} else if (st.getPocket().getPocketTemplate() != null) {
-			e.setPocketDispText(st.getPocket().getPocketTemplate().getDescription());
+        	e.setPocketDispText(st.getPocket().getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan);
+		} else if (st.getPocket().getPocketTemplateByPockettemplateid() != null) {
+			e.setPocketDispText(st.getPocket().getPocketTemplateByPockettemplateid().getDescription());
 		}
 		e.setPartnerID(st.getPartner().getId().longValue());
 		e.setRecordVersion(Integer.valueOf(Long.valueOf(st.getVersion()).intValue()));

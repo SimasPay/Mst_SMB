@@ -482,7 +482,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 	
 		//Getting group for subscriber
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> group = subscriberGroupDao.getAllBySubscriberID(smdn.getSubscriber().getId());
+		List<SubscriberGroups> group = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(smdn.getSubscriber().getId()));
 		
 		Long subscriberGroupId =null;
 		Iterator<SubscriberGroups> iterator = group.iterator();

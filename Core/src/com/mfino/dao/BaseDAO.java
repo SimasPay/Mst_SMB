@@ -33,6 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.BaseQuery;
+import com.mfino.domain.Base;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.hibernate.session.HibernateSessionHolder;
@@ -233,8 +234,8 @@ public class BaseDAO<T> {
     public void processPaging(BaseQuery query, Criteria criteria) {
         if (query.getStart() != null && query.getLimit() != null) {
             criteria.setProjection(Projections.rowCount());
-            Integer count = (Integer) criteria.uniqueResult();
-            query.setTotal(count);
+            Long count = (Long) criteria.uniqueResult();
+            query.setTotal(count.intValue());
             criteria.setProjection(null);
             criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 
@@ -245,23 +246,23 @@ public class BaseDAO<T> {
 
     public void processBaseQuery(BaseQuery query, Criteria criteria) {
         if (query.getId() != null) {
-            criteria.add(Restrictions.eq(CmFinoFIX.CRBase.FieldName_RecordID, query.getId()));
+            criteria.add(Restrictions.eq(Base.FieldName_RecordID, query.getId()));
         }
         
         if(query.getLastUpdateTimeGE() != null) {
-        	criteria.add(Restrictions.ge(CmFinoFIX.CRBase.FieldName_LastUpdateTime, query.getLastUpdateTimeGE()));
+        	criteria.add(Restrictions.ge(Base.FieldName_LastUpdateTime, query.getLastUpdateTimeGE()));
         }
         
         if(query.getLastUpdateTimeLT() != null) {
-        	criteria.add(Restrictions.lt(CmFinoFIX.CRBase.FieldName_LastUpdateTime, query.getLastUpdateTimeLT()));
+        	criteria.add(Restrictions.lt(Base.FieldName_LastUpdateTime, query.getLastUpdateTimeLT()));
         }
 
         if(query.getCreateTimeGE() != null){
-            criteria.add(Restrictions.ge(CmFinoFIX.CRBase.FieldName_CreateTime, query.getCreateTimeGE()));
+            criteria.add(Restrictions.ge(Base.FieldName_CreateTime, query.getCreateTimeGE()));
         }
 
         if(query.getCreateTimeLT() != null){
-            criteria.add(Restrictions.lt(CmFinoFIX.CRBase.FieldName_CreateTime, query.getCreateTimeLT()));
+            criteria.add(Restrictions.lt(Base.FieldName_CreateTime, query.getCreateTimeLT()));
         }
     }
 

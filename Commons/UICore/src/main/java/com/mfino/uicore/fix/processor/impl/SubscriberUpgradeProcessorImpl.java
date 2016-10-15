@@ -196,7 +196,7 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
                     		
                     		Integer notificationCode=null;
                     		if(upgradeStatus.intValue()== CmFinoFIX.SubscriberUpgradeStatus_Approve.intValue()){
-                    			pocket.setPocketTemplate(lakuPandaiAdvancedTemplateList.get(0));
+                    			pocket.setPocketTemplateByPockettemplateid(lakuPandaiAdvancedTemplateList.get(0));
                     			pocketDAO.save(pocket);
                     			error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Approved successfully"));
                     			notificationCode=CmFinoFIX.NotificationCode_SubscriberUpgradeRequestApproved;

@@ -39,7 +39,7 @@ import com.mfino.hibernate.Timestamp;
  */
 public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 
-    public static final String SUBSCRIBER_TABLE_NAME = "Subscriber";
+    public static final String SUBSCRIBER_TABLE_NAME = "subscriber";
     
 /*    public SubscriberMdn getByMDN(String MDN) {
         SubscriberMdnQuery query = new SubscriberMdnQuery();
@@ -92,28 +92,28 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
             String orderString = " order by mdn";
             StringBuffer queryString = new StringBuffer();
             
-            queryString.append(" from Subscriber s, SubscriberMdn mdn, Pocket p, PocketTemplate pt, KYCLevel k ");
-            queryString.append("where s.id = mdn.Subscriber and mdn.id=p.SubscriberMDNByMDNID and pt.id=p.PocketTemplate and pt.BankCode= :bankcode");
+            queryString.append(" from Subscriber s, SubscriberMdn mdn, Pocket p, PocketTemplate pt, KycLevel k ");
+            queryString.append("where s.id = mdn.subscriber and mdn.id=p.subscriberMdn and pt.id=p.pocketTemplateByPockettemplateid and pt.bankcode= :bankcode");
             
             if (StringUtils.isNotBlank(query.getFirstName())) {
-            	queryString.append(" and s.FirstName = :firstName");
+            	queryString.append(" and s.firstname = :firstName");
             }
             if (StringUtils.isNotBlank(query.getLastName())) {
-            	queryString.append(" and s.LastName = :lastName");
+            	queryString.append(" and s.lastname = :lastName");
             }
             if (StringUtils.isNotBlank(query.getMdn())) {
-            	queryString.append(" and mdn.MDN = :mdn");
+            	queryString.append(" and mdn.mdn = :mdn");
             }
             if (query.getStartRegistrationDate() != null) {
-            	queryString.append(" and mdn.CreateTime >= :startTime");
+            	queryString.append(" and mdn.createtime >= :startTime");
             }
             if (query.getEndRegistrationDate() != null) {
-            	queryString.append(" and mdn.CreateTime < :endTime");
+            	queryString.append(" and mdn.createtime < :endTime");
             }
             
             if(null != query.getKycLevelId()) {
         		
-            	queryString.append(" and k.KYCLevel = :kycLevel and s.KYCLevel = k.KYCLevel");
+            	queryString.append(" and k.kyclevel = :kycLevel and s.kycLevel = k.kyclevel");
             }
             
             // This query is for getting total number of results i.e count(distinct mdn)
@@ -292,10 +292,10 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
                 criteria.add(Restrictions.eq(companyIDAlias, query.getCompany()));
             }
             if(query.isOnlySubscribers()){
-            	criteria.add(Restrictions.eq(onlySubscribersAlias, CmFinoFIX.SubscriberType_Subscriber));
+            	criteria.add(Restrictions.eq(onlySubscribersAlias, new Long(CmFinoFIX.SubscriberType_Subscriber)));
             }
             if(query.getState()!=null){
-            	criteria.add(Restrictions.eq(subscriberState, query.getState()));
+            	criteria.add(Restrictions.eq(subscriberState, new Long(query.getState())));
             }
             
             if(null != query.getKycLevelId()) {
@@ -308,7 +308,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         	criteria.add(Restrictions.eq("pocket."+Pocket.FieldName_CardPAN, query.getAccountNumber()));
           }
         if (query.getVersion() != null) {
-            criteria.add(Restrictions.eq("Version", query.getVersion()));
+            criteria.add(Restrictions.eq("Version", new Long(query.getVersion())));
         }
 
         if(null != query.getIsForceCloseRequested()) {
@@ -330,7 +330,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
             // For paging use the processPaging locally without the use of inner
             // join.
             if (query.getStart() != null && query.getLimit() != null) {
-                String queryStr = "select count(*) from Subscriber where Company = :company and Type = :subscriberType";
+                String queryStr = "select count(*) from Subscriber where company = :company and type = :subscriberType";
 
                 Query newQuery = getQuery(queryStr);
                 newQuery.setEntity("company", query.getCompany());

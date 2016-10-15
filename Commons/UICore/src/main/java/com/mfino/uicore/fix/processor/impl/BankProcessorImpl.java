@@ -82,7 +82,7 @@ public class BankProcessorImpl extends BaseFixProcessor implements BankProcessor
     public void updateEntity(Bank bank, CMJSBank.CGEntries e) {
 
         if (e.getID() != null) {
-            bank.setId(new BigDecimal(e.getID()));
+            bank.setId(e.getID());
         }
         if (e.getBankName() != null) {
             bank.setName(e.getBankName());

@@ -216,14 +216,14 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
         }
         if (bu.getPocket() != null) {
         	entry.setSourcePocket(bu.getPocket().getId().longValue());
-			if (StringUtils.isNotBlank(bu.getPocket().getCardpan()) && bu.getPocket().getPocketTemplate() != null) {
+			if (StringUtils.isNotBlank(bu.getPocket().getCardpan()) && bu.getPocket().getPocketTemplateByPockettemplateid() != null) {
 	        	String cPan = bu.getPocket().getCardpan();
 	        	if (cPan.length() > 6) {
 	        		cPan = cPan.substring(cPan.length()-6);
 	        	}
-	        	entry.setSourcePocketDispText(bu.getPocket().getPocketTemplate().getDescription() + " - " + cPan);
-			} else if (bu.getPocket().getPocketTemplate() != null) {
-				entry.setSourcePocketDispText(bu.getPocket().getPocketTemplate().getDescription());
+	        	entry.setSourcePocketDispText(bu.getPocket().getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan);
+			} else if (bu.getPocket().getPocketTemplateByPockettemplateid() != null) {
+				entry.setSourcePocketDispText(bu.getPocket().getPocketTemplateByPockettemplateid().getDescription());
 			}
         }
         if (bu.getServicechargetransactionlogid() != null) {

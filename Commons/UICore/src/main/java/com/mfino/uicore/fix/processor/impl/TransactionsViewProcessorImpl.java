@@ -75,12 +75,12 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		if (realMsg.getSourceDestnPocketID() != null) {
 			Pocket pocket = pocketDao.getById(realMsg.getSourceDestnPocketID());
 			queryPocketMDN = pocket.getSubscriberMdn();
-			if(CmFinoFIX.PocketType_SVA.equals(pocket.getPocketTemplate().getType())&&
-					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplate().getCommodity())){
+			if(CmFinoFIX.PocketType_SVA.equals(pocket.getPocketTemplateByPockettemplateid().getType())&&
+					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplateByPockettemplateid().getCommodity())){
 				return processTransactions(realMsg, null, null, CmFinoFIX.PocketType_SVA);
 			}
-			else if (CmFinoFIX.PocketType_BankAccount.equals(pocket.getPocketTemplate().getType())&&
-					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplate().getCommodity())){
+			else if (CmFinoFIX.PocketType_BankAccount.equals(pocket.getPocketTemplateByPockettemplateid().getType())&&
+					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplateByPockettemplateid().getCommodity())){
 				return processTransactions(realMsg, null, null, CmFinoFIX.PocketType_BankAccount);
 			}
 

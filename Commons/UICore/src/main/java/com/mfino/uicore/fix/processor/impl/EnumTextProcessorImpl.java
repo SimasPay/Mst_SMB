@@ -120,7 +120,7 @@ public class EnumTextProcessorImpl extends BaseFixProcessor implements EnumTextP
 
     public void updateEntity(EnumText s, CMJSEnumText.CGEntries e) {
         if (e.getID() != null) {
-            s.setId(new BigDecimal(e.getID()));
+            s.setId(e.getID());
         }
         if (e.getEnumCode() != null) {
             s.setEnumcode(e.getEnumCode());

@@ -126,7 +126,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                 }
                 boolean isCompatible = false;
                 PocketTemplate oldTemplate = null, newTemplate = null;
-                oldTemplate = pocketObj.getPocketTemplate();
+                oldTemplate = pocketObj.getPocketTemplateByOldpockettemplateid();
 
                 if (entry.isRemoteModifiedPocketTemplateID()) {
                     boolean isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Template_Edit);
@@ -181,11 +181,11 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                     errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                     try {
-                        if (CmFinoFIX.TypeOfCheck_LuhnCheck.equals(pocketObj.getPocketTemplate().getTypeofcheck()) && ValidationUtil.ValidateBankAccount(entry.getCardPAN()) == false) {
+                        if (CmFinoFIX.TypeOfCheck_LuhnCheck.equals(pocketObj.getPocketTemplateByPockettemplateid().getTypeofcheck()) && ValidationUtil.ValidateBankAccount(entry.getCardPAN()) == false) {
                             errorMsg.setErrorDescription(MessageText._("Cardpan Luhn check failed."));
                             log.warn("Failed CardPan Luhn check for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                             return errorMsg;
-                        } else if (CmFinoFIX.TypeOfCheck_RegularExpressionCheck.equals(pocketObj.getPocketTemplate().getTypeofcheck()) && ValidationUtil.validateRegularExpression(entry.getCardPAN(), pocketObj.getPocketTemplate().getRegularexpression()) == false) {
+                        } else if (CmFinoFIX.TypeOfCheck_RegularExpressionCheck.equals(pocketObj.getPocketTemplateByPockettemplateid().getTypeofcheck()) && ValidationUtil.validateRegularExpression(entry.getCardPAN(), pocketObj.getPocketTemplateByOldpockettemplateid().getRegularexpression()) == false) {
                             errorMsg.setErrorDescription(MessageText._("Cardpan Regular Expression check failed."));
                             log.warn("Failed Cardpan Regular Expression check for Pocket:"+pocketObj.getId()+" by user:"+getLoggedUserNameWithIP());
                             return errorMsg;
@@ -220,7 +220,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                 if (entry.isRemoteModifiedPocketStatus() && entry.getPocketStatus() != null) {
                     isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Status_Edit);
                     if (isAuthorized) {
-                        if (((Long)pocketObj.getPocketTemplate().getCommodity()).equals(CmFinoFIX.Commodity_Money) 
+                        if (((Long)pocketObj.getPocketTemplateByPockettemplateid().getCommodity()).equals(CmFinoFIX.Commodity_Money) 
                         		&& entry.getPocketStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
                             entry.setPocketStatus(CmFinoFIX.PocketStatus_PendingRetirement);
                             updateEntity(pocketObj, entry);
@@ -691,10 +691,10 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             if(pt==null){
             	log.info("Pocket:"+pocketDetail+" PocketTemplate is set to null, by user:"+getLoggedUserNameWithIP());
             }
-            else if(pt!=thePocket.getPocketTemplate()){
+            else if(pt!=thePocket.getPocketTemplateByPockettemplateid()){
             	log.info("Pocket:"+pocketDetail+" PocketTemplate updated to Desc:"+pt.getDescription()+" ID:"+pt.getId()+" by user:"+getLoggedUserNameWithIP());
             }
-            thePocket.setPocketTemplate(pt);
+            thePocket.setPocketTemplateByPockettemplateid(pt);
         }
 
         Long mdnId = theEntries.getMDNID();
@@ -822,17 +822,17 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         theEntries.setID(thePocket.getId().longValue());
         // Here get the values from Pocket and set them in the entry.
-        if (null != thePocket.getPocketTemplate()) {
-            theEntries.setPocketTemplateID(thePocket.getPocketTemplate().getId().longValue());
-            theEntries.setPocketTemplDescription(thePocket.getPocketTemplate().getDescription());
-            if (thePocket.getPocketTemplate().getDenomination() != null) {
-                theEntries.setDenomination(thePocket.getPocketTemplate().getDenomination().longValue());
+        if (null != thePocket.getPocketTemplateByPockettemplateid()) {
+            theEntries.setPocketTemplateID(thePocket.getPocketTemplateByPockettemplateid().getId().longValue());
+            theEntries.setPocketTemplDescription(thePocket.getPocketTemplateByPockettemplateid().getDescription());
+            if (thePocket.getPocketTemplateByPockettemplateid().getDenomination() != null) {
+                theEntries.setDenomination(thePocket.getPocketTemplateByPockettemplateid().getDenomination().longValue());
             } else {
                 theEntries.setDenomination(1L);
             }
-            theEntries.setPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null, thePocket.getPocketTemplate().getType()));
-            theEntries.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, thePocket.getPocketTemplate().getCommodity()));
-            theEntries.setPartnerCode(thePocket.getPocketTemplate().getBankcode().intValue());
+            theEntries.setPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null, thePocket.getPocketTemplateByPockettemplateid().getType()));
+            theEntries.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, thePocket.getPocketTemplateByPockettemplateid().getCommodity()));
+            theEntries.setPartnerCode(thePocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
         }
 
         if (null != thePocket.getPocketTemplateByOldpockettemplateid()) {
@@ -853,7 +853,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         }
 
         if (null != thePocket.getCurrentbalance()) {
-            theEntries.setCurrentBalance(new BigDecimal(thePocket.getCurrentbalance()));
+            theEntries.setCurrentBalance(BigDecimal.valueOf(thePocket.getCurrentbalance()));
         }
 
         Timestamp lastTransactionTime = thePocket.getLasttransactiontime();
@@ -941,14 +941,14 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setRecordVersion(((Long)thePocket.getVersion()).intValue());
         }
         
-        if (StringUtils.isNotBlank(thePocket.getCardpan()) && thePocket.getPocketTemplate() != null) {
+        if (StringUtils.isNotBlank(thePocket.getCardpan()) && thePocket.getPocketTemplateByPockettemplateid() != null) {
         	String cPan = thePocket.getCardpan();
         	if (cPan.length() > 6) {
         		cPan = cPan.substring(cPan.length()-6);
         	} 
-        	theEntries.setPocketDispText(thePocket.getPocketTemplate().getDescription() + " - " + cPan);
-        } else if (thePocket.getPocketTemplate() != null) {
-        	theEntries.setPocketDispText(thePocket.getPocketTemplate().getDescription());
+        	theEntries.setPocketDispText(thePocket.getPocketTemplateByPockettemplateid().getDescription() + " - " + cPan);
+        } else if (thePocket.getPocketTemplateByPockettemplateid() != null) {
+        	theEntries.setPocketDispText(thePocket.getPocketTemplateByPockettemplateid().getDescription());
         }
     }
 }

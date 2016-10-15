@@ -51,7 +51,7 @@ public class CheckBalanceForSubscriberProcessorImpl extends BaseFixProcessor imp
         Pocket p = pocketDao.getById(realMsg.getPocketID());//SubscriberService.getDefaultPocket(realMsg.getSubscriberMDNID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
         if (p == null) {
             updateToDefault(realMsg);           
-        }else if(CmFinoFIX.PocketType_BankAccount.equals(p.getPocketTemplate().getType())){
+        }else if(CmFinoFIX.PocketType_BankAccount.equals(p.getPocketTemplateByPockettemplateid().getType())){
         	return getErrorMessage(MessageText._("Balance not Available"),
                     CmFinoFIX.ErrorCode_Generic, CmFinoFIX.CMJSCheckBalanceForSubscriber.FieldName_Balance,
                     MessageText._("Balance not Available"));
@@ -67,11 +67,11 @@ public class CheckBalanceForSubscriberProcessorImpl extends BaseFixProcessor imp
     private void updateMessage(Pocket pocket, CmFinoFIX.CMJSCheckBalanceForSubscriber entry) {
     	entry.setBalance(pocketDao.getActualCurrentBalanceForPocket(pocket));
     	entry.setCurrency(pocket.getSubscriberMdn().getSubscriber().getCurrency());
-        if (null != pocket.getPocketTemplate()) {
-            entry.setCommodity(((Long)pocket.getPocketTemplate().getCommodity()).intValue());
+        if (null != pocket.getPocketTemplateByPockettemplateid()) {
+            entry.setCommodity(((Long)pocket.getPocketTemplateByPockettemplateid().getCommodity()).intValue());
             String pocketTypeText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null,
-                    pocket.getPocketTemplate().getType());
-            Integer commodityType = ((Long)pocket.getPocketTemplate().getCommodity()).intValue();
+                    pocket.getPocketTemplateByPockettemplateid().getType());
+            Integer commodityType = ((Long)pocket.getPocketTemplateByPockettemplateid().getCommodity()).intValue();
             String commodityText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, commodityType);
             entry.setPocketTypeText(String.format("%s  %s", commodityText, pocketTypeText));
         }

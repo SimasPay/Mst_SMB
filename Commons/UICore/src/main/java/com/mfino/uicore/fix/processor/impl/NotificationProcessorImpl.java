@@ -56,7 +56,7 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
     private void updateEntity(Notification s, CMJSNotification.CGEntries e) {
 
         if (e.getID() != null) {
-            s.setId(new BigDecimal(e.getID()));
+            s.setId(e.getID());
         }
         if (e.getLanguage() != null) {
             s.setLanguage(e.getLanguage());

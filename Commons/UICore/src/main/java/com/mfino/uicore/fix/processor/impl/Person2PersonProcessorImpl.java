@@ -126,7 +126,7 @@ public class Person2PersonProcessorImpl extends BaseFixProcessor implements Pers
     public void updateEntity(Person2Person s, CMJSPerson2Person.CGEntries e) {
 
         if (e.getID() != null) {
-            s.setId(new BigDecimal(e.getID()));
+            s.setId(e.getID());
         }
         if (e.getActivationTime() != null) {
             s.setActivationtime(e.getActivationTime());

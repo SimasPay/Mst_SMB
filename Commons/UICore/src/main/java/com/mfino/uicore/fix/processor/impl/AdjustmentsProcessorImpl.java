@@ -55,12 +55,12 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 		if(adj.getPocketBySourcepocketid() != null) {
 			Pocket pocket = adj.getPocketBySourcepocketid();
 			e.setSourcePocketID(pocket.getId().longValue());
-			e.setSourcePocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getId() + ")");
+			e.setSourcePocketTemplateDescription(pocket.getPocketTemplateByPockettemplateid().getDescription() + "(ID:" + pocket.getId() + ")");
 		}
 		if(adj.getPocketByDestpocketid() != null) {
 			Pocket pocket = adj.getPocketByDestpocketid();
 			e.setDestPocketID(pocket.getId().longValue());
-			e.setDestPocketTemplateDescription(pocket.getPocketTemplate().getDescription() + "(ID:" + pocket.getId() + ")");
+			e.setDestPocketTemplateDescription(pocket.getPocketTemplateByPockettemplateid().getDescription() + "(ID:" + pocket.getId() + ")");
 		}
 		if(adj.getAmount() != null) {
 			e.setAmount(adj.getAmount());

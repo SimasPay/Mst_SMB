@@ -192,7 +192,7 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 			String serviceName = ServiceAndTransactionConstants.SERVICE_WALLET;
 			PocketDAO pocketDao = daoFactory.getPocketDAO();
 			Pocket sourcePocket = pocketDao.getById(sourcePocketId);
-			if (sourcePocket != null && CmFinoFIX.PocketType_BankAccount.equals(sourcePocket.getPocketTemplate().getType())) {
+			if (sourcePocket != null && CmFinoFIX.PocketType_BankAccount.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType())) {
 				serviceName = ServiceAndTransactionConstants.SERVICE_BANK;
 			}
 			
