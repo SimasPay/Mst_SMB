@@ -58,7 +58,7 @@ public class ChannelCodeDAO extends BaseDAO<ChannelCode> {
     }
     public ChannelCode getByChannelSourceApplication(Integer channelSourceApplication) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(ChannelCode.FieldName_ChannelSourceApplication, channelSourceApplication));
+        criteria.add(Restrictions.eq(ChannelCode.FieldName_ChannelSourceApplication, new Long(channelSourceApplication)));
         return (ChannelCode) criteria.uniqueResult();
     }
 
