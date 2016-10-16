@@ -107,7 +107,7 @@ public class InquiryHandler {
 			}
 			
 			sessionFactory = htm.getSessionFactory();
-			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+			Session session = sessionFactory.getCurrentSession();
 			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 
 			String mdn = subscriberService.normalizeMDN(oMdn.substring(4));
