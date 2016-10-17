@@ -122,6 +122,7 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 		this.cashoutctid = cashoutctid;
 	}
 
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "DIGESTEDPIN", length = 1020)
 	public String getDigestedpin() {
 		return this.digestedpin;

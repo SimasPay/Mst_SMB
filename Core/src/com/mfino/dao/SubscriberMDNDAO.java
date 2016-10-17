@@ -218,7 +218,7 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         }
 
         if (true == query.isSubscriberMDNStatusRetire()) {
-            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDNStatus, CmFinoFIX.MDNStatus_Retired));
+            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDNStatus, new Long(CmFinoFIX.MDNStatus_Retired)));	
         }
 
         Integer[] statuses = query.getStatusIn();
@@ -232,12 +232,12 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
 
         Integer statusEQ = query.getStatusEQ();
         if (null != statusEQ) {
-            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDNStatus, statusEQ));
+            criteria.add(Restrictions.eq(SubscriberMdn.FieldName_MDNStatus, new Long(statusEQ)));
         }
 
         Integer statusNE = query.getStatusNE();
         if (null != statusNE) {
-            criteria.add(Restrictions.ne(SubscriberMdn.FieldName_MDNStatus, statusNE));
+            criteria.add(Restrictions.ne(SubscriberMdn.FieldName_MDNStatus, new Long(statusNE)));
         }
         
         KycLevel kycLevel = null;

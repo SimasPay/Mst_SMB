@@ -44,7 +44,7 @@ public class ChannelSessionMgmt extends Base implements java.io.Serializable {
 	}
 
 	
-
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "SESSIONKEY", length = 1020)
 	public String getSessionkey() {
 		return this.sessionkey;

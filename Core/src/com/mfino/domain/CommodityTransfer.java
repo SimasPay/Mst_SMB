@@ -420,7 +420,8 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	public void setSourcepockettype(long sourcepockettype) {
 		this.sourcepockettype = sourcepockettype;
 	}
-
+ 
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "SOURCEPOCKETBALANCE", length = 1020)
 	public String getSourcepocketbalance() {
 		return this.sourcepocketbalance;
@@ -430,6 +431,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.sourcepocketbalance = sourcepocketbalance;
 	}
 
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "SOURCECARDPAN", length = 1020)
 	public String getSourcecardpan() {
 		return this.sourcecardpan;
@@ -510,7 +512,8 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	public void setDestpocketid(BigDecimal destpocketid) {
 		this.destpocketid = destpocketid;
 	}
-
+    
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "DESTPOCKETBALANCE", length = 1020)
 	public String getDestpocketbalance() {
 		return this.destpocketbalance;
@@ -529,6 +532,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.destbankaccountname = destbankaccountname;
 	}
 
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "DESTCARDPAN", length = 1020)
 	public String getDestcardpan() {
 		return this.destcardpan;

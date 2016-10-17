@@ -154,6 +154,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.lasttransactiontime = lasttransactiontime;
 	}
 
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "CURRENTBALANCE", length = 1020)
 	public String getCurrentbalance() {
 		return this.currentbalance;
@@ -244,7 +245,8 @@ public class Pocket extends Base implements java.io.Serializable {
 	public void setLastbankrequestcode(Long lastbankrequestcode) {
 		this.lastbankrequestcode = lastbankrequestcode;
 	}
-
+ 
+	@Type(type = "uniqueencryptedString")
 	@Column(name = "CARDPAN", unique = true, length = 1020)
 	public String getCardpan() {
 		return this.cardpan;
