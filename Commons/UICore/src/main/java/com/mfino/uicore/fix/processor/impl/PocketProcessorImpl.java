@@ -886,19 +886,22 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         Integer currentMonthlyTransactionCount = ((Long)thePocket.getCurrentmonthlytxnscount()).intValue();
         theEntries.setCurrentMonthlyTxnsCount(currentMonthlyTransactionCount);
-
+        if (null != thePocket.getLastbankresponsecode()) { 
         Integer lastBankResponseCode = thePocket.getLastbankresponsecode().intValue();
-        if (null != lastBankResponseCode) {
         theEntries.setLastBankResponseCode(lastBankResponseCode);
         }
+        
+        
         String lastBankAuthCode = thePocket.getLastbankauthorizationcode();
         if (null != lastBankAuthCode) {
             theEntries.setLastBankAuthorizationCode(lastBankAuthCode);
         }
 
+        if(null !=thePocket.getLastbankrequestcode())
+        {
         Integer lastBankRequestCode = thePocket.getLastbankrequestcode().intValue();
         theEntries.setLastBankRequestCode(lastBankRequestCode);
-
+        }
         String cardPan = thePocket.getCardpan();
         if (null != cardPan) {
             theEntries.setCardPAN(cardPan);
