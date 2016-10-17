@@ -214,15 +214,15 @@ public class PocketDAO extends BaseDAO<Pocket> {
 			if(currentBalance ==null){
 				currentBalance = BigDecimal.ZERO;
 			}
-			Criteria crCriteria=getSession().createCriteria(MfsLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
-			crCriteria.setProjection(Projections.sum("Amount"));
+			Criteria crCriteria=getSession().createCriteria(MfsLedger.class).add(Restrictions.eq("pocketid", pocket.getId())).add(Restrictions.eq("ledgertype", "Cr.")).add(Restrictions.eq("ledgerstatus", "R"));
+			crCriteria.setProjection(Projections.sum("amount"));
 			BigDecimal crBalance = (BigDecimal) crCriteria.uniqueResult();
 			if(crBalance == null){
 				crBalance = BigDecimal.ZERO;
 			}
 			
-			Criteria drCriteria=getSession().createCriteria(MfsLedger.class).add(Restrictions.eq("PocketID", pocket.getId())).add(Restrictions.eq("LedgerType", "Cr.")).add(Restrictions.eq("LedgerStatus", "R"));
-			drCriteria.setProjection(Projections.sum("Amount"));
+			Criteria drCriteria=getSession().createCriteria(MfsLedger.class).add(Restrictions.eq("pocketid", pocket.getId())).add(Restrictions.eq("ledgertype", "Cr.")).add(Restrictions.eq("ledgerstatus", "R"));
+			drCriteria.setProjection(Projections.sum("amount"));
 			BigDecimal drBalance = (BigDecimal) drCriteria.uniqueResult();
 			if(drBalance == null){
 				drBalance = BigDecimal.ZERO;
