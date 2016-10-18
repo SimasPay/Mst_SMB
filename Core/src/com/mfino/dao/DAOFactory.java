@@ -318,13 +318,13 @@ public class DAOFactory {
 	
 	private AgentCommissionFeeDAO agentCommissionFeeDAO;
 	
+	private CommodityTransferNextIDDAO commodityTransferNextIDDAO;
+	
 	public ProductReferralDAO getProductReferralDAO() {
 		productReferralDAO=new ProductReferralDAO();		
 		productReferralDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return productReferralDAO;
 	}
-	
-	
 	
 	public RetiredCardPANInfoDAO getRetiredCardPANInfoDAO() {
 		retiredCardPANInfoDAO = new RetiredCardPANInfoDAO();
@@ -1325,5 +1325,11 @@ public class DAOFactory {
 		agentCommissionFeeDAO = new AgentCommissionFeeDAO();
 		agentCommissionFeeDAO.setHibernateSessionHolder(getHibernateSessionHolder());
 		return agentCommissionFeeDAO;
+	}
+	
+	public CommodityTransferNextIDDAO getCommodityTransferNextIDDAO() {
+		commodityTransferNextIDDAO = new CommodityTransferNextIDDAO();
+		commodityTransferNextIDDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return commodityTransferNextIDDAO;
 	}
 }

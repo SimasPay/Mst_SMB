@@ -20,7 +20,7 @@ import javax.persistence.Table;
 public class CommodityTransferNextId extends Base  implements java.io.Serializable {
 
 
-	private BigDecimal nextrecordid;
+	private Long nextrecordid;
 	private Long id;
 
 	public CommodityTransferNextId() {
@@ -38,11 +38,11 @@ public class CommodityTransferNextId extends Base  implements java.io.Serializab
 	}
 
 	@Column(name = "NEXTRECORDID", nullable = false, scale = 0)
-	public BigDecimal getNextrecordid() {
+	public Long getNextrecordid() {
 		return this.nextrecordid;
 	}
 
-	public void setNextrecordid(BigDecimal nextrecordid) {
+	public void setNextrecordid(Long nextrecordid) {
 		this.nextrecordid = nextrecordid;
 	}
 

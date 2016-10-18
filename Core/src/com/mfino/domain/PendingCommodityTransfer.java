@@ -7,11 +7,14 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.mfino.hibernate.Timestamp;
@@ -177,9 +180,25 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private short bankreversalrequired;
 	private short operatoractionrequired;
 
+	private Long id;
+	
 	public PendingCommodityTransfer() {
 	}
 
+	
+	@Id
+	@GeneratedValue(generator="idgenerator")
+	@GenericGenerator(name="idgenerator",strategy = "com.mfino.util.HIDGenerator")
+	@Column(name = "ID")
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SOURCEMDNID", nullable = false)
