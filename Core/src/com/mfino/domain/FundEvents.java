@@ -9,7 +9,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -23,6 +27,7 @@ public class FundEvents extends Base implements java.io.Serializable {
 	private BigDecimal mspid;
 	private Long fundeventtype;
 	private String fundeventdescription;
+	private Long id;
 	private Set<FundDefinition> fundDefinitionsForOnfundallocationtimeexpiry = new HashSet<FundDefinition>(
 			0);
 	private Set<FundDefinition> fundDefinitionsForGenerationofotponfailure = new HashSet<FundDefinition>(
@@ -33,7 +38,17 @@ public class FundEvents extends Base implements java.io.Serializable {
 	public FundEvents() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "fund_events_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 
 	@Column(name = "MSPID", nullable = false, scale = 0)

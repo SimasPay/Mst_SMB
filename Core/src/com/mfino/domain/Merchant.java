@@ -83,72 +83,7 @@ public class Merchant  implements java.io.Serializable {
 	public Merchant() {
 	}
 
-	public Merchant(Subscriber subscriber, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			String tradename, long status, Timestamp statustime) {
-		this.subscriber = subscriber;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.tradename = tradename;
-		this.status = status;
-		this.statustime = statustime;
-	}
-
-	public Merchant(Address addressByMerchantaddressid,
-			Address addressByFranchiseoutletaddressid, Region region,
-			Subscriber subscriber, Merchant merchant,
-			Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String groupid,
-			String tradename, String typeoforganization,
-			BigDecimal distributionchaintemplateid, String faxnumber,
-			String website, BigDecimal currentweeklypurchaseamount,
-			Timestamp lastloptime, String authorizedrepresentative,
-			String representativename, String designation,
-			String franchisephonenumber, String classification,
-			Long numberofoutlets, String industryclassification,
-			Long yearestablished, String authorizedfaxnumber,
-			String authorizedemail, String admincomment, long status,
-			Timestamp statustime, Long rangecheck, Set<MdnRange> mdnRanges,
-			Set<LetterOfPurchase> letterOfPurchases, Set<BulkLop> bulkLops,
-			Set<Merchant> merchants) {
-		this.addressByMerchantaddressid = addressByMerchantaddressid;
-		this.addressByFranchiseoutletaddressid = addressByFranchiseoutletaddressid;
-		this.region = region;
-		this.subscriber = subscriber;
-		this.merchant = merchant;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.groupid = groupid;
-		this.tradename = tradename;
-		this.typeoforganization = typeoforganization;
-		this.distributionchaintemplateid = distributionchaintemplateid;
-		this.faxnumber = faxnumber;
-		this.website = website;
-		this.currentweeklypurchaseamount = currentweeklypurchaseamount;
-		this.lastloptime = lastloptime;
-		this.authorizedrepresentative = authorizedrepresentative;
-		this.representativename = representativename;
-		this.designation = designation;
-		this.franchisephonenumber = franchisephonenumber;
-		this.classification = classification;
-		this.numberofoutlets = numberofoutlets;
-		this.industryclassification = industryclassification;
-		this.yearestablished = yearestablished;
-		this.authorizedfaxnumber = authorizedfaxnumber;
-		this.authorizedemail = authorizedemail;
-		this.admincomment = admincomment;
-		this.status = status;
-		this.statustime = statustime;
-		this.rangecheck = rangecheck;
-		this.mdnRanges = mdnRanges;
-		this.letterOfPurchases = letterOfPurchases;
-		this.bulkLops = bulkLops;
-		this.merchants = merchants;
-	}
+	
 
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "subscriber"))
 	@Id

@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -23,10 +27,21 @@ public class MfaAuthentication extends Base implements java.io.Serializable {
 	private long mfamode;
 	private String mfavalue;
 	private BigDecimal retryattempt;
+	private Long id;
 
 	public MfaAuthentication() {
 	}
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "mfa_authentication_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 
 		

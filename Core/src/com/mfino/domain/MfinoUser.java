@@ -9,9 +9,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -43,6 +47,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	public static final String FieldName_Company = "company";
 	public static final String FieldName_UserRestrictions = "restrictions";
 	public static final String FieldName_Role = "role";
+	private Long id;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
 	private String username;
@@ -91,6 +96,18 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private Set<Integer> permissions;
 	
     private String languageCode;
+    
+    @Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "mfino_user_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
     
     @Transient
     public Set<Integer> getPermissions() {

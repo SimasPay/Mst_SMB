@@ -8,7 +8,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -21,12 +25,23 @@ public class FavoriteCategory extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private String categoryname;
 	private String displayname;
+	private Long id;
 	private Set<SubscriberFavorite> subscriberFavorites = new HashSet<SubscriberFavorite>(
 			0);
 
 	public FavoriteCategory() {
 	}
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "favorite_category_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 
 	@Column(name = "CATEGORYNAME", nullable = false)

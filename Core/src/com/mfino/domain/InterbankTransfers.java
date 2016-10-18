@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -35,10 +39,22 @@ public class InterbankTransfers extends Base implements java.io.Serializable {
 	private String nibresponsecode;
 	private Long ibtstatus;
 	private String destbankname;
+	private Long id;
 
 	public InterbankTransfers() {
 	}
+    
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "interbank_transfers_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	
 	@Column(name = "TERMINALID", length = 1020)

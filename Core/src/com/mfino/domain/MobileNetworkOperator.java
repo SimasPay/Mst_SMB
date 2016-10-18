@@ -4,6 +4,10 @@ package com.mfino.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -21,11 +25,22 @@ public class MobileNetworkOperator extends Base implements java.io.Serializable 
 	private String description;
 	private Long status;
 	private Timestamp statustime;
+	private Long id;
 
 	public MobileNetworkOperator() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "mobile_network_operator_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	@Column(name = "NAME", length = 1020)
 	public String getName() {

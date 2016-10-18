@@ -8,7 +8,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.mfino.hibernate.Timestamp;
@@ -24,7 +28,7 @@ public class Groups extends Base implements java.io.Serializable {
 	public static final String FieldName_GroupName = "groupname";
 	public static final String FieldName_SystemGroup = "systemgroup";
 	
-	private long id;
+	private Long id;
 	private long version;
 	private String groupname;
 	private String description;
@@ -37,31 +41,16 @@ public class Groups extends Base implements java.io.Serializable {
 	public Groups() {
 	}
 
-	public Groups(long id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String groupname) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.groupname = groupname;
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "groups_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public Groups(long id, Timestamp lastupdatetime, String updatedby,
-			Timestamp createtime, String createdby, String groupname,
-			String description, Short systemgroup,
-			Set<ActorChannelMapping> actorChannelMappings,
-			Set<PtcGroupMapping> ptcGroupMappings) {
+	public void setId(Long id) {
 		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.groupname = groupname;
-		this.description = description;
-		this.systemgroup = systemgroup;
-		this.actorChannelMappings = actorChannelMappings;
-		this.ptcGroupMappings = ptcGroupMappings;
 	}
 
 	

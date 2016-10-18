@@ -36,33 +36,7 @@ public class MfinoJobDetails implements java.io.Serializable {
 	public MfinoJobDetails() {
 	}
 
-	public MfinoJobDetails(MfinoJobDetailsId id, String jobClassName,
-			String isDurable, String isVolatile, String isStateful,
-			String requestsRecovery) {
-		this.id = id;
-		this.jobClassName = jobClassName;
-		this.isDurable = isDurable;
-		this.isVolatile = isVolatile;
-		this.isStateful = isStateful;
-		this.requestsRecovery = requestsRecovery;
-	}
-
-	public MfinoJobDetails(MfinoJobDetailsId id, String description,
-			String jobClassName, String isDurable, String isVolatile,
-			String isStateful, String requestsRecovery, Blob jobData,
-			Set<MfinoJobListeners> mfinoJobListenerses,
-			Set<MfinoTriggers> mfinoTriggerses) {
-		this.id = id;
-		this.description = description;
-		this.jobClassName = jobClassName;
-		this.isDurable = isDurable;
-		this.isVolatile = isVolatile;
-		this.isStateful = isStateful;
-		this.requestsRecovery = requestsRecovery;
-		this.jobData = jobData;
-		this.mfinoJobListenerses = mfinoJobListenerses;
-		this.mfinoTriggerses = mfinoTriggerses;
-	}
+	
 
 	@EmbeddedId
 	@AttributeOverrides({

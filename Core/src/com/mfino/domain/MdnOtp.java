@@ -4,6 +4,10 @@ package com.mfino.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -24,11 +28,22 @@ public class MdnOtp extends Base implements java.io.Serializable {
 	private Timestamp otpexpirationtime;
 	private long status;
 	private Long otpretrycount;
+	private Long id;
 
 	public MdnOtp() {
 	}
+    
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "mdn_otp_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
 
-	
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	@Column(name = "MDN", nullable = false, length = 1020)
 	public String getMdn() {

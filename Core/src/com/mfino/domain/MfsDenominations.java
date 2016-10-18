@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.mfino.hibernate.Timestamp;
@@ -23,37 +27,23 @@ public class MfsDenominations extends Base implements java.io.Serializable {
 	private BigDecimal denominationamount;
 	private String description;
 	private String productcode;
+	private Long id;
 
 	public MfsDenominations() {
 	}
 
-	public MfsDenominations(Long id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			Long mfsid, BigDecimal denominationamount) {
-		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mfsid = mfsid;
-		this.denominationamount = denominationamount;
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "mfs_denominations_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public MfsDenominations(Long id, Timestamp lastupdatetime,
-			String updatedby, Timestamp createtime, String createdby,
-			Long mfsid, BigDecimal denominationamount,
-			String description, String productcode) {
+	public void setId(Long id) {
 		this.id = id;
-		this.lastupdatetime = lastupdatetime;
-		this.updatedby = updatedby;
-		this.createtime = createtime;
-		this.createdby = createdby;
-		this.mfsid = mfsid;
-		this.denominationamount = denominationamount;
-		this.description = description;
-		this.productcode = productcode;
 	}
-
 	
 	@Column(name = "MFSID", nullable = false, scale = 0)
 	public Long getMfsid() {
