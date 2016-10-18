@@ -8,9 +8,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -52,10 +56,24 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	private Set<TransactionCharge> transactionCharges = new HashSet<TransactionCharge>(
 			0);
 
+	private Long id;
+	
 	public TransactionRule() {
 	}
 
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "transaction_rule_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CHANNELCODEID", nullable = false)

@@ -9,9 +9,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -59,10 +63,23 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	private Set<FundDistributionInfo> fundDistributionInfos = new HashSet<FundDistributionInfo>(
 			0);
 
+	private Long id;
+	
 	public UnregisteredTxnInfo() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "unregistered_txn_info_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MDNID")
