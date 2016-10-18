@@ -27,7 +27,7 @@ public class CommodityTransferSequenceGeneratorImpl extends BaseServiceImpl impl
 		CommodityTransferNextIDDAO commodityTransferNextIDDAO = coreDataWrapper.getCommodityTransferNextIDDAO();
 		CommodityTransferNextId commodityTransferNextID = commodityTransferNextIDDAO.getNextIDWithLock();
 		long nextID = commodityTransferNextID.getNextrecordid().longValue();
-		commodityTransferNextID.setNextrecordid(commodityTransferNextID.getNextrecordid().add(new BigDecimal(1)));
+		commodityTransferNextID.setNextrecordid(commodityTransferNextID.getNextrecordid()+1);
 		commodityTransferNextIDDAO.save(commodityTransferNextID);
 		log.info("CommodityTransferSequenceGeneratorImpl :: getNextTransferID() END");
 		return nextID;
