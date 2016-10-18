@@ -1109,12 +1109,12 @@ public class PartnerServiceImpl implements PartnerService {
            	partner.setIndustryclassification(partnerRegistration.getIndustryClassification());
             MfinoServiceProviderDAO mspDAO =DAOFactory.getInstance().getMfinoServiceProviderDAO();
             partner.setMfinoServiceProvider(mspDAO.getById(1));
-            partner.setNumberofoutlets(partnerRegistration.getNumberOfOutlets().longValue());
+            partner.setNumberofoutlets(Long.valueOf(partnerRegistration.getNumberOfOutlets()));
             partner.setRepresentativename(partnerRegistration.getRepresentativeName());
             partner.setTradename(partnerRegistration.getTradeName());
             partner.setTypeoforganization(partnerRegistration.getTypeOfOrganization());
             partner.setWebsite(partnerRegistration.getWebSite());
-            partner.setYearestablished(partnerRegistration.getYearEstablished().longValue());
+            partner.setYearestablished(Long.valueOf(partnerRegistration.getYearEstablished()));
          //for merchant and outlet addresses
             AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
           	Address merchantAddress = new Address();

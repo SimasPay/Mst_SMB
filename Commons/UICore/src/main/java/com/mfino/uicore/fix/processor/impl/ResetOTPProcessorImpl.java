@@ -81,7 +81,7 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
         }
         Subscriber subscriber = subscriberMDN.getSubscriber();
         
-        Long tempStatusL = subscriber.getStatus();
+        Long tempStatusL = subscriber.getStatus().longValue();
         Integer tempStatusLI = tempStatusL.intValue();
         
         if(!(tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Initialized)
@@ -103,7 +103,7 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
 		wrapper.setCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 		wrapper.setDestMDN(mdn);
 		
-		Long tempLanguageL = subscriberMDN.getSubscriber().getLanguage();
+		Long tempLanguageL = subscriberMDN.getSubscriber().getLanguage().longValue();
 		Integer tempLanguageLI = tempLanguageL.intValue();
 		
 		wrapper.setLanguage(tempLanguageLI);
@@ -121,7 +121,7 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
 		String mailMessage;
 			if(subscriberServiceExtended.isSubscriberEmailVerified(subscriber)) {
 				
-				Long tempTypeL = subscriber.getType();
+				Long tempTypeL = subscriber.getType().longValue();
 				Integer tempTypeLI = tempTypeL.intValue();
 				
 			if(tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner)&&subscriber.getPartners().iterator().next().getAuthorizedemail()!=null){

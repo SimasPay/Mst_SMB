@@ -148,7 +148,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
             return errorMsg;
         }
         if(!(((Long)partner.getPartnerstatus()).equals(CmFinoFIX.SubscriberStatus_Initialized)
-        		&& ((Long)subscriber.getStatus()).equals(CmFinoFIX.SubscriberStatus_Initialized))){
+        		&& (subscriber.getStatus()).equals(CmFinoFIX.SubscriberStatus_Initialized))){
         	log.info("Invalid partner status" + realMsg.getPartnerID());
             errorMsg.setErrorDescription(MessageText._("Invalid partner status"));
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -184,7 +184,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		if(isEMoneyPocketRequired == true){
 		
 			emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, 
-					CmFinoFIX.PocketType_SVA, ((Long)subscriber.getType()).intValue(), partner.getBusinesspartnertype().intValue(), groupID);
+					CmFinoFIX.PocketType_SVA, subscriber.getType(), partner.getBusinesspartnertype().intValue(), groupID);
 			
 			if(emoneyPocketTemplate == null) {
 	         	log.info("Valid emoneyPocketTemplate not found" + realMsg.getPartnerID());
@@ -199,7 +199,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
         
         lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, 
-        		CmFinoFIX.PocketType_LakuPandai, ((Long)subscriber.getType()).intValue(), partner.getBusinesspartnertype().intValue(), groupID);
+        		CmFinoFIX.PocketType_LakuPandai, subscriber.getType(), partner.getBusinesspartnertype().intValue(), groupID);
 		
 		if(lakuPocketTemplate == null) {
          	log.info("Valid lakuPocketTemplate not found" + realMsg.getPartnerID());
@@ -245,7 +245,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
                  return errorMsg;
              }
              
-        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_Approved).longValue());
+        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_Approved));
         	subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
         	subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
         	subscriber.setApproveorrejecttime(new Timestamp());
@@ -312,7 +312,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         	subscriber.setApproveorrejecttime(new Timestamp());
         	subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
         	subscriber.setStatustime(new Timestamp());
-        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_RequestForCorrection).longValue());
+        	subscriber.setUpgradestate(CmFinoFIX.UpgradeState_RequestForCorrection);
         	subscriberDao.save(subscriber);
 			errorMsg.setErrorDescription(MessageText._("Requested For Correction of Data for Agent"));
         } else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
@@ -327,7 +327,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
         	subscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
         	subscriber.setStatustime(new Timestamp());
         	subscriberMDN.setStatustime(new Timestamp());
-        	subscriber.setUpgradestate(((Integer)CmFinoFIX.UpgradeState_Rejected).longValue());
+        	subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Rejected);
         	subscriberDao.save(subscriber);
         	subscriberMdnDao.save(subscriberMDN);
             partnerDAO.save(partner);

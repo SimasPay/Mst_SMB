@@ -87,7 +87,7 @@ public class PendingCommodityTransferDAOTest {
         sub.setLanguage(Integer.MAX_VALUE);
         sub.setLastname("sdas");
         sub.setLastupdatetime(new Timestamp());
-        sub.setNotificationmethod(Long.MAX_VALUE);
+        sub.setNotificationmethod(Integer.MAX_VALUE);
       //  sub.setParentID(Long.MIN_VALUE);
         sub.setRestrictions(Integer.MAX_VALUE);
         sub.setStatus(Integer.MAX_VALUE);

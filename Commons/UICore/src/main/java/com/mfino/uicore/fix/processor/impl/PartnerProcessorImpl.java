@@ -437,7 +437,7 @@ public class PartnerProcessorImpl extends BaseFixProcessor implements PartnerPro
 	        	entry.setPartnerCode(partner.getPartnercode());
 	        }
 	        if((Long)partner.getPartnerstatus() != null){
-	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, ((Long)subscriber.getLanguage()).intValue(), partner.getPartnerstatus()));
+	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, (subscriber.getLanguage()), partner.getPartnerstatus()));
 	        	entry.setPartnerStatus(((Long)partner.getPartnerstatus()).intValue());
 	        }
 	        if(partner.getTradename() != null){
@@ -543,9 +543,9 @@ public class PartnerProcessorImpl extends BaseFixProcessor implements PartnerPro
         	if(subscriber.getLastname() != null){
         		entry.setLastName(subscriber.getLastname());
         	}
-	        if((Long)subscriber.getLanguage() != null){
-	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, ((Long)subscriber.getLanguage()).intValue(), subscriber.getLanguage()));
-	        	entry.setLanguage(((Long)subscriber.getLanguage()).intValue());
+	        if(subscriber.getLanguage() != null){
+	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, (subscriber.getLanguage()), subscriber.getLanguage()));
+	        	entry.setLanguage(subscriber.getLanguage());
 	        }
 	        if(subscriber.getTimezone() != null){
 	        	entry.setTimezone(subscriber.getTimezone());

@@ -55,7 +55,7 @@ public class SubscriberAdditonalFieldsProcessorImpl extends BaseFixProcessor imp
             s.setMfinoServiceProvider(mspDAO.getById(e.getMSPID()));
         }
         if (e.getNotificationMethod() != null) {
-            s.setNotificationmethod(e.getNotificationMethod().longValue());
+            s.setNotificationmethod(e.getNotificationMethod());
         }
 //        if (e.getParentID() != null) {
 //            s.setParentID(e.getParentID());

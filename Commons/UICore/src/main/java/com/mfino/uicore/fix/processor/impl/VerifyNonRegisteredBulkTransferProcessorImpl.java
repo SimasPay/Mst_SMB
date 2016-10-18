@@ -135,7 +135,7 @@ public class VerifyNonRegisteredBulkTransferProcessorImpl extends BaseFixProcess
 							// Sending the new Fund access code to Destination subscriber
 							NotificationWrapper notification = new NotificationWrapper();
 							
-							Long tempLanguageL = destSubscriber.getLanguage();
+							Long tempLanguageL = destSubscriber.getLanguage().longValue();
 							Integer tempLanguageLI = tempLanguageL.intValue();
 							
 							notification.setLanguage(tempLanguageLI);

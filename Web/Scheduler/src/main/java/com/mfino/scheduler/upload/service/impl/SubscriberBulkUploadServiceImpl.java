@@ -451,7 +451,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			subscriber.setIdexiparetiontime(new Timestamp(idExpirationDate));
 			subscriber.setKycLevel(kycLevel);
 			subscriber.setUpgradablekyclevel(null);
-			subscriber.setUpgradestate(Long.valueOf(CmFinoFIX.UpgradeState_Approved));
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 			subscriber.setApproveorrejectcomment(MessageText._("Upgrade N Approved by System"));
 			subscriber.setApprovedorrejectedby(userName);
 			subscriber.setApproveorrejecttime(new Timestamp());
@@ -597,7 +597,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			subscriber = subscriberMDN.getSubscriber();
 			authorizingPerson = subscriber.getAuthPersonDetails();
 		}else{
-			subscriber.setRegistrationmedium(Long.valueOf(CmFinoFIX.RegistrationMedium_BulkUpload));
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_BulkUpload);
 			subscriber.setCreatedby(uploadedBy);
 			subscriberMDN.setCreatedby(uploadedBy);
 		}
@@ -614,7 +614,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		}
 		
 		if (!CmFinoFIX.RecordType_SubscriberUnBanked.equals(syncRecord.getAccountType())) {
-			subscriber.setUpgradestate(Long.valueOf(CmFinoFIX.UpgradeState_Upgradable));
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			subscriber.setUpgradablekyclevel(BigDecimal.valueOf(syncRecord.getAccountType().longValue()));
 			subscriber.setAppliedby(uploadedBy);
 		}

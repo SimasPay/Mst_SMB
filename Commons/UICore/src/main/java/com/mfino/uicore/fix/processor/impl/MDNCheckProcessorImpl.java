@@ -48,13 +48,13 @@ public class MDNCheckProcessorImpl extends BaseFixProcessor implements MDNCheckP
 
         if(subMdn != null){
         	if(realMsg.getAgentCheck()!=null&&realMsg.getAgentCheck()){
-        		if( ((Long)subMdn.getSubscriber().getType()).equals(CmFinoFIX.SubscriberType_Partner)){
+        		if( (subMdn.getSubscriber().getType()).equals(CmFinoFIX.SubscriberType_Partner)){
         			 err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
         	            err.setErrorDescription(MessageText._("Partner already Exists with this MDN"));	
         		}else if( ((Long)subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_PendingRetirement)
         				|| ((Long)subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_Retired)
-        				|| ((Long)subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
-        				|| ((Long)subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_Retired)
+        				|| (subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
+        				|| (subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_Retired)
         				){
         			err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
     	            err.setErrorDescription(MessageText._("Invalid MDN Status "));	

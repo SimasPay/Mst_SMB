@@ -119,7 +119,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         	
         	NotificationWrapper notificationWrapper = new NotificationWrapper();
         	
-        	Long tempLanguageL = subscriber.getLanguage();
+        	Long tempLanguageL = subscriber.getLanguage().longValue();
         	Integer tempLanguageLI = tempLanguageL.intValue();
         	
 			notificationWrapper.setLanguage(tempLanguageLI);
@@ -165,7 +165,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
 	        subdao.save(subscriber);
 	        subMdndao.save(mdn);
 	        
-	        Long tempLanguageL = subscriber.getLanguage();
+	        Long tempLanguageL = subscriber.getLanguage().longValue();
         	Integer tempLanguageLI = tempLanguageL.intValue();
 	        
 	    	NotificationWrapper notificationWrapper = new NotificationWrapper();

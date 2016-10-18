@@ -320,7 +320,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		}
 			subscriber.setKycLevel(kyclevel);
 			subscriber.setUpgradablekyclevel(null);
-			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 			subscriber.setApproveorrejectcomment(subscriberRegistration.getApprovalComments());
 			subscriber.setApprovedorrejectedby(subscriberRegistration.getAuthorizingFirstName()+ " " +subscriberRegistration.getAuthorizingLastName());
 			subscriber.setApprovalidnumber(Long.valueOf(subscriberRegistration.getAuthorizingIdNumber()));

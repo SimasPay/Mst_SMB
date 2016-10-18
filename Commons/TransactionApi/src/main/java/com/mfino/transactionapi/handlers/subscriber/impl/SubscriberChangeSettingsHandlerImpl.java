@@ -184,7 +184,7 @@ public class SubscriberChangeSettingsHandlerImpl extends FIXMessageHandler imple
 				subscriber.setEmail(setting.getEmail());
 				subscriber.setIsemailverified((short)0);}
 			if (StringUtils.isNotBlank(notificationMethod))
-				subscriber.setNotificationmethod(setting.getNotificationMethod().longValue());
+				subscriber.setNotificationmethod(setting.getNotificationMethod());
 
  			subscriberService.saveSubscriber(subscriber);
 			if(setting.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {

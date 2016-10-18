@@ -91,7 +91,7 @@ public class CommodityTransferDAOTest {
         sub.setLanguage(Integer.MAX_VALUE);
         sub.setLastname("sdas");
         sub.setLastupdatetime(new Timestamp());
-        sub.setNotificationmethod(Long.MAX_VALUE);
+        sub.setNotificationmethod(Integer.MAX_VALUE);
         sub.setRestrictions(Integer.MAX_VALUE);
         sub.setStatus(Integer.MAX_VALUE);
         sub.setStatustime(new Timestamp());

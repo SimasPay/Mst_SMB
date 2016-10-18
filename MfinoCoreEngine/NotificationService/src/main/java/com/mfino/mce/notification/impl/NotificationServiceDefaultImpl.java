@@ -158,7 +158,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 					}
 					if(smdn != null)
 					{
-						language = ((Long)smdn.getSubscriber().getLanguage()).intValue();
+						language = smdn.getSubscriber().getLanguage();
 					}
 					else {
 	                    SystemParameters langSystemParam = DAOFactory.getInstance().getSystemParameterDao().getSystemParameterByName(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
@@ -269,7 +269,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 						subscriber = subscriberMDN.getSubscriber();
 						backendResponse.setFirstName(subscriber.getFirstname());
 						backendResponse.setLastName(subscriber.getLastname());
-						receiverNotficationLanguage = ((Long)subscriber.getLanguage()).intValue();
+						receiverNotficationLanguage = subscriber.getLanguage();
 					}
 					
 

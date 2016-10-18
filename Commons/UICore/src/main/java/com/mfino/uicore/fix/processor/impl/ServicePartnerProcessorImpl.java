@@ -430,9 +430,9 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 KycLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
                 subscriber.setKycLevel(kycLevel);
                 subscriber.setUpgradablekyclevel(null);
-                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
-                subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp.longValue());
-                subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()|CmFinoFIX.NotificationMethod_Email.longValue());
+                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
+                subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp);
+                subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
                 subscriberMdn.setOtp(null);
                 subscriberMdn.setDigestedpin(null);
                 subscriberMdn.setAuthorizationtoken(null);

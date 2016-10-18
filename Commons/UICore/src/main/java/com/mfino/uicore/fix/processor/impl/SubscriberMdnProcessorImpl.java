@@ -396,7 +396,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if(!e.getNotificationMethod().equals(s.getSubscriber().getNotificationmethod())){
         		log.info("Subscriber:"+ID+" Notification method updated to "+e.getNotificationMethod()+" by user:"+getLoggedUserNameWithIP());
         	}
-			s.getSubscriber().setNotificationmethod(e.getNotificationMethod().longValue());
+			s.getSubscriber().setNotificationmethod(e.getNotificationMethod());
 		}
 		if (e.getStatus() != null) {
 			/*if(!e.getStatus().equals(s.getSubscriber().getStatus())){
@@ -427,7 +427,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if(!e.getPartnerType().equals(s.getSubscriber().getPartnertype())){
         		log.info("Subscriber:"+ID+" Partner Type updated to "+e.getCurrency()+" by user:"+getLoggedUserNameWithIP());
         	}
-			s.getSubscriber().setPartnertype(e.getPartnerType().longValue());
+			s.getSubscriber().setPartnertype(e.getPartnerType());
 		}
 		//not null check is addded because update message can come for update and insert actions
 		if (e.getCompanyID() != null) {
@@ -481,7 +481,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
         		log.info("Subscriber:"+ID+" Upgradable KYC updated to "+e.getKYCLevel()+" by user:"+getLoggedUserNameWithIP());
         	}
 			s.getSubscriber().setUpgradablekyclevel(new BigDecimal(e.getKYCLevel()));
-			s.getSubscriber().setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
+			s.getSubscriber().setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 		}
 		if(e.getKYCLevel()!=null){
 			if(!e.getKYCLevel().equals(s.getSubscriber().getUpgradablekyclevel())){
@@ -1892,7 +1892,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();
 		}
-		PocketTemplate template = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getKyclevel().longValue(), true, CmFinoFIX.PocketType_SVA, ((Long)s.getSubscriber().getType()).intValue(), null, groupID);
+		PocketTemplate template = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getKyclevel().longValue(), true, CmFinoFIX.PocketType_SVA, (s.getSubscriber().getType()), null, groupID);
 		
 		Pocket pocket = subscriberService.getDefaultPocket(s.getId().longValue(),unregTemplateID);
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();

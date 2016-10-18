@@ -86,7 +86,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         	if(!e.getNotificationMethod().equals(s.getNotificationmethod())){
         		log.info("Subscriber:"+ID+" Notification method updated to "+e.getNotificationMethod()+" by user:"+getLoggedUserNameWithIP());
         	}
-            s.setNotificationmethod(e.getNotificationMethod().longValue());
+            s.setNotificationmethod(e.getNotificationMethod());
         }
 //        if (e.getParentID() != null) {
 //            s.setParentID(e.getParentID());
@@ -256,7 +256,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
             for (CMJSSubscribers.CGEntries e : entries) {
                 Subscriber s = new Subscriber();
                 updateEntity(s, e);
-                s.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp.longValue());
+                s.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp);
                 dao.save(s);
                 log.info("Subscriber:"+s.getId()+" created by user:"+getLoggedUserNameWithIP());
                 if(e.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {

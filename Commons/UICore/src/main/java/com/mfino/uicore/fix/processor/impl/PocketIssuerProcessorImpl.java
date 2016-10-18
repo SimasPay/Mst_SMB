@@ -478,7 +478,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		PartnerDAO partnerDao = DAOFactory.getInstance().getPartnerDAO();
 
 		SubscriberMdn smdn = mdnDao.getByMDN(subMdn);
-		Integer subscriberType = ((Long)smdn.getSubscriber().getType()).intValue();
+		Integer subscriberType = smdn.getSubscriber().getType();
 	
 		//Getting group for subscriber
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();

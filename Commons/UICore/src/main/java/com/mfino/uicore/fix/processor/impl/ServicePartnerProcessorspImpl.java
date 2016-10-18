@@ -481,8 +481,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 KycLevel kycLevel = kyclevelDao.getByKycLevel(ConfigurationUtil.getBulkUploadSubscriberKYClevel());
                 subscriber.setKycLevel(kycLevel);
                 subscriber.setUpgradablekyclevel(null);
-                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
-                subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp.longValue());
+                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
+                subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_AdminApp);
                 //subscriber.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
                 subscriberMdn.setOtp(null);
                 subscriberMdn.setDigestedpin(null);
@@ -528,9 +528,9 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 updateEntityAddInfosp(subscriber,realMsg);
                 
         		if(StringUtils.isNotBlank(partner.getAuthorizedemail())) {
-        			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()|CmFinoFIX.NotificationMethod_Email.longValue());
+        			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
         		} else {
-        			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+        			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
         		}
         		subscriberDao.save(subscriber);
         		
@@ -1228,7 +1228,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		}            	
         		
         		if(entry.getNotificationMethod()!=null){
-					subscriber.setNotificationmethod(entry.getNotificationMethod().longValue());
+					subscriber.setNotificationmethod(entry.getNotificationMethod());
 				}
         		
     			if (entry.getSecurityQuestion() != null) {

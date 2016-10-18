@@ -335,7 +335,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		{
 			SubscriberMdn smdn = partner.getSubscriber().getSubscriberMdns().iterator().next();
 			String destMDN = smdn.getMdn();
-			Integer language = ((Long)smdn.getSubscriber().getLanguage()).intValue();
+			Integer language = smdn.getSubscriber().getLanguage();
 			notificationWrapper.setFirstName(smdn.getSubscriber().getFirstname());
 			notificationWrapper.setLastName(smdn.getSubscriber().getLastname());
 			notificationWrapper.setLanguage(language);

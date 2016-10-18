@@ -202,7 +202,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 							+ subscriber.getId());
 				}
 				subscriber.setUpgradablekyclevel(null);
-                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+                subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 				subscriber.setApproveorrejectcomment("Approved for No Emoney");
 				subscriber.setApprovedorrejectedby("System");
 				subscriber.setApproveorrejecttime(new Timestamp());

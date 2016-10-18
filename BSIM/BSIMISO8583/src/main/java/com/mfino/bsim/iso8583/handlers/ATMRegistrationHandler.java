@@ -248,14 +248,14 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 						.getMothersMaidenName());
 			}
 			subscriber.setDetailsrequired((short)1);
-			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM.longValue());
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			if (subscriberRegistration.getSubscriberStatus() != null) {
 				subscriber.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
 			subscriber.setStatustime(new Timestamp());
 			subscriber.setCreatedby(createdByName);
@@ -292,9 +292,9 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				}
 				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration
 						.getKYCLevel()));
-				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			} else {
-				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
 			}
 			subscriber.setAppliedby(createdByName);
 			subscriber.setAppliedtime(new Timestamp());
@@ -339,7 +339,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			Timestamp timeStamp = new Timestamp();
 			subscriber.setKycLevel(kyclevel);
 			subscriber.setUpgradablekyclevel(null);
-			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 			subscriber.setApproveorrejectcomment(MessageText._("Upgrade N Approved by System"));
 			subscriber.setApprovedorrejectedby("System");
 			subscriber.setApproveorrejecttime(timeStamp);

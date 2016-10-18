@@ -67,7 +67,7 @@ public class SubscriberMDNDAOConcurrencyTest {
         sub.setLanguage(new Integer(0));
         sub.setLastname("sdas");
         sub.setLastupdatetime(new Timestamp());
-        sub.setNotificationmethod(0L);
+        sub.setNotificationmethod(new Integer(0));
         // sub.setParentID(Long.MIN_VALUE);
         sub.setRestrictions(new Integer(0));
         sub.setStatus(new Integer(0));

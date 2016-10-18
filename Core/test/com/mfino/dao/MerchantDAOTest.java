@@ -72,7 +72,7 @@ public class MerchantDAOTest {
         sub.setLanguage(Integer.MAX_VALUE);
         sub.setLastname("sdas");
         sub.setLastupdatetime(new Timestamp());
-        sub.setNotificationmethod(Long.MAX_VALUE);
+        sub.setNotificationmethod(Integer.MAX_VALUE);
         //sub.setParentID(Long.MIN_VALUE);
         sub.setRestrictions(new Integer(0));
         sub.setStatus(new Integer(0));
