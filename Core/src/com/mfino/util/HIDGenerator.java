@@ -23,7 +23,7 @@ public class HIDGenerator implements IdentifierGenerator {
 		CommodityTransferNextIDDAO commodityTransferNextIDDAO = DAOFactory.getInstance().getCommodityTransferNextIDDAO();
 		CommodityTransferNextId commodityTransferNextID = commodityTransferNextIDDAO.getNextIDWithLock();
 		long nextID = commodityTransferNextID.getNextrecordid();
-		commodityTransferNextID.setNextRecordId(commodityTransferNextID.getNextrecordid()+1);
+		commodityTransferNextID.setNextrecordid(commodityTransferNextID.getNextrecordid()+1);
 		commodityTransferNextIDDAO.save(commodityTransferNextID);
 		
 		return nextID;
