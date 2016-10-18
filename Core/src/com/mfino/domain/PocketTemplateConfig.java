@@ -8,9 +8,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -48,13 +52,24 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	private Short issuspencepocket;
 	private Short iscollectorpocket;
 	private Short isdefault;
+	private Long id;
 	private Set<PtcGroupMapping> ptcGroupMappings = new HashSet<PtcGroupMapping>(
 			0);
 
 	public PocketTemplateConfig() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "pocket_template_config_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KYCLEVEL", nullable = false)

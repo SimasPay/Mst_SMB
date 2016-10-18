@@ -9,9 +9,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -67,6 +71,7 @@ public class Partner extends Base implements java.io.Serializable {
 	private String closeacctapprovedby;
 	private Timestamp closeaccttime;
 	private String closeapprovercomments;
+	private Long id;
 	private Set<ChargeDefinition> chargeDefinitions = new HashSet<ChargeDefinition>(
 			0);
 	private Set<PartnerServices> partnerServicesesForParentid = new HashSet<PartnerServices>(
@@ -94,7 +99,17 @@ public class Partner extends Base implements java.io.Serializable {
 	public Partner() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "partner_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MERCHANTADDRESSID")
