@@ -230,7 +230,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(
 				Partner.FieldName_BusinessPartnerType,
-				CmFinoFIX.BusinessPartnerType_ServicePartner));
+				new Long(CmFinoFIX.BusinessPartnerType_ServicePartner)));
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
 			return results.get(0);

@@ -39,8 +39,8 @@ public class Notification extends Base implements java.io.Serializable {
 	private long code;
 	private String codename;
 	private long notificationmethod;
-	private Clob text;
-	private Clob stkml;
+	private String text;
+	private String stkml;
 	private long language;
 	private long status;
 	private Timestamp statustime;
@@ -101,20 +101,20 @@ public class Notification extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "TEXT", nullable = false)
-	public Clob getText() {
+	public String getText() {
 		return this.text;
 	}
 
-	public void setText(Clob text) {
+	public void setText(String text) {
 		this.text = text;
 	}
 
 	@Column(name = "STKML")
-	public Clob getStkml() {
+	public String getStkml() {
 		return this.stkml;
 	}
 
-	public void setStkml(Clob stkml) {
+	public void setStkml(String stkml) {
 		this.stkml = stkml;
 	}
 

@@ -78,10 +78,10 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
             s.setStatus(e.getNotificationStatus());
         }
         if (e.getNotificationText() != null) {
-            s.setText(MfinoUtil.stringToClob(e.getNotificationText()));
+            s.setText(e.getNotificationText());
         }
         if (e.getSTKMLText() != null) {
-            s.setStkml(MfinoUtil.stringToClob(e.getSTKMLText()));
+            s.setStkml(e.getSTKMLText());
         }
         if (e.getStatusTime()!= null) {
             s.setStatustime(e.getStatusTime());
@@ -136,18 +136,13 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
             s.setNotificationStatus(((Long)e.getStatus()).intValue());
         }
         if (e.getText() != null) {
-            try {
-				s.setNotificationText(e.getText().getSubString(0, ((Long)e.getText().length()).intValue()));
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+            
+			s.setNotificationText(e.getText());
         }
         if (e.getStkml() != null) {
-            try {
-				s.setSTKMLText(e.getStkml().getSubString(0, ((Long)e.getStkml().length()).intValue()));
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+           
+			s.setSTKMLText(e.getStkml());
+			
         }
         if (e.getStatustime()!= null) {
             s.setStatusTime(e.getStatustime());

@@ -1,13 +1,14 @@
 package com.mfino.domain;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
-import com.mfino.hibernate.Timestamp;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
+
 import org.hibernate.annotations.Type;
+
+import com.mfino.hibernate.Timestamp;
 
 @MappedSuperclass
 public class Base {
@@ -17,23 +18,13 @@ public class Base {
 	public static final String FieldName_CreateTime = "createTime";
 	public static final String FieldName_CreatedBy = "createdby";
 	
-	protected Long id;
+	
 	protected long version;
 	protected Timestamp lastupdatetime;
 	protected String updatedby;
 	protected Timestamp createtime;
 	protected String createdby;
 	
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, scale = 0)
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	@Version
 	@Column(name = "VERSION", nullable = false, precision = 10, scale = 0)
 	public long getVersion() {

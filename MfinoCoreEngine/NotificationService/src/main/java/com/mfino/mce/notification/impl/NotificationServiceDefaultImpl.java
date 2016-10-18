@@ -538,11 +538,9 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 		if(notification == null) return "";
 
 		String rawNotificationText = "";
-		try {
-			rawNotificationText = notification.getText().getSubString(0, ((Long)notification.getText().length()).intValue());
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
+		
+		rawNotificationText = notification.getText();
+		
 		NumberFormat numberFormat = MfinoUtil.getNumberFormat();
 		SystemParametersServiceImpl systemParametersServiceImpl = new SystemParametersServiceImpl();
 		SubscriberMdn senderMdn = null;

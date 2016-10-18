@@ -24,10 +24,10 @@ public class ActorChannelMappingDAO extends BaseDAO<ActorChannelMapping> {
 		Criteria criteria = createCriteria();
 
 		if (query.getSubscriberType() != null ) {			
-			criteria.add(Restrictions.eq(ActorChannelMapping.FieldName_SubscriberType, query.getSubscriberType()));
+			criteria.add(Restrictions.eq(ActorChannelMapping.FieldName_SubscriberType, new Long(query.getSubscriberType())));
 		}
 		if (query.getPartnerType() != null ) {			
-			criteria.add(Restrictions.eq(ActorChannelMapping.FieldName_BusinessPartnerType, query.getPartnerType()));
+			criteria.add(Restrictions.eq(ActorChannelMapping.FieldName_BusinessPartnerType, new Long(query.getPartnerType())));
 		}
 		if (query.getServiceID() != null ) {
 			criteria.createAlias(ActorChannelMapping.FieldName_Service, "s");

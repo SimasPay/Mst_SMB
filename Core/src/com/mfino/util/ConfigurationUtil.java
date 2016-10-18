@@ -343,6 +343,8 @@ public class ConfigurationUtil {
 			boolean foundFile = false;
 			int codeSourceFilePrefixlength = 6;
 
+			System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
+			
 			String osName = System.getProperty("os.name");
 			if (osName.startsWith("Windows")) {
 				isWindows = true;

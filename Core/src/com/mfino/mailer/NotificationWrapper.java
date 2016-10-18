@@ -177,13 +177,7 @@ public class NotificationWrapper extends CmFinoFIX.CRNotification{
 		this.setLanguage((int)notification.getLanguage());
 		this.setMfinoServiceProviderByMSPID(notification.getMfinoServiceProvider());
 		this.setNotificationMethod((int)notification.getNotificationmethod());
-		
-		try {
-			this.setText(notification.getText().getSubString(0, ((Long)notification.getText().length()).intValue()));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.setText(notification.getText());
 	}
 	
 	/**

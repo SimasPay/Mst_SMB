@@ -1417,11 +1417,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		responseFix.setTransactionID(requestFix.getTransactionID());
 
 		// write Activity record
-		activitiesLog.setMsgtype(Long.valueOf(responseFix.getMessageType()));
+		activitiesLog.setMsgtype(null!=responseFix.getMessageType()?Long.valueOf(responseFix.getMessageType()):null);
 		activitiesLog.setParenttransactionid(new BigDecimal(requestFix
 				.getParentTransactionID()));
 		activitiesLog.setServletpath(requestFix.getServletPath());
-		activitiesLog.setSourceapplication(Long.valueOf(requestFix.getSourceApplication()));
+		activitiesLog.setSourceapplication(null!=requestFix.getSourceApplication()?Long.valueOf(requestFix.getSourceApplication()):null);
 		activitiesLog.setSourcemdn(subscriberMdn.getMdn());
 		activitiesLog.setSourcemdnid(subscriberMdn.getId());
 		activitiesLog.setSourcesubscriberid(subscriber.getId());

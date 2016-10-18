@@ -4,7 +4,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -34,7 +33,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.BaseQuery;
 import com.mfino.domain.Base;
-import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.hibernate.session.HibernateSessionHolder;
 import com.mfino.service.CoreServiceFactory;
@@ -173,18 +171,16 @@ public class BaseDAO<T> {
     }
 
     public void saveWithoutFlush(T s) {
-        CmFinoFIX.CRBase r = (CmFinoFIX.CRBase) s;
+        Base r = (Base) s;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = (auth != null) ? auth.getName() : " ";
-        if (r.getID() == null) {
-        	if(r.getCreatedBy()==null){
-            r.setCreatedBy(userName);
-        	}
-            r.setCreateTime(new Timestamp());
-        }
-
+        
+        if (r.getCreatedby()==null) {
+        	r.setCreatedby(userName);
+        	r.setCreatetime(new Timestamp());
+    	}	
         //update information related to every action here
-        r.setLastUpdateTime(new Timestamp());
+        r.setLastupdatetime(new Timestamp());
 
         // For all the background processes the username is null.
         // For EG: the MDN Retire Tool will have no username.
@@ -192,14 +188,14 @@ public class BaseDAO<T> {
         // instead we store it as system.
         
         if(StringUtils.isBlank(userName)) {
-            String prevUpdatedBy = r.getUpdatedBy();            
+            String prevUpdatedBy = r.getUpdatedby();            
             if(StringUtils.isBlank(prevUpdatedBy) || prevUpdatedBy.equals("System")) {
-              r.setUpdatedBy("System");              
+              r.setUpdatedby("System");              
             } else if (!(prevUpdatedBy.contains("(System)"))) {
-              r.setUpdatedBy(prevUpdatedBy + "(System)");              
+              r.setUpdatedby(prevUpdatedBy + "(System)");              
             }            
         } else {
-            r.setUpdatedBy(userName);
+            r.setUpdatedby(userName);
         }
 
         getSession().saveOrUpdate(s);

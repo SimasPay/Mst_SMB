@@ -9,9 +9,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -28,6 +32,8 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	public static final String FieldName_LastUpdateTime = "lastupdatetime";
 	public static final String FieldName_TransactionTime = "transactiontime";
 	public static final String FieldName_ParentTransactionID = "parenttransactionid";
+	
+	
 	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal parenttransactionid;
 	private Long multixid;
@@ -41,7 +47,22 @@ public class TransactionLog  extends Base implements java.io.Serializable {
 	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
 			0);
 
+	private Long id;
+	
+	
 	public TransactionLog() {
+	}
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "transaction_log_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	

@@ -306,7 +306,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 				result.put(GROUP, subscriberGroup.getGroupid());
 			}
 			
-			if (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
+			if (CmFinoFIX.SubscriberType_Partner.equals((int)subscriber.getType())) {
 				Set<Partner> setPartner = subscriber.getPartners();
 				for (Partner p : setPartner) {
 					result.put(PARTNER_ID, p.getId().longValue());
@@ -397,7 +397,8 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			
 			sctl.setTransactionid(new BigDecimal(sc.getTransactionLogId()));
 			sctl.setSourcepartnerid(new BigDecimal(sourceMap.get(PARTNER_ID)));
-			sctl.setDestpartnerid(new BigDecimal(destMap.get(PARTNER_ID)));
+			
+			sctl.setDestpartnerid(null!=destMap.get(PARTNER_ID)?new BigDecimal(destMap.get(PARTNER_ID)):null);
 			sctl.setMfsbillercode(sc.getMfsBillerCode());
 			sctl.setSourcemdn(sc.getSourceMDN());
 			sctl.setDestmdn(sc.getDestMDN());
@@ -415,7 +416,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			}
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Inquiry);
 			sctl.setIschargedistributed((short) 0);
-			sctl.setIntegrationtransactionid(new BigDecimal(sc.getIntegrationTxnID()));
+			sctl.setIntegrationtransactionid(null!=sc.getIntegrationTxnID()?new BigDecimal(sc.getIntegrationTxnID()):null);
 			sctl.setChargemode((tr != null) ? tr.getChargemode() : null);
 			sctl.setDescription(sc.getDescription());
 			
