@@ -6,10 +6,7 @@ import java.sql.Blob;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -21,20 +18,11 @@ public class MfinoCalendars implements java.io.Serializable {
 
 	private String calendarName;
 	private Blob calendar;
-	private Long id;
+	
 
 	public MfinoCalendars() {
 	}
 
-	@Id
-	@SequenceGenerator(name = "id_Sequence", sequenceName = "actor_channel_mapping_ID_SEQ")
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public MfinoCalendars(String calendarName, Blob calendar) {
 		this.calendarName = calendarName;
 		this.calendar = calendar;
