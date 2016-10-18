@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -32,10 +36,21 @@ public class BookingDatedBalance extends Base implements java.io.Serializable {
 	private BigDecimal totalcredit;
 	private BigDecimal totaldebit;
 	private BigDecimal netturnover;
+	private Long id;
 
 	public BookingDatedBalance() {
 	}
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "booking_dated_balance_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	
 	@Column(name = "POCKETID", nullable = false, scale = 0)

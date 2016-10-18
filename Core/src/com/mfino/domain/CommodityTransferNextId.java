@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -17,12 +21,21 @@ public class CommodityTransferNextId extends Base  implements java.io.Serializab
 
 
 	private BigDecimal nextrecordid;
+	private Long id;
 
 	public CommodityTransferNextId() {
 	}
 
 	
-	
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	@Column(name = "NEXTRECORDID", nullable = false, scale = 0)
 	public BigDecimal getNextrecordid() {

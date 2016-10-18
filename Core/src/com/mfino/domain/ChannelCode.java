@@ -8,7 +8,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -29,6 +33,7 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	private String channelname;
 	private String description;
 	private long channelsourceapplication;
+	private Long id;
 	private Set<MfaTransactionsInfo> mfaTransactionsInfos = new HashSet<MfaTransactionsInfo>(
 			0);
 	private Set<TransactionRule> transactionRules = new HashSet<TransactionRule>(
@@ -39,7 +44,17 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	public ChannelCode() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "channel_code_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	
 	@Column(name = "CHANNELCODE", unique = true, nullable = false, length = 1020)

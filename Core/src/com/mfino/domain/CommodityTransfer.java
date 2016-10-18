@@ -8,8 +8,12 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -170,6 +174,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private BigDecimal denomination;
 	private BigDecimal transactionchargeid;
 	private Short ispartofsharedupchain;
+	private Long id;
 
 	
 	private Long sctlId;
@@ -179,6 +184,15 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	public CommodityTransfer() {
 	}
 
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
