@@ -280,7 +280,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		
 		if(partner != null){
 			Long tempPartnerStatus = partner.getPartnerstatus();
-			Long tempSubsRestrictions = partner.getSubscriber().getRestrictions();
+			Long tempSubsRestrictions = partner.getSubscriber().getRestrictions().longValue();
 			if((null != partner.getSubscriber().getUpgradestate()) && (CmFinoFIX.UpgradeState_Upgradable.equals(partner.getSubscriber().getUpgradestate()))){
 				icon = "resources/images/customer_white.png";
 			}

@@ -103,7 +103,7 @@ public class PartnerValidator implements IValidator {
 		}
 		Subscriber agentsubscriber=subscriberMDN.getSubscriber();
 
-		Long tempTypeL = agentsubscriber.getType();
+		Long tempTypeL = agentsubscriber.getType().longValue();
 		Integer tempTypeLI = tempTypeL.intValue();
 		
 		if(!(tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner))){

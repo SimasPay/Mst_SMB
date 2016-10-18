@@ -58,7 +58,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 			Iterator<Subscriber> subIter = subscriberSet.iterator();
 			if (subIter.hasNext()) {
 				Subscriber subscriber = subIter.next();
-				Long subStatus = subscriber.getStatus();
+				Long subStatus = subscriber.getStatus().longValue();
 				if (subStatus == null || CmFinoFIX.SubscriberStatus_Retired.equals(subStatus)) {
 					return false;
 				}
@@ -124,7 +124,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 			Set<Subscriber> subscriberSet = theUser.getSubscribersForUserid();
 			Iterator<Subscriber> iter = subscriberSet.iterator();
 			if (iter.hasNext()) {
-				Long mRestr = iter.next().getRestrictions();
+				Long mRestr = iter.next().getRestrictions().longValue();
 				if (mRestr != null && mRestr.intValue() > 0) {
 					return false;
 				}
@@ -134,7 +134,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 					.getSubscribersForSubscriberuserid();
 			Iterator<Subscriber> iter = subscriberSet.iterator();
 			if (iter.hasNext()) {
-				Long mRestr = iter.next().getRestrictions();
+				Long mRestr = iter.next().getRestrictions().longValue();
 				if (mRestr != null && mRestr.intValue() > 0) {
 					return false;
 				}

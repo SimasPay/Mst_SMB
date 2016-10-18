@@ -298,7 +298,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			SubscriberMDNDAO sMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 			SubscriberMdn smdn = sMDNDAO.getByMDN(MDN);
 			Subscriber subscriber = smdn.getSubscriber();
-			result.put(TYPE, ((Long)subscriber.getType()).longValue());
+			result.put(TYPE, subscriber.getType().longValue());
 			result.put(KYC_LEVEL, subscriber.getKycLevel().getKyclevel().longValue());
 			SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroups subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());

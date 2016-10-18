@@ -61,7 +61,7 @@ public class SubscriberStatusEventServiceImpl implements
 			if (Boolean.valueOf(subscriberExistingEvent.getProcessingstatus().toString())) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
 				statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
-				Long temp = subscriber.getStatus();
+				Long temp = subscriber.getStatus().longValue();
 				Integer tempI = temp.intValue();
 				Timestamp nextTimeStamp = new Timestamp(
 						subscriber.getStatustime().getTime()
@@ -76,7 +76,7 @@ public class SubscriberStatusEventServiceImpl implements
 				statusNextEvent.setProcessingstatus((short) Boolean.compare(false, true));
 				statusEventDAO.save(statusNextEvent);
 			} else {
-				Long temp = subscriber.getStatus();
+				Long temp = subscriber.getStatus().longValue();
 				Integer tempI = temp.intValue();
 				Timestamp nextTimeStamp = new Timestamp(
 						subscriber.getStatustime().getTime()
@@ -93,7 +93,7 @@ public class SubscriberStatusEventServiceImpl implements
 		}else if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscriber.getStatus())){
 			SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
 			statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
-			Long temp = subscriber.getStatus();
+			Long temp = subscriber.getStatus().longValue();
 			Integer tempI = temp.intValue();
 			Timestamp nextTimeStamp = new Timestamp(
 					subscriber.getStatustime().getTime()

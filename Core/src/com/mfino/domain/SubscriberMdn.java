@@ -48,7 +48,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String authenticationphonenumber;
 	private long status;
 	private String authenticationphrase;
-	private long restrictions;
+	private Integer restrictions;
 	private long wrongpincount;
 	private String digestedpin;
 	private String merchantdigestedpin;
@@ -205,11 +205,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "RESTRICTIONS", nullable = false, precision = 10, scale = 0)
-	public long getRestrictions() {
+	public Integer getRestrictions() {
 		return this.restrictions;
 	}
 
-	public void setRestrictions(long restrictions) {
+	public void setRestrictions(Integer restrictions) {
 		this.restrictions = restrictions;
 	}
 

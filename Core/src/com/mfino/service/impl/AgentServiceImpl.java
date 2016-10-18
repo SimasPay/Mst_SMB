@@ -364,7 +364,7 @@ public class AgentServiceImpl implements AgentService {
 		String smsMsg = "activation notification";
 		try {
 			//add notifications
-			Long languageL = subscriber.getLanguage();
+			Long languageL = subscriber.getLanguage().longValue();
 			Integer languageLI = languageL.intValue();
 		
 			notificationWrapper.setLanguage(languageLI);

@@ -280,7 +280,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			Subscriber subscriber = new Subscriber();
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
-			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_West_Indonesia_Time);
 			subscriber.setStatustime(new Timestamp());
 			if (subscriberSyncRecord.isBulkUploadRecord()) {

@@ -208,7 +208,7 @@ public class PartnerServiceImpl implements PartnerService {
 		if(mdn!=null){
 			Subscriber agentsubscriber=mdn.getSubscriber();
 			
-			Long tempTypeL = agentsubscriber.getType();
+			Long tempTypeL = agentsubscriber.getType().longValue();
 			Integer tempTypeLI = tempTypeL.intValue();
 			
 			if((tempTypeLI.equals(CmFinoFIX.SubscriberType_Partner))){
@@ -418,7 +418,7 @@ public class PartnerServiceImpl implements PartnerService {
 		NotificationWrapper notificationWrapper = new NotificationWrapper();
 		try {
 			 //add notifications
-			Long languangeL = subscriber.getLanguage();
+			Long languangeL = subscriber.getLanguage().longValue();
 			Integer languangeLI = languangeL.intValue();
 			
 			 notificationWrapper.setLanguage(languangeLI);
@@ -824,9 +824,9 @@ public class PartnerServiceImpl implements PartnerService {
          subscriber.setKycLevel(kycLevel);
          subscriber.setUpgradablekyclevel(null);
          Integer tempupgradeState = partnerRegistration.getApprovalRequired()?CmFinoFIX.UpgradeState_Upgradable:CmFinoFIX.UpgradeState_Approved;
-         subscriber.setUpgradestate(tempupgradeState.longValue());
-         subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Web.longValue());
-         subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()|CmFinoFIX.NotificationMethod_Email.longValue());
+         subscriber.setUpgradestate(tempupgradeState);
+         subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Web);
+         subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
          if(!partnerRegistration.getApprovalRequired()){
         	 Integer OTPLength = systemParametersService.getOTPLength();
              String oneTimePin = MfinoUtil.generateOTP(OTPLength);

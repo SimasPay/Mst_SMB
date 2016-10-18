@@ -134,7 +134,7 @@ public class ValidationUtil {
 			
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
-		Long tempType = subscriberMDN.getSubscriber().getType();
+		Long tempType = subscriberMDN.getSubscriber().getType().longValue();
 		int int_subscriberType=tempType.intValue();
 
 		if (!(CmFinoFIX.SubscriberType_Subscriber.equals(int_subscriberType)

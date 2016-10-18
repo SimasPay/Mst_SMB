@@ -153,10 +153,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
 			if (registeringPartner != null) {
 				subscriber
-						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent.longValue());
+						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent);
 			} else {
 				subscriber
-						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self.longValue());
+						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
 			}
 
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
@@ -165,7 +165,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
 			subscriber.setStatustime(new Timestamp());
 			subscriber.setCreatedby(createdByName);
@@ -206,9 +206,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
 				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));
-				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			} else {
-				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
 			}
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
 			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration
@@ -349,10 +349,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
 			
 			if (registeringPartner != null) {
-				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent.longValue());
+				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent);
 				
 			} else {
-				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self.longValue());
+				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
 			}
 
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
@@ -364,11 +364,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			if(StringUtils.isNotBlank(subscriber.getEmail())) {
 			
-				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()|CmFinoFIX.NotificationMethod_Email.longValue());
+				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
 				
 			} else {
 				
-				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			}
 			
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
@@ -425,7 +425,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			
 			subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));
-			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
 			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration.getSubscriberStatus()) {
@@ -571,10 +571,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setNickname(subscriberRegistration.getNickname());
 			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
 			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
-			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self.longValue());
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
             subscriber.setStatustime(new Timestamp());
             if(createdByName != null)
@@ -590,7 +590,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
 			subscriber.setKycLevel(kycLevel);
-			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
 			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
 			subscriber.setActivationtime(new Timestamp());
 			subscriber.setStatustime(new Timestamp());
@@ -734,7 +734,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 					.getIDExpiryDate());
 			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
 			subscriber
-					.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Web.longValue());
+					.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Web);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
 			if (subscriberRegistration.getSubscriberStatus() != null) {
@@ -742,7 +742,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						.getSubscriberStatus());
 			}
 			subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getUpgradableKYCLevel()));
-			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
 			subscriber.setStatustime(new Timestamp());
 			subscriber.setCreatedby("Web Registration");
@@ -784,9 +784,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				}
 				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration
 						.getKYCLevel()));
-				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable.longValue());
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			} else {
-				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none.longValue());
+				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
 			}
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
 			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration
@@ -921,7 +921,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if (subscriberMDN.getAuthenticationphrase() == null) {
 			subscriberMDN.setAuthenticationphrase("mFino");
 		}
-		Long tempL = subscriberMDN.getRestrictions();
+		Long tempL = subscriberMDN.getRestrictions().longValue();
 		Long tempWrPinCtL = subscriberMDN.getWrongpincount();
 		
 		if ( tempL== null) {
@@ -945,8 +945,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCurrency(systemParametersService
 					.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 		}
-		Long tempL = subscriber.getRestrictions();
-		Long tempX = subscriber.getType();
+		Long tempL = subscriber.getRestrictions().longValue();
+		Long tempX = subscriber.getType().longValue();
 		if (tempL == null) {
 			subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
@@ -1006,11 +1006,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			if (StringUtils.isNotBlank(subscriber.getEmail())) {
 				subscriber
-						.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue()
-								| CmFinoFIX.NotificationMethod_Email.longValue());
+						.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS
+								| CmFinoFIX.NotificationMethod_Email);
 			} else {
 				subscriber
-						.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS.longValue());
+						.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			}
 			if(ConfigurationUtil.getLocalTimeZone()!=null){
 				subscriber.setTimezone(ConfigurationUtil.getLocalTimeZone().getDisplayName());
@@ -1297,7 +1297,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			// add notifications
 			NotificationWrapper notificationWrapper = new NotificationWrapper();
 			
-			Long tempLanguage = subscriber.getLanguage();
+			Long tempLanguage = subscriber.getLanguage().longValue();
 			Integer tempLanguageI = tempLanguage.intValue();
 			
 			notificationWrapper.setLanguage(tempLanguageI);
@@ -1342,7 +1342,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			return CmFinoFIX.NotificationCode_MDNNotFound;
 		}
 		
-		Long tempSubType = subscriberMDN.getSubscriber().getType();
+		Long tempSubType = subscriberMDN.getSubscriber().getType().longValue();
 		
 		int int_subscriberType=tempSubType.intValue();
 
@@ -1632,7 +1632,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		subscriberMDN.setOtp(null);
 		subscriberMDN.setOtpexpirationtime(null);
 		subscriber.setUpgradablekyclevel(null);
-		subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved.longValue());
+		subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 		subscriber.setApproveorrejectcomment("Approved for No Emoney");
 		subscriber.setApprovedorrejectedby("System");
 		subscriber.setApproveorrejecttime(new Timestamp());
@@ -1642,7 +1642,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		String emailMsg = "reactivation notification";
 		try {
 			// add notifications
-			Long tempLanguageL = subscriber.getLanguage();
+			Long tempLanguageL = subscriber.getLanguage().longValue();
 			
 			NotificationWrapper notificationWrapper = new NotificationWrapper();
 			notificationWrapper.setLanguage(tempLanguageL.intValue());

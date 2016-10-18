@@ -60,7 +60,8 @@ public class CryptographyService {
 	private static Logger	log	= LoggerFactory.getLogger(CryptographyService.class);
 	
 	//private static String KEY_FILE_LOCATION = "D:/RSAGeneration/1.6/";
-	private static String KEY_FILE_LOCATION = "../mfino_conf/RSA/";
+	//private static String KEY_FILE_LOCATION = "../mfino_conf/RSA/";
+	private static String KEY_FILE_LOCATION = "D:/Simaspay_JBoss_Migration/mfino_conf/RSA/";
 	
 	//private static String KEY_FILE_LOCATION = "C:/Keys/";
 	private static String OUTPUT_FILE_LOCATION =".\\keys\\";

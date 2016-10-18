@@ -67,13 +67,13 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private Timestamp dateofbirth;
 	private String mdnbrand;
 	private String email;
-	private Long notificationmethod;
-	private long language;
+	private Integer notificationmethod;
+	private Integer language;
 	private String currency;
 	private String timezone;
-	private long restrictions;
-	private long type;
-	private long status;
+	private Integer restrictions;
+	private Integer type;
+	private Integer status;
 	private Timestamp statustime;
 	private Timestamp activationtime;
 	private Timestamp approveorrejecttime;
@@ -84,14 +84,14 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private short dompetmerchant;
 	private String securityquestion;
 	private String securityanswer;
-	private Long partnertype;
+	private Integer partnertype;
 	private BigDecimal upgradablekyclevel;
-	private Long upgradestate;
+	private Integer upgradestate;
 	private Timestamp idexiparetiontime;
 	private BigDecimal referenceaccount;
 	private String aliasname;
 	private Short detailsrequired;
-	private Long registrationmedium;
+	private Integer registrationmedium;
 	private Long registeringpartnerid;
 	private Long approvalidnumber;
 	private Timestamp lastnotificationtime;
@@ -299,20 +299,20 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "NOTIFICATIONMETHOD", precision = 10, scale = 0)
-	public Long getNotificationmethod() {
+	public Integer getNotificationmethod() {
 		return this.notificationmethod;
 	}
 
-	public void setNotificationmethod(Long notificationmethod) {
+	public void setNotificationmethod(Integer notificationmethod) {
 		this.notificationmethod = notificationmethod;
 	}
 
 	@Column(name = "LANGUAGE", nullable = false, precision = 10, scale = 0)
-	public long getLanguage() {
+	public Integer getLanguage() {
 		return this.language;
 	}
 
-	public void setLanguage(long language) {
+	public void setLanguage(Integer language) {
 		this.language = language;
 	}
 
@@ -335,29 +335,29 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "RESTRICTIONS", nullable = false, precision = 10, scale = 0)
-	public long getRestrictions() {
+	public Integer getRestrictions() {
 		return this.restrictions;
 	}
 
-	public void setRestrictions(long restrictions) {
+	public void setRestrictions(Integer restrictions) {
 		this.restrictions = restrictions;
 	}
 
 	@Column(name = "TYPE", nullable = false, precision = 10, scale = 0)
-	public long getType() {
+	public Integer getType() {
 		return this.type;
 	}
 
-	public void setType(long type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
 	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
-	public long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -456,11 +456,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "PARTNERTYPE", precision = 10, scale = 0)
-	public Long getPartnertype() {
+	public Integer getPartnertype() {
 		return this.partnertype;
 	}
 
-	public void setPartnertype(Long partnertype) {
+	public void setPartnertype(Integer partnertype) {
 		this.partnertype = partnertype;
 	}
 
@@ -474,11 +474,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UPGRADESTATE", precision = 10, scale = 0)
-	public Long getUpgradestate() {
+	public Integer getUpgradestate() {
 		return this.upgradestate;
 	}
 
-	public void setUpgradestate(Long upgradestate) {
+	public void setUpgradestate(Integer upgradestate) {
 		this.upgradestate = upgradestate;
 	}
 	
@@ -520,11 +520,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REGISTRATIONMEDIUM", precision = 10, scale = 0)
-	public Long getRegistrationmedium() {
+	public Integer getRegistrationmedium() {
 		return this.registrationmedium;
 	}
 
-	public void setRegistrationmedium(Long registrationmedium) {
+	public void setRegistrationmedium(Integer registrationmedium) {
 		this.registrationmedium = registrationmedium;
 	}
 
