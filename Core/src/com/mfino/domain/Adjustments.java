@@ -7,8 +7,12 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -26,6 +30,7 @@ public class Adjustments extends Base implements java.io.Serializable {
 	public static final String FieldName_ServiceChargeTransactionLogBySctlId = null;
 	public static final String FieldName_AdjustmentStatus = "adjustmentstatus";
 	
+	private Long id;
 	private Pocket pocketByDestpocketid;
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private Pocket pocketBySourcepocketid;
@@ -42,6 +47,18 @@ public class Adjustments extends Base implements java.io.Serializable {
 	public Adjustments() {
 	}
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "adjustments_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DESTPOCKETID", nullable = false)
 	public Pocket getPocketByDestpocketid() {

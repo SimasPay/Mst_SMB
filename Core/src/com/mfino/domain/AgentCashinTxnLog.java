@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -14,7 +18,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "AGENT_CASHIN_TXN_LOG")
 public class AgentCashinTxnLog extends Base implements java.io.Serializable {
-
+	
+	private Long id;
 	private Long destpartnerid;
 	private String sourcemdn;
 	private String destmdn;
@@ -26,6 +31,18 @@ public class AgentCashinTxnLog extends Base implements java.io.Serializable {
 	private BigDecimal sctlid;
 
 	public AgentCashinTxnLog() {
+	}
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "agent_cashin_txn_log_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "DESTPARTNERID", scale = 0)

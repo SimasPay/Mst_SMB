@@ -8,9 +8,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -32,11 +36,24 @@ public class AuthPersonDetails extends Base implements java.io.Serializable {
 	private String iddesc;
 	private String idnumber;
 	private Timestamp dateofbirth;
+	private Long id;
 	private Set<Subscriber> subscribers = new HashSet<Subscriber>(0);
 
 	public AuthPersonDetails() {
 	}
 
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "auth_person_details_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 		
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ADDRESSID")
