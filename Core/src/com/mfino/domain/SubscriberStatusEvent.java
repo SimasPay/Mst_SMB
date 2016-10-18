@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -31,10 +35,23 @@ public class SubscriberStatusEvent extends Base implements java.io.Serializable 
 	private long statusonpickup;
 	private long subscribertype;
 
+	private Long id;
+	
 	public SubscriberStatusEvent() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "subscriber_status_event_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 	@Column(name = "SUBSCRIBERID", nullable = false, scale = 0)
 	public BigDecimal getSubscriberid() {

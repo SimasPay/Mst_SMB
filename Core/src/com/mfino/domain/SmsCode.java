@@ -5,8 +5,12 @@ package com.mfino.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -27,10 +31,23 @@ public class SmsCode extends Base implements java.io.Serializable {
 	private long smscodestatus;
 	private String shortcodes;
 
+	private Long id;
+	
 	public SmsCode() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "sms_code_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BRANDID", nullable = false)

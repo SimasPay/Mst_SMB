@@ -7,8 +7,12 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -38,10 +42,23 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 	private Long schedulerstatus;
 	private BigDecimal similarconfigid;
 
+	private Long id;
+	
 	public ServiceSettlementCfg() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "service_settlement_cfg_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MSPID", nullable = false)

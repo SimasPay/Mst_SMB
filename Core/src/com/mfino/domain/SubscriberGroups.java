@@ -4,6 +4,10 @@ package com.mfino.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -18,10 +22,23 @@ public class SubscriberGroups extends Base implements java.io.Serializable {
 	private Long subscriberid;
 	private Long groupid;
 
+	private Long id;
+	
 	public SubscriberGroups() {
 	}
 
-	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "subscriber_groups_ID_SEQ")
+	@Column(name = "ID", unique = true, nullable = false, scale = 0)
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 	@Column(name = "SUBSCRIBERID", precision = 10, scale = 0)
 	public Long getSubscriberid() {
