@@ -90,7 +90,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				ct = coreDataWrapper.getCommodityTransferDao().getById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCsraction(fixPendingRequest.getCSRAction().longValue());
+					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
 					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
@@ -137,7 +137,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 			for(ChargetxnTransferMap ctxn : ctxnMap){
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCsraction(fixPendingRequest.getCSRAction().longValue());
+					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
 					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));

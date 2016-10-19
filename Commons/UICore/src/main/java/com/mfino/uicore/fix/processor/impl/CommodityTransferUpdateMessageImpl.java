@@ -56,7 +56,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         entry.setTransactionID(c.getTransactionLog().getId().longValue());
         //      entry.setJSMsgType(c.getMsgType());
         entry.setMSPID(c.getMfinoServiceProvider().getId().longValue());
-        entry.setTransferStatus(((Long)c.getTransferstatus()).intValue());
+        entry.setTransferStatus((c.getTransferstatus()).intValue());
         if (c.getTransferfailurereason() != null) {
             entry.setTransferFailureReason(c.getTransferfailurereason().intValue());
         }
@@ -118,7 +118,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         if (c.getSourcesubscribername() != null) {
             entry.setSourceSubscriberName(c.getSourcesubscribername());
         }
-        entry.setSourcePocketType(((Long)c.getSourcepockettype()).intValue());
+        entry.setSourcePocketType((c.getSourcepockettype()).intValue());
         entry.setSourcePocketID(c.getPocket().getId().longValue());
         if (c.getSourcepocketbalance() != null) {
             entry.setSourcePocketBalance(new BigDecimal(c.getSourcepocketbalance()));
@@ -182,12 +182,12 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         entry.setAmount(c.getAmount());
         entry.setCharges(c.getCharges());
         entry.setTaxAmount(c.getTaxamount());
-        entry.setCommodity(((Long)c.getCommodity()).intValue());
+        entry.setCommodity((c.getCommodity()).intValue());
         if (c.getBuckettype() != null) {
             entry.setBucketType(c.getBuckettype());
             entry.setBucketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BucketType, null, c.getBuckettype()));
         }
-        entry.setSourceApplication(((Long)c.getSourceapplication()).intValue());
+        entry.setSourceApplication((c.getSourceapplication()).intValue());
         if (c.getCurrency() != null) {
             entry.setCurrency(c.getCurrency());
         }
@@ -412,7 +412,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         entry.setAmountText(c.getAmount() + GeneralConstants.SINGLE_SPACE + c.getCurrency());
         entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, c.getTransferstatus()));
         entry.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, c.getCommodity()));
-        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(((Long)c.getSourceapplication()).intValue()));
+        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication((c.getSourceapplication()).intValue()));
         entry.setTransferFailureReasonText(CmFinoFIX.TransferStatus_Completed.equals(c.getTransferstatus())?"":enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, c.getTransferfailurereason()));
         entry.setSourcePocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SourcePocketType, null, c.getSourcepockettype()));
         entry.setDestPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_DestPocketType, null, c.getDestpockettype()));
@@ -430,7 +430,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
     			entry.setDebitAmount(c.getAmount().add(c.getCharges()));
     			entry.setCreditAmount(null);
     			if(c.getSourcepocketbalance()!=null){
-    			if(((Long)c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+    			if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
     			entry.setSourcePocketClosingBalance(new BigDecimal( c.getSourcepocketbalance()).subtract(entry.getDebitAmount()));
     			}else{
     				entry.setSourcePocketClosingBalance(new BigDecimal(c.getSourcepocketbalance()));
@@ -440,7 +440,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
     			entry.setCreditAmount(c.getAmount());
     			entry.setDebitAmount(null);
     			if(c.getDestpocketbalance()!=null){
-    			if(((Long)c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+    			if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
         			entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()).add(entry.getCreditAmount()));
         			}else{
         				entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()));
@@ -460,7 +460,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         	   entry.setDebitAmount(c.getAmount().add(c.getCharges()));
         	   entry.setCreditAmount(null);
         	   if(c.getSourcepocketbalance()!=null){
-        		if(((Long)c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+        		if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
         			entry.setSourcePocketClosingBalance(new BigDecimal(c.getSourcepocketbalance()).subtract(entry.getDebitAmount()));
         			}else{
         				entry.setSourcePocketClosingBalance(new BigDecimal(c.getSourcepocketbalance()));
@@ -471,7 +471,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         	   entry.setCreditAmount(c.getAmount());
         	   entry.setDebitAmount(null);
         	   if(c.getDestpocketbalance()!=null){
-        	   if(((Long)c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+        	   if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
        			entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()).add(entry.getCreditAmount()));
        			}else{
        				entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()));

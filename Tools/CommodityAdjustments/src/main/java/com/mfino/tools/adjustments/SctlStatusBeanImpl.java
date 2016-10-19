@@ -83,7 +83,7 @@ public class SctlStatusBeanImpl implements SctlStatusBean {
 			{
 				BillPayments billpayment = billPayments.get(0);
 				log.info("ManualAdjustment: BillPayment status is set to complete for sctl: "+sctl.getId()+ " original status is: "+billpayment.getBillpaystatus());
-				billpayment.setBillpaystatus(Long.valueOf(CmFinoFIX.BillPayStatus_COMPLETED));
+				billpayment.setBillpaystatus(CmFinoFIX.BillPayStatus_COMPLETED);
 				billPayDAO.save(billpayment);
 			}
 			

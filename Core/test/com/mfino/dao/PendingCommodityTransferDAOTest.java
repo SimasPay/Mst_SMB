@@ -211,12 +211,12 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setStarttime(new Timestamp());
         pcmt.setSourcemdn("9346233462");
         pcmt.setBankauthorizationcode("sunny");
-        pcmt.setBankcode(Long.MAX_VALUE);
+        pcmt.setBankcode(Integer.MAX_VALUE);
         pcmt.setBankerrortext("sunny");
         pcmt.setBankrejectreason("sunnys");
-        pcmt.setBankresponsecode(Long.MAX_VALUE);
+        pcmt.setBankresponsecode(Integer.MAX_VALUE);
         pcmt.setBankresponsetime(new Timestamp());
-        pcmt.setBillingtype(Long.MAX_VALUE);
+        pcmt.setBillingtype(Integer.MAX_VALUE);
         pcmt.setBuckettype("sunnys");
         pcmt.setCommodity(Integer.MAX_VALUE);
         pcmt.setCreatetime(new Timestamp());
@@ -224,7 +224,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setDestcardpan("bunny");
         pcmt.setDestmdnid(mdn2.getId());
         pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
-        pcmt.setDestpockettype(Long.MAX_VALUE);
+        pcmt.setDestpockettype(Integer.MAX_VALUE);
         pcmt.setDestpocketid(Long.MIN_VALUE);
         pcmt.setDestsubscriberid(Long.MIN_VALUE);
         pcmt.setDestsubscribername("sunny");
@@ -232,10 +232,10 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setLastupdatetime(new Timestamp());
         pcmt.setMsgtype(Integer.MAX_VALUE);
         pcmt.setOperatorauthorizationcode("ssunny");
-        pcmt.setOperatorcode(Long.MAX_VALUE);
+        pcmt.setOperatorcode(Integer.MAX_VALUE);
         pcmt.setOperatorerrortext("Error");
         pcmt.setOperatorrejectreason("sunnys");
-        pcmt.setOperatorresponsecode(Long.MAX_VALUE);
+        pcmt.setOperatorresponsecode(Integer.MAX_VALUE);
         pcmt.setOperatorresponsetime(new Timestamp());
         pcmt.setSourceapplication(Integer.MAX_VALUE);
         pcmt.setSourcecardpan("sda");
@@ -243,7 +243,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setSourcepockettype(Integer.MAX_VALUE);
         pcmt.setSourcereferenceid("dssd");
         pcmt.setSourcesubscribername("sunnys");
-        pcmt.setTransferfailurereason(Long.MAX_VALUE);
+        pcmt.setTransferfailurereason(Integer.MAX_VALUE);
         pcmt.setTransferstatus(Integer.MAX_VALUE);
 
         pcmt.setUpdatedby("sd");
@@ -257,7 +257,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setPocket(poc);
         pcmt.setTransactionLog(tlog);
         pcmt.setLastreversaltime(new Timestamp());
-        pcmt.setReversalcount(1L);
+        pcmt.setReversalcount(1);
 
 
         dao.save(pcmt);
@@ -268,12 +268,12 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setStarttime(new Timestamp());
         pcmt1.setSourcemdn("9346233560");
         pcmt1.setBankauthorizationcode("sunny");
-        pcmt1.setBankcode(Long.MAX_VALUE);
+        pcmt1.setBankcode(Integer.MAX_VALUE);
         pcmt1.setBankerrortext("sunny");
         pcmt1.setBankrejectreason("sunnys");
-        pcmt1.setBankresponsecode(Long.MAX_VALUE);
+        pcmt1.setBankresponsecode(Integer.MAX_VALUE);
         pcmt1.setBankresponsetime(new Timestamp());
-        pcmt1.setBillingtype(Long.MAX_VALUE);
+        pcmt1.setBillingtype(Integer.MAX_VALUE);
         pcmt1.setBuckettype("sunnys");
         pcmt1.setCommodity(Integer.MAX_VALUE);
         pcmt1.setCreatetime(new Timestamp());
@@ -281,7 +281,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setDestcardpan("bunny");
         pcmt1.setDestmdnid(mdn1.getId());
         pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
-        pcmt1.setDestpockettype(Long.MAX_VALUE);
+        pcmt1.setDestpockettype(Integer.MAX_VALUE);
         pcmt1.setDestpocketid(Long.MIN_VALUE);
         pcmt1.setDestsubscriberid(Long.MIN_VALUE);
         pcmt1.setDestsubscribername("sunny");
@@ -289,10 +289,10 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setLastupdatetime(new Timestamp());
         pcmt1.setMsgtype(Integer.MAX_VALUE);
         pcmt1.setOperatorauthorizationcode("ssunny");
-        pcmt1.setOperatorcode(Long.MAX_VALUE);
+        pcmt1.setOperatorcode(Integer.MAX_VALUE);
         pcmt1.setOperatorerrortext("Error");
         pcmt1.setOperatorrejectreason("sunnys");
-        pcmt1.setOperatorresponsecode(Long.MAX_VALUE);
+        pcmt1.setOperatorresponsecode(Integer.MAX_VALUE);
         pcmt1.setOperatorresponsetime(new Timestamp());
         pcmt1.setSourceapplication(Integer.MAX_VALUE);
         pcmt1.setSourcecardpan("sdahhkjhjk");
@@ -300,7 +300,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setSourcepockettype(Integer.MAX_VALUE);
         pcmt1.setSourcereferenceid("dssd");
         pcmt1.setSourcesubscribername("sunnys");
-        pcmt1.setTransferfailurereason(Long.MAX_VALUE);
+        pcmt1.setTransferfailurereason(Integer.MAX_VALUE);
         pcmt1.setTransferstatus(Integer.MAX_VALUE);
 
         pcmt1.setUpdatedby("sd");
@@ -313,7 +313,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setPocket(poc);
         pcmt1.setTransactionLog(tlog);
         pcmt1.setLastreversaltime(new Timestamp());
-        pcmt1.setReversalcount(1L);
+        pcmt1.setReversalcount(1);
 
         dao.save(pcmt1);
 

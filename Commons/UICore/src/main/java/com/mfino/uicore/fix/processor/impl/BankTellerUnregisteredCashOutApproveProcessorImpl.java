@@ -130,7 +130,7 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 		unregisteredsubscribercashoutconfirm.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		unregisteredsubscribercashoutconfirm.setTransferID(pct.getId().longValue());
 		unregisteredsubscribercashoutconfirm.setConfirmed(realMsg.getConfirmed());
-		unregisteredsubscribercashoutconfirm.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		unregisteredsubscribercashoutconfirm.setSourceApplication((cc.getChannelsourceapplication()).intValue());
 		unregisteredsubscribercashoutconfirm.setChannelCode(cc.getChannelcode());
 		unregisteredsubscribercashoutconfirm.setServiceChargeTransactionLogID(realMsg.getServiceChargeTransactionLogID());
 		unregisteredsubscribercashoutconfirm.setDestPocketID(realMsg.getDestPocketID());

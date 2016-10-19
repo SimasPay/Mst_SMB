@@ -127,7 +127,7 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 			ServiceChargeTxnLog sctl = results.get(0);
 			if(sctl.getCommoditytransferid()!=null){
 				ct = commodityTransferService.getCommodityTransferById(sctl.getCommoditytransferid().longValue());
-				if(ct==null||(!((Long)ct.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed))){
+				if(ct==null||(!(ct.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed))){
 					log.info("No Successful cashout Transaction Found for sctlID"+sctl.getId());
 					errorMsg.setErrorDescription(MessageText._("No Successful Transaction Found"));
 					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);

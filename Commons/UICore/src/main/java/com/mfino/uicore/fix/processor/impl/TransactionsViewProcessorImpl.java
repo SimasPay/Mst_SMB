@@ -200,7 +200,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		if(ct != null){
 	        entry.setBankRetrievalReferenceNumber(ct.getBankretrievalreferencenumber());
 			entry.setTransactionID(ct.getId().longValue());
-			entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(((Long)ct.getSourceapplication()).intValue()));
+			entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication((ct.getSourceapplication()).intValue()));
 			// Added as part of GT Request to identify the internal transaction type like E-B, E-E, B-E, B-B
 	   		entry.setInternalTxnType(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, ct.getUicategory()));
 			entry.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, ct.getCommodity()));

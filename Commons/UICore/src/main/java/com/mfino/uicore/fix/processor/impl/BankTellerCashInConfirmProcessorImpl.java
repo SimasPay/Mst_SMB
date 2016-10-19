@@ -133,7 +133,7 @@ public class BankTellerCashInConfirmProcessorImpl extends MultixCommunicationHan
        
         CMBankTellerCashInConfirm tellerCashInconfirm = new CMBankTellerCashInConfirm();
         tellerCashInconfirm.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-        tellerCashInconfirm.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+        tellerCashInconfirm.setSourceApplication((cc.getChannelsourceapplication()).intValue());
         tellerCashInconfirm.setSourceMDN(sourceSubMdn.getMdn());
         tellerCashInconfirm.setDestMDN(realMsg.getDestMDN());
         tellerCashInconfirm.setChannelCode(cc.getChannelcode());

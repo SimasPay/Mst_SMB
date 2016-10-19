@@ -178,7 +178,7 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		cashoutInquiry.setDestPocketID(tellerService.getPocketBySourcepocket().getId().longValue());
 		cashoutInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CASH_OUT_TRANSFERTOBANK);
 		cashoutInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		cashoutInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		cashoutInquiry.setSourceApplication((cc.getChannelsourceapplication()).intValue());
 		cashoutInquiry.setAmount(ct.getAmount());
 		cashoutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		cashoutInquiry.setCharges(BigDecimal.ZERO);
@@ -194,7 +194,7 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 	private CMBankTellerCashOutConfirm generateCashOutConfirmation(CMJSError errorMsg, CommodityTransfer ct,CMJSBankTellerCashOutConfirm realMsg, PartnerServices tellerService, ServiceChargeTxnLog sctl) {
 		CMBankTellerCashOutConfirm confirmation = new CMBankTellerCashOutConfirm();
 		confirmation.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		confirmation.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		confirmation.setSourceApplication((cc.getChannelsourceapplication()).intValue());
 		confirmation.setSourceMDN(realMsg.getMDN());
 		confirmation.setDestMDN(realMsg.getMDN());
 		confirmation.setSourcePocketID(realMsg.getPocketID());

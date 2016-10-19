@@ -82,10 +82,10 @@ public class ChannelCodeProcessorImpl extends BaseFixProcessor implements Channe
         if (channelCode.getChannelname() != null) {
             entry.setChannelName(channelCode.getChannelname());
         }
-        if (((Long)channelCode.getChannelsourceapplication()) != null) {
-            entry.setChannelSourceApplication(((Long)channelCode.getChannelsourceapplication()).intValue());
+        if ((channelCode.getChannelsourceapplication()) != null) {
+            entry.setChannelSourceApplication((channelCode.getChannelsourceapplication()).intValue());
             entry.setChannelSourceApplicationText(channelCodeService.getChannelNameBySourceApplication(
-            				((Long)channelCode.getChannelsourceapplication()).intValue()));
+            				(channelCode.getChannelsourceapplication()).intValue()));
         }
         if (channelCode.getCreatetime() != null) {
             entry.setCreateTime(channelCode.getCreatetime());

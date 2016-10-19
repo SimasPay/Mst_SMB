@@ -102,7 +102,7 @@ public class BillPaymentsSuspenceClearanceServiceImpl extends BillPaymentsBaseSe
 	    
 	    AutoReversalsDao autoRevDao = DAOFactory.getInstance().getAutoReversalsDao();
 	    AutoReversals autoRev = autoRevDao.getBySctlId(billPayment.getServiceChargeTxnLog().getId().longValue());
-	    billPayment.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED.longValue());
+	    billPayment.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED);
 	    billPaymentsService.saveBillPayment(billPayment);
 	    setSuspenseAndChargesToReversalQueue(mceMessage);
 	    

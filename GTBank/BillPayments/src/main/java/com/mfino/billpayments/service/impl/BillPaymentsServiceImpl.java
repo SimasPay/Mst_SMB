@@ -45,7 +45,7 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		BillPayments billPayments = new BillPayments();
 		billPayments.setAmount(billPayInquiry.getAmount());
 		billPayments.setBillercode(billPayInquiry.getBillerCode());
-		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_INITIALIZED.longValue());
+		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_INITIALIZED);
 		billPayments.setCharges(billPayInquiry.getCharges());
 		billPayments.setIntegrationcode(billPayInquiry.getIntegrationCode());
 		billPayments.setChargesincluded((short) (billPayInquiry.getChargesIncluded()?1:0));
@@ -165,7 +165,7 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		log.info("BillPaymentsServiceImpl :: updateBillPayStatus sctlId="+sctlId+", billPayStatus="+billPayStatus);
 		
 		BillPayments billPayments = getBillPaymentsRecord(sctlId);
-		billPayments.setBillpaystatus(billPayStatus.longValue());
+		billPayments.setBillpaystatus(billPayStatus);
 		saveBillPayment(billPayments);
 	}
 	
@@ -175,7 +175,7 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		log.info("BillPaymentsServiceImpl :: updateBillPayStatus sctlId="+sctlId+", billPayStatus="+billPayStatus);
 		
 		BillPayments billPayments = getBillPaymentsRecord(sctlId);
-		billPayments.setBillpaystatus(billPayStatus.longValue());
+		billPayments.setBillpaystatus(billPayStatus);
 		billPayments.setTransfertime(ts);
 		saveBillPayment(billPayments);
 	}
@@ -194,10 +194,10 @@ public class BillPaymentsServiceImpl extends BillPaymentsBaseServiceImpl impleme
 		if(request instanceof CMBillPayInquiry){
 			if(response instanceof CMTransferInquiryToBank){
 				if(SOURCE_TO_DESTINATION.equals(transferType)){
-					billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_DEST_INQ_PENDING.longValue());
+					billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_DEST_INQ_PENDING);
 				}
 				else if(SOURCE_TO_SUSPENSE.equals(transferType)){
-					billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_INQ_PENDING.longValue());
+					billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_MT_SRC_TO_SUSPENSE_INQ_PENDING);
 				}
 			}
 		}

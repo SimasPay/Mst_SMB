@@ -151,7 +151,7 @@ public class BankTellerCashInInquiryProcessorImpl extends MultixCommunicationHan
        
         CMBankTellerCashIn tellerCashinInquiry = new CMBankTellerCashIn();
         tellerCashinInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-        tellerCashinInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+        tellerCashinInquiry.setSourceApplication((cc.getChannelsourceapplication()).intValue());
         tellerCashinInquiry.setSourceMDN(sourceSubMdn.getMdn());
         tellerCashinInquiry.setDestMDN(realMsg.getDestMDN());
         tellerCashinInquiry.setChannelCode(cc.getChannelcode());

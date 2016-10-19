@@ -146,7 +146,7 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		transferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferInquiry.setSourceMDN(realMsg.getSourceMDN());
 		transferInquiry.setSourceMessage(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
-		transferInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		transferInquiry.setSourceApplication((cc.getChannelsourceapplication()).intValue());
 		transferInquiry.setChannelCode(cc.getChannelcode());
 		transferInquiry.setSourcePocketID(realMsg.getSourcePocketID());
 		transferInquiry.setDestPocketID(realMsg.getDestPocketID());
@@ -179,7 +179,7 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		transferConfirmation.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		transferConfirmation.setTransferID(realMsg.getTransferID());
 		transferConfirmation.setConfirmed(true);
-		transferConfirmation.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		transferConfirmation.setSourceApplication((cc.getChannelsourceapplication()).intValue());
 		transferConfirmation.setChannelCode(cc.getChannelcode());
 		transferConfirmation.setParentTransactionID(realMsg.getParentTransactionID());
 		transferConfirmation.setSourcePocketID(realMsg.getSourcePocketID());

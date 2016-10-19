@@ -759,7 +759,7 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 		
 		reversalMce.setDestinationQueue(getReversalResponseQueue());
 		
-		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED.longValue());
+		billPayments.setBillpaystatus(CmFinoFIX.BillPayStatus_BILLPAY_FAILED);
 	    billPaymentsService.saveBillPayment(billPayments);
 		
 

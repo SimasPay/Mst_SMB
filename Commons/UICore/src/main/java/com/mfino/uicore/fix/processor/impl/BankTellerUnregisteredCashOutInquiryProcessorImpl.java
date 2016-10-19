@@ -310,7 +310,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		unregisteredSubscriberCashOutInquiry.setSourceMDN(destMDn.getMdn());
 		unregisteredSubscriberCashOutInquiry.setDestMDN(partnerMDN.getMdn());
 		unregisteredSubscriberCashOutInquiry.setPin(realMsg.getPin());
-		unregisteredSubscriberCashOutInquiry.setSourceApplication(((Long)cc.getChannelsourceapplication()).intValue());
+		unregisteredSubscriberCashOutInquiry.setSourceApplication((cc.getChannelsourceapplication()).intValue());
 		unregisteredSubscriberCashOutInquiry.setChannelCode(cc.getChannelcode());
 		unregisteredSubscriberCashOutInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);
 		unregisteredSubscriberCashOutInquiry.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_TELLER_CASH_OUT);

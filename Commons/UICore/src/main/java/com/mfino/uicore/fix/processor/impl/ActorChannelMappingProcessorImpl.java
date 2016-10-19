@@ -48,7 +48,7 @@ public class ActorChannelMappingProcessorImpl extends BaseFixProcessor implement
 			acm.setSubscribertype(e.getSubscriberType());
 		}
 		if(e.getBusinessPartnerType() != null) {
-			acm.setBusinesspartnertype(e.getBusinessPartnerType().longValue());
+			acm.setBusinesspartnertype(e.getBusinessPartnerType());
 		} else if(e.isRemoteModifiedBusinessPartnerType()) {
 			acm.setBusinesspartnertype(null);
 		}
@@ -76,8 +76,8 @@ public class ActorChannelMappingProcessorImpl extends BaseFixProcessor implement
 	
 	private void updateMessage(ActorChannelMapping acm, CMJSActorChannelMapping.CGEntries e) {
 		e.setID(acm.getId().longValue());
-		if((Long)acm.getSubscribertype() != null) {
-			e.setSubscriberType(((Long)acm.getSubscribertype()).intValue());
+		if(acm.getSubscribertype() != null) {
+			e.setSubscriberType((acm.getSubscribertype()));
 			e.setSubscriberTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberType, CmFinoFIX.Language_English, acm.getSubscribertype()));
 		}
 		if(acm.getBusinesspartnertype() != null) {

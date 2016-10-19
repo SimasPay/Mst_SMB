@@ -1436,9 +1436,7 @@ public class FixController {
 					AuditLog auditLog = new AuditLog();
 					auditLog.setJsaction(action);
 					auditLog.setMessagename(msgClassName);
-					Clob clob = new SerialClob(returnMsg.DumpFields().toCharArray());
-                    clob.setString(1, returnMsg.DumpFields());
-					auditLog.setFixmessage(clob);
+					auditLog.setFixmessage(returnMsg.DumpFields());
 					auditLogDAO.save(auditLog);
 				}
 				if (returnMsg instanceof CmFinoFIX.CMJSError

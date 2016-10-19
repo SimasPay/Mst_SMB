@@ -68,8 +68,8 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             CMJSCashFlow.CGEntries entry, Long pocketId) {
         entry.setID(c.getId().longValue());
         entry.setTransactionID(c.getTransactionLog().getId().longValue());
-        entry.setJSMsgType(((Long)c.getMsgtype()).intValue());
-        entry.setTransferStatus(((Long)c.getTransferstatus()).intValue());
+        entry.setJSMsgType((c.getMsgtype()).intValue());
+        entry.setTransferStatus((c.getTransferstatus()).intValue());
         entry.setTransferStateText(state);
         if (c.getSourcereferenceid() != null) {
             entry.setSourceReferenceID(c.getSourcereferenceid());
@@ -85,7 +85,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
         if (c.getSubscriber().getMfinoUserBySubscriberuserid() != null) {
             entry.setSourceUserName(c.getSubscriber().getMfinoUserBySubscriberuserid().getUsername());
         }
-        entry.setSourcePocketType(((Long)c.getSourcepockettype()).intValue());
+        entry.setSourcePocketType((c.getSourcepockettype()).intValue());
         entry.setSourcePocketID(c.getPocket().getId().longValue());
         if (c.getSourcepocketbalance() != null) {
             entry.setSourcePocketBalance(new BigDecimal(c.getSourcepocketbalance()));
@@ -124,11 +124,11 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setBillingType(c.getBillingtype().intValue());
         }
         entry.setAmount(c.getAmount());
-        entry.setCommodity(((Long)c.getCommodity()).intValue());
+        entry.setCommodity((c.getCommodity()).intValue());
         if (c.getBuckettype() != null) {
             entry.setBucketType(c.getBuckettype());
         }
-        entry.setSourceApplication(((Long)c.getSourceapplication()).intValue());
+        entry.setSourceApplication((c.getSourceapplication()).intValue());
         if (c.getCurrency() != null) {
             entry.setCurrency(c.getCurrency());
         }
@@ -171,7 +171,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
         entry.setAmountText(c.getAmount() + GeneralConstants.SINGLE_SPACE + c.getCurrency());
         entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, c.getTransferstatus()));
         entry.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, c.getCommodity()));
-        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication(((Long)c.getSourceapplication()).intValue()));
+        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication((c.getSourceapplication()).intValue()));
         entry.setTransferFailureReasonText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, c.getTransferfailurereason()));
         entry.setSourcePocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SourcePocketType, null, c.getSourcepockettype()));
         entry.setDestPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_DestPocketType, null, c.getDestpockettype()));
