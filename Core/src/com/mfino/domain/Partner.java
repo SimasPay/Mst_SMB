@@ -46,7 +46,7 @@ public class Partner extends Base implements java.io.Serializable {
 	private Subscriber subscriber;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private String partnercode;
-	private long partnerstatus;
+	private Integer partnerstatus;
 	private String tradename;
 	private String typeoforganization;
 	private String faxnumber;
@@ -56,18 +56,18 @@ public class Partner extends Base implements java.io.Serializable {
 	private String designation;
 	private String franchisephonenumber;
 	private String classification;
-	private Long numberofoutlets;
+	private Integer numberofoutlets;
 	private String industryclassification;
-	private Long yearestablished;
+	private Integer yearestablished;
 	private String authorizedfaxnumber;
 	private String authorizedemail;
-	private Long businesspartnertype;
+	private Integer businesspartnertype;
 	private String branchcode;
-	private Long branchsequence;
+	private Integer branchsequence;
 	private String accountnumberofbanksinarmas;
 	private String companyemailid;
 	private String closecomments;
-	private BigDecimal closeacctstatus;
+	private Integer closeacctstatus;
 	private String closeacctapprovedby;
 	private Timestamp closeaccttime;
 	private String closeapprovercomments;
@@ -174,11 +174,11 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "PARTNERSTATUS", nullable = false, precision = 10, scale = 0)
-	public long getPartnerstatus() {
+	public Integer getPartnerstatus() {
 		return this.partnerstatus;
 	}
 
-	public void setPartnerstatus(long partnerstatus) {
+	public void setPartnerstatus(Integer partnerstatus) {
 		this.partnerstatus = partnerstatus;
 	}
 
@@ -264,11 +264,11 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "NUMBEROFOUTLETS", precision = 10, scale = 0)
-	public Long getNumberofoutlets() {
+	public Integer getNumberofoutlets() {
 		return this.numberofoutlets;
 	}
 
-	public void setNumberofoutlets(Long numberofoutlets) {
+	public void setNumberofoutlets(Integer numberofoutlets) {
 		this.numberofoutlets = numberofoutlets;
 	}
 
@@ -282,11 +282,11 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "YEARESTABLISHED", precision = 10, scale = 0)
-	public Long getYearestablished() {
+	public Integer getYearestablished() {
 		return this.yearestablished;
 	}
 
-	public void setYearestablished(Long yearestablished) {
+	public void setYearestablished(Integer yearestablished) {
 		this.yearestablished = yearestablished;
 	}
 
@@ -309,11 +309,11 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BUSINESSPARTNERTYPE", precision = 10, scale = 0)
-	public Long getBusinesspartnertype() {
+	public Integer getBusinesspartnertype() {
 		return this.businesspartnertype;
 	}
 
-	public void setBusinesspartnertype(Long businesspartnertype) {
+	public void setBusinesspartnertype(Integer businesspartnertype) {
 		this.businesspartnertype = businesspartnertype;
 	}
 
@@ -327,11 +327,11 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BRANCHSEQUENCE", precision = 10, scale = 0)
-	public Long getBranchsequence() {
+	public Integer getBranchsequence() {
 		return this.branchsequence;
 	}
 
-	public void setBranchsequence(Long branchsequence) {
+	public void setBranchsequence(Integer branchsequence) {
 		this.branchsequence = branchsequence;
 	}
 
@@ -364,11 +364,11 @@ public class Partner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CLOSEACCTSTATUS", precision = 22, scale = 0)
-	public BigDecimal getCloseacctstatus() {
+	public Integer getCloseacctstatus() {
 		return this.closeacctstatus;
 	}
 
-	public void setCloseacctstatus(BigDecimal closeacctstatus) {
+	public void setCloseacctstatus(Integer closeacctstatus) {
 		this.closeacctstatus = closeacctstatus;
 	}
 

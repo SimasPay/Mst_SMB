@@ -41,14 +41,15 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Partner partnerByServiceproviderid;
 	private Pocket pocketBySourcepocket;
-	private Long pslevel;
-	private long status;
+	private Integer pslevel;
+	private Integer status;
 	private BigDecimal collectorpocket;
-	private Long isservicechargeshare;
-	private Long id;
+	private Integer isservicechargeshare;
+	
 	private Set<ServiceSettlementCfg> serviceSettlementCfgs = new HashSet<ServiceSettlementCfg>(
 			0);
-
+	private Long id;
+	
 	public PartnerServices() {
 	}
 
@@ -150,20 +151,20 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "PSLEVEL", precision = 10, scale = 0)
-	public Long getPslevel() {
+	public Integer getPslevel() {
 		return this.pslevel;
 	}
 
-	public void setPslevel(Long pslevel) {
+	public void setPslevel(Integer pslevel) {
 		this.pslevel = pslevel;
 	}
 
 	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
-	public long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -177,11 +178,11 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISSERVICECHARGESHARE", precision = 10, scale = 0)
-	public Long getIsservicechargeshare() {
+	public Integer getIsservicechargeshare() {
 		return this.isservicechargeshare;
 	}
 
-	public void setIsservicechargeshare(Long isservicechargeshare) {
+	public void setIsservicechargeshare(Integer isservicechargeshare) {
 		this.isservicechargeshare = isservicechargeshare;
 	}
 

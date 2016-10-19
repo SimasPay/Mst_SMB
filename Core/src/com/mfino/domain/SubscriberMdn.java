@@ -46,10 +46,10 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String idtype;
 	private String idnumber;
 	private String authenticationphonenumber;
-	private long status;
+	private Integer status;
 	private String authenticationphrase;
 	private Integer restrictions;
-	private long wrongpincount;
+	private Integer wrongpincount;
 	private String digestedpin;
 	private String merchantdigestedpin;
 	private String mdnbrand;
@@ -67,7 +67,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String authorizationtoken;
 	private String userapikey;
 	private String othermdn;
-	private Long otpretrycount;
+	private Integer otpretrycount;
 	private BigDecimal cashinfirsttimeid;
 	private String isidlifetime;
 	private String domaddridentity;
@@ -75,7 +75,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String subscriberformpath;
 	private String supportingdocumentpath;
 	private String closecomments;
-	private BigDecimal upgradeacctstatus;
+	private Integer upgradeacctstatus;
 	private String upgradeacctapprovedby;
 	private Timestamp upgradeaccttime;
 	private String upgradeacctcomments;
@@ -187,11 +187,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
-	public long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -214,11 +214,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "WRONGPINCOUNT", nullable = false, precision = 10, scale = 0)
-	public long getWrongpincount() {
+	public Integer getWrongpincount() {
 		return this.wrongpincount;
 	}
 
-	public void setWrongpincount(long wrongpincount) {
+	public void setWrongpincount(Integer wrongpincount) {
 		this.wrongpincount = wrongpincount;
 	}
 
@@ -380,11 +380,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "OTPRETRYCOUNT", precision = 10, scale = 0)
-	public Long getOtpretrycount() {
+	public Integer getOtpretrycount() {
 		return this.otpretrycount;
 	}
 
-	public void setOtpretrycount(Long otpretrycount) {
+	public void setOtpretrycount(Integer otpretrycount) {
 		this.otpretrycount = otpretrycount;
 	}
 
@@ -452,11 +452,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UPGRADEACCTSTATUS", precision = 22, scale = 0)
-	public BigDecimal getUpgradeacctstatus() {
+	public Integer getUpgradeacctstatus() {
 		return this.upgradeacctstatus;
 	}
 
-	public void setUpgradeacctstatus(BigDecimal upgradeacctstatus) {
+	public void setUpgradeacctstatus(Integer upgradeacctstatus) {
 		this.upgradeacctstatus = upgradeacctstatus;
 	}
 

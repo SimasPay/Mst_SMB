@@ -34,13 +34,13 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	public static final String FieldName_PocketCode = "pocketcode";
 	
 	private MfinoServiceProvider mfinoServiceProvider;
-	private long type;
-	private Long bankaccountcardtype;
+	private Integer type;
+	private Integer bankaccountcardtype;
 	private String description;
-	private long commodity;
-	private Long cardpansuffixlength;
+	private Integer commodity;
+	private Integer cardpansuffixlength;
 	private String units;
-	private long allowance;
+	private Integer allowance;
 	private BigDecimal maximumstoredvalue;
 	private BigDecimal minimumstoredvalue;
 	private BigDecimal maxamountpertransaction;
@@ -48,26 +48,26 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	private BigDecimal maxamountperday;
 	private BigDecimal maxamountperweek;
 	private BigDecimal maxamountpermonth;
-	private long maxtransactionsperday;
-	private long maxtransactionsperweek;
-	private long maxtransactionspermonth;
-	private long mintimebetweentransactions;
-	private Long bankcode;
-	private Long operatorcode;
-	private Long billingtype;
+	private Integer maxtransactionsperday;
+	private Integer maxtransactionsperweek;
+	private Integer maxtransactionspermonth;
+	private Integer mintimebetweentransactions;
+	private Integer bankcode;
+	private Integer operatorcode;
+	private Integer billingtype;
 	private BigDecimal lowbalancentfcthresholdamt;
 	private Short lowbalancenotificationenabled;
-	private Long webtimeinterval;
-	private Long webservicetimeinterval;
-	private Long utktimeinterval;
-	private Long bankchanneltimeinterval;
+	private Integer webtimeinterval;
+	private Integer webservicetimeinterval;
+	private Integer utktimeinterval;
+	private Integer bankchanneltimeinterval;
 	private BigDecimal denomination;
 	private BigDecimal maxunits;
 	private String pocketcode;
-	private long typeofcheck;
+	private Integer typeofcheck;
 	private String regularexpression;
 	private Short iscollectorpocket;
-	private Long numberofpocketsallowedformdn;
+	private Integer numberofpocketsallowedformdn;
 	private Short issuspencepocket;
 	private Short issystempocket;
 	private BigDecimal interestrate;
@@ -107,20 +107,20 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "TYPE", nullable = false, precision = 10, scale = 0)
-	public long getType() {
+	public Integer getType() {
 		return this.type;
 	}
 
-	public void setType(long type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
 	@Column(name = "BANKACCOUNTCARDTYPE", precision = 10, scale = 0)
-	public Long getBankaccountcardtype() {
+	public Integer getBankaccountcardtype() {
 		return this.bankaccountcardtype;
 	}
 
-	public void setBankaccountcardtype(Long bankaccountcardtype) {
+	public void setBankaccountcardtype(Integer bankaccountcardtype) {
 		this.bankaccountcardtype = bankaccountcardtype;
 	}
 
@@ -134,20 +134,20 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "COMMODITY", nullable = false, precision = 10, scale = 0)
-	public long getCommodity() {
+	public Integer getCommodity() {
 		return this.commodity;
 	}
 
-	public void setCommodity(long commodity) {
+	public void setCommodity(Integer commodity) {
 		this.commodity = commodity;
 	}
 
 	@Column(name = "CARDPANSUFFIXLENGTH", precision = 10, scale = 0)
-	public Long getCardpansuffixlength() {
+	public Integer getCardpansuffixlength() {
 		return this.cardpansuffixlength;
 	}
 
-	public void setCardpansuffixlength(Long cardpansuffixlength) {
+	public void setCardpansuffixlength(Integer cardpansuffixlength) {
 		this.cardpansuffixlength = cardpansuffixlength;
 	}
 
@@ -161,11 +161,11 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ALLOWANCE", nullable = false, precision = 10, scale = 0)
-	public long getAllowance() {
+	public Integer getAllowance() {
 		return this.allowance;
 	}
 
-	public void setAllowance(long allowance) {
+	public void setAllowance(Integer allowance) {
 		this.allowance = allowance;
 	}
 
@@ -233,65 +233,65 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "MAXTRANSACTIONSPERDAY", nullable = false, precision = 10, scale = 0)
-	public long getMaxtransactionsperday() {
+	public Integer getMaxtransactionsperday() {
 		return this.maxtransactionsperday;
 	}
 
-	public void setMaxtransactionsperday(long maxtransactionsperday) {
+	public void setMaxtransactionsperday(Integer maxtransactionsperday) {
 		this.maxtransactionsperday = maxtransactionsperday;
 	}
 
 	@Column(name = "MAXTRANSACTIONSPERWEEK", nullable = false, precision = 10, scale = 0)
-	public long getMaxtransactionsperweek() {
+	public Integer getMaxtransactionsperweek() {
 		return this.maxtransactionsperweek;
 	}
 
-	public void setMaxtransactionsperweek(long maxtransactionsperweek) {
+	public void setMaxtransactionsperweek(Integer maxtransactionsperweek) {
 		this.maxtransactionsperweek = maxtransactionsperweek;
 	}
 
 	@Column(name = "MAXTRANSACTIONSPERMONTH", nullable = false, precision = 10, scale = 0)
-	public long getMaxtransactionspermonth() {
+	public Integer getMaxtransactionspermonth() {
 		return this.maxtransactionspermonth;
 	}
 
-	public void setMaxtransactionspermonth(long maxtransactionspermonth) {
+	public void setMaxtransactionspermonth(Integer maxtransactionspermonth) {
 		this.maxtransactionspermonth = maxtransactionspermonth;
 	}
 
 	@Column(name = "MINTIMEBETWEENTRANSACTIONS", nullable = false, precision = 10, scale = 0)
-	public long getMintimebetweentransactions() {
+	public Integer getMintimebetweentransactions() {
 		return this.mintimebetweentransactions;
 	}
 
-	public void setMintimebetweentransactions(long mintimebetweentransactions) {
+	public void setMintimebetweentransactions(Integer mintimebetweentransactions) {
 		this.mintimebetweentransactions = mintimebetweentransactions;
 	}
 
 	@Column(name = "BANKCODE", precision = 10, scale = 0)
-	public Long getBankcode() {
+	public Integer getBankcode() {
 		return this.bankcode;
 	}
 
-	public void setBankcode(Long bankcode) {
+	public void setBankcode(Integer bankcode) {
 		this.bankcode = bankcode;
 	}
 
 	@Column(name = "OPERATORCODE", precision = 10, scale = 0)
-	public Long getOperatorcode() {
+	public Integer getOperatorcode() {
 		return this.operatorcode;
 	}
 
-	public void setOperatorcode(Long operatorcode) {
+	public void setOperatorcode(Integer operatorcode) {
 		this.operatorcode = operatorcode;
 	}
 
 	@Column(name = "BILLINGTYPE", precision = 10, scale = 0)
-	public Long getBillingtype() {
+	public Integer getBillingtype() {
 		return this.billingtype;
 	}
 
-	public void setBillingtype(Long billingtype) {
+	public void setBillingtype(Integer billingtype) {
 		this.billingtype = billingtype;
 	}
 
@@ -316,38 +316,38 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "WEBTIMEINTERVAL", precision = 10, scale = 0)
-	public Long getWebtimeinterval() {
+	public Integer getWebtimeinterval() {
 		return this.webtimeinterval;
 	}
 
-	public void setWebtimeinterval(Long webtimeinterval) {
+	public void setWebtimeinterval(Integer webtimeinterval) {
 		this.webtimeinterval = webtimeinterval;
 	}
 
 	@Column(name = "WEBSERVICETIMEINTERVAL", precision = 10, scale = 0)
-	public Long getWebservicetimeinterval() {
+	public Integer getWebservicetimeinterval() {
 		return this.webservicetimeinterval;
 	}
 
-	public void setWebservicetimeinterval(Long webservicetimeinterval) {
+	public void setWebservicetimeinterval(Integer webservicetimeinterval) {
 		this.webservicetimeinterval = webservicetimeinterval;
 	}
 
 	@Column(name = "UTKTIMEINTERVAL", precision = 10, scale = 0)
-	public Long getUtktimeinterval() {
+	public Integer getUtktimeinterval() {
 		return this.utktimeinterval;
 	}
 
-	public void setUtktimeinterval(Long utktimeinterval) {
+	public void setUtktimeinterval(Integer utktimeinterval) {
 		this.utktimeinterval = utktimeinterval;
 	}
 
 	@Column(name = "BANKCHANNELTIMEINTERVAL", precision = 10, scale = 0)
-	public Long getBankchanneltimeinterval() {
+	public Integer getBankchanneltimeinterval() {
 		return this.bankchanneltimeinterval;
 	}
 
-	public void setBankchanneltimeinterval(Long bankchanneltimeinterval) {
+	public void setBankchanneltimeinterval(Integer bankchanneltimeinterval) {
 		this.bankchanneltimeinterval = bankchanneltimeinterval;
 	}
 
@@ -379,11 +379,11 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "TYPEOFCHECK", nullable = false, precision = 10, scale = 0)
-	public long getTypeofcheck() {
+	public Integer getTypeofcheck() {
 		return this.typeofcheck;
 	}
 
-	public void setTypeofcheck(long typeofcheck) {
+	public void setTypeofcheck(Integer typeofcheck) {
 		this.typeofcheck = typeofcheck;
 	}
 
@@ -406,12 +406,12 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "NUMBEROFPOCKETSALLOWEDFORMDN", precision = 10, scale = 0)
-	public Long getNumberofpocketsallowedformdn() {
+	public Integer getNumberofpocketsallowedformdn() {
 		return this.numberofpocketsallowedformdn;
 	}
 
 	public void setNumberofpocketsallowedformdn(
-			Long numberofpocketsallowedformdn) {
+			Integer numberofpocketsallowedformdn) {
 		this.numberofpocketsallowedformdn = numberofpocketsallowedformdn;
 	}
 
