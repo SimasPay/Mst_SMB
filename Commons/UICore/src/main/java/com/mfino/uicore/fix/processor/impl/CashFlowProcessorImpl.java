@@ -32,12 +32,9 @@ import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSCashFlow;
-import com.mfino.fix.CmFinoFIX.CRCommodityTransfer;
-import com.mfino.fix.CmFinoFIX.CRPendingCommodityTransfer;
 import com.mfino.service.ChannelCodeService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.CashFlowProcessor;
 
@@ -151,14 +148,14 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setSourceDestnPocketID(pocketId);
         }
         if (c2 != null) {
-            if ((Short)c2.getOperatoractionrequired() != null) {
-                entry.setOperatorActionRequired(c2.getOperatoractionrequired() != 0);
+            if (c2.getOperatoractionrequired() != null) {
+                entry.setOperatorActionRequired(c2.getOperatoractionrequired());
             }
-            if ((Short)c2.getLocalrevertrequired() != null) {
-                entry.setLocalRevertRequired(c2.getLocalrevertrequired() != 0);
+            if (c2.getLocalrevertrequired() != null) {
+                entry.setLocalRevertRequired(c2.getLocalrevertrequired());
             }
-            if ((Short)c2.getBankreversalrequired() != null) {
-                entry.setBankReversalRequired(c2.getBankreversalrequired() != 0);
+            if (c2.getBankreversalrequired() != null) {
+                entry.setBankReversalRequired(c2.getBankreversalrequired());
             }
         }
         if(c.getCsraction() != null) {

@@ -56,7 +56,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         entry.setTransactionID(c.getTransactionLog().getId().longValue());
         //      entry.setJSMsgType(c.getMsgType());
         entry.setMSPID(c.getMfinoServiceProvider().getId().longValue());
-        entry.setTransferStatus((c.getTransferstatus()).intValue());
+        entry.setTransferStatus(c.getTransferstatus());
         if (c.getTransferfailurereason() != null) {
             entry.setTransferFailureReason(c.getTransferfailurereason().intValue());
         }
@@ -339,14 +339,14 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             }
         }
         if (pct != null) {
-            if (((Short)pct.getOperatoractionrequired()) != null) {
-                entry.setOperatorActionRequired(pct.getOperatoractionrequired() != 0);
+            if (pct.getOperatoractionrequired() != null) {
+                entry.setOperatorActionRequired(pct.getOperatoractionrequired());
             }
-            if (((Short)pct.getLocalrevertrequired()) != null) {
-                entry.setLocalRevertRequired(pct.getLocalrevertrequired() != 0);
+            if (pct.getLocalrevertrequired() != null) {
+                entry.setLocalRevertRequired(pct.getLocalrevertrequired());
             }
-            if (((Short)pct.getBankreversalrequired()) != null) {
-                entry.setBankReversalRequired(pct.getBankreversalrequired() != 0);
+            if (pct.getBankreversalrequired() != null) {
+                entry.setBankReversalRequired(pct.getBankreversalrequired());
             }
         }
         if (c.getBulkuploadlinenumber() != null) {
