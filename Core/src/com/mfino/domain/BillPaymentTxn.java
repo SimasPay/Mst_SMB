@@ -29,16 +29,16 @@ public class BillPaymentTxn  extends Base implements java.io.Serializable {
 	private Company company;
 	private BigDecimal parenttransactionid;
 	private BigDecimal transactionid;
-	private long bankcode;
+	private Integer bankcode;
 	private BigDecimal billerid;
 	private String billername;
 	private String billpaymentreferenceid;
 	private BigDecimal amount;
 	private String customerid;
-	private long billpaymenttransactiontype;
+	private Integer billpaymenttransactiontype;
 	private BigDecimal transactionfee;
-	private Long status;
-	private Long notificationcode;
+	private Integer status;
+	private Integer notificationcode;
 	private String transactiondate;
 	private String billercode;
     private Long id;
@@ -97,11 +97,11 @@ public class BillPaymentTxn  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BANKCODE", nullable = false, precision = 10, scale = 0)
-	public long getBankcode() {
+	public Integer getBankcode() {
 		return this.bankcode;
 	}
 
-	public void setBankcode(long bankcode) {
+	public void setBankcode(Integer bankcode) {
 		this.bankcode = bankcode;
 	}
 
@@ -151,11 +151,11 @@ public class BillPaymentTxn  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BILLPAYMENTTRANSACTIONTYPE", nullable = false, precision = 10, scale = 0)
-	public long getBillpaymenttransactiontype() {
+	public Integer getBillpaymenttransactiontype() {
 		return this.billpaymenttransactiontype;
 	}
 
-	public void setBillpaymenttransactiontype(long billpaymenttransactiontype) {
+	public void setBillpaymenttransactiontype(Integer billpaymenttransactiontype) {
 		this.billpaymenttransactiontype = billpaymenttransactiontype;
 	}
 
@@ -169,20 +169,20 @@ public class BillPaymentTxn  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "STATUS", precision = 10, scale = 0)
-	public Long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(Long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
 	@Column(name = "NOTIFICATIONCODE", precision = 10, scale = 0)
-	public Long getNotificationcode() {
+	public Integer getNotificationcode() {
 		return this.notificationcode;
 	}
 
-	public void setNotificationcode(Long notificationcode) {
+	public void setNotificationcode(Integer notificationcode) {
 		this.notificationcode = notificationcode;
 	}
 

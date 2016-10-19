@@ -35,32 +35,32 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	private BigDecimal parenttransactionid;
 	private Long transferid;
 	private Short issuccessful;
-	private Long errorcode;
+	private Integer errorcode;
 	private BigDecimal lopid;
 	private BigDecimal bulkuploadentryid;
-	private Long notificationcode;
-	private Long msgtype;
+	private Integer notificationcode;
+	private Integer msgtype;
 	private Long sourcesubscriberid;
 	private String sourcesubscribername;
 	private Long sourcemdnid;
 	private String sourcemdn;
 	private String destmdn;
 	private Long sourcepocketid;
-	private Long sourcepockettype;
-	private Long sourceapplication;
+	private Integer sourcepockettype;
+	private Integer sourceapplication;
 	private String servletpath;
 	private String iso8583Processingcode;
 	private String iso8583Primaryaccountnumber;
 	private String iso8583Systemtraceauditnumber;
 	private String iso8583Retrievalreferencenum;
 	private String iso8583Merchanttype;
-	private Long iso8583Acquiringinstidcode;
+	private Integer iso8583Acquiringinstidcode;
 	private String iso8583Cardacceptoridcode;
 	private String iso8583Variant;
 	private String iso8583Responsecode;
 	private String webclientip;
-	private Long commodity;
-	private Long activitycategory;
+	private Integer commodity;
+	private Integer activitycategory;
 	
        private Long id;
 	
@@ -120,11 +120,11 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ERRORCODE", precision = 10, scale = 0)
-	public Long getErrorcode() {
+	public Integer getErrorcode() {
 		return this.errorcode;
 	}
 
-	public void setErrorcode(Long errorcode) {
+	public void setErrorcode(Integer errorcode) {
 		this.errorcode = errorcode;
 	}
 
@@ -147,20 +147,20 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "NOTIFICATIONCODE", precision = 10, scale = 0)
-	public Long getNotificationcode() {
+	public Integer getNotificationcode() {
 		return this.notificationcode;
 	}
 
-	public void setNotificationcode(Long notificationcode) {
+	public void setNotificationcode(Integer notificationcode) {
 		this.notificationcode = notificationcode;
 	}
 
 	@Column(name = "MSGTYPE", precision = 10, scale = 0)
-	public Long getMsgtype() {
+	public Integer getMsgtype() {
 		return this.msgtype;
 	}
 
-	public void setMsgtype(Long msgtype) {
+	public void setMsgtype(Integer msgtype) {
 		this.msgtype = msgtype;
 	}
 
@@ -219,20 +219,20 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEPOCKETTYPE", precision = 10, scale = 0)
-	public Long getSourcepockettype() {
+	public Integer getSourcepockettype() {
 		return this.sourcepockettype;
 	}
 
-	public void setSourcepockettype(Long sourcepockettype) {
+	public void setSourcepockettype(Integer sourcepockettype) {
 		this.sourcepockettype = sourcepockettype;
 	}
 
 	@Column(name = "SOURCEAPPLICATION", precision = 10, scale = 0)
-	public Long getSourceapplication() {
+	public Integer getSourceapplication() {
 		return this.sourceapplication;
 	}
 
-	public void setSourceapplication(Long sourceapplication) {
+	public void setSourceapplication(Integer sourceapplication) {
 		this.sourceapplication = sourceapplication;
 	}
 
@@ -294,11 +294,11 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISO8583_ACQUIRINGINSTIDCODE", precision = 10, scale = 0)
-	public Long getIso8583Acquiringinstidcode() {
+	public Integer getIso8583Acquiringinstidcode() {
 		return this.iso8583Acquiringinstidcode;
 	}
 
-	public void setIso8583Acquiringinstidcode(Long iso8583Acquiringinstidcode) {
+	public void setIso8583Acquiringinstidcode(Integer iso8583Acquiringinstidcode) {
 		this.iso8583Acquiringinstidcode = iso8583Acquiringinstidcode;
 	}
 
@@ -339,20 +339,20 @@ public class ActivitiesLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "COMMODITY", precision = 10, scale = 0)
-	public Long getCommodity() {
+	public Integer getCommodity() {
 		return this.commodity;
 	}
 
-	public void setCommodity(Long commodity) {
+	public void setCommodity(Integer commodity) {
 		this.commodity = commodity;
 	}
 
 	@Column(name = "ACTIVITYCATEGORY", precision = 10, scale = 0)
-	public Long getActivitycategory() {
+	public Integer getActivitycategory() {
 		return this.activitycategory;
 	}
 
-	public void setActivitycategory(Long activitycategory) {
+	public void setActivitycategory(Integer activitycategory) {
 		this.activitycategory = activitycategory;
 	}
 

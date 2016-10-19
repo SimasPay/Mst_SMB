@@ -20,7 +20,7 @@ public class AuditLog extends Base implements java.io.Serializable {
 
 	
 	private String messagename;
-	private Clob fixmessage;
+	private String fixmessage;
 	private String jsaction;
 	private Long id;
 
@@ -50,11 +50,11 @@ public class AuditLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "FIXMESSAGE", nullable = false)
-	public Clob getFixmessage() {
+	public String getFixmessage() {
 		return this.fixmessage;
 	}
 
-	public void setFixmessage(Clob fixmessage) {
+	public void setFixmessage(String fixmessage) {
 		this.fixmessage = fixmessage;
 	}
 

@@ -82,22 +82,22 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private Company company;
 	private DistributionChainLvl distributionChainLvl;
 	private Pocket pocket;
-	private long msgtype;
-	private Long uicategory;
-	private long transferstatus;
-	private Long transferfailurereason;
-	private Long notificationcode;
+	private Integer msgtype;
+	private Integer uicategory;
+	private Integer transferstatus;
+	private Integer transferfailurereason;
+	private Integer notificationcode;
 	private Timestamp starttime;
 	private Timestamp endtime;
-	private long expirationtimeout;
+	private Integer expirationtimeout;
 	private String sourceip;
 	private String sourcereferenceid;
 	private String sourceterminalid;
 	private String sourcemdn;
-	private Long levelpermissions;
+	private Integer levelpermissions;
 	private String sourcesubscribername;
-	private Long sourcepocketallowance;
-	private long sourcepockettype;
+	private Integer sourcepocketallowance;
+	private Integer sourcepockettype;
 	private String sourcepocketbalance;
 	private String sourcecardpan;
 	private String sourcemessage;
@@ -105,50 +105,50 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private Long destmdnid;
 	private BigDecimal destsubscriberid;
 	private String destsubscribername;
-	private Long destpocketallowance;
-	private Long destpockettype;
+	private Integer destpocketallowance;
+	private Integer destpockettype;
 	private BigDecimal destpocketid;
 	private String destpocketbalance;
 	private String destbankaccountname;
 	private String destcardpan;
-	private Long billingtype;
+	private Integer billingtype;
 	private BigDecimal amount;
 	private BigDecimal charges;
 	private BigDecimal taxamount;
-	private long commodity;
+	private Integer commodity;
 	private String buckettype;
-	private long sourceapplication;
+	private Integer sourceapplication;
 	private String servletpath;
 	private String currency;
-	private Long bankcode;
-	private Long operatorcode;
+	private Integer bankcode;
+	private Integer operatorcode;
 	private Timestamp operatorresponsetime;
-	private Long operatorresponsecode;
+	private Integer operatorresponsecode;
 	private String operatorrejectreason;
 	private String operatorerrortext;
 	private String operatorauthorizationcode;
 	private Timestamp operatorreversalresponsetime;
-	private Long operatorreversalresponsecode;
+	private Integer operatorreversalresponsecode;
 	private String operatorreversalrejectreason;
 	private String operatorreversalerrortext;
-	private Long operatorreversalcount;
+	private Integer operatorreversalcount;
 	private Timestamp operatorlastreversaltime;
 	private BigDecimal topupperiod;
 	private String bankretrievalreferencenumber;
 	private String banksystemtraceauditnumber;
 	private Timestamp bankresponsetime;
-	private Long bankresponsecode;
+	private Integer bankresponsecode;
 	private String bankrejectreason;
 	private String bankerrortext;
 	private String bankauthorizationcode;
 	private Timestamp bankreversalresponsetime;
-	private Long bankreversalresponsecode;
+	private Integer bankreversalresponsecode;
 	private String bankreversalrejectreason;
 	private String bankreversalerrortext;
 	private String bankreversalauthorizationcode;
-	private Long reversalcount;
+	private Integer reversalcount;
 	private Timestamp lastreversaltime;
-	private Long csraction;
+	private Integer csraction;
 	private Timestamp csractiontime;
 	private BigDecimal csruserid;
 	private String csrusername;
@@ -158,13 +158,13 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private String iso8583Systemtraceauditnumber;
 	private String iso8583Localtxntimehhmmss;
 	private String iso8583Merchanttype;
-	private Long iso8583Acquiringinstidcode;
+	private Integer iso8583Acquiringinstidcode;
 	private String iso8583Retrievalreferencenum;
 	private String iso8583Cardacceptoridcode;
 	private String iso8583Variant;
 	private String iso8583Responsecode;
 	private BigDecimal bulkuploadid;
-	private Long bulkuploadlinenumber;
+	private Integer bulkuploadlinenumber;
 	private String copytopermanenterror;
 	private String webclientip;
 	private String operatorrrn;
@@ -290,47 +290,47 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "MSGTYPE", nullable = false, precision = 10, scale = 0)
-	public long getMsgtype() {
+	public Integer getMsgtype() {
 		return this.msgtype;
 	}
 
-	public void setMsgtype(long msgtype) {
+	public void setMsgtype(Integer msgtype) {
 		this.msgtype = msgtype;
 	}
 
 	@Column(name = "UICATEGORY", precision = 10, scale = 0)
-	public Long getUicategory() {
+	public Integer getUicategory() {
 		return this.uicategory;
 	}
 
-	public void setUicategory(Long uicategory) {
+	public void setUicategory(Integer uicategory) {
 		this.uicategory = uicategory;
 	}
 
 	@Column(name = "TRANSFERSTATUS", nullable = false, precision = 10, scale = 0)
-	public long getTransferstatus() {
+	public Integer getTransferstatus() {
 		return this.transferstatus;
 	}
 
-	public void setTransferstatus(long transferstatus) {
+	public void setTransferstatus(Integer transferstatus) {
 		this.transferstatus = transferstatus;
 	}
 
 	@Column(name = "TRANSFERFAILUREREASON", precision = 10, scale = 0)
-	public Long getTransferfailurereason() {
+	public Integer getTransferfailurereason() {
 		return this.transferfailurereason;
 	}
 
-	public void setTransferfailurereason(Long transferfailurereason) {
+	public void setTransferfailurereason(Integer transferfailurereason) {
 		this.transferfailurereason = transferfailurereason;
 	}
 
 	@Column(name = "NOTIFICATIONCODE", precision = 10, scale = 0)
-	public Long getNotificationcode() {
+	public Integer getNotificationcode() {
 		return this.notificationcode;
 	}
 
-	public void setNotificationcode(Long notificationcode) {
+	public void setNotificationcode(Integer notificationcode) {
 		this.notificationcode = notificationcode;
 	}
 
@@ -355,11 +355,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "EXPIRATIONTIMEOUT", nullable = false, precision = 10, scale = 0)
-	public long getExpirationtimeout() {
+	public Integer getExpirationtimeout() {
 		return this.expirationtimeout;
 	}
 
-	public void setExpirationtimeout(long expirationtimeout) {
+	public void setExpirationtimeout(Integer expirationtimeout) {
 		this.expirationtimeout = expirationtimeout;
 	}
 
@@ -400,11 +400,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "LEVELPERMISSIONS", precision = 10, scale = 0)
-	public Long getLevelpermissions() {
+	public Integer getLevelpermissions() {
 		return this.levelpermissions;
 	}
 
-	public void setLevelpermissions(Long levelpermissions) {
+	public void setLevelpermissions(Integer levelpermissions) {
 		this.levelpermissions = levelpermissions;
 	}
 
@@ -418,20 +418,20 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEPOCKETALLOWANCE", precision = 10, scale = 0)
-	public Long getSourcepocketallowance() {
+	public Integer getSourcepocketallowance() {
 		return this.sourcepocketallowance;
 	}
 
-	public void setSourcepocketallowance(Long sourcepocketallowance) {
+	public void setSourcepocketallowance(Integer sourcepocketallowance) {
 		this.sourcepocketallowance = sourcepocketallowance;
 	}
 
 	@Column(name = "SOURCEPOCKETTYPE", nullable = false, precision = 10, scale = 0)
-	public long getSourcepockettype() {
+	public Integer getSourcepockettype() {
 		return this.sourcepockettype;
 	}
 
-	public void setSourcepockettype(long sourcepockettype) {
+	public void setSourcepockettype(Integer sourcepockettype) {
 		this.sourcepockettype = sourcepockettype;
 	}
  
@@ -501,20 +501,20 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DESTPOCKETALLOWANCE", precision = 10, scale = 0)
-	public Long getDestpocketallowance() {
+	public Integer getDestpocketallowance() {
 		return this.destpocketallowance;
 	}
 
-	public void setDestpocketallowance(Long destpocketallowance) {
+	public void setDestpocketallowance(Integer destpocketallowance) {
 		this.destpocketallowance = destpocketallowance;
 	}
 
 	@Column(name = "DESTPOCKETTYPE", precision = 10, scale = 0)
-	public Long getDestpockettype() {
+	public Integer getDestpockettype() {
 		return this.destpockettype;
 	}
 
-	public void setDestpockettype(Long destpockettype) {
+	public void setDestpockettype(Integer destpockettype) {
 		this.destpockettype = destpockettype;
 	}
 
@@ -557,11 +557,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BILLINGTYPE", precision = 10, scale = 0)
-	public Long getBillingtype() {
+	public Integer getBillingtype() {
 		return this.billingtype;
 	}
 
-	public void setBillingtype(Long billingtype) {
+	public void setBillingtype(Integer billingtype) {
 		this.billingtype = billingtype;
 	}
 
@@ -593,11 +593,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "COMMODITY", nullable = false, precision = 10, scale = 0)
-	public long getCommodity() {
+	public Integer getCommodity() {
 		return this.commodity;
 	}
 
-	public void setCommodity(long commodity) {
+	public void setCommodity(Integer commodity) {
 		this.commodity = commodity;
 	}
 
@@ -611,11 +611,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEAPPLICATION", nullable = false, precision = 10, scale = 0)
-	public long getSourceapplication() {
+	public Integer getSourceapplication() {
 		return this.sourceapplication;
 	}
 
-	public void setSourceapplication(long sourceapplication) {
+	public void setSourceapplication(Integer sourceapplication) {
 		this.sourceapplication = sourceapplication;
 	}
 
@@ -638,20 +638,20 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BANKCODE", precision = 10, scale = 0)
-	public Long getBankcode() {
+	public Integer getBankcode() {
 		return this.bankcode;
 	}
 
-	public void setBankcode(Long bankcode) {
+	public void setBankcode(Integer bankcode) {
 		this.bankcode = bankcode;
 	}
 
 	@Column(name = "OPERATORCODE", precision = 10, scale = 0)
-	public Long getOperatorcode() {
+	public Integer getOperatorcode() {
 		return this.operatorcode;
 	}
 
-	public void setOperatorcode(Long operatorcode) {
+	public void setOperatorcode(Integer operatorcode) {
 		this.operatorcode = operatorcode;
 	}
 
@@ -666,11 +666,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "OPERATORRESPONSECODE", precision = 10, scale = 0)
-	public Long getOperatorresponsecode() {
+	public Integer getOperatorresponsecode() {
 		return this.operatorresponsecode;
 	}
 
-	public void setOperatorresponsecode(Long operatorresponsecode) {
+	public void setOperatorresponsecode(Integer operatorresponsecode) {
 		this.operatorresponsecode = operatorresponsecode;
 	}
 
@@ -713,12 +713,12 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "OPERATORREVERSALRESPONSECODE", precision = 10, scale = 0)
-	public Long getOperatorreversalresponsecode() {
+	public Integer getOperatorreversalresponsecode() {
 		return this.operatorreversalresponsecode;
 	}
 
 	public void setOperatorreversalresponsecode(
-			Long operatorreversalresponsecode) {
+			Integer operatorreversalresponsecode) {
 		this.operatorreversalresponsecode = operatorreversalresponsecode;
 	}
 
@@ -742,11 +742,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "OPERATORREVERSALCOUNT", precision = 10, scale = 0)
-	public Long getOperatorreversalcount() {
+	public Integer getOperatorreversalcount() {
 		return this.operatorreversalcount;
 	}
 
-	public void setOperatorreversalcount(Long operatorreversalcount) {
+	public void setOperatorreversalcount(Integer operatorreversalcount) {
 		this.operatorreversalcount = operatorreversalcount;
 	}
 
@@ -800,11 +800,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BANKRESPONSECODE", precision = 10, scale = 0)
-	public Long getBankresponsecode() {
+	public Integer getBankresponsecode() {
 		return this.bankresponsecode;
 	}
 
-	public void setBankresponsecode(Long bankresponsecode) {
+	public void setBankresponsecode(Integer bankresponsecode) {
 		this.bankresponsecode = bankresponsecode;
 	}
 
@@ -847,11 +847,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BANKREVERSALRESPONSECODE", precision = 10, scale = 0)
-	public Long getBankreversalresponsecode() {
+	public Integer getBankreversalresponsecode() {
 		return this.bankreversalresponsecode;
 	}
 
-	public void setBankreversalresponsecode(Long bankreversalresponsecode) {
+	public void setBankreversalresponsecode(Integer bankreversalresponsecode) {
 		this.bankreversalresponsecode = bankreversalresponsecode;
 	}
 
@@ -884,11 +884,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REVERSALCOUNT", precision = 10, scale = 0)
-	public Long getReversalcount() {
+	public Integer getReversalcount() {
 		return this.reversalcount;
 	}
 
-	public void setReversalcount(Long reversalcount) {
+	public void setReversalcount(Integer reversalcount) {
 		this.reversalcount = reversalcount;
 	}
 
@@ -903,11 +903,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CSRACTION", precision = 10, scale = 0)
-	public Long getCsraction() {
+	public Integer getCsraction() {
 		return this.csraction;
 	}
 
-	public void setCsraction(Long csraction) {
+	public void setCsraction(Integer csraction) {
 		this.csraction = csraction;
 	}
 
@@ -996,11 +996,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISO8583_ACQUIRINGINSTIDCODE", precision = 10, scale = 0)
-	public Long getIso8583Acquiringinstidcode() {
+	public Integer getIso8583Acquiringinstidcode() {
 		return this.iso8583Acquiringinstidcode;
 	}
 
-	public void setIso8583Acquiringinstidcode(Long iso8583Acquiringinstidcode) {
+	public void setIso8583Acquiringinstidcode(Integer iso8583Acquiringinstidcode) {
 		this.iso8583Acquiringinstidcode = iso8583Acquiringinstidcode;
 	}
 
@@ -1051,11 +1051,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BULKUPLOADLINENUMBER", precision = 10, scale = 0)
-	public Long getBulkuploadlinenumber() {
+	public Integer getBulkuploadlinenumber() {
 		return this.bulkuploadlinenumber;
 	}
 
-	public void setBulkuploadlinenumber(Long bulkuploadlinenumber) {
+	public void setBulkuploadlinenumber(Integer bulkuploadlinenumber) {
 		this.bulkuploadlinenumber = bulkuploadlinenumber;
 	}
 

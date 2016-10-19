@@ -35,12 +35,12 @@ public class Biller extends Base  implements java.io.Serializable {
 	public static final String FieldName_BillerType = "billertype";
 	
 	private Company company;
-	private long bankcode;
+	private Integer bankcode;
 	private String billercode;
 	private String billername;
 	private String billertype;
 	private BigDecimal transactionfee;
-	private long billrefoffset;
+	private Integer billrefoffset;
 	private Long id;
 	private Set<Denomination> denominations = new HashSet<Denomination>(0);
 
@@ -71,11 +71,11 @@ public class Biller extends Base  implements java.io.Serializable {
 
 	
 	@Column(name = "BANKCODE", nullable = false, precision = 10, scale = 0)
-	public long getBankcode() {
+	public Integer getBankcode() {
 		return this.bankcode;
 	}
 
-	public void setBankcode(long bankcode) {
+	public void setBankcode(Integer bankcode) {
 		this.bankcode = bankcode;
 	}
 
@@ -116,11 +116,11 @@ public class Biller extends Base  implements java.io.Serializable {
 	}
 
 	@Column(name = "BILLREFOFFSET", nullable = false, precision = 10, scale = 0)
-	public long getBillrefoffset() {
+	public Integer getBillrefoffset() {
 		return this.billrefoffset;
 	}
 
-	public void setBillrefoffset(long billrefoffset) {
+	public void setBillrefoffset(Integer billrefoffset) {
 		this.billrefoffset = billrefoffset;
 	}
 

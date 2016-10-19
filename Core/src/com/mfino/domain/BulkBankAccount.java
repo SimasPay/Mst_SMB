@@ -23,11 +23,11 @@ public class BulkBankAccount extends Base implements java.io.Serializable {
 	public static final String FieldName_UploadFileStatus = "uploadfilestatus";
 	
 	private String filename;
-	private Clob filedata;
+	private String filedata;
 	private Long totallinecount;
 	private Long errorlinecount;
 	private long uploadfilestatus;
-	private Clob uploadreport;
+	private String uploadreport;
 	private Long id;
 
 	public BulkBankAccount() {
@@ -55,11 +55,11 @@ public class BulkBankAccount extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "FILEDATA", nullable = false)
-	public Clob getFiledata() {
+	public String getFiledata() {
 		return this.filedata;
 	}
 
-	public void setFiledata(Clob filedata) {
+	public void setFiledata(String filedata) {
 		this.filedata = filedata;
 	}
 
@@ -91,11 +91,11 @@ public class BulkBankAccount extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UPLOADREPORT")
-	public Clob getUploadreport() {
+	public String getUploadreport() {
 		return this.uploadreport;
 	}
 
-	public void setUploadreport(Clob uploadreport) {
+	public void setUploadreport(String uploadreport) {
 		this.uploadreport = uploadreport;
 	}
 

@@ -38,9 +38,9 @@ public class BillPayments extends Base implements java.io.Serializable {
 	private String invoicenumber;
 	private BigDecimal amount;
 	private BigDecimal charges;
-	private Long billpaystatus;
-	private Long responsecode;
-	private Long noofretries;
+	private Integer billpaystatus;
+	private Integer responsecode;
+	private Integer noofretries;
 	private String intxnid;
 	private String inresponsecode;
 	private String partnerbillercode;
@@ -126,29 +126,29 @@ public class BillPayments extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BILLPAYSTATUS", precision = 10, scale = 0)
-	public Long getBillpaystatus() {
+	public Integer getBillpaystatus() {
 		return this.billpaystatus;
 	}
 
-	public void setBillpaystatus(Long billpaystatus) {
+	public void setBillpaystatus(Integer billpaystatus) {
 		this.billpaystatus = billpaystatus;
 	}
 
 	@Column(name = "RESPONSECODE", precision = 10, scale = 0)
-	public Long getResponsecode() {
+	public Integer getResponsecode() {
 		return this.responsecode;
 	}
 
-	public void setResponsecode(Long responsecode) {
+	public void setResponsecode(Integer responsecode) {
 		this.responsecode = responsecode;
 	}
 
 	@Column(name = "NOOFRETRIES", precision = 10, scale = 0)
-	public Long getNoofretries() {
+	public Integer getNoofretries() {
 		return this.noofretries;
 	}
 
-	public void setNoofretries(Long noofretries) {
+	public void setNoofretries(Integer noofretries) {
 		this.noofretries = noofretries;
 	}
 

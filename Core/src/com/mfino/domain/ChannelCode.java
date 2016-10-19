@@ -32,7 +32,7 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	private String channelcode;
 	private String channelname;
 	private String description;
-	private long channelsourceapplication;
+	private Integer channelsourceapplication;
 	private Long id;
 	private Set<MfaTransactionsInfo> mfaTransactionsInfos = new HashSet<MfaTransactionsInfo>(
 			0);
@@ -85,11 +85,11 @@ public class ChannelCode extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CHANNELSOURCEAPPLICATION", nullable = false, precision = 10, scale = 0)
-	public long getChannelsourceapplication() {
+	public Integer getChannelsourceapplication() {
 		return this.channelsourceapplication;
 	}
 
-	public void setChannelsourceapplication(long channelsourceapplication) {
+	public void setChannelsourceapplication(Integer channelsourceapplication) {
 		this.channelsourceapplication = channelsourceapplication;
 	}
 

@@ -45,8 +45,8 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	private Groups groups;
 	private TransactionType transactionType;
 	private short isallowed;
-	private long subscribertype;
-	private Long businesspartnertype;
+	private Integer subscribertype;
+	private Integer businesspartnertype;
 	private Long id;
 
 	public ActorChannelMapping() {
@@ -126,20 +126,20 @@ public class ActorChannelMapping extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SUBSCRIBERTYPE", nullable = false, precision = 10, scale = 0)
-	public long getSubscribertype() {
+	public Integer getSubscribertype() {
 		return this.subscribertype;
 	}
 
-	public void setSubscribertype(long subscribertype) {
+	public void setSubscribertype(Integer subscribertype) {
 		this.subscribertype = subscribertype;
 	}
 
 	@Column(name = "BUSINESSPARTNERTYPE", precision = 10, scale = 0)
-	public Long getBusinesspartnertype() {
+	public Integer getBusinesspartnertype() {
 		return this.businesspartnertype;
 	}
 
-	public void setBusinesspartnertype(Long businesspartnertype) {
+	public void setBusinesspartnertype(Integer businesspartnertype) {
 		this.businesspartnertype = businesspartnertype;
 	}
 
