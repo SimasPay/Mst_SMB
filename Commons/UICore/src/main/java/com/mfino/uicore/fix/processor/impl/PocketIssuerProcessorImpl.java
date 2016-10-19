@@ -148,7 +148,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setCreatedby(e.getCreatedBy());
 		}
 		if (e.getLowBalanceNotificationEnabled() != null) {
-			p.setLowbalancenotificationenabled((short) (e.getLowBalanceNotificationEnabled() ? 1:0));
+			p.setLowbalancenotificationenabled(e.getLowBalanceNotificationEnabled());
 			p.setLowbalancentfcthresholdamt(e.getLowBalanceNtfcThresholdAmt());
 		}
 		if (e.getLowBalanceNtfcThresholdAmt() != null) {
@@ -167,7 +167,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setBankchanneltimeinterval(e.getBankChannelTimeInterval());
 		}
 		if (e.getDenomination() != null) {
-			p.setDenomination(new BigDecimal(e.getDenomination()));
+			p.setDenomination(e.getDenomination());
 		}
 		if (e.getPocketCode() != null) {
 			p.setPocketcode(e.getPocketCode());
@@ -289,7 +289,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		}
 		if (p.getLowbalancenotificationenabled() != null) {
 			entry.setLowBalanceNotificationEnabled(p.getLowbalancenotificationenabled() != null 
-					&& p.getLowbalancenotificationenabled() != 0);
+					&& p.getLowbalancenotificationenabled());
 			entry.setLowBalanceNtfcThresholdAmt(p.getLowbalancentfcthresholdamt());
 		}
 		if (p.getPocketcode() != null) {

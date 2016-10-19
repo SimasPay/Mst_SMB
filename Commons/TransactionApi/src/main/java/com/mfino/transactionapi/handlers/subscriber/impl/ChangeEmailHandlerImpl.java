@@ -140,7 +140,7 @@ public class ChangeEmailHandlerImpl extends FIXMessageHandler implements ChangeE
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		try {			
 			subscriber.setEmail(changeEmail.getNewEmail());
-			subscriber.setIsemailverified((short)0);
+			subscriber.setIsemailverified(CmFinoFIX.Boolean_False);
  			subscriberService.saveSubscriber(subscriber);
 		}
 		catch (Exception ex) {

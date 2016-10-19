@@ -244,7 +244,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		ChargetxnTransferMap txnTransferMap = new ChargetxnTransferMap();
 		txnTransferMap.setCommoditytransferid(pct.getId());
-		txnTransferMap.setSctlid(BigDecimal.valueOf(requestFix.getServiceChargeTransactionLogID()));
+		txnTransferMap.setSctlid(requestFix.getServiceChargeTransactionLogID());
 		
 		ChargeTxnCommodityTransferMapDAO txnTransferMapDAO = DAOFactory.getInstance().getTxnTransferMap();
 		txnTransferMapDAO.save(txnTransferMap);

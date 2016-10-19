@@ -711,7 +711,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         }
         
         if (entry.getIsForceCloseRequested() != null && entry.getIsForceCloseRequested().booleanValue()) {
-        	subscriberMdn.setIsforcecloserequested((short) Boolean.compare(entry.getIsForceCloseRequested(), false));
+        	subscriberMdn.setIsforcecloserequested(entry.getIsForceCloseRequested());
         }
         
         // subscriber related fields
@@ -742,7 +742,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         if(entry.getAuthorizedEmail() != null){
         	partner.setAuthorizedemail(entry.getAuthorizedEmail());
         	subscriber.setEmail(entry.getAuthorizedEmail());
-        	subscriber.setIsemailverified((short) Boolean.compare(false, true));
+        	subscriber.setIsemailverified(CmFinoFIX.Boolean_True);
         }
         
         //TODO why should i do a null check?

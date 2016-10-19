@@ -236,7 +236,7 @@ public class FileBankAccountUploadController {
 								newPocket.setStatustime(new Timestamp());
 								newPocket.setPocketTemplateByPockettemplateid(bankAccountTemplate);
 								newPocket.setCardpan(bankAccount);
-								newPocket.setIsdefault((short)1);
+								newPocket.setIsdefault(CmFinoFIX.Boolean_True);
 								newPocket.setSubscriberMdn(mdnResults.get(0));
 								newPocket.setCompany(userService.getUserCompany());
 								pocketService.save(newPocket);                

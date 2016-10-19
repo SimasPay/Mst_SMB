@@ -45,7 +45,7 @@ public class PartnerServicesDAO extends BaseDAO<PartnerServices>{
 	@SuppressWarnings("unchecked")
 	public List<PartnerServices> getPartnerServices(Long partnerId, Long serviceProviderId, Long serviceId) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus, new Long(CmFinoFIX.PartnerServiceStatus_Active)));
+		criteria.add(Restrictions.eq(PartnerServices.FieldName_PartnerServiceStatus, CmFinoFIX.PartnerServiceStatus_Active));
 		criteria.createAlias(PartnerServices.FieldName_Partner, "partner");
 		criteria.add(Restrictions.eq("partner."+Partner.FieldName_RecordID, partnerId));
 		criteria.createAlias(PartnerServices.FieldName_Service, "service");

@@ -152,7 +152,7 @@ public class SelfRegistrationHandlerImpl extends FIXMessageHandler implements Se
 		Integer OTPLength = systemParametersService.getOTPLength();
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		subscriber.setEmail(email);
-		subscriber.setIsemailverified((short)0);
+		subscriber.setIsemailverified(CmFinoFIX.Boolean_False);
 		Integer regResponse = subscriberServiceExtended.registerSubscriber(subscriber, subscriberMDN, subscriberRegistration,
 				epocket,oneTimePin,null);
 		if (!regResponse.equals(CmFinoFIX.ResponseCode_Success)) {

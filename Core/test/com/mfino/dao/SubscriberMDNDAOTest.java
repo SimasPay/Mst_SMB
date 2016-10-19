@@ -92,7 +92,7 @@ public class SubscriberMDNDAOTest {
         mdn1.setAuthenticationphrase("dsd");
         mdn1.setCreatedby("dsd");
         mdn1.setDigestedpin("sds");
-        mdn1.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn1.setLasttransactionid(Long.MIN_VALUE);
         mdn1.setLasttransactiontime(new Timestamp());
         mdn1.setLastupdatetime(new Timestamp());
         mdn1.setStatustime(new Timestamp());
@@ -107,7 +107,7 @@ public class SubscriberMDNDAOTest {
         mdn2.setAuthenticationphrase("dsd");
         mdn2.setCreatedby("dsd");
         mdn2.setDigestedpin("sds");
-        mdn2.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn2.setLasttransactionid(Long.MIN_VALUE);
         mdn2.setLasttransactiontime(new Timestamp());
         mdn2.setLastupdatetime(new Timestamp());
         mdn2.setStatustime(new Timestamp());
@@ -122,7 +122,7 @@ public class SubscriberMDNDAOTest {
         mdn3.setAuthenticationphrase("dsd");
         mdn3.setCreatedby("dsd");
         mdn3.setDigestedpin("sds");
-        mdn3.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn3.setLasttransactionid(Long.MIN_VALUE);
         mdn3.setLasttransactiontime(new Timestamp());
         mdn3.setLastupdatetime(new Timestamp());
         mdn3.setStatustime(new Timestamp());

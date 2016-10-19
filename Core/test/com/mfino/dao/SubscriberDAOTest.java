@@ -63,7 +63,7 @@ public class SubscriberDAOTest extends TestCase {
         mdn1.setAuthenticationphrase("dsd");
         mdn1.setCreatedby("dsd");
         mdn1.setDigestedpin("sds");
-        mdn1.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn1.setLasttransactionid(Long.MIN_VALUE);
         mdn1.setLasttransactiontime(new Timestamp());
         mdn1.setLastupdatetime(new Timestamp());
         mdn1.setStatustime(new Timestamp());

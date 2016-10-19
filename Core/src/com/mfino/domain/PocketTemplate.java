@@ -56,13 +56,13 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	private Integer operatorcode;
 	private Integer billingtype;
 	private BigDecimal lowbalancentfcthresholdamt;
-	private Short lowbalancenotificationenabled;
+	private Boolean lowbalancenotificationenabled;
 	private Integer webtimeinterval;
 	private Integer webservicetimeinterval;
 	private Integer utktimeinterval;
 	private Integer bankchanneltimeinterval;
-	private BigDecimal denomination;
-	private BigDecimal maxunits;
+	private Long denomination;
+	private Long maxunits;
 	private String pocketcode;
 	private Integer typeofcheck;
 	private String regularexpression;
@@ -306,12 +306,12 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "LOWBALANCENOTIFICATIONENABLED", precision = 3, scale = 0)
-	public Short getLowbalancenotificationenabled() {
+	public Boolean getLowbalancenotificationenabled() {
 		return this.lowbalancenotificationenabled;
 	}
 
 	public void setLowbalancenotificationenabled(
-			Short lowbalancenotificationenabled) {
+			Boolean lowbalancenotificationenabled) {
 		this.lowbalancenotificationenabled = lowbalancenotificationenabled;
 	}
 
@@ -352,20 +352,20 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DENOMINATION", scale = 0)
-	public BigDecimal getDenomination() {
+	public Long getDenomination() {
 		return this.denomination;
 	}
 
-	public void setDenomination(BigDecimal denomination) {
+	public void setDenomination(Long denomination) {
 		this.denomination = denomination;
 	}
 
 	@Column(name = "MAXUNITS", scale = 0)
-	public BigDecimal getMaxunits() {
+	public Long getMaxunits() {
 		return this.maxunits;
 	}
 
-	public void setMaxunits(BigDecimal maxunits) {
+	public void setMaxunits(Long maxunits) {
 		this.maxunits = maxunits;
 	}
 

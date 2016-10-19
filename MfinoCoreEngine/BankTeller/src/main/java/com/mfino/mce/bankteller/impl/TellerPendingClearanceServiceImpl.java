@@ -93,7 +93,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
-					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsruserid(fixPendingRequest.getCSRUserID());
 					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)tellerBankService.onRevertOfTransferConfirmation(pct, true);
 					if(sctl.getCommoditytransferid()==null){
@@ -140,7 +140,7 @@ public class TellerPendingClearanceServiceImpl extends PendingClearanceServiceDe
 					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
-					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsruserid(fixPendingRequest.getCSRUserID());
 					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)tellerBankService.onResolveCompleteOfTransfer(pct);
 					uicatageory = pct.getUicategory().intValue();

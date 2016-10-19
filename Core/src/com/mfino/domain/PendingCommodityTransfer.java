@@ -134,7 +134,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private String operatorreversalerrortext;
 	private Integer operatorreversalcount;
 	private Timestamp operatorlastreversaltime;
-	private BigDecimal topupperiod;
+	private Long topupperiod;
 	private String bankretrievalreferencenumber;
 	private String banksystemtraceauditnumber;
 	private Timestamp bankresponsetime;
@@ -151,7 +151,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private Timestamp lastreversaltime;
 	private Integer csraction;
 	private Timestamp csractiontime;
-	private BigDecimal csruserid;
+	private Long csruserid;
 	private String csrusername;
 	private String csrcomment;
 	private String iso8583Processingcode;
@@ -164,16 +164,16 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private String iso8583Cardacceptoridcode;
 	private String iso8583Variant;
 	private String iso8583Responsecode;
-	private BigDecimal bulkuploadid;
+	private Long bulkuploadid;
 	private Integer bulkuploadlinenumber;
 	private String copytopermanenterror;
 	private String webclientip;
 	private String operatorrrn;
 	private String operatorstan;
 	private String productindicatorcode;
-	private BigDecimal units;
-	private BigDecimal denomination;
-	private BigDecimal transactionchargeid;
+	private Long units;
+	private Long denomination;
+	private Long transactionchargeid;
 	private Boolean ispartofsharedupchain;
 	private Boolean localbalancerevertrequired;
 	private Boolean localrevertrequired;
@@ -766,11 +766,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	}
 
 	@Column(name = "TOPUPPERIOD", scale = 0)
-	public BigDecimal getTopupperiod() {
+	public Long getTopupperiod() {
 		return this.topupperiod;
 	}
 
-	public void setTopupperiod(BigDecimal topupperiod) {
+	public void setTopupperiod(Long topupperiod) {
 		this.topupperiod = topupperiod;
 	}
 
@@ -926,11 +926,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	}
 
 	@Column(name = "CSRUSERID", scale = 0)
-	public BigDecimal getCsruserid() {
+	public Long getCsruserid() {
 		return this.csruserid;
 	}
 
-	public void setCsruserid(BigDecimal csruserid) {
+	public void setCsruserid(Long csruserid) {
 		this.csruserid = csruserid;
 	}
 
@@ -1046,11 +1046,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	}
 
 	@Column(name = "BULKUPLOADID", scale = 0)
-	public BigDecimal getBulkuploadid() {
+	public Long getBulkuploadid() {
 		return this.bulkuploadid;
 	}
 
-	public void setBulkuploadid(BigDecimal bulkuploadid) {
+	public void setBulkuploadid(Long bulkuploadid) {
 		this.bulkuploadid = bulkuploadid;
 	}
 
@@ -1109,29 +1109,29 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	}
 
 	@Column(name = "UNITS", scale = 0)
-	public BigDecimal getUnits() {
+	public Long getUnits() {
 		return this.units;
 	}
 
-	public void setUnits(BigDecimal units) {
+	public void setUnits(Long units) {
 		this.units = units;
 	}
 
 	@Column(name = "DENOMINATION", scale = 0)
-	public BigDecimal getDenomination() {
+	public Long getDenomination() {
 		return this.denomination;
 	}
 
-	public void setDenomination(BigDecimal denomination) {
+	public void setDenomination(Long denomination) {
 		this.denomination = denomination;
 	}
 
 	@Column(name = "TRANSACTIONCHARGEID", scale = 0)
-	public BigDecimal getTransactionchargeid() {
+	public Long getTransactionchargeid() {
 		return this.transactionchargeid;
 	}
 
-	public void setTransactionchargeid(BigDecimal transactionchargeid) {
+	public void setTransactionchargeid(Long transactionchargeid) {
 		this.transactionchargeid = transactionchargeid;
 	}
 

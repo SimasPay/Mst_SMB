@@ -244,7 +244,7 @@ public class AgentServiceImpl implements AgentService {
 			
 			if (!emoneyPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
 				emoneyPocket.setActivationtime(new Timestamp());
-				emoneyPocket.setIsdefault((short)Boolean.compare(true, false));
+				emoneyPocket.setIsdefault(true);
 				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				emoneyPocket.setStatustime(new Timestamp());
 				emoneyPocket.setUpdatedby(tradeName);
@@ -261,7 +261,7 @@ public class AgentServiceImpl implements AgentService {
 		
 		if (!bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
 			bankPocket.setActivationtime(new Timestamp());
-			bankPocket.setIsdefault((short)Boolean.compare(true, false));
+			bankPocket.setIsdefault(true);
 			bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			bankPocket.setStatustime(new Timestamp());
 			bankPocket.setUpdatedby(tradeName);
@@ -296,7 +296,7 @@ public class AgentServiceImpl implements AgentService {
 		if (!lakuPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
 			
 			lakuPocket.setActivationtime(new Timestamp());
-			lakuPocket.setIsdefault((short)Boolean.compare(true, false));
+			lakuPocket.setIsdefault(true);
 			lakuPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			lakuPocket.setStatustime(new Timestamp());
 			lakuPocket.setUpdatedby(tradeName);

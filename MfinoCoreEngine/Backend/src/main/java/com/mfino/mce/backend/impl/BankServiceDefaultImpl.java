@@ -1655,7 +1655,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							
 							                    objSrcPocket.setCardpan(cardPanStringToReplace);
 							                    objSrcPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-							                    objSrcPocket.setIsdefault((short)0);
+							                    objSrcPocket.setIsdefault(CmFinoFIX.Boolean_False);
 											}
 										
 											// pct.setTransferStatus(CmFinoFIX.TransferStatus_Completed);
@@ -2474,7 +2474,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //							sourceSubcriberMdn.setLastTransactionID(chargeDistribution.getTransactionID());
 //							sourceSubcriberMdn.setLastTransactionTime(chargeDistribution.getReceiveTime());
 
-							pct.setTransactionchargeid(BigDecimal.valueOf(transactionChargeID));
+							pct.setTransactionchargeid(transactionChargeID);
 							pct.setIspartofsharedupchain(isPartOfSharedUpChain);
 							if (chargeDistribution.getChannelCode() != null) {
 								pct.setIso8583Merchanttype(chargeDistribution

@@ -57,7 +57,7 @@ public class Pocket extends Base implements java.io.Serializable {
 	private Integer lastbankrequestcode;
 	private String cardpan;
 	private Integer restrictions;
-	private Short isdefault;
+	private Boolean isdefault;
 	private Integer status;
 	private Timestamp statustime;
 	private Timestamp activationtime;
@@ -281,11 +281,11 @@ public class Pocket extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISDEFAULT", precision = 3, scale = 0)
-	public Short getIsdefault() {
+	public Boolean getIsdefault() {
 		return this.isdefault;
 	}
 
-	public void setIsdefault(Short isdefault) {
+	public void setIsdefault(Boolean isdefault) {
 		this.isdefault = isdefault;
 	}
 

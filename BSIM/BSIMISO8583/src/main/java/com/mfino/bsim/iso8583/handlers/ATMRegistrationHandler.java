@@ -247,7 +247,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				subscriber.setSecurityanswer(subscriberRegistration
 						.getMothersMaidenName());
 			}
-			subscriber.setDetailsrequired((short)1);
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
@@ -290,15 +290,15 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				if (kycLevel == null) {
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
-				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration
-						.getKYCLevel()));
+				subscriber.setUpgradablekyclevel(subscriberRegistration
+						.getKYCLevel());
 				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			} else {
 				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
 			}
 			subscriber.setAppliedby(createdByName);
 			subscriber.setAppliedtime(new Timestamp());
-			subscriber.setDetailsrequired((short)1);
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriberMDN.setSubscriber(subscriber);
 			subscriberMDN.setMdn(subscriberRegistration.getMDN());
 			subscriberMDN.setApplicationid(subscriberRegistration

@@ -52,7 +52,7 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 				for (Pocket simillarPocket : simillarPockets) {
 					if (!simillarPocket.getId().equals( pocket.getId()))
 						if (bool_true.equals(simillarPocket.getIsdefault())) {
-							simillarPocket.setIsdefault((short) Boolean.compare(false, true));
+							simillarPocket.setIsdefault(true);
 							pocketDAO.save(simillarPocket);
 						}
 				}
@@ -71,14 +71,14 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 								// log error and correct the situation
 								log.error("More than one default pocket for type: " + pocket.getPocketTemplateByPockettemplateid().getType()
 										+ " and commodity: " + pocket.getPocketTemplateByPockettemplateid().getCommodity());
-								simillarPocket.setIsdefault((short) Boolean.compare(false, true));
+								simillarPocket.setIsdefault(true);
 								pocketDAO.save(simillarPocket);
 							}
 						}
 				}
 
 				if (isNew) {
-					pocket.setIsdefault((short) Boolean.compare(false, true));
+					pocket.setIsdefault(true);
 				}
 				return Codes.SUCCESS;
 			}

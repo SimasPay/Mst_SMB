@@ -59,7 +59,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private KycLevel kycLevel;
 	private Company company;
 	private AuthPersonDetails authPersonDetails;
-	private BigDecimal parentid;
+	private Long parentid;
 	private String firstname;
 	private String lastname;
 	private String gender;
@@ -81,22 +81,22 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private String approveorrejectcomment;
 	private String appliedby;
 	private Timestamp appliedtime;
-	private short dompetmerchant;
+	private Boolean dompetmerchant;
 	private String securityquestion;
 	private String securityanswer;
 	private Integer partnertype;
-	private BigDecimal upgradablekyclevel;
+	private Long upgradablekyclevel;
 	private Integer upgradestate;
 	private Timestamp idexiparetiontime;
-	private BigDecimal referenceaccount;
+	private Long referenceaccount;
 	private String aliasname;
-	private Short detailsrequired;
+	private Boolean detailsrequired;
 	private Integer registrationmedium;
 	private Long registeringpartnerid;
 	private Long approvalidnumber;
 	private Timestamp lastnotificationtime;
 	private String nickname;
-	private Short isemailverified;
+	private Boolean isemailverified;
 	private String mothersmaidenname;
 	private Set<SubscriberMdn> subscriberMdns = new HashSet<SubscriberMdn>(0);
 	private Set<BillPaymentTxn> billPaymentTxns = new HashSet<BillPaymentTxn>(0);
@@ -226,11 +226,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "PARENTID", nullable = false, scale = 0)
-	public BigDecimal getParentid() {
+	public Long getParentid() {
 		return this.parentid;
 	}
 
-	public void setParentid(BigDecimal parentid) {
+	public void setParentid(Long parentid) {
 		this.parentid = parentid;
 	}
 
@@ -429,11 +429,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DOMPETMERCHANT", nullable = false, precision = 3, scale = 0)
-	public short getDompetmerchant() {
+	public Boolean getDompetmerchant() {
 		return this.dompetmerchant;
 	}
 
-	public void setDompetmerchant(short dompetmerchant) {
+	public void setDompetmerchant(Boolean dompetmerchant) {
 		this.dompetmerchant = dompetmerchant;
 	}
 
@@ -465,11 +465,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UPGRADABLEKYCLEVEL", scale = 0)
-	public BigDecimal getUpgradablekyclevel() {
+	public Long getUpgradablekyclevel() {
 		return this.upgradablekyclevel;
 	}
 
-	public void setUpgradablekyclevel(BigDecimal upgradablekyclevel) {
+	public void setUpgradablekyclevel(Long upgradablekyclevel) {
 		this.upgradablekyclevel = upgradablekyclevel;
 	}
 
@@ -493,11 +493,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REFERENCEACCOUNT", scale = 0)
-	public BigDecimal getReferenceaccount() {
+	public Long getReferenceaccount() {
 		return this.referenceaccount;
 	}
 
-	public void setReferenceaccount(BigDecimal referenceaccount) {
+	public void setReferenceaccount(Long referenceaccount) {
 		this.referenceaccount = referenceaccount;
 	}
 
@@ -511,11 +511,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DETAILSREQUIRED", precision = 3, scale = 0)
-	public Short getDetailsrequired() {
+	public Boolean getDetailsrequired() {
 		return this.detailsrequired;
 	}
 
-	public void setDetailsrequired(Short detailsrequired) {
+	public void setDetailsrequired(Boolean detailsrequired) {
 		this.detailsrequired = detailsrequired;
 	}
 
@@ -566,11 +566,11 @@ public class Subscriber extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISEMAILVERIFIED", precision = 3, scale = 0)
-	public Short getIsemailverified() {
+	public Boolean getIsemailverified() {
 		return this.isemailverified;
 	}
 
-	public void setIsemailverified(Short isemailverified) {
+	public void setIsemailverified(Boolean isemailverified) {
 		this.isemailverified = isemailverified;
 	}
 

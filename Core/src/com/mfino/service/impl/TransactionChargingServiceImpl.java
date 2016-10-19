@@ -952,7 +952,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 		query.setCommodityTransferID(commodityTransaferId);
 		List<ChargetxnTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
-		BigDecimal sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?ctTxnCommodityTransferMap.get(0).getSctlid():null;
+		BigDecimal sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?new BigDecimal(ctTxnCommodityTransferMap.get(0).getSctlid()):null;
 		if(sctlid!=null){
 		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctlid.longValue());
 		if((!CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus())) &&
@@ -976,7 +976,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
 		query.setCommodityTransferID(commodityTransaferId);
 		List<ChargetxnTransferMap> ctTxnCommodityTransferMap = cTxnCommodityTransferMapDAO.get(query);
-		BigDecimal sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?ctTxnCommodityTransferMap.get(0).getSctlid():null;
+		BigDecimal sctlid = ctTxnCommodityTransferMap!=null&&!ctTxnCommodityTransferMap.isEmpty()?new BigDecimal(ctTxnCommodityTransferMap.get(0).getSctlid()):null;
 		if(sctlid!=null){
 		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(sctlid.longValue());
 		if (CmFinoFIX.SCTLStatus_Pending.equals(sctl.getStatus())) {

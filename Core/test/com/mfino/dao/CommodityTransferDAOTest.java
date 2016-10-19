@@ -114,7 +114,7 @@ public class CommodityTransferDAOTest {
         mdn1.setAuthenticationphrase("sunny");
         mdn1.setCreatedby("sunny");
         mdn1.setDigestedpin("sds");
-        mdn1.setLasttransactionid(BigDecimal.TEN);
+        mdn1.setLasttransactionid(10L);
         mdn1.setLasttransactiontime(new Timestamp());
         mdn1.setLastupdatetime(new Timestamp());
         mdn1.setStatustime(new Timestamp());
@@ -132,7 +132,7 @@ public class CommodityTransferDAOTest {
         mdn2.setAuthenticationphrase("sunny");
         mdn2.setCreatedby("sunny");
         mdn2.setDigestedpin("sds");
-        mdn2.setLasttransactionid(BigDecimal.ZERO);
+        mdn2.setLasttransactionid(0L);
         mdn2.setLasttransactiontime(new Timestamp());
         mdn2.setLastupdatetime(new Timestamp());
         mdn2.setStatustime(new Timestamp());
@@ -193,7 +193,7 @@ public class CommodityTransferDAOTest {
         poc.setCurrentmonthlytxnscount(Integer.MAX_VALUE);
         poc.setCurrentweeklyexpenditure(new BigDecimal(Long.MIN_VALUE));
         poc.setCurrentweeklytxnscount(Integer.MIN_VALUE);
-        poc.setIsdefault((short)1);
+        poc.setIsdefault(true);
         poc.setLastbankauthorizationcode("sas");
         poc.setLastbankrequestcode(Integer.MAX_VALUE);
         poc.setLastbankresponsecode(Integer.MAX_VALUE);
@@ -228,8 +228,8 @@ public class CommodityTransferDAOTest {
         pcmt.setDestmdnid(mdn2.getId());
         pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
         pcmt.setDestpockettype(Integer.MAX_VALUE);
-        pcmt.setDestpocketid(new BigDecimal(Long.MIN_VALUE));
-        pcmt.setDestsubscriberid(new BigDecimal(Long.MIN_VALUE));
+        pcmt.setDestpocketid(Long.MIN_VALUE);
+        pcmt.setDestsubscriberid(Long.MIN_VALUE);
         pcmt.setDestsubscribername("sunny");
         pcmt.setEndtime(new Timestamp());
         pcmt.setLastupdatetime(new Timestamp());
@@ -287,8 +287,8 @@ public class CommodityTransferDAOTest {
         pcmt1.setDestmdnid(mdn1.getId());
         pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
         pcmt1.setDestpockettype(Integer.MAX_VALUE);
-        pcmt1.setDestpocketid(new BigDecimal(Long.MIN_VALUE));
-        pcmt1.setDestsubscriberid(new BigDecimal(Long.MIN_VALUE));
+        pcmt1.setDestpocketid(Long.MIN_VALUE);
+        pcmt1.setDestsubscriberid(Long.MIN_VALUE);
         pcmt1.setDestsubscribername("sunny");
         pcmt1.setEndtime(new Timestamp());
         pcmt1.setLastupdatetime(new Timestamp());

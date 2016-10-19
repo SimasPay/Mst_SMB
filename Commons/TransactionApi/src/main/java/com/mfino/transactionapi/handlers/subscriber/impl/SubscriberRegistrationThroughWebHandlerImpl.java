@@ -294,7 +294,7 @@ public class SubscriberRegistrationThroughWebHandlerImpl extends FIXMessageHandl
 		kycLevelNo = subscriber.getKycLevel().getKyclevel().longValue();
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(),svaPocketTemplate.getId().longValue());
-        subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));// empty
+        subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel());// empty
         
         log.info("KYC LVL="+subscriberRegistration.getKYCLevel());
          PocketTemplate bankPocketTemplate = pocketService.getBankPocketTemplateFromPocketTemplateConfig(subscriberRegistration.getBankAccountType(), true, CmFinoFIX.SubscriberType_Subscriber, null, groupID);

@@ -109,7 +109,7 @@ public class IntegrationCashinConfirmHandlerImpl extends FIXMessageHandler imple
 					cashinFirstTimeService.saveCashinFirstTime(cft);
 					
 					cft = cashinFirstTimeService.getByMDN(destMDN.getMdn());
-					destMDN.setCashinfirsttimeid(BigDecimal.valueOf(cft.getId()));
+					destMDN.setCashinfirsttimeid(cft.getId());
 					subscriberMdnService.saveSubscriberMDN(destMDN);
 				}
 			}

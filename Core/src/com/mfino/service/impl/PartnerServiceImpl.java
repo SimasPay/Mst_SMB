@@ -340,14 +340,14 @@ public class PartnerServiceImpl implements PartnerService {
 		String tradeName=partner.getTradename();
 		 if(!emoneyPocketLI.equals(CmFinoFIX.PocketStatus_Active)){
 			emoneyPocket.setActivationtime(new Timestamp());
-			emoneyPocket.setIsdefault((short) Boolean.compare(true, false));
+			emoneyPocket.setIsdefault(true);
 			emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			emoneyPocket.setStatustime(new Timestamp());
 			emoneyPocket.setUpdatedby(tradeName);
 			}
 		 if(!bankPocketLI.equals(CmFinoFIX.PocketStatus_Active)){
 				bankPocket.setActivationtime(new Timestamp());
-				bankPocket.setIsdefault((short) Boolean.compare(true, false));
+				bankPocket.setIsdefault(true);
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				bankPocket.setStatustime(new Timestamp());
 				bankPocket.setUpdatedby(tradeName);
@@ -866,7 +866,7 @@ public class PartnerServiceImpl implements PartnerService {
 			}	
 			subscriber.setCurrency(systemParametersService.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 			subscriber.setEmail(partnerRegistration.getAuthorizedEmail());
-        	subscriber.setIsemailverified((short) Boolean.compare(false, true));
+        	subscriber.setIsemailverified(true);
         	
         	if(StringUtils.isNotBlank(partnerRegistration.getGroupID())){    			
     			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();

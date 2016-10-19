@@ -761,10 +761,10 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         Boolean isDefault = theEntries.getIsDefault();
         if (null != isDefault) {
-        	if((thePocket.getIsdefault() != null && thePocket.getIsdefault() != 0)!= isDefault){
+        	if((thePocket.getIsdefault() != null && thePocket.getIsdefault())!= isDefault){
         		log.info("Pocket:"+pocketDetail+" isDefault is updated to:"+isDefault+" by user:"+getLoggedUserNameWithIP());
         	}
-            thePocket.setIsdefault((short) (isDefault ?1:0));
+            thePocket.setIsdefault(CmFinoFIX.Boolean_True);
         }
 
         Integer pocketStatus = theEntries.getPocketStatus();
@@ -915,7 +915,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         theEntries.setPocketRestrictionsText(enumTextService.getRestrictionsText(CmFinoFIX.TagID_PocketRestrictions, null, pocketRestrictions.toString()));
 
-        Boolean isDefault = (thePocket.getIsdefault() != null && thePocket.getIsdefault() != 0);
+        Boolean isDefault = (thePocket.getIsdefault() != null && thePocket.getIsdefault());
         if (isDefault != null) {
             theEntries.setIsDefault(isDefault);
         }

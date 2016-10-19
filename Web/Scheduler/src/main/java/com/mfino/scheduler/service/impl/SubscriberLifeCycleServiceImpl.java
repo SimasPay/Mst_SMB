@@ -398,7 +398,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			else if (CmFinoFIX.SubscriberStatus_PendingRetirement.intValue() == subscriberMDN.getStatus()) {
 				//Grave the subscriber if he is in retired state for a period of TIME_TO_GRAVE_OF_RETIRED
 				if (((now.getTime() - subscriberMDN.getStatustime().getTime()) > TIME_TO_GRAVE_OF_RETIRED) || 
-						(subscriberMDN.getIsforcecloserequested() != null && subscriberMDN.getIsforcecloserequested() != 0)) {
+						(subscriberMDN.getIsforcecloserequested() != null && subscriberMDN.getIsforcecloserequested())) {
 					
 					List<Pocket> srcPocketList = getSubscriberPocketsListWithBalance(subscriberMDN);
 					if(srcPocketList != null && srcPocketList.size() > 0){

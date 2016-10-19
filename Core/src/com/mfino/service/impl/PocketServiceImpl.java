@@ -109,7 +109,7 @@ public class PocketServiceImpl implements PocketService{
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
 
-		pocket.setIsdefault((short) Boolean.compare(isDefault, false));
+		pocket.setIsdefault(true);
 
 		if (isDefault) {
 			defaultPocketMaintainerService.setDefaultPocket(pocket, true);
@@ -563,7 +563,7 @@ public class PocketServiceImpl implements PocketService{
 		pocket.setSubscriberMdn(subscriberMdn);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Active);
-		pocket.setIsdefault((short) Boolean.compare(true, false));
+		pocket.setIsdefault(true);
 		if (subscriberMdn.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subscriberMdn.getSubscriber().getCompany());
 		}
@@ -589,7 +589,7 @@ public class PocketServiceImpl implements PocketService{
 		pocket.setSubscriberMdn(subscriberMDN);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-		pocket.setIsdefault((short) Boolean.compare(true, false));
+		pocket.setIsdefault(true);
 		if(cardPan!=null){
 		pocket.setCardpan(cardPan);
 		}
@@ -635,7 +635,7 @@ public class PocketServiceImpl implements PocketService{
 		pocket.setCardpan(CardPan);
 		}
 		if(isDefault){
-		pocket.setIsdefault((short) Boolean.compare(true, false));
+		pocket.setIsdefault(true);
 		}
 		if (subscriberMDN.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subscriberMDN.getSubscriber().getCompany());

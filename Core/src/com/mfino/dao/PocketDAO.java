@@ -75,10 +75,10 @@ public class PocketDAO extends BaseDAO<Pocket> {
                 criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_RecordID, query.getPocketTemplateID()));
             }
             if (query.getPocketType() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_PocketType, new Long(query.getPocketType())));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_PocketType, query.getPocketType()));
             }
             if (query.getCommodity() != null) {
-                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_Commodity, new Long(query.getCommodity())));
+                criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_Commodity, query.getCommodity()));
             }
             if (query.getIsCollectorPocket() != null) {
             	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + 

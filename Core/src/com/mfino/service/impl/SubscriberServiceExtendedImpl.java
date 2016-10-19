@@ -150,7 +150,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setSecurityanswer(subscriberRegistration
 						.getMothersMaidenName());
 			}
-			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			if (registeringPartner != null) {
 				subscriber
 						.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent);
@@ -205,7 +205,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				if (kycLevel == null) {
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
-				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));
+				subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel());
 				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			} else {
 				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
@@ -231,7 +231,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setAppliedby(createdByName);
 			subscriber.setAppliedtime(new Timestamp());
-			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriberDao.save(subscriber);
 			if(subscriber.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
 				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());				
@@ -346,7 +346,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setSecurityanswer(subscriberRegistration.getMothersMaidenName());
 			}
 			
-			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			
 			if (registeringPartner != null) {
 				subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Agent);
@@ -424,7 +424,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setAddressBySubscriberaddressid(domesticAddress);
 			}
 			
-			subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getKYCLevel()));
+			subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel());
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			
 			int pocketStatus = CmFinoFIX.PocketStatus_Initialized;
@@ -447,7 +447,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			subscriber.setAppliedby(createdByName);
 			subscriber.setAppliedtime(new Timestamp());
-			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriberDao.save(subscriber);
 			
 			subscriberAddiFields.setSubscriber(subscriber);
@@ -570,7 +570,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setLastname(subscriberRegistration.getLastName());
 			subscriber.setNickname(subscriberRegistration.getNickname());
 			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
-			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
@@ -591,7 +591,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setKycLevel(kycLevel);
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
-			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriber.setActivationtime(new Timestamp());
 			subscriber.setStatustime(new Timestamp());
 			if (subscriberRegistration.getDateOfBirth() != null) {
@@ -729,10 +729,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
 			subscriber.setBirthplace(subscriberRegistration.getBirthPlace());
 			subscriber.setEmail(subscriberRegistration.getEmail());
-			subscriber.setIsemailverified((short) Boolean.compare(false, true));
+			subscriber.setIsemailverified(CmFinoFIX.Boolean_True);
 			subscriber.setIdexiparetiontime(subscriberRegistration
 					.getIDExpiryDate());
-			subscriber.setDetailsrequired((short) CmFinoFIX.Boolean_True.compareTo(true));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriber
 					.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Web);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
@@ -741,7 +741,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				subscriber.setStatus(subscriberRegistration
 						.getSubscriberStatus());
 			}
-			subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration.getUpgradableKYCLevel()));
+			subscriber.setUpgradablekyclevel(subscriberRegistration.getUpgradableKYCLevel());
 			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
 			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
 			subscriber.setStatustime(new Timestamp());
@@ -782,8 +782,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				if (kycLevel == null) {
 					return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 				}
-				subscriber.setUpgradablekyclevel(new BigDecimal(subscriberRegistration
-						.getKYCLevel()));
+				subscriber.setUpgradablekyclevel(subscriberRegistration
+						.getKYCLevel());
 				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 			} else {
 				subscriber.setUpgradestate(CmFinoFIX.UpgradeState_none);
@@ -809,7 +809,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setAppliedby("self");
 			subscriber.setAppliedtime(new Timestamp());
-			subscriber.setDetailsrequired((short) Boolean.compare(true, false));
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriberDao.save(subscriber);
 			if(subscriberRegistration.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
 				mailService.generateEmailVerificationMail(subscriber, subscriberRegistration.getEmail());
@@ -987,7 +987,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setFirstname(syncRecord.getFirstName());
 			subscriber.setLastname(syncRecord.getLastName());
 			subscriber.setEmail(syncRecord.getEmail());
-			subscriber.setIsemailverified((short) Boolean.compare(false, true));
+			subscriber.setIsemailverified(CmFinoFIX.Boolean_True);
 			// subscriber.setLanguage(syncRecord.getLanguage());
 			subscriber
 					.setDateofbirth(new Timestamp(syncRecord.getDateOfBirth()));
@@ -1184,7 +1184,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		String subscriberName = subscriber.getFirstname();
 		if (emoneyPocket != null) {
 			emoneyPocket.setActivationtime(new Timestamp());
-			emoneyPocket.setIsdefault((short) Boolean.compare(true, false));
+			emoneyPocket.setIsdefault(CmFinoFIX.Boolean_True);
 			emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			emoneyPocket.setStatustime(new Timestamp());
 			emoneyPocket.setUpdatedby(subscriberName);
@@ -1195,7 +1195,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (subscriber.getUpgradestate().equals(
 					CmFinoFIX.UpgradeState_Approved)) {
 				bankPocket.setActivationtime(new Timestamp());
-				bankPocket.setIsdefault((short) Boolean.compare(true, false));
+				bankPocket.setIsdefault(CmFinoFIX.Boolean_True);
 				bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				bankPocket.setStatustime(new Timestamp());
 				bankPocket.setUpdatedby(subscriberName);
@@ -1208,7 +1208,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		
 		if (lakupandaiPocketFound && lakupandaiPocket != null) {
 			lakupandaiPocket.setActivationtime(new Timestamp());
-			lakupandaiPocket.setIsdefault((short) Boolean.compare(true, false));
+			lakupandaiPocket.setIsdefault(CmFinoFIX.Boolean_True);
 			lakupandaiPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			lakupandaiPocket.setStatustime(new Timestamp());
 			lakupandaiPocket.setUpdatedby(subscriberName);
@@ -1225,7 +1225,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				emoneyPocket.setPocketTemplateByPockettemplateid(svaPocketTemplate);
 				emoneyPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 				emoneyPocket.setActivationtime(new Timestamp());
-				emoneyPocket.setIsdefault((short) Boolean.compare(true, false));
+				emoneyPocket.setIsdefault(CmFinoFIX.Boolean_True);
 				emoneyPocket.setUpdatedby(subscriberName);
 			}
 		}
@@ -1592,7 +1592,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if(bankPocketFound)
 		{
 			bankPocket.setActivationtime(new Timestamp());
-			bankPocket.setIsdefault((short) Boolean.compare(true, false));
+			bankPocket.setIsdefault(CmFinoFIX.Boolean_True);
 			bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 			bankPocket.setStatustime(new Timestamp());
 			bankPocket.setUpdatedby(subscriberName);

@@ -8,12 +8,9 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -103,11 +100,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private String sourcemessage;
 	private String destmdn;
 	private Long destmdnid;
-	private BigDecimal destsubscriberid;
+	private Long destsubscriberid;
 	private String destsubscribername;
 	private Integer destpocketallowance;
 	private Integer destpockettype;
-	private BigDecimal destpocketid;
+	private Long destpocketid;
 	private String destpocketbalance;
 	private String destbankaccountname;
 	private String destcardpan;
@@ -133,7 +130,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private String operatorreversalerrortext;
 	private Integer operatorreversalcount;
 	private Timestamp operatorlastreversaltime;
-	private BigDecimal topupperiod;
+	private Long topupperiod;
 	private String bankretrievalreferencenumber;
 	private String banksystemtraceauditnumber;
 	private Timestamp bankresponsetime;
@@ -150,7 +147,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private Timestamp lastreversaltime;
 	private Integer csraction;
 	private Timestamp csractiontime;
-	private BigDecimal csruserid;
+	private Long csruserid;
 	private String csrusername;
 	private String csrcomment;
 	private String iso8583Processingcode;
@@ -163,17 +160,17 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private String iso8583Cardacceptoridcode;
 	private String iso8583Variant;
 	private String iso8583Responsecode;
-	private BigDecimal bulkuploadid;
+	private Long bulkuploadid;
 	private Integer bulkuploadlinenumber;
 	private String copytopermanenterror;
 	private String webclientip;
 	private String operatorrrn;
 	private String operatorstan;
 	private String productindicatorcode;
-	private BigDecimal units;
-	private BigDecimal denomination;
-	private BigDecimal transactionchargeid;
-	private Short ispartofsharedupchain;
+	private Long units;
+	private Long denomination;
+	private Long transactionchargeid;
+	private Boolean ispartofsharedupchain;
 	private Long id;
 
 	
@@ -483,11 +480,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DESTSUBSCRIBERID", scale = 0)
-	public BigDecimal getDestsubscriberid() {
+	public Long getDestsubscriberid() {
 		return this.destsubscriberid;
 	}
 
-	public void setDestsubscriberid(BigDecimal destsubscriberid) {
+	public void setDestsubscriberid(Long destsubscriberid) {
 		this.destsubscriberid = destsubscriberid;
 	}
 
@@ -519,11 +516,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DESTPOCKETID", scale = 0)
-	public BigDecimal getDestpocketid() {
+	public Long getDestpocketid() {
 		return this.destpocketid;
 	}
 
-	public void setDestpocketid(BigDecimal destpocketid) {
+	public void setDestpocketid(Long destpocketid) {
 		this.destpocketid = destpocketid;
 	}
     
@@ -762,11 +759,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "TOPUPPERIOD", scale = 0)
-	public BigDecimal getTopupperiod() {
+	public Long getTopupperiod() {
 		return this.topupperiod;
 	}
 
-	public void setTopupperiod(BigDecimal topupperiod) {
+	public void setTopupperiod(Long topupperiod) {
 		this.topupperiod = topupperiod;
 	}
 
@@ -922,11 +919,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CSRUSERID", scale = 0)
-	public BigDecimal getCsruserid() {
+	public Long getCsruserid() {
 		return this.csruserid;
 	}
 
-	public void setCsruserid(BigDecimal csruserid) {
+	public void setCsruserid(Long csruserid) {
 		this.csruserid = csruserid;
 	}
 
@@ -1042,11 +1039,11 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "BULKUPLOADID", scale = 0)
-	public BigDecimal getBulkuploadid() {
+	public Long getBulkuploadid() {
 		return this.bulkuploadid;
 	}
 
-	public void setBulkuploadid(BigDecimal bulkuploadid) {
+	public void setBulkuploadid(Long bulkuploadid) {
 		this.bulkuploadid = bulkuploadid;
 	}
 
@@ -1105,38 +1102,38 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UNITS", scale = 0)
-	public BigDecimal getUnits() {
+	public Long getUnits() {
 		return this.units;
 	}
 
-	public void setUnits(BigDecimal units) {
+	public void setUnits(Long units) {
 		this.units = units;
 	}
 
 	@Column(name = "DENOMINATION", scale = 0)
-	public BigDecimal getDenomination() {
+	public Long getDenomination() {
 		return this.denomination;
 	}
 
-	public void setDenomination(BigDecimal denomination) {
+	public void setDenomination(Long denomination) {
 		this.denomination = denomination;
 	}
 
 	@Column(name = "TRANSACTIONCHARGEID", scale = 0)
-	public BigDecimal getTransactionchargeid() {
+	public Long getTransactionchargeid() {
 		return this.transactionchargeid;
 	}
 
-	public void setTransactionchargeid(BigDecimal transactionchargeid) {
+	public void setTransactionchargeid(Long transactionchargeid) {
 		this.transactionchargeid = transactionchargeid;
 	}
 
 	@Column(name = "ISPARTOFSHAREDUPCHAIN", precision = 3, scale = 0)
-	public Short getIspartofsharedupchain() {
+	public Boolean getIspartofsharedupchain() {
 		return this.ispartofsharedupchain;
 	}
 
-	public void setIspartofsharedupchain(Short ispartofsharedupchain) {
+	public void setIspartofsharedupchain(Boolean ispartofsharedupchain) {
 		this.ispartofsharedupchain = ispartofsharedupchain;
 	}
 

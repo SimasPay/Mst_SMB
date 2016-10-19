@@ -96,7 +96,7 @@ public class SubscriberMDNDAOConcurrencyTest {
         mdn.setAuthenticationphrase("dsd");
         mdn.setCreatedby("dsd");
         mdn.setDigestedpin("sds");
-        mdn.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn.setLasttransactionid(Long.MIN_VALUE);
         mdn.setLasttransactiontime(new Timestamp());
         mdn.setLastupdatetime(new Timestamp());
         mdn.setStatustime(new Timestamp());

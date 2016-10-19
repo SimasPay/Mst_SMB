@@ -288,7 +288,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 
                 eachPocket.setCardpan(cardPanStringToReplace);
                 eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-                eachPocket.setIsdefault(Short.valueOf("0"));
+                eachPocket.setIsdefault(CmFinoFIX.Boolean_False);
                 
                 pocketDAO.save(eachPocket);
                 

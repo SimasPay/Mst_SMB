@@ -170,7 +170,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			
 			if (!b.equals(CmFinoFIX.PocketStatus_Retired)) {
 				pocket.setStatus(CmFinoFIX.PocketStatus_PendingRetirement);
-				pocket.setIsdefault((short) Boolean.compare(false, true));
+				pocket.setIsdefault(CmFinoFIX.Boolean_True);
 				PocketDAO pocDAO = daoFactory.getPocketDAO();
 				pocDAO.save(pocket);
 			}
@@ -618,7 +618,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getEmail())) {
 			subscriber.setEmail(subscriberSyncRecord.getEmail());
 		}
-		subscriber.setIsemailverified((short) Boolean.compare(false, true));
+		subscriber.setIsemailverified(CmFinoFIX.Boolean_True);
 		// If "isNew" is true then he is newSubscriber otherwise he is existing subscriber.
 		if (isNew) {
 			if (StringUtils.isNotBlank(subscriberSyncRecord.getCurrency())) {
@@ -652,7 +652,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		pocket.setSubscriberMdn(subMDN);
 		pocket.setStatustime(new Timestamp());
 		pocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
-		pocket.setIsdefault((short) Boolean.compare(true, false));
+		pocket.setIsdefault(CmFinoFIX.Boolean_True);
 		if(subMDN.getSubscriber().getCompany() != null) {
 			pocket.setCompany(subMDN.getSubscriber().getCompany());
 		}
@@ -850,7 +850,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		if(!email.equals(subscriber.getEmail())) {
 			throw new Exception("Invalid email");
 		}
-		subscriber.setIsemailverified((short) Boolean.compare(true, false));
+		subscriber.setIsemailverified(CmFinoFIX.Boolean_True);
 		subscriberDAO.save(subscriber);		
 	}
 

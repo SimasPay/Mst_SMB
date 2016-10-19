@@ -615,7 +615,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		
 		if (!CmFinoFIX.RecordType_SubscriberUnBanked.equals(syncRecord.getAccountType())) {
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
-			subscriber.setUpgradablekyclevel(BigDecimal.valueOf(syncRecord.getAccountType().longValue()));
+			subscriber.setUpgradablekyclevel(syncRecord.getAccountType().longValue());
 			subscriber.setAppliedby(uploadedBy);
 		}
 		Long groupID = null;

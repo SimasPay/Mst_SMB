@@ -97,7 +97,7 @@ public class MerchantDAOTest {
         mdn1.setAuthenticationphrase("sunny");
         mdn1.setCreatedby("sunny");
         mdn1.setDigestedpin("sds");
-        mdn1.setLasttransactionid(new java.math.BigDecimal(Long.MIN_VALUE));
+        mdn1.setLasttransactionid(Long.MIN_VALUE);
         mdn1.setLasttransactiontime(new Timestamp());
         mdn1.setLastupdatetime(new Timestamp());
         mdn1.setStatustime(new Timestamp());

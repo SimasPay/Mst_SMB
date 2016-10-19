@@ -192,7 +192,7 @@ public class SubscriberActivationHandlerImpl extends FIXMessageHandler implement
 				if(bankPocketFound)
 				{
 					bankPocket.setActivationtime(new Timestamp());
-					bankPocket.setIsdefault(Short.valueOf("1"));
+					bankPocket.setIsdefault(CmFinoFIX.Boolean_True);
 					bankPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 					bankPocket.setStatustime(new Timestamp());
 					bankPocket.setUpdatedby(subscriberName);

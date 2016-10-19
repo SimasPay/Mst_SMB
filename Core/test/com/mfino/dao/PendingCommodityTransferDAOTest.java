@@ -111,7 +111,7 @@ public class PendingCommodityTransferDAOTest {
         mdn1.setAuthenticationphrase("sunny");
         mdn1.setCreatedby("sunny");
         mdn1.setDigestedpin("sds");
-        mdn1.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn1.setLasttransactionid(Long.MIN_VALUE);
         mdn1.setLasttransactiontime(new Timestamp());
         mdn1.setLastupdatetime(new Timestamp());
         mdn1.setStatustime(new Timestamp());
@@ -129,7 +129,7 @@ public class PendingCommodityTransferDAOTest {
         mdn2.setAuthenticationphrase("sunny");
         mdn2.setCreatedby("sunny");
         mdn2.setDigestedpin("sds");
-        mdn2.setLasttransactionid(new BigDecimal(Long.MIN_VALUE));
+        mdn2.setLasttransactionid(Long.MIN_VALUE);
         mdn2.setLasttransactiontime(new Timestamp());
         mdn2.setLastupdatetime(new Timestamp());
         mdn2.setStatustime(new Timestamp());
@@ -191,7 +191,7 @@ public class PendingCommodityTransferDAOTest {
         poc.setCurrentmonthlytxnscount(Integer.MAX_VALUE);
         poc.setCurrentweeklyexpenditure(new BigDecimal(Long.MIN_VALUE));
         poc.setCurrentweeklytxnscount(Integer.MIN_VALUE);
-        poc.setIsdefault((short)1);
+        poc.setIsdefault(true);
         poc.setLastbankauthorizationcode("sas");
         poc.setLastbankrequestcode(Integer.MAX_VALUE);
         poc.setLastbankresponsecode(Integer.MAX_VALUE);

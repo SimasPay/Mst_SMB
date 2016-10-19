@@ -56,19 +56,19 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Timestamp statustime;
 	private Timestamp activationtime;
 	private Timestamp lasttransactiontime;
-	private BigDecimal lasttransactionid;
+	private Long lasttransactionid;
 	private String h2hallowedip;
-	private Short ismdnrecycled;
+	private Boolean ismdnrecycled;
 	private String scramblecode;
 	private String otp;
 	private Timestamp otpexpirationtime;
 	private String applicationid;
-	private Short isforcecloserequested;
+	private Boolean isforcecloserequested;
 	private String authorizationtoken;
 	private String userapikey;
 	private String othermdn;
 	private Integer otpretrycount;
-	private BigDecimal cashinfirsttimeid;
+	private Long cashinfirsttimeid;
 	private String isidlifetime;
 	private String domaddridentity;
 	private String ktpdocumentpath;
@@ -280,11 +280,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "LASTTRANSACTIONID", scale = 0)
-	public BigDecimal getLasttransactionid() {
+	public Long getLasttransactionid() {
 		return this.lasttransactionid;
 	}
 
-	public void setLasttransactionid(BigDecimal lasttransactionid) {
+	public void setLasttransactionid(Long lasttransactionid) {
 		this.lasttransactionid = lasttransactionid;
 	}
 
@@ -298,11 +298,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISMDNRECYCLED", precision = 3, scale = 0)
-	public Short getIsmdnrecycled() {
+	public Boolean getIsmdnrecycled() {
 		return this.ismdnrecycled;
 	}
 
-	public void setIsmdnrecycled(Short ismdnrecycled) {
+	public void setIsmdnrecycled(Boolean ismdnrecycled) {
 		this.ismdnrecycled = ismdnrecycled;
 	}
 
@@ -344,11 +344,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISFORCECLOSEREQUESTED", precision = 3, scale = 0)
-	public Short getIsforcecloserequested() {
+	public Boolean getIsforcecloserequested() {
 		return this.isforcecloserequested;
 	}
 
-	public void setIsforcecloserequested(Short isforcecloserequested) {
+	public void setIsforcecloserequested(Boolean isforcecloserequested) {
 		this.isforcecloserequested = isforcecloserequested;
 	}
 
@@ -389,11 +389,11 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CASHINFIRSTTIMEID", scale = 0)
-	public BigDecimal getCashinfirsttimeid() {
+	public Long getCashinfirsttimeid() {
 		return this.cashinfirsttimeid;
 	}
 
-	public void setCashinfirsttimeid(BigDecimal cashinfirsttimeid) {
+	public void setCashinfirsttimeid(Long cashinfirsttimeid) {
 		this.cashinfirsttimeid = cashinfirsttimeid;
 	}
 

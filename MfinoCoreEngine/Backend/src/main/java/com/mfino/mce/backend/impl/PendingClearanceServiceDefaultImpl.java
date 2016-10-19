@@ -109,7 +109,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
-					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsruserid(fixPendingRequest.getCSRUserID());
 					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)bankService.onRevertOfTransferConfirmation(pct, true);
 					if(sctl.getCommoditytransferid()==null){
@@ -169,7 +169,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
-					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
+					pct.setCsruserid(fixPendingRequest.getCSRUserID());
 					pct.setCsrusername(fixPendingRequest.getCSRUserName());
 					returnFix = (BackendResponse)bankService.onResolveCompleteOfTransfer(pct);
 					
