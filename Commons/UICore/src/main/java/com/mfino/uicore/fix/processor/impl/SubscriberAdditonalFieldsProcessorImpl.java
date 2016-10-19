@@ -42,7 +42,7 @@ public class SubscriberAdditonalFieldsProcessorImpl extends BaseFixProcessor imp
         }
         if (e.getEmail() != null) {
             s.setEmail(e.getEmail());
-            s.setIsemailverified((short) Boolean.compare(false, true));
+            s.setIsemailverified(CmFinoFIX.Boolean_True);
         }
         if (e.getLanguage() != null) {
             s.setLanguage(e.getLanguage());

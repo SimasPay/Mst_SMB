@@ -313,7 +313,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if(!e.getIsForceCloseRequested().equals(s.getIsforcecloserequested())){
         		log.info("Subscriber:"+ID+" Force Close Requested field is updated to " + userService.getCurrentUser().getUsername() + " by user:"+getLoggedUserNameWithIP());
         	}
-			s.setIsforcecloserequested((short) Boolean.compare(e.getIsForceCloseRequested(), false));
+			s.setIsforcecloserequested(e.getIsForceCloseRequested());
 		}
 		if (e.getStatus() != null) {
 			if(!e.getStatus().equals(s.getStatus())){
@@ -365,7 +365,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
         		log.info("Subscriber:"+ID+" Email updated to "+e.getEmail()+" by user:"+getLoggedUserNameWithIP());
         	}
 			s.getSubscriber().setEmail(e.getEmail());
-			s.getSubscriber().setIsemailverified((short) Boolean.compare(false, true));
+			s.getSubscriber().setIsemailverified(CmFinoFIX.Boolean_True);
 		}		
 		if (e.getLanguage() != null) {
 			if(!e.getLanguage().equals(s.getSubscriber().getLanguage())){
@@ -474,13 +474,13 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if(!e.getReferenceAccount().equals(s.getSubscriber().getReferenceaccount())){
         		log.info("Subscriber:"+ID+" Reference No updated to "+e.getReferenceAccount()+" by user:"+getLoggedUserNameWithIP());
         	}
-			s.getSubscriber().setReferenceaccount(new BigDecimal(e.getReferenceAccount()));
+			s.getSubscriber().setReferenceaccount(e.getReferenceAccount());
 		}
 		if(e.getKYCLevel()!=null&& e.getKYCLevel().longValue() > s.getSubscriber().getKycLevel().getKyclevel().longValue()){
 			if(!e.getKYCLevel().equals(s.getSubscriber().getUpgradablekyclevel())){
         		log.info("Subscriber:"+ID+" Upgradable KYC updated to "+e.getKYCLevel()+" by user:"+getLoggedUserNameWithIP());
         	}
-			s.getSubscriber().setUpgradablekyclevel(new BigDecimal(e.getKYCLevel()));
+			s.getSubscriber().setUpgradablekyclevel(e.getKYCLevel());
 			s.getSubscriber().setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 		}
 		if(e.getKYCLevel()!=null){
@@ -875,7 +875,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(s.getSubscriber().getAppliedtime()!=null){
 					entry.setAppliedTime(s.getSubscriber().getAppliedtime());
 				}
-				if(s.getSubscriber().getDetailsrequired()!=null && s.getSubscriber().getDetailsrequired() != 0){
+				if(s.getSubscriber().getDetailsrequired()!=null && s.getSubscriber().getDetailsrequired()){
 					entry.setDetailsRequired(true);
 				}else{
 					entry.setDetailsRequired(false);
@@ -1381,7 +1381,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				//check on kyc level need to be added on edit to lower kycleve
 				if(Boolean.valueOf(sub.getDetailsrequired().toString())!=null&&Boolean.valueOf(sub.getDetailsrequired().toString())){
-					sub.setDetailsrequired((short) Boolean.compare(false, true));
+					sub.setDetailsrequired(CmFinoFIX.Boolean_True);
 				}
 				if(Integer.valueOf(Long.valueOf(sub.getStatus()).intValue()).equals(CmFinoFIX.SubscriberStatus_NotRegistered)){
 					updatePocket(s);

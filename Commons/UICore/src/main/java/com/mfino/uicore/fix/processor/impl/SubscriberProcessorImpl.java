@@ -63,7 +63,7 @@ public class SubscriberProcessorImpl extends BaseFixProcessor implements Subscri
         		log.info("Subscriber:"+ID+" Email updated to "+e.getEmail()+" by user:"+getLoggedUserNameWithIP());
         	}
             s.setEmail(e.getEmail());
-            s.setIsemailverified((short) Boolean.compare(false, true));
+            s.setIsemailverified(CmFinoFIX.Boolean_True);
         }
         if (e.getLanguage() != null) {
         	if(!e.getLanguage().equals(s.getLanguage())){
