@@ -399,7 +399,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount,
 			SubscriberMdn srcSubscriberMdn, SubscriberMdn destSubscriberMdn){
-		//TODO::Handle if the arguments are null;
+		
 		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
 		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParametervalue() : null;
 
@@ -660,42 +660,42 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public BackendResponse validatePct(PendingCommodityTransfer pct,Pocket sourcePocket, Pocket destinationPocket, SubscriberMdn sourceMdn, SubscriberMdn destMdn){
-		//TODO::Handle if the arguments are null;
+		
 		BackendResponse responseFix = createResponseObject();
 		
 		if((sourcePocket != null) && !(pct.getSourcemdn().equals(sourceMdn.getMdn())
 				&&sourcePocket.equals(pct.getPocket())))	{
 			log.info("pct with ID="+pct.getId()+" invalidated.Supplied sourcepocket with ID="+sourcePocket.getId()+" pct sourcepocketid="+pct.getPocket().getId() +" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferIDDoesNotBelongToSourceMDN.getInternalErrorCode());
-			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
+			pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_Expired);
 			return responseFix;
 		}else if(destMdn!=null
 				&&pct.getDestmdn()!=null
 				&&(!pct.getDestmdn().equals(destMdn.getMdn()))){
 			log.info("pct with ID="+pct.getId()+" invalidated.Supplied destMDN with="+destMdn.getMdn()+" pct destmdn="+pct.getDestmdn()+" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferRecordNotFound.getInternalErrorCode());
-			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
+			pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_Expired);
 		}else if(destinationPocket!=null
 				&&pct.getDestpocketid()!=null
 				&&(!pct.getDestpocketid().equals(destinationPocket.getId()))){
 			log.info("pct with ID="+pct.getId()+" invalidated.Supplied destpocket with ID="+destinationPocket.getId()+" pct destpocketid="+pct.getDestpocketid() +" do not match");
 			responseFix.setInternalErrorCode(NotificationCodes.TransferRecordNotFound.getInternalErrorCode());
-			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Expired));
+			pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_Expired);
 		}else if((sourcePocket != null) && (CmFinoFIX.PocketType_SVA.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType()) || 
 				CmFinoFIX.PocketType_LakuPandai.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType())) 
 				&& ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)
 				&&((new BigDecimal(sourcePocket.getCurrentbalance()).subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)){
 			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be below the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooLow.getInternalErrorCode());
-					pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));
-					pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooLow));
+					pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits);
+					pct.setNotificationcode(CmFinoFIX.NotificationCode_BalanceTooLow);
 		}else if((destinationPocket != null) && (CmFinoFIX.PocketType_SVA.equals(destinationPocket.getPocketTemplateByPockettemplateid().getType()) ||
 				CmFinoFIX.PocketType_LakuPandai.equals(destinationPocket.getPocketTemplateByPockettemplateid().getType()))
 				&&((new BigDecimal(destinationPocket.getCurrentbalance()).add(pct.getAmount()).compareTo(destinationPocket.getPocketTemplateByPockettemplateid().getMaximumstoredvalue())) == 1)){
 			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be above the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooHigh.getInternalErrorCode());
-			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));//change it destination pocket limits
-			pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooHigh));			
+			pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits);//change it destination pocket limits
+			pct.setNotificationcode(CmFinoFIX.NotificationCode_BalanceTooHigh);			
 		}else{				
 		responseFix.setInternalErrorCode(NotificationCodes.Success.getInternalErrorCode());
 		}
@@ -712,8 +712,8 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			&&((new BigDecimal(sourcePocket.getCurrentbalance()).subtract(pct.getAmount().add(pct.getCharges())).compareTo(sourcePocket.getPocketTemplateByPockettemplateid().getMinimumstoredvalue())) == -1)){
 			log.info("pct with ID="+pct.getId()+" invalidated. Balance will be below the limit if the trxn is allowed");
 			responseFix.setInternalErrorCode(NotificationCodes.BalanceTooLow.getInternalErrorCode());
-			pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits));
-			pct.setNotificationcode(Long.valueOf(CmFinoFIX.NotificationCode_BalanceTooLow));
+			pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_EMoneySourcePocketLimits);
+			pct.setNotificationcode(CmFinoFIX.NotificationCode_BalanceTooLow);
 		} 
 		else {				
 			responseFix.setInternalErrorCode(NotificationCodes.Success.getInternalErrorCode());

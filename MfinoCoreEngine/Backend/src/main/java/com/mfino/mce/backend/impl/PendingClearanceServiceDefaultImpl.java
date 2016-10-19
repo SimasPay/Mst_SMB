@@ -106,7 +106,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				ct = coreDataWrapper.getCommodityTransferDao().getById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCsraction(Long.valueOf(fixPendingRequest.getCSRAction()));
+					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
 					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));
@@ -135,7 +135,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 					}
 					else if (ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(trxnType.getTransactionname()) &&
 							CmFinoFIX.TransactionUICategory_Reverse_From_ATM.equals(pct.getUicategory())) {
-						//TODO
+						
 						// As Reversal from ATM is failed money struck in bank only so need to transfer money from Bank to source again, 
 						// for this ATM has to send Reverse again. If it is not possible the bank has to settle subscriber manually by debit the Bank pocket of ATM 
 						// and credit Emoney pocket of the source subscriber.
@@ -166,7 +166,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 			for(ChargetxnTransferMap ctxn : ctxnMap){
 				pct = coreDataWrapper.getPCTById(ctxn.getCommoditytransferid().longValue());
 				if(pct!=null){
-					pct.setCsraction(Long.valueOf(fixPendingRequest.getCSRAction()));
+					pct.setCsraction(fixPendingRequest.getCSRAction());
 					pct.setCsractiontime(new Timestamp());
 					pct.setCsrcomment(fixPendingRequest.getCSRComment());
 					pct.setCsruserid(new BigDecimal(fixPendingRequest.getCSRUserID()));

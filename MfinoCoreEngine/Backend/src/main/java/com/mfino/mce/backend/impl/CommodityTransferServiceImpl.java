@@ -90,14 +90,14 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		pct.setTransferstatus(CmFinoFIX.TransferStatus_Initialized);
 		pct.setDestmdn(objDestSubMdn.getMdn());
 		pct.setDestpocketid(objDestPocket.getId());
-		pct.setDestpockettype(objDestPocket.getPocketTemplateByPockettemplateid().getType().longValue());
+		pct.setDestpockettype(objDestPocket.getPocketTemplateByPockettemplateid().getType());
 		pct.setDestsubscriberid(objDestSubscriber.getId());
 		pct.setDestsubscribername((safeString(objDestSubscriber.getFirstname()) + " " + safeString(objDestSubscriber.getLastname())));
 		
 		pct.setPocket(objSourcePocket);
 		
 		if(Long.valueOf(objDestPocket.getPocketTemplateByPockettemplateid().getAllowance()) != null){
-			pct.setDestpocketallowance(objDestPocket.getPocketTemplateByPockettemplateid().getAllowance().longValue());
+			pct.setDestpocketallowance(objDestPocket.getPocketTemplateByPockettemplateid().getAllowance());
 		}
 		
 		pct.setSourcemessage(safeString(sourceMessage));
@@ -124,7 +124,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 		else if(objDestPocket.getPocketTemplateByPockettemplateid().getType() ==  CmFinoFIX.PocketType_BOBAccount){
 			if(objDestPocket.getPocketTemplateByPockettemplateid().getOperatorcode() != null){
-				pct.setOperatorcode(objDestPocket.getPocketTemplateByPockettemplateid().getOperatorcode().longValue());
+				pct.setOperatorcode(objDestPocket.getPocketTemplateByPockettemplateid().getOperatorcode());
 			}
 			else{
 				// TODO set default operator code ask sridhar.
@@ -152,7 +152,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 			pct.setCompany(objSourceSubscriber.getCompany());
 		}
 		
-		pct.setTransferfailurereason(Long.valueOf(CmFinoFIX.TransferFailureReason_Inititalized));
+		pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_Inititalized);
 		pct.setAmount(amount);
 		if(charges != null){
 			pct.setCharges(charges);
@@ -176,7 +176,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getType() ==  CmFinoFIX.PocketType_BOBAccount){
 			if(objSourcePocket.getPocketTemplateByPockettemplateid().getOperatorcode() != null){
-				pct.setOperatorcode(objSourcePocket.getPocketTemplateByPockettemplateid().getOperatorcode().longValue());
+				pct.setOperatorcode(objSourcePocket.getPocketTemplateByPockettemplateid().getOperatorcode());
 			}
 			else{
 				// TODO set default operator code ask sridhar.
@@ -184,12 +184,12 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 		
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode() != null){
-			pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode().longValue());
+			pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode());
 		}
 		
 
 		pct.setSourceapplication(requestFix.getSourceApplication());
-		pct.setBillingtype(Long.valueOf(billingType));
+		pct.setBillingtype(billingType);
 		pct.setSourcemdn(objSourceSubMdn.getMdn());
 		pct.setSourcepockettype(objSourcePocket.getPocketTemplateByPockettemplateid().getType());
 		pct.setSubscriber(objSourceSubscriber);
@@ -201,7 +201,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		tLog.setId(requestFix.getTransactionID());
 		pct.setTransactionLog(tLog);
 		pct.setTransferstatus((int)initialTransferStatus);
-		pct.setLocalrevertrequired((short)1);
+		pct.setLocalrevertrequired(CmFinoFIX.Boolean_True);
 		
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getType()	==	CmFinoFIX.PocketType_BankAccount) {
 			if(StringUtils.isNotBlank(sourceBankAccountNo)) {
@@ -213,7 +213,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 
 		if(Long.valueOf(objSourcePocket.getPocketTemplateByPockettemplateid().getAllowance()) != null)
-			pct.setSourcepocketallowance(objSourcePocket.getPocketTemplateByPockettemplateid().getAllowance().longValue());
+			pct.setSourcepocketallowance(objSourcePocket.getPocketTemplateByPockettemplateid().getAllowance());
 
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getType()	==	CmFinoFIX.PocketType_SVA)
 		{
@@ -227,11 +227,11 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 				/*pct.setSourceCardPAN(MCEUtil.SOURCE_CARD_NUMBER_OMNIBUS); //TODO check with sridhar
 				pct.setBankCode(MCEUtil.SOURCE_BANK_CODE_FOR_OMNIBUS);*/
 				pct.setSourcecardpan(safeString(objSourcePocket.getCardpan())); 
-				pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode().longValue());
+				pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode());
 			}
 		}
 		
-		pct.setUicategory(Long.valueOf(getUiCategory(requestFix, objSourcePocket, objDestPocket)));
+		pct.setUicategory(getUiCategory(requestFix, objSourcePocket, objDestPocket));
 		
 		//TODO code for has similar records using channel and uicategory
 		try{

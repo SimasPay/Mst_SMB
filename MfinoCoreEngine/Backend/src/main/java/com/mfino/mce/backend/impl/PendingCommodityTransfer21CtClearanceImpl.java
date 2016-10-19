@@ -35,7 +35,7 @@ public class PendingCommodityTransfer21CtClearanceImpl extends BaseServiceImpl i
 		
 		log.info("Moving PCT to CT: "+pct.getId());
 		pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
-		pct.setTransferfailurereason(Long.valueOf(99));
+		pct.setTransferfailurereason(99);
 		getCommodityTransferService().movePctToCt(pct);
 		transactionChargingService.setAsFailed(pct.getId().longValue(), "Manually moved from PCT to CT table");
 	}
