@@ -345,7 +345,7 @@ public class PartnerProcessorImpl extends BaseFixProcessor implements PartnerPro
         partner.setMfinoServiceProvider(mspDAO.getById(1));
         
         if(entry.getNumberOfOutlets() != null){
-        	partner.setNumberofoutlets(entry.getNumberOfOutlets().longValue());
+        	partner.setNumberofoutlets(entry.getNumberOfOutlets());
         }
         
         if(entry.getRepresentativeName() != null){
@@ -361,7 +361,7 @@ public class PartnerProcessorImpl extends BaseFixProcessor implements PartnerPro
         	partner.setWebsite(entry.getWebSite());
         }
         if(entry.getYearEstablished() != null){
-        	partner.setYearestablished(entry.getYearEstablished().longValue());
+        	partner.setYearestablished(entry.getYearEstablished());
         }
         
         //for merchant and outlet addresses
@@ -436,9 +436,9 @@ public class PartnerProcessorImpl extends BaseFixProcessor implements PartnerPro
 	        if(partner.getPartnercode() != null){
 	        	entry.setPartnerCode(partner.getPartnercode());
 	        }
-	        if((Long)partner.getPartnerstatus() != null){
+	        if(partner.getPartnerstatus() != null){
 	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, (subscriber.getLanguage()), partner.getPartnerstatus()));
-	        	entry.setPartnerStatus(((Long)partner.getPartnerstatus()).intValue());
+	        	entry.setPartnerStatus((partner.getPartnerstatus()).intValue());
 	        }
 	        if(partner.getTradename() != null){
 	        	entry.setTradeName(partner.getTradename());

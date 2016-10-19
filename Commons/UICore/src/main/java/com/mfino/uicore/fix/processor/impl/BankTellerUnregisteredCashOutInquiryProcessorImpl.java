@@ -224,7 +224,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
        
         Pocket subPocket = subscriberService.getDefaultPocket(destMDn.getId().longValue(), 
         		systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED));		
-		if(subPocket == null || !((Long)subPocket.getStatus()).equals(CmFinoFIX.PocketStatus_OneTimeActive)){
+		if(subPocket == null || !(subPocket.getStatus()).equals(CmFinoFIX.PocketStatus_OneTimeActive)){
 			log.info("subscriber pocket Null");
 			errorMsg.setErrorDescription(MessageText._(" vaild Subscriber pocket not found "));
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -259,7 +259,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 			partnerPocket = partnerService.getPocketByDestpocketid();
 			partnerbankPocket = partnerService.getPocketBySourcepocket();
 			
-			if(partnerbankPocket==null || (!((Long)partnerbankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
+			if(partnerbankPocket==null || (!(partnerbankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
 				log.info("Partner bank Pocket Not found");
 				errorMsg.setErrorDescription(MessageText._(" valid bank Pocket not found"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -271,7 +271,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 			}
-			if (!((Long)partnerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
+			if (!(partnerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
 				log.info("Partner Pocket Not Active");
 				errorMsg.setErrorDescription(MessageText._("Emoney Pocket not Active"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);

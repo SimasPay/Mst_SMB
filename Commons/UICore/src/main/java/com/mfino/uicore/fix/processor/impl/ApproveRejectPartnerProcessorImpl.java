@@ -147,7 +147,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
         }
-        if(!(((Long)partner.getPartnerstatus()).equals(CmFinoFIX.SubscriberStatus_Initialized)
+        if(!((partner.getPartnerstatus()).equals(CmFinoFIX.SubscriberStatus_Initialized)
         		&& (subscriber.getStatus()).equals(CmFinoFIX.SubscriberStatus_Initialized))){
         	log.info("Invalid partner status" + realMsg.getPartnerID());
             errorMsg.setErrorDescription(MessageText._("Invalid partner status"));
@@ -217,8 +217,8 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     		if(isEMoneyPocketRequired == true){
         	
     			if(emoneyPocket== null||
-	        			!(((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
-	        			((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
+	        			!((emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+	        			(emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
 	             	log.info("valid emoney pocket not found" + realMsg.getPartnerID());
 	                 errorMsg.setErrorDescription(MessageText._("valid emoney pocket not found"));
 	                 errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -227,8 +227,8 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
     		}
     		
     		if(lakuPocket == null||
-        			!(((Long)lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
-        			((Long)lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
+        			!((lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+        			(lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
              	log.info("valid laku pocket not found" + realMsg.getPartnerID());
                  errorMsg.setErrorDescription(MessageText._("valid laku pocket not found"));
                  errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -236,8 +236,8 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
              }
     		
             if(bankPocket== null||
-         			!(((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
-         					((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
+         			!((bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+         					(bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
          					||bankPocket.getCardpan()==null){
              	log.info("valid bank pocket not found" + realMsg.getPartnerID());
                  errorMsg.setErrorDescription(MessageText._("valid bank pocket not found"));
@@ -317,7 +317,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 			errorMsg.setErrorDescription(MessageText._("Requested For Correction of Data for Agent"));
         } else if (CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())) {
             //update subscriber  update pockets
-        	partner.setPartnerstatus(((Integer)CmFinoFIX.SubscriberStatus_Initialized).longValue());
+        	partner.setPartnerstatus((CmFinoFIX.SubscriberStatus_Initialized));
         	subscriber.setApprovedorrejectedby(userService.getCurrentUser().getUsername());
         	subscriber.setApproveorrejectcomment(realMsg.getAdminComment());
         	subscriber.setApproveorrejecttime(new Timestamp());

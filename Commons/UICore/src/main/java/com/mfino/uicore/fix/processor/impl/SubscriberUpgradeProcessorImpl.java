@@ -147,7 +147,7 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
                 	return error;
             	}
             	
-            	subscriberMDN.setUpgradeacctstatus(new BigDecimal(CmFinoFIX.SubscriberUpgradeStatus_Initialized));
+            	subscriberMDN.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeStatus_Initialized);
         		subMdndao.save(subscriberMDN);
         		
         		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
@@ -188,7 +188,7 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
                 			
                 			
                 			Integer upgradeStatus=realMsg.getUpgradeAcctStatus();
-                			subscriberMDN.setUpgradeacctstatus(new BigDecimal(upgradeStatus));
+                			subscriberMDN.setUpgradeacctstatus(upgradeStatus);
                 			subscriberMDN.setUpgradeacctcomments(realMsg.getUpgradeAcctComments());
                     		subscriberMDN.setUpgradeacctapprovedby(userService.getCurrentUser().getUsername());
                     		subscriberMDN.setUpgradeaccttime(new Timestamp());

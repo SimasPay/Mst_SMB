@@ -53,9 +53,9 @@ public class PocketTemplateDAOTest {
 
         pt.setMfinoServiceProvider(msp);
         pt.setAllowance(Integer.MAX_VALUE);
-        pt.setBankaccountcardtype(Long.MAX_VALUE);
-        pt.setBankcode(Long.MAX_VALUE);
-        pt.setCardpansuffixlength(Long.MAX_VALUE);
+        pt.setBankaccountcardtype(Integer.MAX_VALUE);
+        pt.setBankcode(Integer.MAX_VALUE);
+        pt.setCardpansuffixlength(Integer.MAX_VALUE);
         pt.setCommodity(Integer.MAX_VALUE);
         pt.setCreatetime(new Timestamp());
         pt.setCreatedby("sd");
@@ -69,11 +69,11 @@ public class PocketTemplateDAOTest {
         pt.setMaxtransactionspermonth(Integer.MAX_VALUE);
         pt.setMaxtransactionsperweek(Integer.MAX_VALUE);
         pt.setMaximumstoredvalue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorcode(Long.MAX_VALUE);
+        pt.setOperatorcode(Integer.MAX_VALUE);
         pt.setMaxamountpertransaction(new BigDecimal(Long.MIN_VALUE));
         pt.setMintimebetweentransactions(Integer.MAX_VALUE);
         pt.setMinimumstoredvalue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorcode(Long.MAX_VALUE);
+        pt.setOperatorcode(Integer.MAX_VALUE);
         pt.setType(Integer.MAX_VALUE);
         pt.setUnits("sd");
         pt.setUpdatedby("dsd");

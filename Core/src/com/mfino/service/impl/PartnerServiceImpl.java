@@ -325,10 +325,10 @@ public class PartnerServiceImpl implements PartnerService {
 			return CmFinoFIX.NotificationCode_DefaultBankAccountPocketNotFound;
 		}
 		
-		Long emoneyPocketL = emoneyPocket.getStatus();
+		Long emoneyPocketL = emoneyPocket.getStatus().longValue();
 		Integer emoneyPocketLI = emoneyPocketL.intValue();
 		
-		Long bankPocketL = bankPocket.getStatus();
+		Long bankPocketL = bankPocket.getStatus().longValue();
 		Integer bankPocketLI = bankPocketL.intValue();
 		
 		if(emoneyPocketLI.equals(CmFinoFIX.PocketStatus_PendingRetirement)
@@ -458,7 +458,7 @@ public class PartnerServiceImpl implements PartnerService {
 		Set<PartnerServices> ps=partner.getPartnerServicesesForPartnerid();
 		PartnerServicesDAO psDao = DAOFactory.getInstance().getPartnerServicesDAO();
 		for(PartnerServices service:ps){
-			Long tempStatusL = service.getStatus();
+			Long tempStatusL = service.getStatus().longValue();
 			Integer tempStatusLI = tempStatusL.intValue();
 			if(tempStatusLI.equals(CmFinoFIX.PartnerServiceStatus_Initialized)
 					&&checkPocket(service.getPocketBySourcepocket(),true)
@@ -494,7 +494,7 @@ public class PartnerServiceImpl implements PartnerService {
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		Set<Pocket> pockets = subscriberMDN.getPockets();
 		for(Pocket pocket:pockets){
-			Long tempStatusL = pocket.getStatus();
+			Long tempStatusL = pocket.getStatus().longValue();
 			Integer tempStatusLI = tempStatusL.intValue();
 			if(tempStatusLI.equals(CmFinoFIX.PocketStatus_Initialized)&&
 					(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket() != 0
@@ -516,7 +516,7 @@ public class PartnerServiceImpl implements PartnerService {
 		Set<PartnerServices> partnerServices = objPartner.getPartnerServicesesForPartnerid();
 		PartnerServicesDAO psDao = DAOFactory.getInstance().getPartnerServicesDAO();
 		for(PartnerServices ps:partnerServices){
-			Long tempStatusL = ps.getStatus();
+			Long tempStatusL = ps.getStatus().longValue();
 			Integer tempStatusLI = tempStatusL.intValue();
 			 if (!tempStatusLI.equals(CmFinoFIX.PartnerServiceStatus_Retired)) {
 				 ps.setStatus(CmFinoFIX.PartnerServiceStatus_PendingRetirement);
@@ -811,7 +811,7 @@ public class PartnerServiceImpl implements PartnerService {
         	 if(CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))
        		  		throw new PartnerRegistrationException("Partner already exist with MDN");
         	 
-        	 Long tempStatusL = subscriberMDN.getStatus();
+        	 Long tempStatusL = subscriberMDN.getStatus().longValue();
         	 Integer tempStatusLI= tempStatusL.intValue();
         	 
          	 if(tempStatusLI.equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
@@ -998,7 +998,7 @@ public class PartnerServiceImpl implements PartnerService {
 			partnerService.setCollectorpocket(new BigDecimal(CmFinoFIX.ServicePocketType_Collector));
 			partnerService.setPocketBySourcepocket(pockets.get(defaultService.getServiceDefualtConfig().getSourcepockettype()));
 			partnerService.setPocketByDestpocketid(pockets.get(defaultService.getServiceDefualtConfig().getSourcepockettype()));
-			partnerService.setIsservicechargeshare(CmFinoFIX.IsServiceChargeShare_Individual.longValue());
+			partnerService.setIsservicechargeshare(CmFinoFIX.IsServiceChargeShare_Individual);
 			partnerServicesDAO.save(partnerService);
 			log.info("PartnerService created for Partnerid:"+partner.getId()+"partnerserviceid:"+partnerService.getId());
 			createServiceSettlementConfig(partnerService,settlementTemplate);
@@ -1096,7 +1096,7 @@ public class PartnerServiceImpl implements PartnerService {
 
 	private void updatePartner(Partner partner, CMPartnerRegistrationThroughAPI partnerRegistration) {
 		
-			partner.setBusinesspartnertype(partnerRegistration.getBusinessPartnerType().longValue());        
+			partner.setBusinesspartnertype(partnerRegistration.getBusinessPartnerType());        
 	        partner.setPartnerstatus(CmFinoFIX.SubscriberStatus_Initialized);
             partner.setPartnercode(partnerRegistration.getPartnerCode());
            	partner.setAuthorizedemail(partnerRegistration.getAuthorizedEmail());
@@ -1109,12 +1109,12 @@ public class PartnerServiceImpl implements PartnerService {
            	partner.setIndustryclassification(partnerRegistration.getIndustryClassification());
             MfinoServiceProviderDAO mspDAO =DAOFactory.getInstance().getMfinoServiceProviderDAO();
             partner.setMfinoServiceProvider(mspDAO.getById(1));
-            partner.setNumberofoutlets(Long.valueOf(partnerRegistration.getNumberOfOutlets()));
+            partner.setNumberofoutlets(partnerRegistration.getNumberOfOutlets());
             partner.setRepresentativename(partnerRegistration.getRepresentativeName());
             partner.setTradename(partnerRegistration.getTradeName());
             partner.setTypeoforganization(partnerRegistration.getTypeOfOrganization());
             partner.setWebsite(partnerRegistration.getWebSite());
-            partner.setYearestablished(Long.valueOf(partnerRegistration.getYearEstablished()));
+            partner.setYearestablished(partnerRegistration.getYearEstablished());
          //for merchant and outlet addresses
             AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
           	Address merchantAddress = new Address();

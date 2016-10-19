@@ -93,7 +93,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			
 			if(CmFinoFIX.NotificationCode_OTPValidationSuccessful.equals(ValidationUtil.validateOTP(subMDN, isHttps, isHashedPin, oneTimeOTP))) {
 				
-				partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Validated));
+				partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Validated);
 				
 				result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquirySuccess));
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
@@ -104,7 +104,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed);
 				
-				partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
+				partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Failed);
 				
 				log.info("Agent state is not modified to retired due to otp validation failure....");
 			}
@@ -114,7 +114,7 @@ public class AgentClosingHandlerImpl  extends FIXMessageHandler implements Agent
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
+			partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Failed);
 			
 			log.info("Agent not found....");
 		}

@@ -152,9 +152,9 @@ public class PendingCommodityTransferDAOTest {
 
         pt.setMfinoServiceProvider(msp);
         pt.setAllowance(Integer.MAX_VALUE);
-        pt.setBankaccountcardtype(Long.MAX_VALUE);
-        pt.setBankcode(Long.MAX_VALUE);
-        pt.setCardpansuffixlength(Long.MAX_VALUE);
+        pt.setBankaccountcardtype(Integer.MAX_VALUE);
+        pt.setBankcode(Integer.MAX_VALUE);
+        pt.setCardpansuffixlength(Integer.MAX_VALUE);
         pt.setCommodity(new Integer(0));
         pt.setCreatetime(new Timestamp());
         pt.setCreatedby("sd");
@@ -168,15 +168,15 @@ public class PendingCommodityTransferDAOTest {
         pt.setMaxtransactionspermonth(Integer.MAX_VALUE);
         pt.setMaxtransactionsperweek(Integer.MAX_VALUE);
         pt.setMaximumstoredvalue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorcode(Long.MAX_VALUE);
+        pt.setOperatorcode(Integer.MAX_VALUE);
         pt.setMinamountpertransaction(new BigDecimal(Long.MIN_VALUE));
         pt.setMintimebetweentransactions(Integer.MAX_VALUE);
         pt.setMinimumstoredvalue(new BigDecimal(Long.MIN_VALUE));
-        pt.setOperatorcode(881L);
+        pt.setOperatorcode(881);
         pt.setType(new Integer(1));
         pt.setUnits("sd");
         pt.setUpdatedby("sunny");
-        pt.setBillingtype(0L);
+        pt.setBillingtype(0);
 
         poctDao.save(pt);
 
@@ -193,8 +193,8 @@ public class PendingCommodityTransferDAOTest {
         poc.setCurrentweeklytxnscount(Integer.MIN_VALUE);
         poc.setIsdefault((short)1);
         poc.setLastbankauthorizationcode("sas");
-        poc.setLastbankrequestcode(Long.MAX_VALUE);
-        poc.setLastbankresponsecode(Long.MAX_VALUE);
+        poc.setLastbankrequestcode(Integer.MAX_VALUE);
+        poc.setLastbankresponsecode(Integer.MAX_VALUE);
         poc.setLasttransactiontime(new Timestamp());
         poc.setLastupdatetime(new Timestamp());
         poc.setRestrictions(Integer.MAX_VALUE);

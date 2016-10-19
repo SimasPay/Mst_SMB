@@ -100,7 +100,7 @@ public class BankTellerCashOutApproveProcessorImpl extends MultixCommunicationHa
 		PartnerServices tellerService = null;
 		for(PartnerServices partnerservice:ps){
 			if(partnerservice.getService().getServicename().equals(ServiceAndTransactionConstants.SERVICE_TELLER)
-					&& ((Long)partnerservice.getStatus()).equals(CmFinoFIX.PartnerServiceStatus_Active)){
+					&& (partnerservice.getStatus()).equals(CmFinoFIX.PartnerServiceStatus_Active)){
 				tellerService = partnerservice;
 				break;
 			}

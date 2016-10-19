@@ -70,7 +70,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setType(e.getType());
 		}
 		if (e.getBankAccountCardType() != null) {
-			p.setBankaccountcardtype(e.getBankAccountCardType().longValue());
+			p.setBankaccountcardtype(e.getBankAccountCardType());
 		}
 		if (e.getDescription() != null) {
 			p.setDescription(e.getDescription());
@@ -82,7 +82,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setTypeofcheck(e.getTypeOfCheck());
 		}
 		if (e.getCardPANSuffixLength() != null) {
-			p.setCardpansuffixlength(e.getCardPANSuffixLength().longValue());
+			p.setCardpansuffixlength(e.getCardPANSuffixLength());
 		}
 		if (e.getRegularExpression() != null) {
 			p.setRegularexpression(e.getRegularExpression());
@@ -127,13 +127,13 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setMintimebetweentransactions(e.getMinTimeBetweenTransactions());
 		}
 		if (e.getBankCode() != null) {
-			p.setBankcode(e.getBankCode().longValue());
+			p.setBankcode(e.getBankCode());
 		}
 		if (e.getOperatorCode() != null) {
-			p.setOperatorcode(e.getOperatorCode().longValue());
+			p.setOperatorcode(e.getOperatorCode());
 		}
 		if (e.getBillingType() != null) {
-			p.setBillingtype(e.getBillingType().longValue());
+			p.setBillingtype(e.getBillingType());
 		}
 		if (e.getLastUpdateTime() != null) {
 			p.setLastupdatetime(e.getLastUpdateTime());
@@ -155,16 +155,16 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setLowbalancentfcthresholdamt(e.getLowBalanceNtfcThresholdAmt());
 		}
 		if (e.getWebTimeInterval() != null) {
-			p.setWebtimeinterval(e.getWebTimeInterval().longValue());
+			p.setWebtimeinterval(e.getWebTimeInterval());
 		}
 		if (e.getWebServiceTimeInterval() != null) {
-			p.setWebservicetimeinterval(e.getWebServiceTimeInterval().longValue());
+			p.setWebservicetimeinterval(e.getWebServiceTimeInterval());
 		}
 		if (e.getUTKTimeInterval() != null) {
-			p.setUtktimeinterval(e.getUTKTimeInterval().longValue());
+			p.setUtktimeinterval(e.getUTKTimeInterval());
 		}
 		if (e.getBankChannelTimeInterval() != null) {
-			p.setBankchanneltimeinterval(e.getBankChannelTimeInterval().longValue());
+			p.setBankchanneltimeinterval(e.getBankChannelTimeInterval());
 		}
 		if (e.getDenomination() != null) {
 			p.setDenomination(new BigDecimal(e.getDenomination()));
@@ -176,7 +176,7 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setIscollectorpocket((short) (e.getIsCollectorPocket() ? 1:0));
 		}
 		if (e.getNumberOfPocketsAllowedForMDN() != null) {
-			p.setNumberofpocketsallowedformdn(e.getNumberOfPocketsAllowedForMDN().longValue());
+			p.setNumberofpocketsallowedformdn(e.getNumberOfPocketsAllowedForMDN());
 		}
 		if (e.getIsSuspencePocket() != null) {
 			p.setIssuspencepocket((short) (e.getIsSuspencePocket() ? 1:0));
@@ -193,28 +193,28 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			CmFinoFIX.CMJSPocketTemplate.CGEntries entry) {
 		entry.setID(p.getId().longValue());
 		entry.setMSPID(p.getMfinoServiceProvider().getId().longValue());
-		entry.setType(((Long)p.getType()).intValue());
+		entry.setType((p.getType()).intValue());
 		if (p.getBankaccountcardtype() != null) {
 			entry.setBankAccountCardType(p.getBankaccountcardtype().intValue());
 		}
 		if (p.getDescription() != null) {
 			entry.setDescription(p.getDescription());
 		}
-		if ((Long)p.getTypeofcheck() != null) {
-			entry.setTypeOfCheck(((Long)p.getTypeofcheck()).intValue());
+		if (p.getTypeofcheck() != null) {
+			entry.setTypeOfCheck((p.getTypeofcheck()).intValue());
 		}
 		if (p.getRegularexpression() != null) {
 			entry.setRegularExpression(p.getRegularexpression());
 		}
-		entry.setCommodity(((Long)p.getCommodity()).intValue());
+		entry.setCommodity((p.getCommodity()).intValue());
 		if (p.getCardpansuffixlength() != null) {
 			entry.setCardPANSuffixLength(p.getCardpansuffixlength().intValue());
 		}
 		if (p.getUnits() != null) {
 			entry.setUnits(p.getUnits());
 		}
-		if ((Long)p.getAllowance() != null) {
-			entry.setAllowance(((Long)p.getAllowance()).intValue());
+		if (p.getAllowance() != null) {
+			entry.setAllowance((p.getAllowance()).intValue());
 		}
 		if (p.getMaximumstoredvalue() != null) {
 			entry.setMaximumStoredValue(p.getMaximumstoredvalue());
@@ -242,10 +242,10 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		entry.setMaxAmountPerDay(p.getMaxamountperday());
 		entry.setMaxAmountPerWeek(p.getMaxamountperweek());
 		entry.setMaxAmountPerMonth(p.getMaxamountpermonth());
-		entry.setMaxTransactionsPerDay(((Long)p.getMaxtransactionsperday()).intValue());
-		entry.setMaxTransactionsPerWeek(((Long)p.getMaxtransactionsperweek()).intValue());
-		entry.setMaxTransactionsPerMonth(((Long)p.getMaxtransactionspermonth()).intValue());
-		entry.setMinTimeBetweenTransactions(((Long)p.getMintimebetweentransactions()).intValue());
+		entry.setMaxTransactionsPerDay((p.getMaxtransactionsperday()).intValue());
+		entry.setMaxTransactionsPerWeek((p.getMaxtransactionsperweek()).intValue());
+		entry.setMaxTransactionsPerMonth((p.getMaxtransactionspermonth()).intValue());
+		entry.setMinTimeBetweenTransactions((p.getMintimebetweentransactions()).intValue());
 		if (p.getBankcode() != null) {
 			entry.setBankCode(p.getBankcode().intValue());
 		}

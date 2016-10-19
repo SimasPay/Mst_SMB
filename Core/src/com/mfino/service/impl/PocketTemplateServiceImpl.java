@@ -51,15 +51,15 @@ public class PocketTemplateServiceImpl implements PocketTemplateService {
         }
 
         //template type and commodity are mandatory.
-        Long tempTemplate2L = template2.getType();
-        Long tempTemplate1L = template1.getType();
+        Long tempTemplate2L = template2.getType().longValue();
+        Long tempTemplate1L = template1.getType().longValue();
         
         if(!tempTemplate1L.equals(tempTemplate2L)){
             return false;
         }
         
-        Long tempCommodity2L = template2.getCommodity();
-        Long tempCommodity1L = template1.getCommodity();
+        Long tempCommodity2L = template2.getCommodity().longValue();
+        Long tempCommodity1L = template1.getCommodity().longValue();
 
         if(!tempCommodity1L.equals(template2.getCommodity())){
             return false;

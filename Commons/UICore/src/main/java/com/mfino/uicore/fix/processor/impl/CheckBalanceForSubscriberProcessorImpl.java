@@ -68,10 +68,10 @@ public class CheckBalanceForSubscriberProcessorImpl extends BaseFixProcessor imp
     	entry.setBalance(pocketDao.getActualCurrentBalanceForPocket(pocket));
     	entry.setCurrency(pocket.getSubscriberMdn().getSubscriber().getCurrency());
         if (null != pocket.getPocketTemplateByPockettemplateid()) {
-            entry.setCommodity(((Long)pocket.getPocketTemplateByPockettemplateid().getCommodity()).intValue());
+            entry.setCommodity((pocket.getPocketTemplateByPockettemplateid().getCommodity()).intValue());
             String pocketTypeText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null,
                     pocket.getPocketTemplateByPockettemplateid().getType());
-            Integer commodityType = ((Long)pocket.getPocketTemplateByPockettemplateid().getCommodity()).intValue();
+            Integer commodityType = (pocket.getPocketTemplateByPockettemplateid().getCommodity()).intValue();
             String commodityText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, commodityType);
             entry.setPocketTypeText(String.format("%s  %s", commodityText, pocketTypeText));
         }

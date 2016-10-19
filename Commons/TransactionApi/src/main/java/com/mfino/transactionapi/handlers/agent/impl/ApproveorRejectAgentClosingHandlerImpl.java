@@ -134,7 +134,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 					
 					if(transactionDetails.getCloseAccountStatus().equals(String.valueOf(CmFinoFIX.CloseAcctStatus_Approve))) {
 						
-						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Approve));
+						partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Approve);
 						transactionDetails.setCloseAccountStatus(String.valueOf(CmFinoFIX.CloseAcctStatus_Approve));
 						
 						if(moveMoneyToTreasuaryAndRetirePockets(transactionDetails, subMDN.getId().longValue())) {
@@ -157,7 +157,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 							result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
 							
-							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
+							partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Failed);
 							
 							log.info("Failed due to Agent money movenent to Treasuary....");
 						}
@@ -167,7 +167,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 						result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingRequestRejectedByApprover);
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingRequestRejectedByApprover));
 						
-						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Reject));
+						partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Reject);
 						transactionDetails.setCloseAccountStatus(String.valueOf(CmFinoFIX.CloseAcctStatus_Reject));
 						
 						log.info("Agent closing rejected by the Approver....");
@@ -177,7 +177,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
 					
-					partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
+					partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Failed);
 					
 					log.info("Agent state is not modified to retired due to some error....");
 				}
@@ -186,7 +186,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingFailed);
 				
-				partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
+				partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Failed);
 				
 				log.info("Agent state is not modified to retired due to not valid state....");
 			}
@@ -196,7 +196,7 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Failed));
+			partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Failed);
 			
 			log.info("Agent not found....");
 		}

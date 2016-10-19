@@ -165,7 +165,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 		Iterator<Pocket> iterator = pokects.iterator();
 		while (iterator.hasNext()) {
 			Pocket pocket = iterator.next();
-			Long a =pocket.getStatus();
+			Long a =pocket.getStatus().longValue();
 			Integer b = a.intValue();
 			
 			if (!b.equals(CmFinoFIX.PocketStatus_Retired)) {

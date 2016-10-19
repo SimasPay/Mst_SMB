@@ -693,7 +693,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
     		subscriberMdn.setMdn(subscriberService.normalizeMDN(entry.getMDN()));
     	}
     	if(entry.getBusinessPartnerType()!=null){
-    		partner.setBusinesspartnertype(entry.getBusinessPartnerType().longValue());
+    		partner.setBusinesspartnertype(entry.getBusinessPartnerType());
     	}
         
         
@@ -732,7 +732,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         }
         
         if(entry.getBusinessPartnerType()!=null){
-        	partner.setBusinesspartnertype(entry.getBusinessPartnerType().longValue());
+        	partner.setBusinesspartnertype(entry.getBusinessPartnerType());
         }
         if(entry.getPartnerCode() != null){
         	partner.setPartnercode(entry.getPartnerCode());
@@ -771,7 +771,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         partner.setMfinoServiceProvider(mspDAO.getById(1));
         
         if(entry.getNumberOfOutlets() != null){
-        	partner.setNumberofoutlets(entry.getNumberOfOutlets().longValue());
+        	partner.setNumberofoutlets(entry.getNumberOfOutlets());
         }
         
         if(entry.getRepresentativeName() != null){
@@ -788,7 +788,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         	partner.setWebsite(entry.getWebSite());
         }
         if(entry.getYearEstablished() != null){
-        	partner.setYearestablished(entry.getYearEstablished().longValue());
+        	partner.setYearestablished(entry.getYearEstablished());
         }
         
         if (entry.getRestrictions() != null) {

@@ -86,7 +86,7 @@ public class PocketServiceImpl implements PocketService{
 
 		// If the pokcet type is of BankAccount
 		// Status is set to "Initialized".
-		Long typeL = pocket.getPocketTemplateByPockettemplateid().getType();
+		Long typeL = pocket.getPocketTemplateByPockettemplateid().getType().longValue();
 		Integer typeLI = typeL.intValue();
 		
 		if (typeLI.equals(CmFinoFIX.PocketType_BankAccount)) {
@@ -128,10 +128,10 @@ public class PocketServiceImpl implements PocketService{
 	public boolean isDefaultAirTimeSVA(Pocket p) {
 		Boolean bool_true = Boolean.valueOf(true);
 		
-		Long tempPocketL = p.getPocketTemplateByPockettemplateid().getType();
+		Long tempPocketL = p.getPocketTemplateByPockettemplateid().getType().longValue();
 		Integer tempPocketLI = tempPocketL.intValue();
 		
-		Long tempCOmoditytL = p.getPocketTemplateByPockettemplateid().getCommodity();
+		Long tempCOmoditytL = p.getPocketTemplateByPockettemplateid().getCommodity().longValue();
 		Integer tempCOmoditytL1 = tempCOmoditytL.intValue();
 		
 		if (p != null && p.getPocketTemplateByPockettemplateid() != null && tempPocketLI.equals(CmFinoFIX.PocketType_SVA)
@@ -153,7 +153,7 @@ public class PocketServiceImpl implements PocketService{
 		}
 
 		// @XC: Do we still maintain subscriber status in the backend?
-		Long tempStatusL = sub.getStatus();
+		Long tempStatusL = sub.getStatus().longValue();
 		Integer tempStatusLI = tempStatusL.intValue();
 		
 		if (tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Retired)) {
@@ -165,7 +165,7 @@ public class PocketServiceImpl implements PocketService{
 			return;
 		}
 		
-		Long tempmdnStatusL = mdn.getStatus();
+		Long tempmdnStatusL = mdn.getStatus().longValue();
 		Integer tempmdnStatusLI = tempmdnStatusL.intValue();
 		
 		if (tempmdnStatusLI.equals(CmFinoFIX.SubscriberStatus_Retired)) {

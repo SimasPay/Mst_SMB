@@ -172,8 +172,8 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			
 			if (ConfigurationUtil.getBulkUploadSubscriberKYClevel().equals(subscriber.getKycLevel())
 					&&(bankPocket== null||
-		         			!(((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
-		         					((Long)bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
+		         			!((bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+		         					(bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
 		         					||bankPocket.getCardpan()==null)) {
 				log.info("valid bank pocket not found"+ realMsg.getSubscriberMDNID());
 				errorMsg.setErrorDescription(MessageText._("valid bank pocket not found"));
@@ -192,8 +192,8 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
 			if(isEMoneyPocketRequired == true){
 				if(emoneyPocket== null||
-	        			!(((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
-	        			((Long)emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
+	        			!((emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
+	        			(emoneyPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
 					log.info("valid emaoney pocket not found"+ realMsg.getSubscriberMDNID());
 					errorMsg.setErrorDescription(MessageText._("valid Emoney pocket not found"));
 					errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);

@@ -166,7 +166,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
  		String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), otp);
  		subscriberMDN.setOtp(digestPin1);
  		subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addMinutes(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION_MINUTES))));
- 		subscriberMDN.setOtpretrycount(Long.valueOf(0));
+ 		subscriberMDN.setOtpretrycount(0);
  		
  		subscriberMDN.setDigestedpin(null);
  		subscriberMDN.setAuthorizationtoken(null);

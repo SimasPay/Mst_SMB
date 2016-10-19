@@ -56,7 +56,7 @@ public class BulkUploadUtil {
 		SubscriberMdn subscriberMDN = subscriberMDNDAO.getByMDN(syncRecord.getMdn());
 		if (subscriberMDN!=null) {
 			syncRecord.setId(subscriberMDN.getId().longValue());
-			if(((Long) subscriberMDN.getStatus()).equals(CmFinoFIX.MDNStatus_NotRegistered)){
+			if(( subscriberMDN.getStatus()).equals(CmFinoFIX.MDNStatus_NotRegistered)){
 			error.setErrorCode(SubscriberSyncErrors.Notregistered_MDN);
 			error.setErrorDescription(SubscriberSyncErrors.errorCodesMap.get(SubscriberSyncErrors.Notregistered_MDN));
 			}else{

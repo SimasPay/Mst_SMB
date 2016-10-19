@@ -90,14 +90,14 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		pct.setTransferstatus(CmFinoFIX.TransferStatus_Initialized);
 		pct.setDestmdn(objDestSubMdn.getMdn());
 		pct.setDestpocketid(objDestPocket.getId());
-		pct.setDestpockettype(objDestPocket.getPocketTemplateByPockettemplateid().getType());
+		pct.setDestpockettype(objDestPocket.getPocketTemplateByPockettemplateid().getType().longValue());
 		pct.setDestsubscriberid(objDestSubscriber.getId());
 		pct.setDestsubscribername((safeString(objDestSubscriber.getFirstname()) + " " + safeString(objDestSubscriber.getLastname())));
 		
 		pct.setPocket(objSourcePocket);
 		
 		if(Long.valueOf(objDestPocket.getPocketTemplateByPockettemplateid().getAllowance()) != null){
-			pct.setDestpocketallowance(objDestPocket.getPocketTemplateByPockettemplateid().getAllowance());
+			pct.setDestpocketallowance(objDestPocket.getPocketTemplateByPockettemplateid().getAllowance().longValue());
 		}
 		
 		pct.setSourcemessage(safeString(sourceMessage));
@@ -124,7 +124,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 		else if(objDestPocket.getPocketTemplateByPockettemplateid().getType() ==  CmFinoFIX.PocketType_BOBAccount){
 			if(objDestPocket.getPocketTemplateByPockettemplateid().getOperatorcode() != null){
-				pct.setOperatorcode(objDestPocket.getPocketTemplateByPockettemplateid().getOperatorcode());
+				pct.setOperatorcode(objDestPocket.getPocketTemplateByPockettemplateid().getOperatorcode().longValue());
 			}
 			else{
 				// TODO set default operator code ask sridhar.
@@ -176,7 +176,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getType() ==  CmFinoFIX.PocketType_BOBAccount){
 			if(objSourcePocket.getPocketTemplateByPockettemplateid().getOperatorcode() != null){
-				pct.setOperatorcode(objSourcePocket.getPocketTemplateByPockettemplateid().getOperatorcode());
+				pct.setOperatorcode(objSourcePocket.getPocketTemplateByPockettemplateid().getOperatorcode().longValue());
 			}
 			else{
 				// TODO set default operator code ask sridhar.
@@ -184,7 +184,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 		
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode() != null){
-			pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode());
+			pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 		
 
@@ -213,7 +213,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		}
 
 		if(Long.valueOf(objSourcePocket.getPocketTemplateByPockettemplateid().getAllowance()) != null)
-			pct.setSourcepocketallowance(objSourcePocket.getPocketTemplateByPockettemplateid().getAllowance());
+			pct.setSourcepocketallowance(objSourcePocket.getPocketTemplateByPockettemplateid().getAllowance().longValue());
 
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getType()	==	CmFinoFIX.PocketType_SVA)
 		{
@@ -227,7 +227,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 				/*pct.setSourceCardPAN(MCEUtil.SOURCE_CARD_NUMBER_OMNIBUS); //TODO check with sridhar
 				pct.setBankCode(MCEUtil.SOURCE_BANK_CODE_FOR_OMNIBUS);*/
 				pct.setSourcecardpan(safeString(objSourcePocket.getCardpan())); 
-				pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode());
+				pct.setBankcode(objSourcePocket.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 			}
 		}
 		

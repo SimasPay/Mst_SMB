@@ -180,7 +180,7 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		if(!(receivedOTP.equals(originalOTP)))
 		{
 			int retryCount = srcSubscriberMDN.getOtpretrycount().intValue()+1;
-			srcSubscriberMDN.setOtpretrycount(Long.valueOf(retryCount));
+			srcSubscriberMDN.setOtpretrycount(retryCount);
 			log.error("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
 			int remainingTrials = getNumberOfRemainingTrials(retryCount);
 			result.setNumberOfTriesLeft(remainingTrials);
@@ -197,7 +197,7 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 			return result;
 		}
 		srcSubscriberMDN.setOtp(null); // reseting the OTP to null as the OTP is used for new pin generation.
-		srcSubscriberMDN.setOtpretrycount(Long.valueOf(0));
+		srcSubscriberMDN.setOtpretrycount(0);
 		srcSubscriberMDN.setOtpexpirationtime(null);
 
 

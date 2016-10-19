@@ -98,7 +98,7 @@ public class DefaultPocketMaintainerServiceImpl implements  DefaultPocketMaintai
 		PocketQuery query = new PocketQuery();
 		query.setMdnIDSearch(p.getSubscriberMdn().getId().longValue());
 		
-		Long pocketTypeL = p.getPocketTemplateByPockettemplateid().getType();
+		Long pocketTypeL = p.getPocketTemplateByPockettemplateid().getType().longValue();
 		Integer pocketTypeLI = pocketTypeL.intValue();
 		query.setPocketType(pocketTypeLI);
 		query.setIsCollectorPocket(Boolean.valueOf(p.getPocketTemplateByPockettemplateid().getIscollectorpocket().toString()));

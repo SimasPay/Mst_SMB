@@ -199,7 +199,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							
 							sendOTPSMS(subMDN,sctl.getId().longValue());
 							
-							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_Initialized));
+							partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_Initialized);
 							
 							log.debug("SMS for OTP has been sent....");
 							
@@ -209,7 +209,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed));
 							result.setNotificationCode(CmFinoFIX.NotificationCode_AgentClosingInquiryFailed);
 							
-							partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
+							partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
 							
 							log.debug("Agent has pending transactions....");
 						}
@@ -220,7 +220,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_MDNIsNotActive));
 						result.setNotificationCode(CmFinoFIX.NotificationCode_MDNIsNotActive);
 						
-						partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
+						partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
 						
 						log.debug("Agent is not active....");
 					}
@@ -231,7 +231,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 					result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance));
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberHasAccountBalance);
 					
-					partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
+					partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
 					
 					log.debug("Agent balance is > 100....");
 				}
@@ -241,7 +241,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 			result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			
-			partner.setCloseacctstatus(new BigDecimal(CmFinoFIX.CloseAcctStatus_InquiryFailed));
+			partner.setCloseacctstatus(CmFinoFIX.CloseAcctStatus_InquiryFailed);
 			
 			log.debug("Agent not found....");
 		}

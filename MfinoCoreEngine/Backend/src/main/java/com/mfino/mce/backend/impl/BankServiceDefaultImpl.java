@@ -904,7 +904,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
 		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 		if (pct != null) {
 			activitiesLog.setTransferid(pct.getId());
 		} else {
@@ -913,7 +913,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
 		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 // [Bala] Commented the Activities log creation
 //		coreDataWrapper.save(activitiesLog);
@@ -1429,9 +1429,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		if(moneyPocket != null)
 		{
 			activitiesLog.setSourcepocketid(moneyPocket.getId());
-			activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplateByPockettemplateid().getType());
+			activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplateByPockettemplateid().getType().longValue());
 			if (moneyPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
-				activitiesLog.setIso8583Acquiringinstidcode(moneyPocket.getPocketTemplateByPockettemplateid().getBankcode());
+				activitiesLog.setIso8583Acquiringinstidcode(moneyPocket.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 			}
 		}
 		activitiesLog.setCompany(subscriber.getCompany());		
@@ -2176,11 +2176,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(objSourceSubscriber.getId());
 		activitiesLog.setSourcesubscriberid(objSrcPocket.getId());
 		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 
 		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 
 		if (pct != null)
@@ -2592,11 +2592,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(sourceSubscriber.getId());
 		activitiesLog.setSourcepocketid(sourcePocket.getId());
 		activitiesLog.setSourcepockettype(sourcePocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 
 		if (sourcePocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(sourcePocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 
 		if (pct != null)
@@ -2973,11 +2973,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(sourceSubscriber.getId());
 		activitiesLog.setSourcepocketid(sourcePocket.getId());
 		activitiesLog.setSourcepockettype(sourcePocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 
 		if (sourcePocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(sourcePocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 
 		if (pct != null)
@@ -3553,12 +3553,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(subscriber.getCompany().getId());
 		activitiesLog.setSourcepocketid(moneyPocket.getId());
 		activitiesLog.setSourcepockettype(moneyPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 		activitiesLog.setCompany(subscriber.getCompany());
 
 		if (moneyPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(moneyPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 
 		log.debug("before save activities log BankServiceDefaultImpl:onGetBankHistory:: isoFix==null="
@@ -3835,13 +3835,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
 		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 		activitiesLog.setTransferid(pendingTransfer.getId());
 
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
 		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 		pendingTransfer.setLocalbalancerevertrequired((short)0);
 		if (updatePCT) {
@@ -3958,13 +3958,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
 		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 		activitiesLog.setTransferid(pendingTransfer.getId());
 
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
 		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 		pendingTransfer.setLocalbalancerevertrequired((short)0);
 		pendingTransfer.setLocalbalancerevertrequired((short)0);
@@ -4102,13 +4102,13 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		// activitiesLog.setCompany(objSourceSubscriber.getCompany().getID());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
 		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 		activitiesLog.setTransferid(pendingTransfer.getId());
 
 		activitiesLog.setCompany(objSourceSubscriber.getCompany());
 		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 		coreDataWrapper.save(pendingTransfer);
 		handlePCTonSuccess(pendingTransfer);
@@ -4256,11 +4256,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		activitiesLog.setSourcesubscriberid(objSourceSubscriber.getId());
 		activitiesLog.setSourcepocketid(objSrcPocket.getId());
 		activitiesLog.setSourcepockettype(objSrcPocket.getPocketTemplateByPockettemplateid()
-				.getType());
+				.getType().longValue());
 
 		if (objSrcPocket.getPocketTemplateByPockettemplateid().getBankcode() != null) {
 			activitiesLog.setIso8583Acquiringinstidcode(objSrcPocket
-					.getPocketTemplateByPockettemplateid().getBankcode());
+					.getPocketTemplateByPockettemplateid().getBankcode().longValue());
 		}
 
 		if (pct != null)

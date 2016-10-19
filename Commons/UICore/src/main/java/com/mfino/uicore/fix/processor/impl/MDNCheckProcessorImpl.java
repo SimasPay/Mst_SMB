@@ -51,8 +51,8 @@ public class MDNCheckProcessorImpl extends BaseFixProcessor implements MDNCheckP
         		if( (subMdn.getSubscriber().getType()).equals(CmFinoFIX.SubscriberType_Partner)){
         			 err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
         	            err.setErrorDescription(MessageText._("Partner already Exists with this MDN"));	
-        		}else if( ((Long)subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_PendingRetirement)
-        				|| ((Long)subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_Retired)
+        		}else if( (subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_PendingRetirement)
+        				|| (subMdn.getStatus()).equals(CmFinoFIX.MDNStatus_Retired)
         				|| (subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_PendingRetirement)
         				|| (subMdn.getSubscriber().getStatus()).equals(CmFinoFIX.SubscriberStatus_Retired)
         				){

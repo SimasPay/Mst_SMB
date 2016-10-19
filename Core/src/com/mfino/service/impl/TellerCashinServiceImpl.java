@@ -76,7 +76,7 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 		if(subPocket==null){
 			return CmFinoFIX.NotificationCode_DestinationEMoneyPocketNotFound;
 		} 
-		else if (CmFinoFIX.PocketStatus_Active.intValue() != ((Long)subPocket.getStatus()).intValue()) {
+		else if (CmFinoFIX.PocketStatus_Active.intValue() != subPocket.getStatus()) {
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 		}
 		else {
@@ -113,7 +113,7 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 			if(tellerPocket==null||srcEmoneyPocket==null){
 				return CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound;
 			}
-			if (!((Long)tellerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
+			if (!(tellerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
 				return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 			}
 		} catch (InvalidServiceException e) {
@@ -204,7 +204,7 @@ public class TellerCashinServiceImpl implements TellerCashinService{
 		if(tellerPocket==null||srcEmoneyPocket==null){
 			return CmFinoFIX.NotificationCode_SourceMoneyPocketNotFound;
 			}
-		if (!((Long)tellerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
+		if (!(tellerPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active)) {
 			return CmFinoFIX.NotificationCode_MoneyPocketNotActive;
 			}
 		tellercashinconfirm.setServiceChargeTransactionLogID(sctl.getId().longValue());

@@ -117,7 +117,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     handleStaleDataException();
                 }
 
-                Integer oldRestrictions = ((Long)pocketObj.getRestrictions()).intValue();
+                Integer oldRestrictions = (pocketObj.getRestrictions()).intValue();
                 Integer newRestrictions = entry.getRestrictions();
                 
                 // Check if the restrictions are edited or not.
@@ -154,8 +154,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
                 boolean isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Status_Edit);
                 if (isAuthorized) {
-                    if (entry.getPocketStatus() != null && (((Long)pocketObj.getStatus()).equals(CmFinoFIX.PocketStatus_PendingRetirement) 
-                    		|| ((Long)pocketObj.getStatus()).equals(CmFinoFIX.PocketStatus_Retired))) {
+                    if (entry.getPocketStatus() != null && ((pocketObj.getStatus()).equals(CmFinoFIX.PocketStatus_PendingRetirement) 
+                    		|| (pocketObj.getStatus()).equals(CmFinoFIX.PocketStatus_Retired))) {
                         if (entry.getPocketStatus() != CmFinoFIX.PocketStatus_Retired && entry.getPocketStatus() != CmFinoFIX.PocketStatus_PendingRetirement) {
                             CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
@@ -220,7 +220,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                 if (entry.isRemoteModifiedPocketStatus() && entry.getPocketStatus() != null) {
                     isAuthorized = authorizationService.isAuthorized(CmFinoFIX.Permission_Subscriber_Pocket_Status_Edit);
                     if (isAuthorized) {
-                        if (((Long)pocketObj.getPocketTemplateByPockettemplateid().getCommodity()).equals(CmFinoFIX.Commodity_Money) 
+                        if ((pocketObj.getPocketTemplateByPockettemplateid().getCommodity()).equals(CmFinoFIX.Commodity_Money) 
                         		&& entry.getPocketStatus().equals(CmFinoFIX.PocketStatus_Retired)) {
                             entry.setPocketStatus(CmFinoFIX.PocketStatus_PendingRetirement);
                             updateEntity(pocketObj, entry);
@@ -271,10 +271,10 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                     updateAndForwardMessage(forwardMsg, entry, oldRestrictions);
                 }
                 if (isCompatible && oldTemplate != null && newTemplate != null) {
-                    if (((Long)newTemplate.getType()).equals(CmFinoFIX.PocketType_SVA) 
-                    		&& ((Long)newTemplate.getCommodity()).equals(CmFinoFIX.Commodity_Money)) {
-                        Integer oldAllowance = ((Long)oldTemplate.getAllowance()).intValue();
-                        Integer newAllowance = ((Long)newTemplate.getAllowance()).intValue();
+                    if ((newTemplate.getType()).equals(CmFinoFIX.PocketType_SVA) 
+                    		&& (newTemplate.getCommodity()).equals(CmFinoFIX.Commodity_Money)) {
+                        Integer oldAllowance = (oldTemplate.getAllowance()).intValue();
+                        Integer newAllowance = (newTemplate.getAllowance()).intValue();
                         CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
                         updateTemplateAndForwardMessage(forwardMsg, entry, oldAllowance, newAllowance);
                     }
@@ -627,8 +627,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         PocketTemplateDAO pocketTemplateDAO = DAOFactory.getInstance().getPocketTemplateDao();
         Long templateID = e.getPocketTemplateID();
         PocketTemplate pt = pocketTemplateDAO.getById(templateID);
-        Integer templateType = ((Long)pt.getType()).intValue();
-        Integer commodity = ((Long)pt.getCommodity()).intValue();
+        Integer templateType = (pt.getType()).intValue();
+        Integer commodity = (pt.getCommodity()).intValue();
 
         if ((isAbsolutLockedChanged && isNewAbsolutLocked) || (isSecurityLockedChanged && isNewSecurityLocked) || (isSelfSuspendedChanged && isNewSelfSuspended) || (isSuspendedChanged && isNewSuspended)) {
             newMsg.setCode(getNotificationMessageCode(templateType, commodity, true));
@@ -753,7 +753,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         if (null != pocketRestrictions) {
         	// *FindbugsChange*
         	// Previous -- if(thePocket.getRestrictions()!=pocketRestrictions){
-        	if ((Long)thePocket.getRestrictions()!= null && !(((Long)thePocket.getRestrictions()).equals(pocketRestrictions))){
+        	if (thePocket.getRestrictions()!= null && !((thePocket.getRestrictions()).equals(pocketRestrictions))){
         		log.info("Pocket:"+pocketDetail+" restrictions updated to:"+pocketRestrictions+" by user:"+getLoggedUserNameWithIP());
         	}
             thePocket.setRestrictions(pocketRestrictions);
@@ -769,7 +769,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
 
         Integer pocketStatus = theEntries.getPocketStatus();
         if (pocketStatus == null) {
-            if ((Long)thePocket.getStatus() == null) {
+            if (thePocket.getStatus() == null) {
             	log.info("Pocket:"+pocketDetail+" pocket status updated to:"+CmFinoFIX.PocketStatus_Initialized+" by user:"+getLoggedUserNameWithIP());
                 thePocket.setStatus(CmFinoFIX.PocketStatus_Initialized);
             }
@@ -878,13 +878,13 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setCurrentMonthlyExpenditure(currentMontlyExpenditure);
         }
 
-        Integer currentDailyTransactionCount = ((Long)thePocket.getCurrentdailytxnscount()).intValue();
+        Integer currentDailyTransactionCount = (thePocket.getCurrentdailytxnscount()).intValue();
         theEntries.setCurrentDailyTxnsCount(currentDailyTransactionCount);
 
-        Integer currentWeeklyTransactionCount = ((Long)thePocket.getCurrentweeklytxnscount()).intValue();
+        Integer currentWeeklyTransactionCount = (thePocket.getCurrentweeklytxnscount()).intValue();
         theEntries.setCurrentWeeklyTxnsCount(currentWeeklyTransactionCount);
 
-        Integer currentMonthlyTransactionCount = ((Long)thePocket.getCurrentmonthlytxnscount()).intValue();
+        Integer currentMonthlyTransactionCount = (thePocket.getCurrentmonthlytxnscount()).intValue();
         theEntries.setCurrentMonthlyTxnsCount(currentMonthlyTransactionCount);
         if (null != thePocket.getLastbankresponsecode()) { 
         Integer lastBankResponseCode = thePocket.getLastbankresponsecode().intValue();
@@ -910,7 +910,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setCardAlias(thePocket.getCardalias());
         }
 
-        Integer pocketRestrictions = ((Long)thePocket.getRestrictions()).intValue();
+        Integer pocketRestrictions = (thePocket.getRestrictions()).intValue();
         theEntries.setRestrictions(pocketRestrictions);
 
         theEntries.setPocketRestrictionsText(enumTextService.getRestrictionsText(CmFinoFIX.TagID_PocketRestrictions, null, pocketRestrictions.toString()));
@@ -920,7 +920,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setIsDefault(isDefault);
         }
 
-        Integer pocketStatus = ((Long)thePocket.getStatus()).intValue();
+        Integer pocketStatus = (thePocket.getStatus()).intValue();
         if (pocketStatus == null) {
             pocketStatus = CmFinoFIX.PocketStatus_Initialized;
         }

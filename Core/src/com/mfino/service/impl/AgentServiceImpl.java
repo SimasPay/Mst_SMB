@@ -230,10 +230,10 @@ public class AgentServiceImpl implements AgentService {
 				return notificationWrapper;
 			}
 			
-			Long emoneyPocketStatusL = emoneyPocket.getStatus();
+			Long emoneyPocketStatusL = emoneyPocket.getStatus().longValue();
 			Integer emoneyPocketStatusLI = emoneyPocketStatusL.intValue();
 			
-			Long bankPocketStatusL = bankPocket.getStatus();
+			Long bankPocketStatusL = bankPocket.getStatus().longValue();
 			Integer bankPocketStatusLI = bankPocketStatusL.intValue();
 			
 			if (emoneyPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement) || emoneyPocketStatusLI.equals(CmFinoFIX.PocketStatus_Retired) || bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement)
@@ -256,7 +256,7 @@ public class AgentServiceImpl implements AgentService {
 			return notificationWrapper;
 		}
 		
-		Long bankPocketStatusL = bankPocket.getStatus();
+		Long bankPocketStatusL = bankPocket.getStatus().longValue();
 		Integer bankPocketStatusLI = bankPocketStatusL.intValue();
 		
 		if (!bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_Active)) {
@@ -283,7 +283,7 @@ public class AgentServiceImpl implements AgentService {
 			return notificationWrapper;
 		}
 		
-		Long lakuPocketStatusL = emoneyPocket.getStatus();
+		Long lakuPocketStatusL = emoneyPocket.getStatus().longValue();
 		Integer lakuPocketStatusLI = lakuPocketStatusL.intValue();
 		
 		if (lakuPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement) || lakuPocketStatusLI.equals(CmFinoFIX.PocketStatus_Retired) || bankPocketStatusLI.equals(CmFinoFIX.PocketStatus_PendingRetirement)

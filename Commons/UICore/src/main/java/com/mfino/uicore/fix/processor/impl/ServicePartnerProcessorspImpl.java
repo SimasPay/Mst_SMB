@@ -497,7 +497,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 subscriber.setApprovedorrejectedby("");
                 subscriber.setApproveorrejectcomment("");
                 subscriber.setApproveorrejecttime(null);
-                partner.setBranchsequence(branchSeq.longValue());
+                partner.setBranchsequence(branchSeq);
                 
                 userDAO.save(u);                                               
                 subscriberDao.save(subscriber);
@@ -914,7 +914,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     		subscriber.setDateofbirth(new Timestamp(getDate(entry.getDateofBirth())));
     	}
         if(entry.getBusinessPartnerType()!=null){
-        	partner.setBusinesspartnertype(entry.getBusinessPartnerType().longValue());
+        	partner.setBusinesspartnertype(entry.getBusinessPartnerType());
         }
         if(entry.getPartnerCode() != null){
         	partner.setPartnercode(entry.getPartnerCode());
@@ -1094,7 +1094,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
     		subscriber.setDateofbirth(new Timestamp(getDate(entry.getDateofBirth())));
     	}
         if(entry.getBusinessPartnerType()!=null){
-        	partner.setBusinesspartnertype(entry.getBusinessPartnerType().longValue());
+        	partner.setBusinesspartnertype(entry.getBusinessPartnerType());
         }
         if(entry.getPartnerCode() != null){
         	partner.setPartnercode(entry.getPartnerCode());

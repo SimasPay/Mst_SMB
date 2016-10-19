@@ -89,7 +89,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         SubscriberMdn mdn=subMdndao.getByMDN(realMsg.getSourceMDN());
         Subscriber subscriber=mdn.getSubscriber();
         
-        Long tempStatusL = mdn.getStatus();
+        Long tempStatusL = mdn.getStatus().longValue();
         Integer tempStatusLI = tempStatusL.intValue();
         
         if(mdn==null||!tempStatusLI.equals(CmFinoFIX.SubscriberStatus_Active)){

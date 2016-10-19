@@ -539,7 +539,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				.getByMDN(subscriberRegistration.getSourceMDN());
 		
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
-		Long tempL = existingSubscriberMDN.getStatus();
+		Long tempL = existingSubscriberMDN.getStatus().longValue();
 		Integer tempLI = tempL.intValue();
 		if (existingSubscriberMDN == null || tempLI.equals(CmFinoFIX.MDNStatus_NotRegistered)) {
 			Subscriber subscriber = new Subscriber();
@@ -922,7 +922,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setAuthenticationphrase("mFino");
 		}
 		Long tempL = subscriberMDN.getRestrictions().longValue();
-		Long tempWrPinCtL = subscriberMDN.getWrongpincount();
+		Long tempWrPinCtL = subscriberMDN.getWrongpincount().longValue();
 		
 		if ( tempL== null) {
 			subscriberMDN
@@ -969,7 +969,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if (syncRecord.getMdn() == null) {
 				return CmFinoFIX.SynchError_Failed_Invalid_MDN;
 			}
-			Long subsMDNL = subscriberMDN.getStatus();
+			Long subsMDNL = subscriberMDN.getStatus().longValue();
 			Integer subsMDNLI = subsMDNL.intValue();
 			
 			if (syncRecord.getId() != null
@@ -1130,10 +1130,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		PocketTemplate svaPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 		
 		for (Pocket pocket : pockets) {
-			Long tempPocketTemplateL = pocket.getPocketTemplateByPockettemplateid().getType();
+			Long tempPocketTemplateL = pocket.getPocketTemplateByPockettemplateid().getType().longValue();
 			Integer tempPocketTemplateLI = tempPocketTemplateL.intValue();
 			
-			Long tempPocketSTatusL = pocket.getPocketTemplateByPockettemplateid().getType();
+			Long tempPocketSTatusL = pocket.getPocketTemplateByPockettemplateid().getType().longValue();
 			Integer tempPocketSTatusLI = tempPocketSTatusL.intValue();
 			
 			if (!bankPocketFound
@@ -1159,7 +1159,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				continue;
 			}			
 			
-			Long tempPocketComodityL = pocket.getPocketTemplateByPockettemplateid().getCommodity();
+			Long tempPocketComodityL = pocket.getPocketTemplateByPockettemplateid().getCommodity().longValue();
 			Integer tempPocketComodityLI = tempPocketComodityL.intValue();
 			
 			if (!emoneyPocketFound
@@ -1566,10 +1566,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		
 		for (Pocket pocket : pockets) {
-			Long pocketTypeL = pocket.getPocketTemplateByPockettemplateid().getType();
+			Long pocketTypeL = pocket.getPocketTemplateByPockettemplateid().getType().longValue();
 			Integer pocketTypeLI = pocketTypeL.intValue();
 			
-			Long pocketStatusL = pocket.getStatus();
+			Long pocketStatusL = pocket.getStatus().longValue();
 			Integer pocketStatusLI = pocketStatusL.intValue();
 			
 			if (!bankPocketFound

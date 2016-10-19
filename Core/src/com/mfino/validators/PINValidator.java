@@ -121,7 +121,7 @@ public class PINValidator implements IValidator {
 			return CmFinoFIX.NotificationCode_PINResetRequired;
 		}
 		if (!calcPIN.equalsIgnoreCase(digestedPin)) {
-			Long erPinCount = subscriberMDN.getWrongpincount();
+			Long erPinCount = subscriberMDN.getWrongpincount().longValue();
 			
 			int wrongPINCount = erPinCount.intValue();
 			subscriberMDN.setWrongpincount(wrongPINCount + 1);

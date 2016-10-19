@@ -103,7 +103,7 @@ public class BankTellerUnregisteredCashOutApproveProcessorImpl extends MultixCom
 		PartnerServices tellerService = null;
 		for(PartnerServices partnerservice:ps){
 			if(partnerservice.getService().getServicename().equals(ServiceAndTransactionConstants.SERVICE_TELLER)
-					&& ((Long)partnerservice.getStatus()).equals(CmFinoFIX.PartnerServiceStatus_Active)){
+					&& (partnerservice.getStatus()).equals(CmFinoFIX.PartnerServiceStatus_Active)){
 				tellerService = partnerservice;
 				break;
 			}

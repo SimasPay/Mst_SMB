@@ -57,10 +57,10 @@ public class DownlineSVAPocketValidator implements IValidator {
 			if (pocket.getPocketTemplateByPockettemplateid() != null) {
 				PocketTemplate pTemplate = pocket.getPocketTemplateByPockettemplateid();
 				
-				Long tempTypeL = pTemplate.getType();
+				Long tempTypeL = pTemplate.getType().longValue();
 				Integer tempTypeLI = tempTypeL.intValue();
 				
-				Long tempCommodityL = pTemplate.getCommodity();
+				Long tempCommodityL = pTemplate.getCommodity().longValue();
 				Integer tempCommodityLI = tempCommodityL.intValue();
 				
 				if (tempTypeLI.equals(CmFinoFIX.PocketType_SVA)

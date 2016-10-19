@@ -69,7 +69,7 @@ public class PocketLimitsValidator implements IValidator {
 			} 
 		}
 		
-		Long tempTypeL = pocket.getPocketTemplateByPockettemplateid().getType();
+		Long tempTypeL = pocket.getPocketTemplateByPockettemplateid().getType().longValue();
 		int tempTypeLI = tempTypeL.intValue();
 		
 		if (tempTypeLI == CmFinoFIX.PocketType_SVA) {

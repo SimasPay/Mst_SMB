@@ -107,7 +107,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			if(!e.getLevel().equals(ps.getPslevel())){
 				log.info("Partner Services ID: " + ps.getId() + " Level updated to " + e.getLevel() + " by user:" + getLoggedUserNameWithIP());
         	}
-			ps.setPslevel(e.getLevel().longValue());
+			ps.setPslevel(e.getLevel());
 		}
 		
 		
@@ -118,7 +118,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
         	}
 			ps.setStatus(e.getPartnerServiceStatus());
 		} else {
-			if ((Long)ps.getStatus() == null) {
+			if (ps.getStatus() == null) {
 				log.info("Partner Services ID: " + ps.getId() + " Partner Service Status updated to "+ CmFinoFIX.PartnerServiceStatus_Initialized +" by user:"+getLoggedUserNameWithIP());
 	        	ps.setStatus(CmFinoFIX.PartnerServiceStatus_Initialized);
 			}
@@ -128,7 +128,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			if(!e.getIsServiceChargeShare().equals(ps.getIsservicechargeshare())){
 				log.info("Partner Services ID: " + ps.getId() + " Is Service Charge Share updated to "+ e.getIsServiceChargeShare() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setIsservicechargeshare(e.getIsServiceChargeShare().longValue());
+			ps.setIsservicechargeshare(e.getIsServiceChargeShare());
 		}
 		
 		if (e.getServiceID() != null) {
@@ -227,8 +227,8 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			e.setServiceProviderName(ps.getPartnerByServiceproviderid().getTradename());
 		}
 		
-		if ((Long)ps.getStatus() != null) {
-			e.setPartnerServiceStatus(((Long)ps.getStatus()).intValue());
+		if (ps.getStatus() != null) {
+			e.setPartnerServiceStatus(ps.getStatus());
 			e.setPartnerServiceStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerServiceStatus, null, ps.getStatus()));
 		}
 		
@@ -418,7 +418,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 	 */
 	private boolean checkPocketStatus(Pocket pocket) {
 		boolean result = true;
-		if((pocket != null) && (!((Long)pocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))) {
+		if((pocket != null) && (!(pocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))) {
 			result = false;
 		}
 		return result;
