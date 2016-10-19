@@ -89,9 +89,7 @@ public class FileBankAccountUploadController {
 					MultipartFile file = realRequest.getFile(filename);
 					bu.setFilename(file.getOriginalFilename());
 					byte[] bytes = file.getBytes();
-					 Clob clob = new SerialClob(new String(bytes).toCharArray());
-	                    clob.setString(1, new String(bytes));
-					bu.setFiledata(clob);
+					bu.setFiledata(new String(bytes));
 					int fileSzMB = Integer.parseInt(ConfigurationUtil.getUploadFileSizeLimit());
 					long maxFileSizeAllowed = fileSzMB * 1048576;
 					if (bytes.length > maxFileSizeAllowed) {
@@ -104,7 +102,7 @@ public class FileBankAccountUploadController {
 					bulkBankAccountService.save(bu);
 
 					// Parsing the file for validations
-					BufferedReader reader = new BufferedReader(new StringReader(bu.getFiledata().getSubString(0, ((Long)bu.getFiledata().length()).intValue())));
+					BufferedReader reader = new BufferedReader(new StringReader(bu.getFiledata()));
 
 					String currentDir = System.getProperty("user.dir");
 					File reportFile = new File(currentDir + "/reportTemp." + bu.getId() + ".txt");
@@ -290,9 +288,7 @@ public class FileBankAccountUploadController {
 					bu.setErrorlinecount((long)errorLineCount);
 					bu.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Processed);
 					String reportString = IOUtils.toString(new FileReader(reportFile));
-					Clob clob1 = new SerialClob(reportString.toCharArray());
-                    clob1.setString(1, reportString);
-					bu.setUploadreport(clob1);
+					bu.setUploadreport(reportString);
 					
 					bulkBankAccountService.save(bu);
 

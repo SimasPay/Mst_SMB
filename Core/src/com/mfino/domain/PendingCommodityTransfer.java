@@ -174,11 +174,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private BigDecimal units;
 	private BigDecimal denomination;
 	private BigDecimal transactionchargeid;
-	private Short ispartofsharedupchain;
-	private short localbalancerevertrequired;
-	private short localrevertrequired;
-	private short bankreversalrequired;
-	private short operatoractionrequired;
+	private Boolean ispartofsharedupchain;
+	private Boolean localbalancerevertrequired;
+	private Boolean localrevertrequired;
+	private Boolean bankreversalrequired;
+	private Boolean operatoractionrequired;
 
 	private Long id;
 	
@@ -1136,48 +1136,48 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	}
 
 	@Column(name = "ISPARTOFSHAREDUPCHAIN", precision = 3, scale = 0)
-	public Short getIspartofsharedupchain() {
+	public Boolean getIspartofsharedupchain() {
 		return this.ispartofsharedupchain;
 	}
 
-	public void setIspartofsharedupchain(Short ispartofsharedupchain) {
+	public void setIspartofsharedupchain(Boolean ispartofsharedupchain) {
 		this.ispartofsharedupchain = ispartofsharedupchain;
 	}
 
 	
 	@Column(name = "LOCALBALANCEREVERTREQUIRED", nullable = false, precision = 3, scale = 0)
-	public short getLocalbalancerevertrequired() {
+	public Boolean getLocalbalancerevertrequired() {
 		return this.localbalancerevertrequired;
 	}
 
-	public void setLocalbalancerevertrequired(short localbalancerevertrequired) {
+	public void setLocalbalancerevertrequired(Boolean localbalancerevertrequired) {
 		this.localbalancerevertrequired = localbalancerevertrequired;
 	}
 
 	@Column(name = "LOCALREVERTREQUIRED", nullable = false, precision = 3, scale = 0)
-	public short getLocalrevertrequired() {
+	public Boolean getLocalrevertrequired() {
 		return this.localrevertrequired;
 	}
 
-	public void setLocalrevertrequired(short localrevertrequired) {
+	public void setLocalrevertrequired(Boolean localrevertrequired) {
 		this.localrevertrequired = localrevertrequired;
 	}
 
 	@Column(name = "BANKREVERSALREQUIRED", nullable = false, precision = 3, scale = 0)
-	public short getBankreversalrequired() {
+	public Boolean getBankreversalrequired() {
 		return this.bankreversalrequired;
 	}
 
-	public void setBankreversalrequired(short bankreversalrequired) {
+	public void setBankreversalrequired(Boolean bankreversalrequired) {
 		this.bankreversalrequired = bankreversalrequired;
 	}
 
 	@Column(name = "OPERATORACTIONREQUIRED", nullable = false, precision = 3, scale = 0)
-	public short getOperatoractionrequired() {
+	public Boolean getOperatoractionrequired() {
 		return this.operatoractionrequired;
 	}
 
-	public void setOperatoractionrequired(short operatoractionrequired) {
+	public void setOperatoractionrequired(Boolean operatoractionrequired) {
 		this.operatoractionrequired = operatoractionrequired;
 	}
 
