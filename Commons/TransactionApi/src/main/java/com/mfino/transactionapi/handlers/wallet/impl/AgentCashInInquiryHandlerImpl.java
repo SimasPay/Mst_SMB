@@ -282,7 +282,7 @@ public class AgentCashInInquiryHandlerImpl extends FIXMessageHandler implements 
 		}
 		
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			//agentCashinInquiry.setTransactionID(transactionResponse.getTransactionId());
 			cashIn.setTransactionID(transactionResponse.getTransactionId());			
 			result.setTransactionID(transactionResponse.getTransactionId());

@@ -315,16 +315,16 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		
 		try{
 			sctl.setCalculatedcharge(BigDecimal.ZERO);
-			sctl.setChannelcodeid(new BigDecimal(cc.getId()));
+			sctl.setChannelcodeid(cc.getId());
 			sctl.setSourcemdn(settlementFixMessage.getSourceMDN());
 			sctl.setDestmdn(settlementFixMessage.getSourceMDN());
-			sctl.setServiceid(BigDecimal.valueOf(transactionChargingService.getServiceId(settlementFixMessage.getServiceName())));
-			sctl.setServiceproviderid(BigDecimal.valueOf(transactionChargingService.getServiceProviderId(null)));
+			sctl.setServiceid(transactionChargingService.getServiceId(settlementFixMessage.getServiceName()));
+			sctl.setServiceproviderid(transactionChargingService.getServiceProviderId(null));
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Processing);
 			sctl.setTransactionamount(settlementFixMessage.getAmount());
-			sctl.setTransactiontypeid(BigDecimal.valueOf(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_CHARGE_SETTLEMENT)));
-			sctl.setTransactionid(new BigDecimal(transactionsLog.getId()));
-			sctl.setDestpartnerid(new BigDecimal(partner.getId()));
+			sctl.setTransactiontypeid(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_CHARGE_SETTLEMENT));
+			sctl.setTransactionid(transactionsLog.getId());
+			sctl.setDestpartnerid(partner.getId());
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			return;
@@ -336,10 +336,10 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		TransactionResponse transferResponse = settlementFixCommunicationHandler.checkBackEndResponse(response);
 		log.info("Transfer Response = "+transferResponse.getMessage());
 		if(transferResponse.getTransactionId()!=null){
-		sctl.setTransactionid(BigDecimal.valueOf(transferResponse.getTransactionId()));
+		sctl.setTransactionid(transferResponse.getTransactionId());
 		}
 		if(transferResponse.getTransferId()!=null){
-		sctl.setCommoditytransferid(BigDecimal.valueOf(transferResponse.getTransferId()));
+		sctl.setCommoditytransferid(transferResponse.getTransferId());
 		}
 		//Settlement Enhancement
 		SettlementTxnSctlMap stsm = new SettlementTxnSctlMap();

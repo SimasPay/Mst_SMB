@@ -312,8 +312,8 @@ public class QRPaymentInquiryHandlerImpl extends FIXMessageHandler implements QR
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
 			
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
-			sctl.setCommoditytransferid(BigDecimal.valueOf(transactionResponse.getTransferId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
+			sctl.setCommoditytransferid(transactionResponse.getTransferId());
 			qrPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

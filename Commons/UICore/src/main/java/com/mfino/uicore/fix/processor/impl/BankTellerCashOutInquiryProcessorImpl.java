@@ -140,7 +140,7 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 			if(!CmFinoFIX.ErrorCode_NoError.equals(checkConfirmed.getErrorCode())){
 				return checkConfirmed;	
 			}
-			if(!((Long)sctl.getStatus()).equals(CmFinoFIX.SCTLStatus_Processing)){
+			if(!(sctl.getStatus()).equals(CmFinoFIX.SCTLStatus_Processing)){
 				errorMsg.setErrorDescription(MessageText._("Transaction status does not allow approval"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;

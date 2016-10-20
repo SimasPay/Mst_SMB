@@ -114,7 +114,7 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		if (ServiceAndTransactionConstants.MESSAGE_SETTLE_BULK_TRANSFER.equals(transactionDetails.getSourceMessage()) && 
 				transactionDetails.getSctlId() != null) {
-			sctl.setParentsctlid(BigDecimal.valueOf(transactionDetails.getSctlId()));
+			sctl.setParentsctlid(transactionDetails.getSctlId());
 		}		
 		log.info("Sending the Bulk transfer inquiry request to Backend");
 		
@@ -123,7 +123,7 @@ public class BulkTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

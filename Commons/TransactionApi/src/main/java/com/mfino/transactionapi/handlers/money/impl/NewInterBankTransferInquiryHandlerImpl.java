@@ -276,8 +276,8 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 			transactionResponse = checkBackEndResponse(response);
 			if (transactionResponse.getTransactionId()!=null) {
 				
-				sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
-				sctl.setCommoditytransferid(BigDecimal.valueOf(transactionResponse.getTransferId()));
+				sctl.setTransactionid(transactionResponse.getTransactionId());
+				sctl.setCommoditytransferid(transactionResponse.getTransferId());
 				ibtInquiry.setTransactionID(transactionResponse.getTransactionId());
 				result.setTransactionID(transactionResponse.getTransactionId());
 				transactionChargingService.saveServiceTransactionLog(sctl);

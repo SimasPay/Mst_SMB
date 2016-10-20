@@ -337,7 +337,7 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 		}
 		if(newSctl.getStatus()!=0){
 			
-			Long tempStatusL = newSctl.getStatus();
+			Long tempStatusL = newSctl.getStatus().longValue();
 			Integer tempStatusLI = tempStatusL.intValue();
 			
 		entry.setStatus(tempStatusLI);

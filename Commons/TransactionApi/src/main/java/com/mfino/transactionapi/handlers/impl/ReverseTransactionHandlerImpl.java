@@ -214,7 +214,7 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			log.debug("Response of ServiceMix for Inquiry Reverse Request --> "+ transactionResponse.isResult());
 			if (transactionResponse != null && transactionResponse.isResult()) {  //Confirm message for the Reverse Transaction
 				log.info("Transaction Log id for Reverse Request --> " + transactionResponse.getTransactionId() + " And Notificationcode --> " +  transactionResponse.getCode());
-				sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+				sctl.setTransactionid(transactionResponse.getTransactionId());
 				if (CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(transactionResponse.getCode())) {
 					sctl.setStatus(CmFinoFIX.SCTLStatus_Reverse_Processing);
 					sctlService.saveSCTL(sctl);
@@ -243,7 +243,7 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 					transactionResponse = checkBackEndResponse(response);
 					if (transactionResponse != null && transactionResponse.isResult()) {
 						log.info("Commodity Transafer Id for the Reverse Request is --> " + reverseTransaction.getTransferID());
-						sctl.setCommoditytransferid(BigDecimal.valueOf(reverseTransaction.getTransferID()));
+						sctl.setCommoditytransferid(reverseTransaction.getTransferID());
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Reverse_Success);
 
 						if(TRANSACTION_REVERSE_TRANSACTION.equals(transactionTypeName)){
@@ -253,7 +253,7 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 							parentSCTL.setChrgrevstatus(Long.valueOf(CmFinoFIX.SCTLStatus_Reversed));
 						}
 
-						parentSCTL.setIstransactionreversed((short)1);
+						parentSCTL.setIstransactionreversed(CmFinoFIX.Boolean_True);
 						sctlService.saveSCTL(sctl);
 						sctlService.saveSCTL(parentSCTL);
 						// Check if the Parent Transaction is Sub Bulk Transfer
@@ -347,7 +347,7 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 		}
 
 		parentSCTL.setFailurereason(failureReason);
-		parentSCTL.setIstransactionreversed((short)1);
+		parentSCTL.setIstransactionreversed(CmFinoFIX.Boolean_True);
 
 		sctlService.saveSCTL(sctl);
 		sctlService.saveSCTL(parentSCTL);

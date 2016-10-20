@@ -372,7 +372,7 @@ public class IntegrationCashinInquiryHandlerImpl extends FIXMessageHandler imple
 		ServiceChargeTxnLog sctl = transDetails.getServiceChargeTransactionLog();
 
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			sctl.setInfo1(cashinDetails.getCustReference());
 			cashinDetails.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
