@@ -174,11 +174,11 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private Long units;
 	private Long denomination;
 	private Long transactionchargeid;
-	private Boolean ispartofsharedupchain;
-	private Boolean localbalancerevertrequired;
-	private Boolean localrevertrequired;
-	private Boolean bankreversalrequired;
-	private Boolean operatoractionrequired;
+	private Boolean ispartofsharedupchain = Boolean.FALSE;
+	private Boolean localbalancerevertrequired = Boolean.TRUE;
+	private Boolean localrevertrequired = Boolean.TRUE;
+	private Boolean bankreversalrequired = Boolean.TRUE;
+	private Boolean operatoractionrequired = Boolean.TRUE;
 
 	private Long id;
 	

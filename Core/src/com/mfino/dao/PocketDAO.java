@@ -48,7 +48,7 @@ public class PocketDAO extends BaseDAO<Pocket> {
         }
 
         if (query.isIsDefault() != null) {
-            criteria.add(Restrictions.eq(Pocket.FieldName_IsDefault, (short)(query.isIsDefault()?1:0)));
+            criteria.add(Restrictions.eq(Pocket.FieldName_IsDefault, query.isIsDefault()));
         }
 
         if (StringUtils.isNotBlank(query.getCardPan())) {
