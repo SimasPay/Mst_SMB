@@ -69,7 +69,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 						+ e.getBusinessPartnerType() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setBusinesspartnertype(e.getBusinessPartnerType().longValue());
+			p.setBusinesspartnertype(e.getBusinessPartnerType());
 		}
 		// else {
 		// p.setBusinessPartnerType(-1);
@@ -148,8 +148,8 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			CMJSPocketTemplateConfig.CGEntries entry) {
 		entry.setID(p.getId().longValue());
 
-		if (((Long)p.getSubscribertype()) != null) {
-			entry.setSubscriberType(((Long)p.getSubscribertype()).intValue());
+		if (Integer.valueOf(p.getSubscribertype()) != null) {
+			entry.setSubscriberType(p.getSubscribertype());
 		}
 		if (p.getBusinesspartnertype() != null) {
 			entry.setBusinessPartnerType(p.getBusinesspartnertype().intValue());
@@ -444,11 +444,11 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateConfig p = null;
 			if (results.size() > 0) {
 				p = results.get(0);				
-				if ((Long)p.getSubscribertype() != null) {
-					query.set_subscriberType(((Long)p.getSubscribertype()).intValue());
+				if ((Integer)p.getSubscribertype() != null) {
+					query.set_subscriberType(p.getSubscribertype());
 				}
 				if(p.getBusinesspartnertype() != null){
-					query.set_businessPartnerType(((Long)p.getBusinesspartnertype()).intValue());
+					query.set_businessPartnerType(p.getBusinesspartnertype());
 				}
 
 				if((Long) p.getCommodity() != null){

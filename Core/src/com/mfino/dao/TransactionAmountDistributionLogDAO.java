@@ -3,6 +3,8 @@
  */
 package com.mfino.dao;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +38,7 @@ public class TransactionAmountDistributionLogDAO extends BaseDAO<TxnAmountDstrbL
      */
     public List<TxnAmountDstrbLog> getLogEntriesBySCTLID(long sctlId) {
     	Criteria criteria = createCriteria();
-    	criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, sctlId));
+    	criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, new BigDecimal(sctlId)));
     	
     	@SuppressWarnings("unchecked")
     	List<TxnAmountDstrbLog> lst = criteria.list();
@@ -51,10 +53,10 @@ public class TransactionAmountDistributionLogDAO extends BaseDAO<TxnAmountDstrbL
 		criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_Partner, query.getPartner()));
 		}
 		if(query.getServiceChargeTransactionLogID()!=null){
-			criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, query.getServiceChargeTransactionLogID()));
+			criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, new BigDecimal(query.getServiceChargeTransactionLogID())));
 		}
 		if(query.getStatus()!=null){
-			criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_TADLStatus, query.getStatus()));
+			criteria.add(Restrictions.eq(TxnAmountDstrbLog.FieldName_TADLStatus, query.getStatus().longValue()));
 		}
 		List<TxnAmountDstrbLog> result = criteria.list();
 		return result;
@@ -64,7 +66,11 @@ public class TransactionAmountDistributionLogDAO extends BaseDAO<TxnAmountDstrbL
 	public List<TxnAmountDstrbLog> getTransactionAmountDistributionLogBySCTLIds(
 			Set<Long> sctlids) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.in(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, sctlids));
+		Set<BigDecimal> sctlIdBigDecimals = new HashSet<BigDecimal>();
+		for (Long sctlid : sctlids) {
+			sctlIdBigDecimals.add(new BigDecimal(sctlid));
+		}
+		criteria.add(Restrictions.in(TxnAmountDstrbLog.FieldName_ServiceChargeTransactionLogID, sctlIdBigDecimals));
 		List<TxnAmountDstrbLog> result = criteria.list();
 		return result;
 	}

@@ -1,5 +1,6 @@
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -8,7 +9,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.NotificationLogQuery;
 import com.mfino.domain.NotificationLog;
-import com.mfino.fix.CmFinoFIX;
 
 public class NotificationLogDAO extends BaseDAO<NotificationLog>{
 
@@ -16,22 +16,27 @@ public class NotificationLogDAO extends BaseDAO<NotificationLog>{
         Criteria criteria = createCriteria();
 
         if(query.getSctlID() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_SctlId, query.getSctlID()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_SctlId, 
+            		new BigDecimal(query.getSctlID())));
         }
         if(query.getCode() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationCode, query.getCode()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationCode, 
+            		query.getCode().longValue()));
         }
         if(query.getNotificationMethod() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationMethod, query.getNotificationMethod()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationMethod, 
+            		query.getNotificationMethod().longValue()));
         }
         if(query.getSourceAddress() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_SourceAddress, query.getSourceAddress()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_SourceAddress, 
+            		query.getSourceAddress()));
         }
         if(query.getNotificationReceiverType() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationReceiverType, query.getNotificationReceiverType()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationReceiverType, 
+            		query.getNotificationReceiverType().intValue()));
         }
         if(query.isSensitiveData() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_IsSensitiveData, query.isSensitiveData()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_IsSensitiveData, (short) (query.isSensitiveData() ? '1': '0')));
         }
         
         processBaseQuery(query, criteria);

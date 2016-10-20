@@ -26,7 +26,8 @@ public class BillPaymentsDAO extends BaseDAO<BillPayments> {
 		Criteria criteria = createCriteria();
 		if (sctlLst != null) {
 			List<Long> tempLst = new ArrayList<Long>(sctlLst);
-			addCriteriaIn(BillPayments.FieldName_SctlId, tempLst, criteria);
+			criteria.createAlias(BillPayments.FieldName_SctlId, "sctl");
+			addCriteriaIn("sctl."+BillPayments.FieldName_RecordID, tempLst, criteria);
 		}
 		@SuppressWarnings("unchecked")
 		List<BillPayments> results = criteria.list();

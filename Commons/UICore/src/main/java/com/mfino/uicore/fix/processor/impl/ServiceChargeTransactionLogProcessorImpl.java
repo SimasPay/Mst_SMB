@@ -448,8 +448,10 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		if(sctl.getIntegrationtransactionid()!=null)
 			entry.setBankRetrievalReferenceNumber(String.valueOf(sctl.getIntegrationtransactionid()));
 
-		entry.setAmtRevStatus(sctl.getAmtrevstatus().intValue());
-		entry.setChrgRevStatus(sctl.getChrgrevstatus().intValue());
+		if (sctl.getAmtrevstatus() != null)
+			entry.setAmtRevStatus(sctl.getAmtrevstatus().intValue());
+		if (sctl.getChrgrevstatus() != null)
+			entry.setChrgRevStatus(sctl.getChrgrevstatus().intValue());
 
 		if(sctl.getAmtrevstatus() != null){
 			entry.setAmtRevStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, sctl.getAmtrevstatus()));	
