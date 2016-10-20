@@ -23,10 +23,10 @@ public class MfaAuthentication extends Base implements java.io.Serializable {
 	public static final String FieldName_SctlId = "sctlid";
 	public static final String FieldName_MFAMode = "mfamode";
 	public static final String FieldName_MFAValue = "mfavalue";
-	private BigDecimal sctlid;
-	private long mfamode;
+	private Long sctlid;
+	private Integer mfamode;
 	private String mfavalue;
-	private BigDecimal retryattempt;
+	private Integer retryattempt;
 	private Long id;
 
 	public MfaAuthentication() {
@@ -46,20 +46,20 @@ public class MfaAuthentication extends Base implements java.io.Serializable {
 
 		
 	@Column(name = "SCTLID", nullable = false, scale = 0)
-	public BigDecimal getSctlid() {
+	public Long getSctlid() {
 		return this.sctlid;
 	}
 
-	public void setSctlid(BigDecimal sctlid) {
+	public void setSctlid(Long sctlid) {
 		this.sctlid = sctlid;
 	}
 
 	@Column(name = "MFAMODE", nullable = false, precision = 10, scale = 0)
-	public long getMfamode() {
+	public Integer getMfamode() {
 		return this.mfamode;
 	}
 
-	public void setMfamode(long mfamode) {
+	public void setMfamode(Integer mfamode) {
 		this.mfamode = mfamode;
 	}
 
@@ -73,11 +73,11 @@ public class MfaAuthentication extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "RETRYATTEMPT", precision = 22, scale = 0)
-	public BigDecimal getRetryattempt() {
+	public Integer getRetryattempt() {
 		return this.retryattempt;
 	}
 
-	public void setRetryattempt(BigDecimal retryattempt) {
+	public void setRetryattempt(Integer retryattempt) {
 		this.retryattempt = retryattempt;
 	}
 
