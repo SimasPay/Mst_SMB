@@ -235,7 +235,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		
 		//TODO code for has similar records using channel and uicategory
 		try{
-			pct.setId(commodityTransferSequenceGenerator.getNextTransferID());
+			//pct.setId(commodityTransferSequenceGenerator.getNextTransferID());
 			coreDataWrapper.save(pct);
 		}catch(Exception exp){
 			log.error(exp.getMessage(), exp);
