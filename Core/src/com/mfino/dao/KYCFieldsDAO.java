@@ -1,12 +1,9 @@
 package com.mfino.dao;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-
-
 
 import com.mfino.dao.query.KYCFieldsquery;
 import com.mfino.domain.KycFields;
@@ -24,7 +21,7 @@ public class KYCFieldsDAO extends BaseDAO<KycFields> {
 		Criteria criteria = createCriteria();
 
         if (query.getkycFieldsLevelID() != null) {
-        	criteria.createCriteria(KycFields.FieldName_KYCLevelByKYCFieldsLevelID).add(Restrictions.le(KycLevel.FieldName_KYCLevel, BigDecimal.valueOf(query.getkycFieldsLevelID())));
+        	criteria.createCriteria(KycFields.FieldName_KYCLevelByKYCFieldsLevelID).add(Restrictions.le(KycLevel.FieldName_KYCLevel, query.getkycFieldsLevelID()));
         	}
          processBaseQuery(query, criteria);
          List<KycFields> results = criteria.list();

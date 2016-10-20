@@ -15,7 +15,7 @@ public class Base {
 	
 	public static final String FieldName_RecordID = "id";
 	public static final String FieldName_LastUpdateTime = "lastUpdateTime";
-	public static final String FieldName_CreateTime = "createTime";
+	public static final String FieldName_CreateTime = "createtime";
 	public static final String FieldName_CreatedBy = "createdby";
 	
 	

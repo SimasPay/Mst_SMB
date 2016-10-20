@@ -28,7 +28,7 @@ public class KycLevel extends Base implements java.io.Serializable {
 	public static final String FieldName_KYCLevel = "kyclevel";
 	public static final String FieldName_KYCLevelName = "kyclevelname";
 	private PocketTemplate pocketTemplate;
-	private BigDecimal kyclevel;
+	private Long kyclevel;
 	private String kyclevelname;
 	private String kycleveldescription;
 	private Long id;
@@ -71,11 +71,11 @@ public class KycLevel extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "KYCLEVEL", unique = true, nullable = false, scale = 0)
-	public BigDecimal getKyclevel() {
+	public Long getKyclevel() {
 		return this.kyclevel;
 	}
 
-	public void setKyclevel(BigDecimal kyclevel) {
+	public void setKyclevel(Long kyclevel) {
 		this.kyclevel = kyclevel;
 	}
 

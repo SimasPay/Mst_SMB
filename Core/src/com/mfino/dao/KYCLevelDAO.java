@@ -7,7 +7,6 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mfino.dao.query.KYCLevelQuery;
 import com.mfino.domain.KycLevel;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  *
@@ -21,7 +20,7 @@ public class KYCLevelDAO extends BaseDAO<KycLevel> {
 		Criteria criteria = createCriteria();
 
         if (query.getKycLevel() != null) {
-            criteria.add(Restrictions.eq(KycLevel.FieldName_KYCLevel, query.getKycLevel()));
+            criteria.add(Restrictions.eq(KycLevel.FieldName_KYCLevel, new Long(query.getKycLevel())));
         }
         
         if (query.getKycLevelName() != null) {

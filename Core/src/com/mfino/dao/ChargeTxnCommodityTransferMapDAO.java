@@ -3,6 +3,7 @@
  */
 package com.mfino.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ChargeTxnCommodityTransferMapDAO extends
 		
 		Criteria criteria = createCriteria();
 		if(query.getSctlID()!=null){
-			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, query.getSctlID()));
+			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, new BigDecimal(query.getSctlID())));
 		}
 		if(query.getCommodityTransferID()!=null){
 			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_CommodityTransferID, query.getCommodityTransferID()));
@@ -62,12 +63,14 @@ public class ChargeTxnCommodityTransferMapDAO extends
 	 */
 	public List<Long> geTransferIdsBySCTLId(Long sctlId) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, sctlId));
+		criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, new BigDecimal(sctlId)));
 		List<Long> transferIDs = null; 
 		@SuppressWarnings("unchecked")
 		List<ChargetxnTransferMap> ctMapList = criteria.list();
+		
 		if(ctMapList !=null && ctMapList.size()>0)
 			transferIDs = new ArrayList<Long>();
+		
 		for(ChargetxnTransferMap ctxMap :ctMapList) {
 			if (ctxMap.getCommoditytransferid() != null) {
 				transferIDs.add(ctxMap.getCommoditytransferid().longValue());

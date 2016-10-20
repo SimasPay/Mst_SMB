@@ -159,7 +159,7 @@ public class MoneyTransferProcessorImpl extends MultixCommunicationHandler
 		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(realMsg.getServiceChargeTransactionLogID());
 
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionid(new BigDecimal(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}
 		transactionChargingService.updateTransactionStatus(transactionResponse,sctl);

@@ -43,12 +43,12 @@ public class RoleDAO extends BaseDAO<Role> {
 		if (query.getIsSystemUser() != null) {
 			criteria.add(Restrictions.eq(
 					Role.FieldName_IsSystemUser,
-					(query.getIsSystemUser()?(short)1:(short)0)));
+					(query.getIsSystemUser()?Short.valueOf("1"):Short.valueOf("0"))));
 		}
 		if (query.getPriorityLevel() != null) {
 			criteria.add(Restrictions.ge(
 					Role.FieldName_PriorityLevel,
-					query.getPriorityLevel()));
+					query.getPriorityLevel().shortValue()));
 		}
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
