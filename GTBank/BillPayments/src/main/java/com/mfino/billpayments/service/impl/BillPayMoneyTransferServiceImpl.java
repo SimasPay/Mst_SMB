@@ -742,7 +742,7 @@ public class BillPayMoneyTransferServiceImpl extends BillPaymentsBaseServiceImpl
 					ctId = map.getCommoditytransferid().longValue();
 			}
 			
-			sctl.setCommoditytransferid(new BigDecimal(ctId));
+			sctl.setCommoditytransferid(ctId);
 			sctlDao.save(sctl);
 		}
 		

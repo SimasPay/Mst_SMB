@@ -395,28 +395,28 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		} else {
 			sctl = new ServiceChargeTxnLog();
 			
-			sctl.setTransactionid(new BigDecimal(sc.getTransactionLogId()));
-			sctl.setSourcepartnerid(new BigDecimal(sourceMap.get(PARTNER_ID)));
+			sctl.setTransactionid(sc.getTransactionLogId());
+			sctl.setSourcepartnerid(sourceMap.get(PARTNER_ID));
 			
-			sctl.setDestpartnerid(null!=destMap.get(PARTNER_ID)?new BigDecimal(destMap.get(PARTNER_ID)):null);
+			sctl.setDestpartnerid(null!=destMap.get(PARTNER_ID)?destMap.get(PARTNER_ID):null);
 			sctl.setMfsbillercode(sc.getMfsBillerCode());
 			sctl.setSourcemdn(sc.getSourceMDN());
 			sctl.setDestmdn(sc.getDestMDN());
 			sctl.setOnbehalfofmdn(sc.getOnBeHalfOfMDN());
-			sctl.setServiceproviderid(new BigDecimal(serviceProviderId));
-			sctl.setServiceid(new BigDecimal(serviceId));
-			sctl.setTransactiontypeid(new BigDecimal(transactionTypeId));
-			sctl.setChannelcodeid(new BigDecimal(sc.getChannelCodeId()));
+			sctl.setServiceproviderid(serviceProviderId);
+			sctl.setServiceid(serviceId);
+			sctl.setTransactiontypeid(transactionTypeId);
+			sctl.setChannelcodeid(sc.getChannelCodeId());
 			sctl.setInvoiceno(sc.getInvoiceNo());
 			sctl.setTransactionruleid((tr != null) ? tr.getId() : null);
 			sctl.setTransactionamount(amountToDebit);
 			sctl.setCalculatedcharge(charges);
 			if (sc.isReverseTransaction()) {
-				sctl.setParentsctlid(new BigDecimal(sc.getParentSctlId()));
+				sctl.setParentsctlid(sc.getParentSctlId());
 			}
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Inquiry);
-			sctl.setIschargedistributed((short) 0);
-			sctl.setIntegrationtransactionid(null!=sc.getIntegrationTxnID()?new BigDecimal(sc.getIntegrationTxnID()):null);
+			sctl.setIschargedistributed(CmFinoFIX.Boolean_False);
+			sctl.setIntegrationtransactionid(null!=sc.getIntegrationTxnID()?sc.getIntegrationTxnID():null);
 			sctl.setChargemode((tr != null) ? tr.getChargemode() : null);
 			sctl.setDescription(sc.getDescription());
 			
@@ -925,7 +925,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	public void confirmTheTransaction(ServiceChargeTxnLog sctl, long commodityTransaferId) {
 		log.info("Confirms the Transaction --> " + sctl.getId());
 		sctl.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
-		sctl.setCommoditytransferid((commodityTransaferId!=0) ? new BigDecimal(commodityTransaferId): null);
+		sctl.setCommoditytransferid((commodityTransaferId!=0) ? commodityTransaferId: null);
 		saveServiceTransactionLog(sctl);
 	}
 	
@@ -996,7 +996,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void addTransferID(ServiceChargeTxnLog sctl, long commodityTransaferId) {
 		log.info("add the CommodityTransferID "+commodityTransaferId+" --> " + sctl.getId());
-		sctl.setCommoditytransferid((commodityTransaferId!=0) ? new BigDecimal(commodityTransaferId): null);
+		sctl.setCommoditytransferid((commodityTransaferId!=0) ? commodityTransaferId: null);
 		saveServiceTransactionLog(sctl);
 	}
 	
@@ -1008,7 +1008,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	public void completeTheTransaction(ServiceChargeTxnLog sctl) {
 		log.info("Distribution Completed the Transaction --> " + sctl.getId());
 		sctl.setStatus(CmFinoFIX.SCTLStatus_Distribution_Completed);
-		sctl.setIschargedistributed((short) 1);
+		sctl.setIschargedistributed(CmFinoFIX.Boolean_True);
 		saveServiceTransactionLog(sctl);
 	}
 	
@@ -1279,7 +1279,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			
 			//Update the Transaction in the Service charge Transaction log table as Distributed.
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Distribution_Completed);
-			sctl.setIschargedistributed((short) 1);
+			sctl.setIschargedistributed(CmFinoFIX.Boolean_True);
 			sctlDAO.save(sctl);
 			log.info("TransactionChargingService::distributeTransactionAmount for -->" + sctlId + " is Completed");
 		}

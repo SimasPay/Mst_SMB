@@ -71,10 +71,10 @@ public class MFAServiceImpl implements MFAService{
 		String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		String digestPin1 = MfinoUtil.calculateDigestPin(sourceMDN, oneTimePin);
 		MfaAuthentication mfaAuth = new MfaAuthentication();
-		mfaAuth.setSctlid(new BigDecimal(sctlID));
+		mfaAuth.setSctlid(sctlID);
 		mfaAuth.setMfamode(CmFinoFIX.MFAMode_OTP);
 		mfaAuth.setMfavalue(digestPin1);
-		mfaAuth.setRetryattempt(new BigDecimal(0));
+		mfaAuth.setRetryattempt(0);
 		
 		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
 		authDAO.save(mfaAuth);
@@ -125,7 +125,7 @@ public class MFAServiceImpl implements MFAService{
 			MfaAuthentication mfaAuthentication = mfaResults.get(0);
 			
 			mfaAuthentication.setMfavalue(digestPin1);
-			mfaAuthentication.setRetryattempt(new BigDecimal(++retryAttempt));
+			mfaAuthentication.setRetryattempt(++retryAttempt);
 			
 			authDAO.save(mfaAuthentication);
 			

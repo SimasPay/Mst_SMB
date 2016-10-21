@@ -205,7 +205,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			transferToUangkuInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

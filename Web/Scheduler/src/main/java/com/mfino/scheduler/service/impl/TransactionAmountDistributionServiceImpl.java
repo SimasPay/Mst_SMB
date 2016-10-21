@@ -92,13 +92,13 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 			List<ServiceChargeTxnLog> lst = serviceChargeTransactionLogService.getByStatus(status);
 			if (CollectionUtils.isNotEmpty(lst)) {
 				for (ServiceChargeTxnLog sctl : lst) {
-					if ((sctl.getIschargedistributed()!= null ) && (!(sctl.getIschargedistributed() != 0)) && 
+					if ((sctl.getIschargedistributed()!= null ) && (!(sctl.getIschargedistributed())) && 
 							((currentTime.getTime() - sctl.getLastupdatetime().getTime()) > 300000) ) {
 						log.info("Charge Distribution of SCTL ID --> " + sctl.getId());
 						distribute(sctl.getId().longValue());
 					}
 					// Changing the Confirmed SCTL status based on the IsChargeDistributed value to Distribution_Completed.
-					else if((sctl.getIschargedistributed()!= null ) && (sctl.getIschargedistributed() != 0) && 
+					else if((sctl.getIschargedistributed()!= null ) && (sctl.getIschargedistributed()) && 
 							CmFinoFIX.SCTLStatus_Confirmed.equals(sctl.getStatus())) {
 						sctl.setStatus(CmFinoFIX.SCTLStatus_Distribution_Completed);
 						serviceChargeTransactionLogService.save(sctl);
