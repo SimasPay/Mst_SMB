@@ -30,6 +30,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	private static Logger log = LoggerFactory.getLogger(PartnerDAO.class);
 
 	public List<Partner> get(PartnerQuery query) {
+		
 		log.info("PartnerDao::get() method BEGIN");
 
 		Criteria criteria = createCriteria();
