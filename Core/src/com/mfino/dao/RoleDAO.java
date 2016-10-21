@@ -48,7 +48,7 @@ public class RoleDAO extends BaseDAO<Role> {
 		if (query.getPriorityLevel() != null) {
 			criteria.add(Restrictions.ge(
 					Role.FieldName_PriorityLevel,
-					query.getPriorityLevel()));
+					query.getPriorityLevel().shortValue()));
 		}
 		processBaseQuery(query, criteria);
 		processPaging(query, criteria);
