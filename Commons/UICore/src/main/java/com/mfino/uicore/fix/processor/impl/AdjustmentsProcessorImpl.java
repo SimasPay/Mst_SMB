@@ -71,8 +71,8 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 		if(adj.getDescription() != null) {
 			e.setDescription(adj.getDescription());
 		}
-		if( ((Long)adj.getAdjustmentstatus() )!= null) {
-			e.setAdjustmentStatus(((Long)adj.getAdjustmentstatus()).intValue());
+		if( (adj.getAdjustmentstatus() )!= null) {
+			e.setAdjustmentStatus((adj.getAdjustmentstatus()).intValue());
 			e.setAdjustmentStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AdjustmentStatus, CmFinoFIX.Language_English, adj.getAdjustmentstatus()));
 		}
 		if(adj.getAppliedby() != null) {

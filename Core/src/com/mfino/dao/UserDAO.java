@@ -4,7 +4,6 @@
  */
 package com.mfino.dao;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -88,7 +87,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
             addLikeStartRestriction(criteria, MfinoUser.FieldName_LastName, query.getLastNameLike());
         }
         if (query.getStatus() != null) {
-            criteria.add(Restrictions.eq(MfinoUser.FieldName_UserStatus, query.getStatus()));
+            criteria.add(Restrictions.eq(MfinoUser.FieldName_UserStatus, query.getStatus().longValue()));
         }
         if(query.getCompany()!=null){
         	criteria.add(Restrictions.eq(MfinoUser.FieldName_Company,query.getCompany()));
@@ -96,10 +95,10 @@ public class UserDAO extends BaseDAO<MfinoUser> {
         if (query.getRestrictions() != null) {
             int rest = query.getRestrictions();
             if (rest > 0) {
-                criteria.add(Restrictions.sqlRestriction("(Restrictions & ?) > 0", query.getRestrictions(), StandardBasicTypes.INTEGER));
+                criteria.add(Restrictions.sqlRestriction("(restrictions & ?) > 0", query.getRestrictions(), StandardBasicTypes.INTEGER));
             } else {
                 //When user restrictions equal
-                criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None));
+                criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None.longValue()));
             }
         }        
         if(query.getRole() != null) {
@@ -120,7 +119,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
 		if(query.getPriorityLevel() != null){ //fetch users whose priority level is greater than given level(ie., current user level)
 			DetachedCriteria roles = DetachedCriteria.forClass(Role.class)
 					.setProjection(Property.forName(Role.FieldName_RecordID))
-					.add(Restrictions.ge(Role.FieldName_PriorityLevel, query.getPriorityLevel()));
+					.add(Restrictions.ge(Role.FieldName_PriorityLevel, query.getPriorityLevel().shortValue()));
 			criteria.add(Property.forName(MfinoUser.FieldName_Role).in(roles));
 		}
 		

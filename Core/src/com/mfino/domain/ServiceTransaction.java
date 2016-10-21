@@ -20,6 +20,8 @@ import javax.persistence.Table;
 public class ServiceTransaction extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static final String FieldName_Service = "service";
+	public static final String FieldName_TransactionType = "transactionType";
 	private Service service;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private TransactionType transactionType;

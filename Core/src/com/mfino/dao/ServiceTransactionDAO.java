@@ -8,9 +8,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import com.mfino.domain.Service;
 import com.mfino.domain.ServiceTransaction;
 import com.mfino.domain.TransactionType;
-import com.mfino.fix.CmFinoFIX;
 
 /**
  * @author Bala Sunku
@@ -24,14 +24,14 @@ public class ServiceTransactionDAO extends BaseDAO<ServiceTransaction> {
 		Criteria criteria = createCriteria();
 		
 		if (serviceId != null) {
-			criteria.createAlias(CmFinoFIX.CRServiceTransaction.FieldName_Service, "s");
-			criteria.add(Restrictions.eq("s."+CmFinoFIX.CRService.FieldName_RecordID, serviceId));
-			//criteria.add(Restrictions.eq(CmFinoFIX.CRServiceTransaction.FieldName_Service, sDAO.getById(serviceId)));
+			criteria.createAlias(ServiceTransaction.FieldName_Service, "s");
+			criteria.add(Restrictions.eq("s."+Service.FieldName_RecordID, serviceId));
+			//criteria.add(Restrictions.eq(ServiceTransaction.FieldName_Service, sDAO.getById(serviceId)));
 		}
 		if (transactionTypeId != null) {
-			criteria.createAlias(CmFinoFIX.CRServiceTransaction.FieldName_TransactionType, "t");
-			criteria.add(Restrictions.eq("t." + CmFinoFIX.CRTransactionType.FieldName_RecordID, transactionTypeId));
-			//criteria.add(Restrictions.eq(CmFinoFIX.CRServiceTransaction.FieldName_TransactionType, ttDAO.getById(transactionTypeId)));
+			criteria.createAlias(ServiceTransaction.FieldName_TransactionType, "t");
+			criteria.add(Restrictions.eq("t." + TransactionType.FieldName_RecordID, transactionTypeId));
+			//criteria.add(Restrictions.eq(ServiceTransaction.FieldName_TransactionType, ttDAO.getById(transactionTypeId)));
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -47,14 +47,14 @@ public class ServiceTransactionDAO extends BaseDAO<ServiceTransaction> {
 		Criteria criteria = createCriteria();
 		
 		if (serviceId != null) {
-			criteria.createAlias(CmFinoFIX.CRServiceTransaction.FieldName_Service, "s");
-			criteria.add(Restrictions.eq("s."+CmFinoFIX.CRService.FieldName_RecordID, serviceId));
-//			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceTransaction.FieldName_Service, sDAO.getById(serviceId)));
+			criteria.createAlias(ServiceTransaction.FieldName_Service, "s");
+			criteria.add(Restrictions.eq("s."+Service.FieldName_RecordID, serviceId));
+//			criteria.add(Restrictions.eq(ServiceTransaction.FieldName_Service, sDAO.getById(serviceId)));
 		}
 		if (transactionTypeId != null) {
-			criteria.createAlias(CmFinoFIX.CRServiceTransaction.FieldName_TransactionType, "t");
-			criteria.add(Restrictions.eq("t." + CmFinoFIX.CRTransactionType.FieldName_RecordID, transactionTypeId));			
-//			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceTransaction.FieldName_TransactionType, ttDAO.getById(transactionTypeId)));
+			criteria.createAlias(ServiceTransaction.FieldName_TransactionType, "t");
+			criteria.add(Restrictions.eq("t." + TransactionType.FieldName_RecordID, transactionTypeId));			
+//			criteria.add(Restrictions.eq(ServiceTransaction.FieldName_TransactionType, ttDAO.getById(transactionTypeId)));
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -69,9 +69,9 @@ public class ServiceTransactionDAO extends BaseDAO<ServiceTransaction> {
 		Criteria criteria = createCriteria();
 		
 		if (serviceId != null) {
-			criteria.createAlias(CmFinoFIX.CRServiceTransaction.FieldName_Service, "s");
-			criteria.add(Restrictions.eq("s."+CmFinoFIX.CRService.FieldName_RecordID, serviceId));
-//			criteria.add(Restrictions.eq(CmFinoFIX.CRServiceTransaction.FieldName_Service, sDAO.getById(serviceId)));
+			criteria.createAlias(ServiceTransaction.FieldName_Service, "s");
+			criteria.add(Restrictions.eq("s."+Service.FieldName_RecordID, serviceId));
+//			criteria.add(Restrictions.eq(ServiceTransaction.FieldName_Service, sDAO.getById(serviceId)));
 			
 			@SuppressWarnings("unchecked")
 			List<ServiceTransaction> lst = criteria.list();

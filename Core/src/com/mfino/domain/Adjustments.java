@@ -35,7 +35,7 @@ public class Adjustments extends Base implements java.io.Serializable {
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private Pocket pocketBySourcepocketid;
 	private BigDecimal amount;
-	private long adjustmentstatus;
+	private Integer adjustmentstatus;
 	private Timestamp approveorrejecttime;
 	private String approvedorrejectedby;
 	private String approveorrejectcomment;
@@ -101,11 +101,11 @@ public class Adjustments extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ADJUSTMENTSTATUS", nullable = false, precision = 10, scale = 0)
-	public long getAdjustmentstatus() {
+	public Integer getAdjustmentstatus() {
 		return this.adjustmentstatus;
 	}
 
-	public void setAdjustmentstatus(long adjustmentstatus) {
+	public void setAdjustmentstatus(Integer adjustmentstatus) {
 		this.adjustmentstatus = adjustmentstatus;
 	}
 
