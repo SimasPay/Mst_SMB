@@ -206,8 +206,8 @@ public class ReverseFundsHandlerImpl extends FIXMessageHandler implements Revers
 				.equals(transactionResponse.getCode())) {
 
 			transactionChargingService.chnageStatusToProcessing(sctl);
-			sctl.setParentsctlid(BigDecimal.valueOf(unRegisteredTxnInfo.getTransferctid().longValue()));
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setParentsctlid(unRegisteredTxnInfo.getTransferctid().longValue());
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 			
 			CMFundWithdrawalConfirm	fundWithdrawalConfirm = new CMFundWithdrawalConfirm();

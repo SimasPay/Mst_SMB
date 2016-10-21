@@ -308,7 +308,7 @@ public class NFCCardTopupHandlerImpl  extends FIXMessageHandler implements NFCCa
 		
 		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		bankAccountToBankAccount.setServiceChargeTransactionLogID(sctl.getId().longValue());
-		sctl.setIntegrationtransactionid(new BigDecimal(txnDetails.getTransID()));
+		sctl.setIntegrationtransactionid(new Long(txnDetails.getTransID()));
 		transactionChargingService.saveServiceTransactionLog(sctl);
 		log.info(String.format("NFCCardTopupHandlerImpl::handleNFCCardTopupInquiry() -- Sending NFC CardTopup Inquiry to Backend (soureMDN:%s, srcPocketID:%s, amount:%s, transID:%s, destMDN:%s, destPocketID:%s, sctlID:%s )",txnDetails.getSourceMDN(),srcPocket.getId().toString(),txnDetails.getAmount().toString(),txnDetails.getTransID().toString(),destMDN.getMdn(),destPocket.getId(),sctl.getId()));
 		
@@ -316,7 +316,7 @@ public class NFCCardTopupHandlerImpl  extends FIXMessageHandler implements NFCCa
 		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

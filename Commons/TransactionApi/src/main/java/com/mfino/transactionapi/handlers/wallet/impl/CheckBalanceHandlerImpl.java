@@ -203,7 +203,7 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		bankAccountBalanceInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		if (StringUtils.isNotBlank(transactionDetails.getTransID())) {
-			sctl.setIntegrationtransactionid(new BigDecimal(transactionDetails.getTransID()));
+			sctl.setIntegrationtransactionid(new Long(transactionDetails.getTransID()));
 		}
 
 		log.info("sending the request to backend for processing");

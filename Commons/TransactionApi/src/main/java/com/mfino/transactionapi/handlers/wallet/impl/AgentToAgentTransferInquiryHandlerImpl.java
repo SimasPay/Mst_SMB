@@ -228,7 +228,7 @@ public class AgentToAgentTransferInquiryHandlerImpl extends FIXMessageHandler im
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			agentToAgentTrfInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

@@ -31,7 +31,7 @@ public class MfaTransactionsInfo extends Base implements java.io.Serializable {
 	private Service service;
 	private TransactionType transactionType;
 	private BigDecimal mspid;
-	private long mfamode;
+	private Integer mfamode;
 	private Long id;
 
 	public MfaTransactionsInfo() {
@@ -89,11 +89,11 @@ public class MfaTransactionsInfo extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "MFAMODE", nullable = false, precision = 10, scale = 0)
-	public long getMfamode() {
+	public Integer getMfamode() {
 		return this.mfamode;
 	}
 
-	public void setMfamode(long mfamode) {
+	public void setMfamode(Integer mfamode) {
 		this.mfamode = mfamode;
 	}
 

@@ -181,10 +181,10 @@ public class BulkDistributionHandlerImpl extends FIXMessageHandler implements Bu
 		TransactionResponse transferResponse = checkBackEndResponse(response);
 		log.info("Transfer Response = "+transferResponse.getMessage());
 		if(transferResponse.getTransactionId()!=null){
-			sctl.setTransactionid(BigDecimal.valueOf(transferResponse.getTransactionId()));
+			sctl.setTransactionid(transferResponse.getTransactionId());
 		}
 		if(transferResponse.getTransferId()!=null){
-			sctl.setCommoditytransferid(BigDecimal.valueOf(transferResponse.getTransferId()));
+			sctl.setCommoditytransferid(transferResponse.getTransferId());
 		}
 		// Success = 0, Failure = 1, Pending = 2
 		result.setTxnStatus(2);

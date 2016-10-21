@@ -243,7 +243,7 @@ public class FundAllocationInquiryHandlerImpl extends FIXMessageHandler implemen
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}

@@ -427,7 +427,7 @@ public class FundWithdrawalInquiryHandlerImpl extends FIXMessageHandler implemen
 		}
 		
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);
 		}

@@ -218,7 +218,7 @@ public class InterBankTransferInquiryHandlerImpl extends FIXMessageHandler imple
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId()!=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			interBankTransferInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

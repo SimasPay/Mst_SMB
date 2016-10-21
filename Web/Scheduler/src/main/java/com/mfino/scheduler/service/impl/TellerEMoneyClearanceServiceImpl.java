@@ -197,7 +197,7 @@ public class TellerEMoneyClearanceServiceImpl implements TellerEMoneyClearanceSe
 						
 						
 						for(ServiceChargeTxnLog sctl: tellerSctls){
-							sctl.setParentsctlid(new BigDecimal(tellerClearanceSctl.getId()));
+							sctl.setParentsctlid(tellerClearanceSctl.getId());
 						}
 						transactionDetails = new TransactionDetails();
 						transactionDetails.setCc(channelCode);

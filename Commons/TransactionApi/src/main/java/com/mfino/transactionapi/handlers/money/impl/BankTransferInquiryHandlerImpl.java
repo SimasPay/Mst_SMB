@@ -240,7 +240,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		// Saves the Transaction Id returned from Back End		
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId() !=null){
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			bankAccountToBankAccount.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

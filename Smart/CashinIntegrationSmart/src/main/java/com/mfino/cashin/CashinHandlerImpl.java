@@ -320,7 +320,7 @@ public class CashinHandlerImpl extends FIXMessageHandler implements CashinHandle
 		log.info("received backend response");
 
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionid(new BigDecimal(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			cashinDetails.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

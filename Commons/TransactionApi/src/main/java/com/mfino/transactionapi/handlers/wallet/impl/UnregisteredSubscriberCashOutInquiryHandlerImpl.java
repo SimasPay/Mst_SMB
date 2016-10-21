@@ -292,7 +292,7 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 			transactionChargingService.failTheTransaction(sctl, errorMsg);	
 		}
 		if (transactionResponse.getTransactionId() !=null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId());
 			unregisteredSubscriberCashOutInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

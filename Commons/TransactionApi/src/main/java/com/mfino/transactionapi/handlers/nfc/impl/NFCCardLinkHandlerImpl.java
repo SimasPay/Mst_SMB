@@ -190,7 +190,7 @@ public class NFCCardLinkHandlerImpl extends FIXMessageHandler implements NFCCard
 			log.info("NFCCardLinkHandler :: handle() Not Going to backend as request received from CMS channel");
 			if(StringUtils.isNotBlank(transactionDetails.getTransID()))
 			{
-			sctl.setIntegrationtransactionid(new BigDecimal(transactionDetails.getTransID()));
+			sctl.setIntegrationtransactionid(new Long(transactionDetails.getTransID()));
 			}
 			createNFCPocket(nfcPocketTemplate,smdn,nfcCardLink);
 			sctl.setCalculatedcharge(BigDecimal.ZERO);

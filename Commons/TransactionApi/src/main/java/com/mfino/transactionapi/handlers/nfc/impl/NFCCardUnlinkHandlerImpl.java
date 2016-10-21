@@ -187,7 +187,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 			}
 		}
 		if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) { //set the transID if the request is from CMS channel
-			sctl.setIntegrationtransactionid(BigDecimal.valueOf(Long.valueOf(transactionDetails.getTransID())));
+			sctl.setIntegrationtransactionid(Long.valueOf(transactionDetails.getTransID()));
 		}
 		if(proceedWithCardUnlink) {						
 			if(BigDecimal.ZERO.compareTo(new BigDecimal(nfcPocket.getCurrentbalance())) == 0) {

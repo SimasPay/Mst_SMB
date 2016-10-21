@@ -199,15 +199,15 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 		
 		try{
 			sctl.setCalculatedcharge(BigDecimal.ZERO);
-			sctl.setChannelcodeid(new BigDecimal(chanelCode.getId()));
+			sctl.setChannelcodeid(chanelCode.getId());
 			sctl.setSourcemdn(transferInquiry.getSourceMDN());
 			sctl.setDestmdn(transferInquiry.getSourceMDN());
-			sctl.setServiceid(BigDecimal.valueOf(transactionChargingService.getServiceId(transferInquiry.getServiceName())));
-			sctl.setServiceproviderid(BigDecimal.valueOf(transactionChargingService.getServiceProviderId(null)));
+			sctl.setServiceid(transactionChargingService.getServiceId(transferInquiry.getServiceName()));
+			sctl.setServiceproviderid(transactionChargingService.getServiceProviderId(null));
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Processing);
 			sctl.setTransactionamount(transferInquiry.getAmount());
-			sctl.setTransactiontypeid(BigDecimal.valueOf(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_FUNDREIMBURSE)));
-			sctl.setTransactiontypeid(new BigDecimal(transactionsLog.getId()));
+			sctl.setTransactiontypeid(transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_FUNDREIMBURSE));
+			sctl.setTransactiontypeid(transactionsLog.getId());
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
 			result[0]=CmFinoFIX.NotificationCode_ServiceNotAvailable.toString();
@@ -232,8 +232,8 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 		if ((CmFinoFIX.ResponseCode_Success.toString()).equals(status) && !("0".equals(code))) {
 			result[1]=response.getTransferID().toString();
 			result[2]=response.getParentTransactionID().toString();
-			sctl.setCommoditytransferid(BigDecimal.valueOf(Long.valueOf(result[1])));
-			sctl.setTransactiontypeid(BigDecimal.valueOf(Long.valueOf(result[2])));
+			sctl.setCommoditytransferid(Long.valueOf(result[1]));
+			sctl.setTransactiontypeid(Long.valueOf(result[2]));
 			transactionChargingService.completeTheTransaction(sctl);
 		}
 		else

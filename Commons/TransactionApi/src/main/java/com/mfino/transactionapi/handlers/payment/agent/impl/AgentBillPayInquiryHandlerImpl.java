@@ -333,8 +333,8 @@ public class AgentBillPayInquiryHandlerImpl extends FIXMessageHandler implements
 		// Saves the Transaction Id returned from Back End
 		TransactionResponse transactionResponse = checkBackEndResponse(response);
 		if (transactionResponse.getTransactionId() != null) {
-			sctl.setTransactionid(BigDecimal.valueOf(transactionResponse.getTransactionId().longValue()));
-			sctl.setCommoditytransferid(BigDecimal.valueOf(transactionResponse.getTransferId()));
+			sctl.setTransactionid(transactionResponse.getTransactionId().longValue());
+			sctl.setCommoditytransferid(transactionResponse.getTransferId());
 			paymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 			result.setTransactionID(transactionResponse.getTransactionId());
 			transactionChargingService.saveServiceTransactionLog(sctl);

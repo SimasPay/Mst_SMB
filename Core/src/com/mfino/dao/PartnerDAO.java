@@ -30,6 +30,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 	private static Logger log = LoggerFactory.getLogger(PartnerDAO.class);
 
 	public List<Partner> get(PartnerQuery query) {
+		
 		log.info("PartnerDao::get() method BEGIN");
 
 		Criteria criteria = createCriteria();
@@ -95,7 +96,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 								CmFinoFIX.TagID_BusinessPartnerTypePartner)) {
 					DetachedCriteria partner = DetachedCriteria.forClass(EnumText.class).
 												setProjection(Property.forName(EnumText.FieldName_EnumCode))
-												.add(Restrictions.eq(EnumText.FieldName_TagID, query.getPartnerType()));
+												.add(Restrictions.eq(EnumText.FieldName_TagID, query.getPartnerType().longValue()));
 //					HashMap<String, String> results = enumTextService
 //							.getEnumTextSet(query.getPartnerType(), null);
 //					if (!results.isEmpty()) {
@@ -176,6 +177,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
         	criteria.createAlias(Partner.FieldName_PartnerServicesFromPartnerID, "partnerService1");
         	criteria.createAlias("partnerService1."+PartnerServices.FieldName_PartnerByParentID, "psParent");
         	criteria.add(Restrictions.eq("psParent."+Partner.FieldName_RecordID, query.getParentId()));
+        	
         	
 //        	Criteria partnerServiceCriteria = criteria.createCriteria(Partner.FieldName_PartnerServicesFromPartnerID);
 //        	Criteria partnerServiceParentCriteria = partnerServiceCriteria.createCriteria(PartnerServices.FieldName_PartnerByParentID);
