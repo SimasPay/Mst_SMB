@@ -177,6 +177,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
         	criteria.createAlias("partnerService1."+PartnerServices.FieldName_PartnerByParentID, "psParent");
         	criteria.add(Restrictions.eq("psParent."+Partner.FieldName_RecordID, query.getParentId()));
         	
+        	
 //        	Criteria partnerServiceCriteria = criteria.createCriteria(Partner.FieldName_PartnerServicesFromPartnerID);
 //        	Criteria partnerServiceParentCriteria = partnerServiceCriteria.createCriteria(PartnerServices.FieldName_PartnerByParentID);
 //        	partnerServiceParentCriteria.add(Restrictions.eq(Partner.FieldName_RecordID, query.getParentId()));
