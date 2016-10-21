@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,8 +25,8 @@ import org.springframework.web.servlet.View;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.BulkUploadEntry;
-import com.mfino.domain.RolePermission;
 import com.mfino.domain.MfinoUser;
+import com.mfino.domain.RolePermission;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.i18n.MessageText;
 import com.mfino.service.BulkUploadEntryService;
@@ -141,13 +140,8 @@ public class BulkTransferConfirmController {
     
     private void createEntries(BulkUpload bulkUpload) throws IOException {
     	log.info("Creating the entries for bulk transfer id: "+ bulkUpload.getId());
-    	BufferedReader bufferedReader = null;
-		try {
-			bufferedReader = new BufferedReader(new StringReader(bulkUpload.getInfiledata().getSubString(0, ((Long)bulkUpload.getInfiledata().length()).intValue())));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	BufferedReader bufferedReader = new BufferedReader(new StringReader(bulkUpload.getInfiledata()));
+	
 		String line = null;
 		BulkUploadEntry bue = null;
 		int i=1;

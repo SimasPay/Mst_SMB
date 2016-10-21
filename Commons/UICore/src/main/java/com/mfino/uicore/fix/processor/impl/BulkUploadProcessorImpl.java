@@ -24,10 +24,10 @@ import com.mfino.dao.query.BulkUploadQuery;
 import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.CommodityTransfer;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSBulkUpload;
@@ -125,8 +125,8 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
         if (bu.getInfilename() != null) {
             entry.setFileName(bu.getInfilename());
         }
-        if ((Long)bu.getDeliverystatus() != null) {
-            entry.setBulkUploadDeliveryStatus(((Long)bu.getDeliverystatus()).intValue());
+        if (bu.getDeliverystatus() != null) {
+            entry.setBulkUploadDeliveryStatus(bu.getDeliverystatus());
         }
         if ((Long) bu.getFiletype() != null) {
             entry.setBulkUploadFileType(((Long)bu.getFiletype()).intValue());
@@ -203,7 +203,7 @@ public class BulkUploadProcessorImpl extends BaseFixProcessor implements BulkUpl
 
         }
         entry.setBulkUploadDeliveryStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadDeliveryStatus, null, entry.getBulkUploadDeliveryStatus()));
-        if (((Long)bu.getDeliverystatus()).equals(CmFinoFIX.BulkUploadDeliveryStatus_Processed) || ((Long)bu.getDeliverystatus()).equals(CmFinoFIX.BulkUploadDeliveryStatus_Complete)) {
+        if ((bu.getDeliverystatus()).equals(CmFinoFIX.BulkUploadDeliveryStatus_Processed) || (bu.getDeliverystatus()).equals(CmFinoFIX.BulkUploadDeliveryStatus_Complete)) {
             if (bu.getFailedtransactionscount() != null && ((Long)bu.getTransactionscount()) != null) {
             	Long trxSuccessCount = bu.getTransactionscount() - bu.getFailedtransactionscount();
                 entry.setSuccessfulTransactionsCount(trxSuccessCount.intValue());

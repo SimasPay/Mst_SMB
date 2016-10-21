@@ -129,7 +129,10 @@ public class BackendUtil {
 	}
 	
 	public static void setPocketLimits(Pocket pocket, BigDecimal transactionAmount){
-		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1) )){
+		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()) || 
+				(pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) || 
+				(pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) )){
+			
 			pocket.setCurrentdailyexpenditure(pocket.getCurrentdailyexpenditure().add(transactionAmount));
 			pocket.setCurrentdailytxnscount(pocket.getCurrentdailytxnscount() + 1);
 			pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().add(transactionAmount));
@@ -160,7 +163,9 @@ public class BackendUtil {
 		
 		long mod = diffMilliSecs / milliSecsForDay;
 
-		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1) || (pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1) )){
+		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()) 
+				|| (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) 
+				|| (pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) )){
 			if(mod <= 30){
 				//Within a month
 				pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().subtract(transactionAmount));

@@ -1,7 +1,5 @@
 package com.mfino.uicore.fix.processor.impl;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -193,7 +191,7 @@ public class ApproveRejectBulkTransferProcessorImpl extends BaseFixProcessor imp
 		XMLResult result = (XMLResult)bulkTransferInquiryHandler.handle(transactionDetails);
 
 		if (result != null) {
-			bulkUpload.setServicechargetransactionlogid(new BigDecimal(result.getSctlID()));
+			bulkUpload.setServicechargetransactionlogid(result.getSctlID());
 			bulkUploadService.save(bulkUpload);
 			if (CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(result.getCode())) {
 				log.info("Creating the Bulk Transfer Confirmation object");

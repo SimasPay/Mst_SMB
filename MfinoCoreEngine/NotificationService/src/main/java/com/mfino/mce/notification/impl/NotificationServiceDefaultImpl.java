@@ -5,7 +5,6 @@ import static com.mfino.mce.core.util.MCEUtil.isNullOrEmpty;
 import static com.mfino.mce.core.util.MCEUtil.safeString;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -437,7 +436,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			log.info("NotificationServiceDefaultImpl :: getWebResponse for request=CMBankAccountBalanceInquiry backendResponse.Dump "+backendResponse.DumpFields());
 
 			response.setReceiveTime(backendResponse.getReceiveTime());
-			response.setCode(((Long)notification.getCode()).intValue());
+			response.setCode(notification.getCode());
 			response.setLanguage(backendResponse.getLanguage());
 			response.setMSPID(backendResponse.getMSPID());
 			response.setParentTransactionID(backendResponse.getParentTransactionID());
@@ -469,7 +468,7 @@ public class NotificationServiceDefaultImpl implements NotificationService {
 			log.info("NotificationServiceDefaultImpl# :: getWebResponse for request=CMBankAccountToBankAccount backendResponse.Dump "+backendResponse.DumpFields());
 
 			response.setReceiveTime(backendResponse.getReceiveTime());
-			response.setCode(((Long)notification.getCode()).intValue());
+			response.setCode(notification.getCode());
 			response.setLanguage(backendResponse.getLanguage());
 			response.setMSPID(backendResponse.getMSPID());
 			response.setParentTransactionID(backendResponse.getParentTransactionID());

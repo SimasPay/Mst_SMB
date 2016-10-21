@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,8 +29,8 @@ import org.springframework.web.servlet.View;
 
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.BulkUpload;
-import com.mfino.domain.RolePermission;
 import com.mfino.domain.MfinoUser;
+import com.mfino.domain.RolePermission;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -185,9 +183,7 @@ public class BulkTransferFileController {
                     bulkUpload.setUsername(loggedInUser.getUsername());
                     bulkUpload.setMdn(subscriberService.normalizeMDN(multipartRequest.getParameter("MDN")));
                     bulkUpload.setInfilename(file.getOriginalFilename());
-                    Clob clob = new SerialClob(new String(file.getBytes()).toCharArray());
-                    clob.setString(1, new String(file.getBytes()));
-                    bulkUpload.setInfiledata(clob);
+                    bulkUpload.setInfiledata(new String(file.getBytes()));
                     bulkUpload.setInfilecreatedate(currentTime.toString());
                     bulkUpload.setFiletype(fileType);
                     bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Uploaded);

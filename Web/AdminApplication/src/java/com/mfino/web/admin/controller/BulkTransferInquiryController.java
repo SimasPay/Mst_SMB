@@ -218,9 +218,7 @@ public class BulkTransferInquiryController {
                     bulkUpload.setMdn(srcSubscriberMDN.getMdn());
                     bulkUpload.setMdnid(srcSubscriberMDN.getId());
                     bulkUpload.setInfilename(file.getOriginalFilename());
-                    Clob clob = new SerialClob(new String(file.getBytes()).toCharArray());
-                    clob.setString(1, new String(file.getBytes()));
-                    bulkUpload.setInfiledata(clob);
+                    bulkUpload.setInfiledata(new String(file.getBytes()));
                     bulkUpload.setInfilecreatedate(currentTime.toString());
                     bulkUpload.setFiletype(fileType);
                     bulkUpload.setDeliverystatus(CmFinoFIX.BulkUploadDeliveryStatus_Initialized);

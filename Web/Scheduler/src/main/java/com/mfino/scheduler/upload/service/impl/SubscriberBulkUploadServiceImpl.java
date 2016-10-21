@@ -7,7 +7,6 @@ package com.mfino.scheduler.upload.service.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -195,12 +194,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			if(CmFinoFIX.BulkUploadFileEntryStatus_Initialized.equals(bulkUploadFileEntry.getBulkuploadfileentrystatus())) {
 				processedCount++;
 				Integer linenumber =(int) bulkUploadFileEntry.getLinenumber();
-				String lineData = "";
-				try {
-					lineData = bulkUploadFileEntry.getLinedata().getSubString(0, ((Long)bulkUploadFileEntry.getLinedata().length()).intValue());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				String lineData = bulkUploadFileEntry.getLinedata();
 				log.info("Processing record at line number: " + linenumber);
 				//set the bulk upload file entry record status as Processing
 				bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Processing);

@@ -120,12 +120,12 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocket();
 		Pocket taxPocket = coreDataWrapper.getPocket(SystemParameterKeys.TAX_POCKET_ID_KEY);
 		
-		if (pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1) {
+		if (pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()) {
 			isImmediateUpdateRequired = false;
 		}
-		else if (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1) {
+		else if (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) {
 			isImmediateUpdateRequired = false;
-		}else if ( pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1) {
+		}else if ( pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) {
 			isImmediateUpdateRequired = false;
 		}
 		else if (pocket.getId().equals(globalSVAPocket.getId()) ) {
@@ -153,8 +153,8 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 	 */
 	private MfsLedger generateLedgerEntry(boolean isSettlement,Long sctlId, Long ctID, Pocket pocket, BigDecimal amount, boolean isSource, boolean isImmediateUpdateRequired) {
 		MfsLedger mfsLedger = new MfsLedger();
-		mfsLedger.setSctlid(new BigDecimal(sctlId));
-		mfsLedger.setCommoditytransferid(new BigDecimal(ctID));
+		mfsLedger.setSctlid(sctlId);
+		mfsLedger.setCommoditytransferid(ctID);
 		mfsLedger.setPocketid(pocket.getId());
 		mfsLedger.setAmount(amount);
 		

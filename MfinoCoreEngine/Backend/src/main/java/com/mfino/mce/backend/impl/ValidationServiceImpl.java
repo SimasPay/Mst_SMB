@@ -441,21 +441,21 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return null;
 		}
 		
-		if(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
-		if(pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
 			return responseFix;
 		}
 		
-		if(pocket.getPocketTemplateByPockettemplateid().getIssystempocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIssystempocket()){
 			responseFix.setInternalErrorCode(null);
 //			pocket.setLastTransactionTime(now);
 			
@@ -624,7 +624,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			return null;
 		}
 		
-		if(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()==1){
+		if(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()){
 			responseFix.setInternalErrorCode(null);
 			pocket.setLasttransactiontime(now);
 			return responseFix;

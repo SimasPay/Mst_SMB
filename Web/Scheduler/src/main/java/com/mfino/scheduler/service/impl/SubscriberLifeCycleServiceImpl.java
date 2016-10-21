@@ -414,7 +414,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							return;
 						}
 						//The system collector pocket need to be suspense pocket
-						if(destSystemProviderPocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != (short) 1){
+						if(!destSystemProviderPocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()){
 							log.info("Failed to move balance in all/some of the EMoney Pockets of Retired Subscriber with subscriber ID --> " 
 									+ subscriber.getId() + " as the system provider pocket is not of suspense type and hence the subscriber will not be graved");
 							return;
@@ -478,7 +478,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 								+ subscriber.getId()) ;
 						return;
 					}
-					if(srcSystemProviderPocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != 1){
+					if(!srcSystemProviderPocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()){
 						log.info("Failed to move money from system collector pocket to National Treasury for subscriber ID -->" 
 								+ subscriber.getId() + " as the system provider pocket is not of suspense type");
 						return;

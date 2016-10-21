@@ -265,7 +265,7 @@ public class BulkTransferSchedulerServiceImpl  implements BulkTransferSchedulerS
 		
 		if (result != null ) {
 			Long sctlId = result.getSctlID();
-			bulkUpload.setReversesctlid(BigDecimal.valueOf(sctlId));
+			bulkUpload.setReversesctlid(sctlId);
 			bulkUploadService.save(bulkUpload);
 			
 			if (CmFinoFIX.NotificationCode_BankAccountToBankAccountConfirmationPrompt.toString().equals(result.getCode())) {
