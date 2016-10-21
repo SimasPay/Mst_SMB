@@ -44,37 +44,37 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	public static final String FieldName_ParentIntegrationTransID = "parentintegrationtransid";
 	
 	private MfinoServiceProvider mfinoServiceProvider;
-	private BigDecimal transactionid;
+	private Long transactionid;
 	private String mfsbillercode;
-	private BigDecimal sourcepartnerid;
-	private BigDecimal destpartnerid;
+	private Long sourcepartnerid;
+	private Long destpartnerid;
 	private String sourcemdn;
 	private String destmdn;
 	private String onbehalfofmdn;
-	private BigDecimal serviceid;
-	private BigDecimal transactiontypeid;
-	private BigDecimal serviceproviderid;
-	private BigDecimal channelcodeid;
+	private Long serviceid;
+	private Long transactiontypeid;
+	private Long serviceproviderid;
+	private Long channelcodeid;
 	private BigDecimal transactionamount;
 	private String transactionmode;
 	private String invoiceno;
 	private Long transactionruleid;
 	private BigDecimal calculatedcharge;
-	private BigDecimal commoditytransferid;
-	private long status;
+	private Long commoditytransferid;
+	private Integer status;
 	private String failurereason;
-	private Short ischargedistributed;
-	private BigDecimal parentsctlid;
+	private Boolean ischargedistributed;
+	private Long parentsctlid;
 	private String reversalreason;
-	private Short istransactionreversed;
+	private Boolean istransactionreversed;
 	private Long amtrevstatus;
 	private Long chrgrevstatus;
 	private String integrationcode;
-	private BigDecimal integrationtransactionid;
+	private Long integrationtransactionid;
 	private String info1;
 	private Long chargemode;
 	private String description;
-	private BigDecimal parentintegrationtransid;
+	private Long parentintegrationtransid;
 	private Set<SctlSettlementMap> sctlSettlementMaps = new HashSet<SctlSettlementMap>(
 			0);
 	private Set<BillPayments> billPaymentses = new HashSet<BillPayments>(0);
@@ -123,11 +123,11 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "TRANSACTIONID", scale = 0)
-	public BigDecimal getTransactionid() {
+	public Long getTransactionid() {
 		return this.transactionid;
 	}
 
-	public void setTransactionid(BigDecimal transactionid) {
+	public void setTransactionid(Long transactionid) {
 		this.transactionid = transactionid;
 	}
 
@@ -141,20 +141,20 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SOURCEPARTNERID", scale = 0)
-	public BigDecimal getSourcepartnerid() {
+	public Long getSourcepartnerid() {
 		return this.sourcepartnerid;
 	}
 
-	public void setSourcepartnerid(BigDecimal sourcepartnerid) {
+	public void setSourcepartnerid(Long sourcepartnerid) {
 		this.sourcepartnerid = sourcepartnerid;
 	}
 
 	@Column(name = "DESTPARTNERID", scale = 0)
-	public BigDecimal getDestpartnerid() {
+	public Long getDestpartnerid() {
 		return this.destpartnerid;
 	}
 
-	public void setDestpartnerid(BigDecimal destpartnerid) {
+	public void setDestpartnerid(Long destpartnerid) {
 		this.destpartnerid = destpartnerid;
 	}
 
@@ -186,38 +186,38 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SERVICEID", scale = 0)
-	public BigDecimal getServiceid() {
+	public Long getServiceid() {
 		return this.serviceid;
 	}
 
-	public void setServiceid(BigDecimal serviceid) {
+	public void setServiceid(Long serviceid) {
 		this.serviceid = serviceid;
 	}
 
 	@Column(name = "TRANSACTIONTYPEID", scale = 0)
-	public BigDecimal getTransactiontypeid() {
+	public Long getTransactiontypeid() {
 		return this.transactiontypeid;
 	}
 
-	public void setTransactiontypeid(BigDecimal transactiontypeid) {
+	public void setTransactiontypeid(Long transactiontypeid) {
 		this.transactiontypeid = transactiontypeid;
 	}
 
 	@Column(name = "SERVICEPROVIDERID", scale = 0)
-	public BigDecimal getServiceproviderid() {
+	public Long getServiceproviderid() {
 		return this.serviceproviderid;
 	}
 
-	public void setServiceproviderid(BigDecimal serviceproviderid) {
+	public void setServiceproviderid(Long serviceproviderid) {
 		this.serviceproviderid = serviceproviderid;
 	}
 
 	@Column(name = "CHANNELCODEID", scale = 0)
-	public BigDecimal getChannelcodeid() {
+	public Long getChannelcodeid() {
 		return this.channelcodeid;
 	}
 
-	public void setChannelcodeid(BigDecimal channelcodeid) {
+	public void setChannelcodeid(Long channelcodeid) {
 		this.channelcodeid = channelcodeid;
 	}
 
@@ -267,20 +267,20 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "COMMODITYTRANSFERID", scale = 0)
-	public BigDecimal getCommoditytransferid() {
+	public Long getCommoditytransferid() {
 		return this.commoditytransferid;
 	}
 
-	public void setCommoditytransferid(BigDecimal commoditytransferid) {
+	public void setCommoditytransferid(Long commoditytransferid) {
 		this.commoditytransferid = commoditytransferid;
 	}
 
 	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
-	public long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -294,20 +294,20 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISCHARGEDISTRIBUTED", precision = 3, scale = 0)
-	public Short getIschargedistributed() {
+	public Boolean getIschargedistributed() {
 		return this.ischargedistributed;
 	}
 
-	public void setIschargedistributed(Short ischargedistributed) {
+	public void setIschargedistributed(Boolean ischargedistributed) {
 		this.ischargedistributed = ischargedistributed;
 	}
 
 	@Column(name = "PARENTSCTLID", scale = 0)
-	public BigDecimal getParentsctlid() {
+	public Long getParentsctlid() {
 		return this.parentsctlid;
 	}
 
-	public void setParentsctlid(BigDecimal parentsctlid) {
+	public void setParentsctlid(Long parentsctlid) {
 		this.parentsctlid = parentsctlid;
 	}
 
@@ -321,11 +321,11 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISTRANSACTIONREVERSED", precision = 3, scale = 0)
-	public Short getIstransactionreversed() {
+	public Boolean getIstransactionreversed() {
 		return this.istransactionreversed;
 	}
 
-	public void setIstransactionreversed(Short istransactionreversed) {
+	public void setIstransactionreversed(Boolean istransactionreversed) {
 		this.istransactionreversed = istransactionreversed;
 	}
 
@@ -357,11 +357,11 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "INTEGRATIONTRANSACTIONID", scale = 0)
-	public BigDecimal getIntegrationtransactionid() {
+	public Long getIntegrationtransactionid() {
 		return this.integrationtransactionid;
 	}
 
-	public void setIntegrationtransactionid(BigDecimal integrationtransactionid) {
+	public void setIntegrationtransactionid(Long integrationtransactionid) {
 		this.integrationtransactionid = integrationtransactionid;
 	}
 
@@ -393,11 +393,11 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "PARENTINTEGRATIONTRANSID", scale = 0)
-	public BigDecimal getParentintegrationtransid() {
+	public Long getParentintegrationtransid() {
 		return this.parentintegrationtransid;
 	}
 
-	public void setParentintegrationtransid(BigDecimal parentintegrationtransid) {
+	public void setParentintegrationtransid(Long parentintegrationtransid) {
 		this.parentintegrationtransid = parentintegrationtransid;
 	}
 
