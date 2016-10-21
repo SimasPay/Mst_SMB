@@ -3,7 +3,6 @@
  */
 package com.mfino.dao;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class ChargeTxnCommodityTransferMapDAO extends
 	 */
 	public List<Long> geTransferIdsBySCTLId(Long sctlId) {
 		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, new BigDecimal(sctlId)));
+		criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, sctlId));
 		List<Long> transferIDs = null; 
 		@SuppressWarnings("unchecked")
 		List<ChargetxnTransferMap> ctMapList = criteria.list();

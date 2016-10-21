@@ -86,12 +86,12 @@ public class PocketDAO extends BaseDAO<Pocket> {
             }
             else  if(query.IsCollectorPocketAllowed()==null||!query.IsCollectorPocketAllowed()){
             	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + 
-            			PocketTemplate.FieldName_IsCollectorPocket, (short)0));
+            			PocketTemplate.FieldName_IsCollectorPocket, Boolean.FALSE));
             }
             if (query.getIsSuspencePocketAllowed() == null || !query.getIsSuspencePocketAllowed()) {
-            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, (short)0));
+            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, Boolean.FALSE));
             } else {
-            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, (short)1));
+            	criteria.add(Restrictions.eq(POCKETTEMPLATE_ALIAS + DAOConstants.ALIAS_COLNAME_SEPARATOR + PocketTemplate.FieldName_IsSuspencePocket, Boolean.TRUE));
             }
         }
         if (query.getCompany() != null) {

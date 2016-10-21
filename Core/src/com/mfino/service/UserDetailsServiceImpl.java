@@ -106,7 +106,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 	}
 
 	private boolean checkIsNonLocked() {
-		Long restr = theUser.getRestrictions();
+		Integer restr = theUser.getRestrictions();
 
 		// Considered locked whether selfsuspended, suspened, securitylocked or
 		// absolutelocked

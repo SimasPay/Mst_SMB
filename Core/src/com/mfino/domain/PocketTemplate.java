@@ -66,10 +66,10 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	private String pocketcode;
 	private Integer typeofcheck;
 	private String regularexpression;
-	private Short iscollectorpocket;
+	private Boolean iscollectorpocket;
 	private Integer numberofpocketsallowedformdn;
-	private Short issuspencepocket;
-	private Short issystempocket;
+	private Boolean issuspencepocket;
+	private Boolean issystempocket;
 	private BigDecimal interestrate;
 	private Long id;
 	private Set<Pocket> pocketsForPockettemplateid = new HashSet<Pocket>(0);
@@ -397,11 +397,11 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISCOLLECTORPOCKET", precision = 3, scale = 0)
-	public Short getIscollectorpocket() {
+	public Boolean getIscollectorpocket() {
 		return this.iscollectorpocket;
 	}
 
-	public void setIscollectorpocket(Short iscollectorpocket) {
+	public void setIscollectorpocket(Boolean iscollectorpocket) {
 		this.iscollectorpocket = iscollectorpocket;
 	}
 
@@ -416,20 +416,20 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISSUSPENCEPOCKET", precision = 3, scale = 0)
-	public Short getIssuspencepocket() {
+	public Boolean getIssuspencepocket() {
 		return this.issuspencepocket;
 	}
 
-	public void setIssuspencepocket(Short issuspencepocket) {
+	public void setIssuspencepocket(Boolean issuspencepocket) {
 		this.issuspencepocket = issuspencepocket;
 	}
 
 	@Column(name = "ISSYSTEMPOCKET", precision = 3, scale = 0)
-	public Short getIssystempocket() {
+	public Boolean getIssystempocket() {
 		return this.issystempocket;
 	}
 
-	public void setIssystempocket(Short issystempocket) {
+	public void setIssystempocket(Boolean issystempocket) {
 		this.issystempocket = issystempocket;
 	}
 

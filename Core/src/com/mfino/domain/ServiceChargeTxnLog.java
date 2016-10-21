@@ -72,7 +72,7 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	private String integrationcode;
 	private Long integrationtransactionid;
 	private String info1;
-	private Long chargemode;
+	private Integer chargemode;
 	private String description;
 	private Long parentintegrationtransid;
 	private Set<SctlSettlementMap> sctlSettlementMaps = new HashSet<SctlSettlementMap>(
@@ -375,11 +375,11 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CHARGEMODE", precision = 10, scale = 0)
-	public Long getChargemode() {
+	public Integer getChargemode() {
 		return this.chargemode;
 	}
 
-	public void setChargemode(Long chargemode) {
+	public void setChargemode(Integer chargemode) {
 		this.chargemode = chargemode;
 	}
 

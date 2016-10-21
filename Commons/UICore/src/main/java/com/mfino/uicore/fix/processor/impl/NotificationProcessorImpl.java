@@ -119,21 +119,21 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
         if (e.getId() != null) {
             s.setID(e.getId().longValue());
         }
-        if ((Long)e.getLanguage() != null) {
-            s.setLanguage(((Long)e.getLanguage()).intValue());
+        if (e.getLanguage() != null) {
+            s.setLanguage(e.getLanguage());
         }
         s.setMSPID(e.getMfinoServiceProvider().getId().longValue());
-        if ((Long)e.getCode() != null) {
-            s.setNotificationCode(((Long)e.getCode()).intValue());
+        if (e.getCode() != null) {
+            s.setNotificationCode(e.getCode());
         }
         if (e.getCodename() != null) {
             s.setNotificationCodeName(e.getCodename());
         }
-        if ((Long)e.getNotificationmethod() != null) {
-            s.setNotificationMethod(((Long)e.getNotificationmethod()).intValue());
+        if (e.getNotificationmethod() != null) {
+            s.setNotificationMethod(e.getNotificationmethod());
         }
-        if ((Long)e.getStatus() != null) {
-            s.setNotificationStatus(((Long)e.getStatus()).intValue());
+        if (e.getStatus() != null) {
+            s.setNotificationStatus(e.getStatus());
         }
         if (e.getText() != null) {
             
@@ -172,8 +172,8 @@ public class NotificationProcessorImpl extends BaseFixProcessor implements Notif
         if (e.getIsactive() != null) {
             s.setIsActive(e.getIsactive() != 0);
         }
-        s.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, ((Long)e.getLanguage()).intValue(), e.getLanguage()));
-        s.setNotificationMethodText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_NotificationMethod, ((Long)e.getNotificationmethod()).intValue(), e.getNotificationmethod()));
+        s.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, e.getLanguage(), e.getLanguage()));
+        s.setNotificationMethodText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_NotificationMethod, e.getNotificationmethod(), e.getNotificationmethod()));
     }
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
     public CFIXMsg process(CFIXMsg msg) throws Exception {

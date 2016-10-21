@@ -107,7 +107,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 						+ e.getIsSuspencePocket() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setIssuspencepocket((short) (e.getIsSuspencePocket() ? 1:0) );
+			p.setIssuspencepocket(e.getIsSuspencePocket());
 		}
 		if (e.getIsCollectorPocket() != null) {
 			if (!e.getIsCollectorPocket().equals(p.getIscollectorpocket())) {
@@ -116,7 +116,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 						+ e.getIsCollectorPocket() + " by user:"
 						+ getLoggedUserNameWithIP());
 			}
-			p.setIscollectorpocket((short) (e.getIsCollectorPocket()?1:0));
+			p.setIscollectorpocket(e.getIsCollectorPocket());
 		}
 		if (e.getIsDefault() != null) {
 			if (!e.getIsDefault().equals(p.getIsdefault())) {
@@ -124,7 +124,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 						+ " IsCollectorPocket updated to " + e.getIsDefault()
 						+ " by user:" + getLoggedUserNameWithIP());
 			}
-			p.setIsdefault((short) (e.getIsDefault()?1:0));
+			p.setIsdefault(e.getIsDefault());
 		}
 		if (e.getPocketTemplateID() != null) {
 			if (p.getPocketTemplate() != null
@@ -155,8 +155,8 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			entry.setBusinessPartnerType(p.getBusinesspartnertype().intValue());
 		}
 
-		if ((Long)p.getPockettype() != null) {
-			entry.setPocketType(((Long)p.getPockettype()).intValue());
+		if (p.getPockettype() != null) {
+			entry.setPocketType(p.getPockettype());
 		}
 
 		if ((Long) p.getCommodity() != null) {
@@ -165,16 +165,16 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 
 		if (p.getIssuspencepocket() != null) {
 			entry.setIsSuspencePocket(p.getIssuspencepocket() != null 
-					&& p.getIssuspencepocket() != 0);
+					&& p.getIssuspencepocket());
 		}
 
 		if (p.getIscollectorpocket() != null) {
 			entry.setIsCollectorPocket(p.getIscollectorpocket() != null 
-					&& p.getIscollectorpocket() != 0);
+					&& p.getIscollectorpocket());
 		}
 
 		if (p.getIsdefault() != null) {
-			entry.setIsDefault(p.getIsdefault() != null && p.getIsdefault() != 0);
+			entry.setIsDefault(p.getIsdefault() != null && p.getIsdefault());
 		}
 		//setting value for group while editing from database
 		if(p.getId()!=null){
@@ -280,7 +280,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 				PocketTemplateConfig p = null;
 				if (results.size() > 0) {
 					p = results.get(0);
-					if(e.getIsDefault() != null && p.getIsdefault() == (short) 1 && e.getIsDefault() == false  ){
+					if(e.getIsDefault() != null && p.getIsdefault() && e.getIsDefault() == false  ){
 						CMJSError err = new CMJSError();
 						err.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 						err.setErrorDescription(MessageText._("Atleast one configuration need to be default"));
@@ -458,16 +458,16 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 				if(p.getKycLevel() != null){
 					query.set_KYCLevel(p.getKycLevel().getKyclevel().longValue());
 				}
-				if((Long) p.getPockettype() != null){
-					query.set_pocketType(((Long) p.getPockettype()).intValue());
+				if( p.getPockettype() != null){
+					query.set_pocketType(p.getPockettype());
 				}
 				if(p.getIscollectorpocket() != null){
 					query.set_isCollectorPocket(p.getIscollectorpocket() != null 
-							&& p.getIscollectorpocket() != 0);
+							&& p.getIscollectorpocket());
 				}
 				if(p.getIssuspencepocket() != null){
 					query.set_isSuspensePocket(p.getIssuspencepocket() != null 
-							&& p.getIssuspencepocket() != 0);
+							&& p.getIssuspencepocket());
 				}
 				if(p.getPtcGroupMappings() != null){
 					Groups pocketTemplateGroup = null;
@@ -490,7 +490,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateConfig ptc = null;
 			for(int index=0 ; index < results.size() ; index++){
 				ptc=results.get(index);
-				ptc.setIsdefault((short)0);
+				ptc.setIsdefault(Boolean.FALSE);
 				dao.save(ptc);				
 			}			
 		}
@@ -554,7 +554,7 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			PocketTemplateConfig ptc = null;
 			for(int index=0 ; index < results.size() ; index++){
 				ptc=results.get(index);
-				ptc.setIsdefault((short)0);
+				ptc.setIsdefault(Boolean.FALSE);
 				dao.save(ptc);				
 			}			
 		}

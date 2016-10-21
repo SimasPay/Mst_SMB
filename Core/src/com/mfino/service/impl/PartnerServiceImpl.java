@@ -497,9 +497,9 @@ public class PartnerServiceImpl implements PartnerService {
 			Long tempStatusL = pocket.getStatus().longValue();
 			Integer tempStatusLI = tempStatusL.intValue();
 			if(tempStatusLI.equals(CmFinoFIX.PocketStatus_Initialized)&&
-					(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket() != 0
-							|| pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != 0
-							|| pocket.getPocketTemplateByPockettemplateid().getIssystempocket() != 0)){
+					(pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()
+							|| pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()
+							|| pocket.getPocketTemplateByPockettemplateid().getIssystempocket())){
 					
 				pocket.setActivationtime(new Timestamp());
 //				pocket.setIsDefault(true);

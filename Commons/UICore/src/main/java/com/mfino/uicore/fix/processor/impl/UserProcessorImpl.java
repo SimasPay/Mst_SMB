@@ -613,9 +613,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			e.setLastUpdateTime(user.getLastupdatetime());
 		}
 
-		Long tempRestrictionL = user.getRestrictions();
-		
-		Integer restr = tempRestrictionL.intValue();
+		Integer restr = user.getRestrictions();
 		if (restr != null) {
 			e.setUserRestrictions(restr);
 			if ((restr & CmFinoFIX.SubscriberRestrictions_Suspended) > 0) {

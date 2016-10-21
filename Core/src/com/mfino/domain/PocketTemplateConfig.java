@@ -48,10 +48,10 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	private int subscribertype;
 	private Integer businesspartnertype;
 	private long commodity;
-	private long pockettype;
-	private Short issuspencepocket;
-	private Short iscollectorpocket;
-	private Short isdefault;
+	private Integer pockettype;
+	private Boolean issuspencepocket;
+	private Boolean iscollectorpocket;
+	private Boolean isdefault;
 	private Long id;
 	private Set<PtcGroupMapping> ptcGroupMappings = new HashSet<PtcGroupMapping>(
 			0);
@@ -121,38 +121,38 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "POCKETTYPE", nullable = false, precision = 10, scale = 0)
-	public long getPockettype() {
+	public Integer getPockettype() {
 		return this.pockettype;
 	}
 
-	public void setPockettype(long pockettype) {
+	public void setPockettype(Integer pockettype) {
 		this.pockettype = pockettype;
 	}
 
 	@Column(name = "ISSUSPENCEPOCKET", precision = 3, scale = 0)
-	public Short getIssuspencepocket() {
+	public Boolean getIssuspencepocket() {
 		return this.issuspencepocket;
 	}
 
-	public void setIssuspencepocket(Short issuspencepocket) {
+	public void setIssuspencepocket(Boolean issuspencepocket) {
 		this.issuspencepocket = issuspencepocket;
 	}
 
 	@Column(name = "ISCOLLECTORPOCKET", precision = 3, scale = 0)
-	public Short getIscollectorpocket() {
+	public Boolean getIscollectorpocket() {
 		return this.iscollectorpocket;
 	}
 
-	public void setIscollectorpocket(Short iscollectorpocket) {
+	public void setIscollectorpocket(Boolean iscollectorpocket) {
 		this.iscollectorpocket = iscollectorpocket;
 	}
 
 	@Column(name = "ISDEFAULT", precision = 3, scale = 0)
-	public Short getIsdefault() {
+	public Boolean getIsdefault() {
 		return this.isdefault;
 	}
 
-	public void setIsdefault(Short isdefault) {
+	public void setIsdefault(Boolean isdefault) {
 		this.isdefault = isdefault;
 	}
 

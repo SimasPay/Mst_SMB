@@ -20,7 +20,7 @@ import com.mfino.domain.PocketTemplate;
  */
 public class PocketTemplateDAO extends BaseDAO<PocketTemplate> {
 
-	public static final String ID_COLNAME = "ID";
+	public static final String ID_COLNAME = "id";
 
 	public List<PocketTemplate> get(PocketTemplateQuery query) {
 
