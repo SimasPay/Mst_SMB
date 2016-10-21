@@ -33,6 +33,8 @@ public class BillPayments extends Base implements java.io.Serializable {
 	public static final String FieldName_INTxnId = "intxnid";
 	public static final String FieldName_IntegrationCode = "integrationcode";
 	public static final String FieldName_BillPayStatus = "billpaystatus";
+	public static final String FieldName_RecordId = "id";
+	
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private String billercode;
 	private String invoicenumber;

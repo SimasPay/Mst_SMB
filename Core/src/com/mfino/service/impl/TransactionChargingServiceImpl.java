@@ -1068,7 +1068,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public void saveTransactionChargeLog(long sctlId, TransactionCharge tc, BigDecimal charge ) {
 		TransactionChargeLog tcl = new TransactionChargeLog();
-		tcl.setServicechargetransactionlogid(new BigDecimal(sctlId));
+		tcl.setServicechargetransactionlogid(sctlId);
 		tcl.setTransactionCharge(tc);
 		tcl.setCalculatedcharge(charge);
 		log.info("Charge Calculated as " + tc.getChargeType().getName() + " is --> " + charge);

@@ -56,7 +56,7 @@ public class TransactionChargeLogDAO extends BaseDAO<TransactionChargeLog> {
    
 
 	@SuppressWarnings("unchecked")
-	public List<TransactionChargeLog> getByServiceChargeTransactionLogIDs(
+	public List<TransactionChargeLog> getByServiceChargeTransactionLogIDs( 
 			Long startSCTLID, Long endSCTLID) {
 		if(startSCTLID!=null&&endSCTLID!=null){
 		Criteria criteria = createCriteria();

@@ -27,7 +27,7 @@ public class TransactionChargeLog extends Base implements java.io.Serializable {
 	public static final String FieldName_TransactionCharge = "transactionCharge";
 	private TransactionCharge transactionCharge;
 	private MfinoServiceProvider mfinoServiceProvider;
-	private BigDecimal servicechargetransactionlogid;
+	private Long servicechargetransactionlogid;
 	private BigDecimal calculatedcharge;
 
 	private Long id;
@@ -73,12 +73,12 @@ public class TransactionChargeLog extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "SERVICECHARGETRANSACTIONLOGID", nullable = false, scale = 0)
-	public BigDecimal getServicechargetransactionlogid() {
+	public Long getServicechargetransactionlogid() {
 		return this.servicechargetransactionlogid;
 	}
 
 	public void setServicechargetransactionlogid(
-			BigDecimal servicechargetransactionlogid) {
+			Long servicechargetransactionlogid) {
 		this.servicechargetransactionlogid = servicechargetransactionlogid;
 	}
 

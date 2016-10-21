@@ -54,7 +54,9 @@ public class BillPaymentsDAO extends BaseDAO<BillPayments> {
 		 Criteria criteria = createCriteria();
 		 
 		 if(query.getSctlID()!=null){
-			 criteria.add(Restrictions.eq(BillPayments.FieldName_SctlId,query.getSctlID()));
+			 criteria.createAlias("serviceChargeTxnLog", "sctl");
+			 //criteria.add(Restrictions.eq(BillPayments.FieldName_SctlId,query.getSctlID()));
+			 criteria.add(Restrictions.eq("sctl."+BillPayments.FieldName_RecordId,query.getSctlID()));
 		 }
 		 if(query.getBillerCode()!=null){
 			 criteria.add(Restrictions.eq(BillPayments.FieldName_BillerCode, query.getBillerCode()).ignoreCase());
