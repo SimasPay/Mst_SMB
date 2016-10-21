@@ -245,7 +245,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
         if(bankAdmin.getBank() != null && bankAdmin.getBank().getId() != null){
             e.setBankID(bankAdmin.getBank().getId().longValue());
         }
-        Integer restr = ((Long)user.getRestrictions()).intValue();
+        Integer restr = user.getRestrictions();
         if (restr != null) {
             e.setUserRestrictions(restr);
             if ((restr & CmFinoFIX.SubscriberRestrictions_Suspended) > 0) {
@@ -305,7 +305,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
 		if(user.getConfirmationtime()!=null){
 			e.setConfirmationTime(user.getConfirmationtime());
 		}
-                if((Long)user.getRestrictions() != null){
+                if(user.getRestrictions() != null){
                     //e.set
                 }
                 e.setRecordVersion(((Long)bankAdmin.getVersion()).intValue());

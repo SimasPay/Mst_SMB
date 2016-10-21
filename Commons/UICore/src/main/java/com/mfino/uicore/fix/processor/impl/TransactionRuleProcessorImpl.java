@@ -63,13 +63,13 @@ public class TransactionRuleProcessorImpl extends BaseFixProcessor implements Tr
 			tr.setChargemode(e.getChargeMode());
 		}
 		if (e.getSourceType() != null) {
-			tr.setSourcetype(e.getSourceType().longValue());
+			tr.setSourcetype(e.getSourceType());
 		}
 		if (e.getSourceKYC() != null) {
 			tr.setKycLevelBySourcekyc(kycDAO.getById(e.getSourceKYC()));
 		}
 		if (e.getDestType() != null) {
-			tr.setDesttype(e.getDestType().longValue());
+			tr.setDesttype(e.getDestType());
 		}
 		if (e.getDestKYC() != null) {
 			tr.setKycLevelByDestkyc(kycDAO.getById(e.getDestKYC()));

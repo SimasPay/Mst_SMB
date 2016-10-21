@@ -2,8 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.sql.Clob;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,7 +23,7 @@ public class BulkUploadFileEntry extends Base implements java.io.Serializable {
 	public static final String FieldName_BulkUploadFile = "bulkUploadFile";
 	
 	private BulkUploadFile bulkUploadFile;
-	private Clob linedata;
+	private String linedata;
 	private long linenumber;
 	private long bulkuploadfileentrystatus;
 	private String failurereason;
@@ -59,11 +57,11 @@ public class BulkUploadFileEntry extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "LINEDATA", nullable = false)
-	public Clob getLinedata() {
+	public String getLinedata() {
 		return this.linedata;
 	}
 
-	public void setLinedata(Clob linedata) {
+	public void setLinedata(String linedata) {
 		this.linedata = linedata;
 	}
 

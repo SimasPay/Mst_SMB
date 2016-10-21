@@ -16,9 +16,8 @@ import com.mfino.constants.GeneralConstants;
 import com.mfino.dao.query.BulkUploadQuery;
 import com.mfino.domain.BulkUpload;
 import com.mfino.domain.MfinoServiceProvider;
-import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.MfinoUser;
-import com.mfino.fix.CmFinoFIX;
+import com.mfino.domain.SubscriberMdn;
 
 /**
  *
@@ -26,7 +25,7 @@ import com.mfino.fix.CmFinoFIX;
  */
 public class BulkUploadDAO extends BaseDAO<BulkUpload> {
 
-    public static final String ID_COLNAME = "ID";
+    public static final String ID_COLNAME = "id";
 
     public List<BulkUpload> get(BulkUploadQuery query) {
 

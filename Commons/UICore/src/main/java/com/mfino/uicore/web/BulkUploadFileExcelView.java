@@ -76,7 +76,7 @@ public class BulkUploadFileExcelView extends AbstractExcelView {
             	HSSFRow row = sheet.createRow(currentRow);
                 row.createCell(0).setCellValue(bulkUploadFileEntry.getLinenumber());
 //                String strLine = bulkUploadFileEntry.getLinedata();
-                String strLine = readClob(bulkUploadFileEntry.getLinedata());
+                String strLine = bulkUploadFileEntry.getLinedata();
             	if(strLine != null) {
             		String input[] = strLine.split("\\|"); // Pipe is a special character.
                     if(input.length==1)

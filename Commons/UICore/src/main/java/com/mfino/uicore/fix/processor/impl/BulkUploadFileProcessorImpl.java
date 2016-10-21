@@ -5,18 +5,12 @@ package com.mfino.uicore.fix.processor.impl;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +21,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mfino.constants.GeneralConstants;
 import com.mfino.dao.BulkUploadFileDAO;
 import com.mfino.dao.BulkUploadFileEntryDAO;
 import com.mfino.dao.DAOFactory;
@@ -43,12 +36,9 @@ import com.mfino.i18n.MessageText;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.UserService;
-import com.mfino.service.impl.SubscriberServiceImpl;
-import com.mfino.service.impl.UserServiceImpl;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.BulkUploadFileProcessor;
 import com.mfino.util.DateUtil;
-import com.mfino.util.MfinoUtil;
 
 /**
  * @author Deva
@@ -135,8 +125,8 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
         if (bu.getFilename() != null) {
             entry.setFileName(bu.getFilename());
         }
-        if ((Long)bu.getUploadfilestatus() != null) {
-            entry.setUploadFileStatus(((Long)bu.getUploadfilestatus()).intValue());
+        if (bu.getUploadfilestatus() != null) {
+            entry.setUploadFileStatus(bu.getUploadfilestatus());
         }
         if (bu.getRecordtype() != null) {
             entry.setRecordType(bu.getRecordtype().intValue());
@@ -235,7 +225,7 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
         BulkUploadFileDAO bulkUploadFileDAO = DAOFactory.getInstance().getBulkUploadFileDAO();        
         BulkUploadFile bulkUploadFile = new BulkUploadFile();        
         bulkUploadFile.setFilename(file.getOriginalFilename());
-        bulkUploadFile.setRecordtype(((Integer)recordType).longValue());
+        bulkUploadFile.setRecordtype(recordType);
         bulkUploadFile.setDescription(desc);
         bulkUploadFile.setRecordcount(((Integer)count).longValue());
         bulkUploadFile.setUploadfilestatus(CmFinoFIX.UploadFileStatus_Uploading);
@@ -259,7 +249,7 @@ public class BulkUploadFileProcessorImpl extends BaseFixProcessor implements Bul
 			bulkUploadFileEntry.setBulkUploadFile(bulkUploadFile);
 			bulkUploadFileEntry.setBulkuploadfileentrystatus(CmFinoFIX.BulkUploadFileEntryStatus_Initialized);
 			bulkUploadFileEntry.setLinenumber(linecount);
-			bulkUploadFileEntry.setLinedata(MfinoUtil.stringToClob(strLine));
+			bulkUploadFileEntry.setLinedata(strLine);
 			bulkUploadFileEntryDAO.save(bulkUploadFileEntry);
 		}
 		

@@ -17,7 +17,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class BulkUploadFileDAO extends BaseDAO<BulkUploadFile> {
 
-    public static final String ID_COLNAME = "ID";
+    public static final String ID_COLNAME = "id";
 
     public List<BulkUploadFile> get(BulkUploadFileQuery query) {
 

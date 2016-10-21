@@ -7,16 +7,14 @@ package com.mfino.uicore.fix.processor.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.collections.CollectionUtils;
 
 import com.mfino.constants.GeneralConstants;
 import com.mfino.dao.BulkUploadFileDAO;
@@ -31,7 +29,6 @@ import com.mfino.fix.CmFinoFIX.CMJSBulkUploadFileEntry;
 import com.mfino.service.EnumTextService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.BulkUploadFileEntryProcessor;
-import com.mfino.util.MfinoUtil;
 
 /**
  *
@@ -78,8 +75,8 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
         		if (s != null) {        			 
                      String filedata = "";
 					try {
-						filedata = s.getUploadreport().getSubString(0, ((Long)s.getUploadreport().length()).intValue());
-					} catch (SQLException e1) {
+						filedata = s.getUploadreport();
+					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
                      //if filedata is null means it's not processed so  we simply return the realmsg.
@@ -132,7 +129,7 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
                              BulkUploadFileEntry bulkUploadFileEntry = new BulkUploadFileEntry();
                              bulkUploadFileEntry.setBulkUploadFile(s);
                              
-                             bulkUploadFileEntry.setLinedata(MfinoUtil.stringToClob(sbyte[0]));
+                             bulkUploadFileEntry.setLinedata("");
                              bulkUploadFileEntry.setLinenumber(i+1);                             
                              bulkUploadFileEntry.setFailurereason(sbyte[sbyte.length - 1]);
                              bulkUploadFileEntry.setBulkuploadfileentrystatus(fileEntryStatus);
@@ -153,7 +150,7 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
     private void updateMessage(BulkUploadFileEntry fileEntry, CMJSBulkUploadFileEntry.CGEntries e) {
     	e.setID(fileEntry.getId().longValue());
     	try {
-			String strLine = fileEntry.getLinedata().getSubString(0, ((Long)fileEntry.getLinedata().length()).intValue());
+			String strLine = fileEntry.getLinedata();
 			e.setLineNumber(((Long)fileEntry.getLinenumber()).intValue());
 	    	if(strLine != null) {
 	    		String input[] = strLine.split("\\|"); // Pipe is a special character.
@@ -172,7 +169,7 @@ public class BulkUploadFileEntryProcessorImpl extends BaseFixProcessor implement
 	    	e.setRecordMessage(fileEntry.getFailurereason()); 
 	    	e.setRecordStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BulkUploadFileEntryStatus, null, 
 	    			fileEntry.getBulkuploadfileentrystatus()));
-		} catch (SQLException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
     }

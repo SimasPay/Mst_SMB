@@ -2,8 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.sql.Clob;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,13 +38,13 @@ public class Notification extends Base implements java.io.Serializable {
 	
 	private MfinoServiceProvider mfinoServiceProvider;
 	private Company company;
-	private long code;
+	private Integer code;
 	private String codename;
-	private long notificationmethod;
+	private Integer notificationmethod;
 	private String text;
 	private String stkml;
-	private long language;
-	private long status;
+	private Integer language;
+	private Integer status;
 	private Timestamp statustime;
 	private String accesscode;
 	private String smsnotificationcode;
@@ -89,11 +87,11 @@ public class Notification extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CODE", nullable = false, precision = 10, scale = 0)
-	public long getCode() {
+	public Integer getCode() {
 		return this.code;
 	}
 
-	public void setCode(long code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 
@@ -107,11 +105,11 @@ public class Notification extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "NOTIFICATIONMETHOD", nullable = false, precision = 10, scale = 0)
-	public long getNotificationmethod() {
+	public Integer getNotificationmethod() {
 		return this.notificationmethod;
 	}
 
-	public void setNotificationmethod(long notificationmethod) {
+	public void setNotificationmethod(Integer notificationmethod) {
 		this.notificationmethod = notificationmethod;
 	}
 
@@ -134,20 +132,20 @@ public class Notification extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "LANGUAGE", nullable = false, precision = 10, scale = 0)
-	public long getLanguage() {
+	public Integer getLanguage() {
 		return this.language;
 	}
 
-	public void setLanguage(long language) {
+	public void setLanguage(Integer language) {
 		this.language = language;
 	}
 
 	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
-	public long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

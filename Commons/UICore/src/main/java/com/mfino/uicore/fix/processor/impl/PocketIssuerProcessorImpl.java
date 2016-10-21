@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,16 +172,16 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 			p.setPocketcode(e.getPocketCode());
 		}
 		if (e.getIsCollectorPocket() != null) {
-			p.setIscollectorpocket((short) (e.getIsCollectorPocket() ? 1:0));
+			p.setIscollectorpocket(e.getIsCollectorPocket());
 		}
 		if (e.getNumberOfPocketsAllowedForMDN() != null) {
 			p.setNumberofpocketsallowedformdn(e.getNumberOfPocketsAllowedForMDN());
 		}
 		if (e.getIsSuspencePocket() != null) {
-			p.setIssuspencepocket((short) (e.getIsSuspencePocket() ? 1:0));
+			p.setIssuspencepocket(e.getIsSuspencePocket());
 		}
 		if (e.getIsSystemPocket() != null) {
-			p.setIssystempocket((short) (e.getIsSystemPocket() ?1:0));
+			p.setIssystempocket(e.getIsSystemPocket());
 		}
 		if (e.getInterestRate() != null) {
 			p.setInterestrate(e.getInterestRate());
@@ -297,16 +296,16 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		}
 		if (p.getIscollectorpocket() != null) {
 			entry.setIsCollectorPocket(p.getIscollectorpocket() != null 
-					&& p.getIscollectorpocket() != 0 );
+					&& p.getIscollectorpocket() );
 		}
 		if (p.getNumberofpocketsallowedformdn() != null) {
 			entry.setNumberOfPocketsAllowedForMDN(p.getNumberofpocketsallowedformdn().intValue());
 		}
 		if (p.getIssuspencepocket() != null) {
-			entry.setIsSuspencePocket(p.getIssuspencepocket() != null && p.getIssuspencepocket() != 0);
+			entry.setIsSuspencePocket(p.getIssuspencepocket() != null && p.getIssuspencepocket());
 		}
 		if (p.getIscollectorpocket() != null) {
-			entry.setIsSystemPocket(p.getIscollectorpocket() != null && p.getIscollectorpocket() != 0);
+			entry.setIsSystemPocket(p.getIscollectorpocket() != null && p.getIscollectorpocket());
 		}
 		if (p.getInterestrate() != null) {
 			entry.setInterestRate(p.getInterestrate());

@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.sql.Clob;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,14 +35,14 @@ public class BulkUploadFile extends Base implements java.io.Serializable {
 	
 	private Company company;
 	private String filename;
-	private Clob filedata;
+	private String filedata;
 	private String description;
 	private Long recordcount;
 	private Long totallinecount;
 	private Long errorlinecount;
-	private long uploadfilestatus;
-	private Clob uploadreport;
-	private Long recordtype;
+	private Integer uploadfilestatus;
+	private String uploadreport;
+	private Integer recordtype;
 	private Timestamp fileprocesseddate;
 	private Long id;
 	private Set<BulkUploadFileEntry> bulkUploadFileEntries = new HashSet<BulkUploadFileEntry>(
@@ -85,11 +84,11 @@ public class BulkUploadFile extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "FILEDATA")
-	public Clob getFiledata() {
+	public String getFiledata() {
 		return this.filedata;
 	}
 
-	public void setFiledata(Clob filedata) {
+	public void setFiledata(String filedata) {
 		this.filedata = filedata;
 	}
 
@@ -130,29 +129,29 @@ public class BulkUploadFile extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UPLOADFILESTATUS", nullable = false, precision = 10, scale = 0)
-	public long getUploadfilestatus() {
+	public Integer getUploadfilestatus() {
 		return this.uploadfilestatus;
 	}
 
-	public void setUploadfilestatus(long uploadfilestatus) {
+	public void setUploadfilestatus(Integer uploadfilestatus) {
 		this.uploadfilestatus = uploadfilestatus;
 	}
 
 	@Column(name = "UPLOADREPORT")
-	public Clob getUploadreport() {
+	public String getUploadreport() {
 		return this.uploadreport;
 	}
 
-	public void setUploadreport(Clob uploadreport) {
+	public void setUploadreport(String uploadreport) {
 		this.uploadreport = uploadreport;
 	}
 
 	@Column(name = "RECORDTYPE", precision = 10, scale = 0)
-	public Long getRecordtype() {
+	public Integer getRecordtype() {
 		return this.recordtype;
 	}
 
-	public void setRecordtype(Long recordtype) {
+	public void setRecordtype(Integer recordtype) {
 		this.recordtype = recordtype;
 	}
 

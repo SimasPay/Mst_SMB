@@ -57,7 +57,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private String email;
 	private long language;
 	private String timezone;
-	private long restrictions;
+	private Integer restrictions;
 	private long status;
 	private Timestamp statustime;
 	private long failedlogincount;
@@ -238,11 +238,11 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "RESTRICTIONS", nullable = false, precision = 10, scale = 0)
-	public long getRestrictions() {
+	public Integer getRestrictions() {
 		return this.restrictions;
 	}
 
-	public void setRestrictions(long restrictions) {
+	public void setRestrictions(Integer restrictions) {
 		this.restrictions = restrictions;
 	}
 

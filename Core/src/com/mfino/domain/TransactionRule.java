@@ -46,9 +46,9 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	private TransactionType transactionType;
 	private KycLevel kycLevelByDestkyc;
 	private String name;
-	private long chargemode;
-	private Long sourcetype;
-	private Long desttype;
+	private Integer chargemode;
+	private Integer sourcetype;
+	private Integer desttype;
 	private Long sourcegroup;
 	private Long destinationgroup;
 	private Set<TxnRuleAddnInfo> txnRuleAddnInfos = new HashSet<TxnRuleAddnInfo>(
@@ -156,29 +156,29 @@ public class TransactionRule extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "CHARGEMODE", nullable = false, precision = 10, scale = 0)
-	public long getChargemode() {
+	public Integer getChargemode() {
 		return this.chargemode;
 	}
 
-	public void setChargemode(long chargemode) {
+	public void setChargemode(Integer chargemode) {
 		this.chargemode = chargemode;
 	}
 
 	@Column(name = "SOURCETYPE", precision = 10, scale = 0)
-	public Long getSourcetype() {
+	public Integer getSourcetype() {
 		return this.sourcetype;
 	}
 
-	public void setSourcetype(Long sourcetype) {
+	public void setSourcetype(Integer sourcetype) {
 		this.sourcetype = sourcetype;
 	}
 
 	@Column(name = "DESTTYPE", precision = 10, scale = 0)
-	public Long getDesttype() {
+	public Integer getDesttype() {
 		return this.desttype;
 	}
 
-	public void setDesttype(Long desttype) {
+	public void setDesttype(Integer desttype) {
 		this.desttype = desttype;
 	}
 

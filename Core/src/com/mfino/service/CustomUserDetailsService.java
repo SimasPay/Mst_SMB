@@ -72,9 +72,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             }
             
             if (user.getFailedlogincount() >= SecurityConstants.MAX_LOGIN_TRIES) {
-                Long restr = user.getRestrictions();
+                Integer restr = user.getRestrictions();
                 if (restr == null) {
-                    restr = 0L;
+                    restr = 0;
                 }
                 restr += CmFinoFIX.SubscriberRestrictions_SecurityLocked;
                 user.setRestrictions(restr);

@@ -1702,12 +1702,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        }
 	        if(partner.getBusinesspartnertype() != null){
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), partner.getBusinesspartnertype()));
-	        	entry.setBusinessPartnerType(partner.getBusinesspartnertype().intValue());
+	        	entry.setBusinessPartnerType(partner.getBusinesspartnertype());
 	        	entry.setAgentType(String.valueOf(partner.getBusinesspartnertype()));
 	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
-	        	entry.setCloseAcctStatus(partner.getCloseacctstatus().intValue());
+	        	entry.setCloseAcctStatus(partner.getCloseacctstatus());
 	        }
-	        entry.setRestrictions(Integer.valueOf(Long.valueOf(subscriberMdn.getRestrictions()).intValue()));
+	        entry.setRestrictions(subscriberMdn.getRestrictions());
         }
         if(subscriber != null){
         	if(subscriber.getFirstname() != null){
@@ -1719,7 +1719,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         		entry.setLastName(subscriber.getLastname());
         	}
 	        if(subscriber.getLanguage() != 0){
-	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), subscriber.getLanguage()));
+	        	entry.setLanguageText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Language, subscriber.getLanguage(), subscriber.getLanguage()));
 	        	entry.setLanguage(Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()));
 	        }
 	        else

@@ -436,7 +436,8 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		if (StringUtils.isNotBlank(sctl.getReversalreason())) {
 			entry.setReversalReason(sctl.getReversalreason());
 		}
-		entry.setIsChargeDistributed(Boolean.valueOf(sctl.getIschargedistributed()));
+		if(sctl.getIschargedistributed() != null)
+			entry.setIsChargeDistributed(Boolean.valueOf(sctl.getIschargedistributed()));
 		if (sctl.getIstransactionreversed() != null) {
 			entry.setIsTransactionReversed(Boolean.valueOf(sctl.getIstransactionreversed()));
 		} else {

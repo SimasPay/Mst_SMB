@@ -19,7 +19,9 @@ public class CUTCTimeStamp {
     }
 
     private void setDate(Date d) {
-        m_Date = new Timestamp(d.getTime());
+    	if (d != null) {
+    		m_Date = new Timestamp(d.getTime());
+		}
     }
 
     public String getDateFormatString() {
