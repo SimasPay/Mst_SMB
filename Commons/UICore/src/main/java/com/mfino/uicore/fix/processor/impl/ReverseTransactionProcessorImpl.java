@@ -336,12 +336,9 @@ public class ReverseTransactionProcessorImpl extends BaseFixProcessor  implement
 		entry.setSourcePartnerTradeName(partnerDao.getById(newSctl.getDestpartnerid().longValue()).getTradename());
 		}
 		if(newSctl.getStatus()!=0){
-			
-			Long tempStatusL = newSctl.getStatus();
-			Integer tempStatusLI = tempStatusL.intValue();
-			
-		entry.setStatus(tempStatusLI);
-		entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, CmFinoFIX.Language_English, newSctl.getStatus()));
+			entry.setStatus(newSctl.getStatus());
+			entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SCTLStatus, 
+					CmFinoFIX.Language_English, newSctl.getStatus()));
 		}
 		if(newSctl.getTransactionid()!=null){
 		entry.setTransactionID(newSctl.getTransactionid().longValue());
