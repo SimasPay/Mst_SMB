@@ -34,13 +34,13 @@ public class NotificationDAO extends BaseDAO<Notification> {
         Disjunction dis = Restrictions.disjunction();
         
         if (query.getLanguage() != null) {
-            dis.add(Restrictions.eq(Notification.FieldName_Language, new Long(query.getLanguage())));
+            dis.add(Restrictions.eq(Notification.FieldName_Language, query.getLanguage()));
         }
         if (query.getNotificationCode() != null) {
-            criteria.add(Restrictions.eq(Notification.FieldName_NotificationCode, new Long(query.getNotificationCode())));
+            criteria.add(Restrictions.eq(Notification.FieldName_NotificationCode, query.getNotificationCode()));
         }
         if (query.getNotificationMethod() != null) {
-            criteria.add(Restrictions.eq(Notification.FieldName_NotificationMethod, new Long(query.getNotificationMethod())));
+            criteria.add(Restrictions.eq(Notification.FieldName_NotificationMethod, query.getNotificationMethod()));
         }
         if (query.getNotificationText() != null && !(query.getNotificationText().equals(""))) {
             addLikeAnywhereRestriction(criteria, Notification.FieldName_NotificationText, query.getNotificationText());
@@ -66,7 +66,7 @@ public class NotificationDAO extends BaseDAO<Notification> {
                 
         if(results == null || results.size() == 0)
         {
-        	dis.add(Restrictions.eq(Notification.FieldName_Language, new Long(CmFinoFIX.Language_English)));
+        	dis.add(Restrictions.eq(Notification.FieldName_Language, CmFinoFIX.Language_English));
         	processBaseQuery(query, criteria);
             // Paging
             processPaging(query, criteria);

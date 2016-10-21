@@ -120,18 +120,23 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		Pocket globalSVAPocket = coreDataWrapper.getGlobalSVAPocket();
 		Pocket taxPocket = coreDataWrapper.getPocket(SystemParameterKeys.TAX_POCKET_ID_KEY);
 		
-		if (pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()) {
+		if ((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket() != null) && pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()) {
+			
 			isImmediateUpdateRequired = false;
-		}
-		else if (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) {
+		
+		} else if ((pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket() != null) && pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) {
+			
 			isImmediateUpdateRequired = false;
-		}else if ( pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) {
+		
+		}else if ((pocket.getPocketTemplateByPockettemplateid().getIssystempocket() != null) && pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) {
+			
 			isImmediateUpdateRequired = false;
-		}
-		else if (pocket.getId().equals(globalSVAPocket.getId()) ) {
+		
+		}else if (pocket.getId().equals(globalSVAPocket.getId()) ) {
+			
 			isImmediateUpdateRequired = false;
-		}
-		else if (pocket.getId().equals(taxPocket.getId()) ) {
+		
+		}else if (pocket.getId().equals(taxPocket.getId()) ) {
 			isImmediateUpdateRequired = false;
 		}
 		else {
