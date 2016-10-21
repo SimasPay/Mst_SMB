@@ -1758,7 +1758,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        	entry.setDateofBirth(String.valueOf(subscriber.getDateofbirth()));
 	        }
 	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
-			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
+			if((subscriberGroups != null) && (subscriberGroups.size() > 0) && StringUtils.isNotBlank(entry.getGroupID())) {
 				Groups group = groupDao.getById(Long.valueOf(entry.getGroupID()));
 				SubscriberGroups sg = subscriberGroups.iterator().next();
 				entry.setGroupName(group.getGroupname());

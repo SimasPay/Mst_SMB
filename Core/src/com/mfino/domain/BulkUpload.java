@@ -3,7 +3,6 @@ package com.mfino.domain;
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
-import java.sql.Clob;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,14 +50,14 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	private String username;
 	private String mdn;
 	private String infilename;
-	private Clob infiledata;
+	private String infiledata;
 	private String infilecreatedate;
 	private String outfilename;
-	private Clob outfiledata;
+	private String outfiledata;
 	private String reportfilename;
-	private Clob reportfiledata;
+	private String reportfiledata;
 	private long filetype;
-	private long deliverystatus;
+	private Integer deliverystatus;
 	private Timestamp deliverydate;
 	private Long failedtransactionscount;
 	private long transactionscount;
@@ -74,10 +73,10 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	private String pin;
 	private Timestamp paymentdate;
 	private String approvercomments;
-	private BigDecimal servicechargetransactionlogid;
+	private Long servicechargetransactionlogid;
 	private String qrtzjobid;
 	private String failurereason;
-	private BigDecimal reversesctlid;
+	private Long reversesctlid;
 	private BigDecimal revertamount;
 	private String name;
 	private Long id;
@@ -196,11 +195,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "INFILEDATA", nullable = false)
-	public Clob getInfiledata() {
+	public String getInfiledata() {
 		return this.infiledata;
 	}
 
-	public void setInfiledata(Clob infiledata) {
+	public void setInfiledata(String infiledata) {
 		this.infiledata = infiledata;
 	}
 
@@ -223,11 +222,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "OUTFILEDATA")
-	public Clob getOutfiledata() {
+	public String getOutfiledata() {
 		return this.outfiledata;
 	}
 
-	public void setOutfiledata(Clob outfiledata) {
+	public void setOutfiledata(String outfiledata) {
 		this.outfiledata = outfiledata;
 	}
 
@@ -241,11 +240,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REPORTFILEDATA")
-	public Clob getReportfiledata() {
+	public String getReportfiledata() {
 		return this.reportfiledata;
 	}
 
-	public void setReportfiledata(Clob reportfiledata) {
+	public void setReportfiledata(String reportfiledata) {
 		this.reportfiledata = reportfiledata;
 	}
 
@@ -259,11 +258,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "DELIVERYSTATUS", nullable = false, precision = 10, scale = 0)
-	public long getDeliverystatus() {
+	public Integer getDeliverystatus() {
 		return this.deliverystatus;
 	}
 
-	public void setDeliverystatus(long deliverystatus) {
+	public void setDeliverystatus(Integer deliverystatus) {
 		this.deliverystatus = deliverystatus;
 	}
 
@@ -406,12 +405,12 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SERVICECHARGETRANSACTIONLOGID", scale = 0)
-	public BigDecimal getServicechargetransactionlogid() {
+	public Long getServicechargetransactionlogid() {
 		return this.servicechargetransactionlogid;
 	}
 
 	public void setServicechargetransactionlogid(
-			BigDecimal servicechargetransactionlogid) {
+			Long servicechargetransactionlogid) {
 		this.servicechargetransactionlogid = servicechargetransactionlogid;
 	}
 
@@ -434,11 +433,11 @@ public class BulkUpload extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "REVERSESCTLID", scale = 0)
-	public BigDecimal getReversesctlid() {
+	public Long getReversesctlid() {
 		return this.reversesctlid;
 	}
 
-	public void setReversesctlid(BigDecimal reversesctlid) {
+	public void setReversesctlid(Long reversesctlid) {
 		this.reversesctlid = reversesctlid;
 	}
 

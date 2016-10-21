@@ -209,7 +209,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			e.setParentID(ps.getPartnerByParentid().getId().longValue());
 			e.setTradeName(ps.getPartnerByParentid().getTradename());
 		}
-		e.setLevel(ps.getPslevel().intValue());
+		e.setLevel(ps.getPslevel());
 		
 //		if (ps.getServiceProviderServices() != null) {
 //			e.setServiceProviderID(ps.getServiceProviderServices().getPartnerByServiceProviderID().getID());
