@@ -25,7 +25,7 @@ public class ChargeTxnCommodityTransferMapDAO extends
 		
 		Criteria criteria = createCriteria();
 		if(query.getSctlID()!=null){
-			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, new BigDecimal(query.getSctlID())));
+			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_SctlId, query.getSctlID()));
 		}
 		if(query.getCommodityTransferID()!=null){
 			criteria.add(Restrictions.eq(ChargetxnTransferMap.FieldName_CommodityTransferID, query.getCommodityTransferID()));
