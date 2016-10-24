@@ -223,10 +223,10 @@ public class PocketServiceImpl implements PocketService{
 		// STEP 2
 		BigDecimal pocketBalance = ZERO;
 		if (transferRecord.getPocket().getId().equals(pocket.getId())) {
-			pocketBalance = new BigDecimal(transferRecord.getSourcepocketbalance());
+			pocketBalance = transferRecord.getSourcepocketbalance();
 		}
 		else {
-			pocketBalance =  new BigDecimal(transferRecord.getDestpocketbalance());
+			pocketBalance =  transferRecord.getDestpocketbalance();
 		}
 
 		/**
@@ -309,10 +309,10 @@ public class PocketServiceImpl implements PocketService{
 		// STEP 2
 		BigDecimal pocketBalance = ZERO;
 		if (transferRecord.getPocket().getId().equals(pocket.getId())) {
-			pocketBalance =  new BigDecimal(transferRecord.getSourcepocketbalance());
+			pocketBalance =  transferRecord.getSourcepocketbalance();
 		}
 		else {
-			pocketBalance =  new BigDecimal(transferRecord.getDestpocketbalance());
+			pocketBalance =  transferRecord.getDestpocketbalance();
 		}
 
 		/**
@@ -401,10 +401,10 @@ public class PocketServiceImpl implements PocketService{
 		if (null != transfer) {
 			log.info("Pocket ID = " + pocket.getId());
 			if (transfer.getPocket().getId().equals(pocket.getId())) {
-				pocketBalance =  new BigDecimal(transfer.getSourcepocketbalance());
+				pocketBalance =  transfer.getSourcepocketbalance();
 			}
 			else if (transfer.getDestpocketid().equals(pocket.getId())) {
-				pocketBalance =  new BigDecimal(transfer.getDestpocketbalance());
+				pocketBalance =  transfer.getDestpocketbalance();
 			}
 			end = transfer.getStarttime();
 		}

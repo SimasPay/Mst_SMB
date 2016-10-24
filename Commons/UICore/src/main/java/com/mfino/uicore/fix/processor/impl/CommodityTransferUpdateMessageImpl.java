@@ -121,7 +121,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         entry.setSourcePocketType((c.getSourcepockettype()).intValue());
         entry.setSourcePocketID(c.getPocket().getId().longValue());
         if (c.getSourcepocketbalance() != null) {
-            entry.setSourcePocketBalance(new BigDecimal(c.getSourcepocketbalance()));
+            entry.setSourcePocketBalance(c.getSourcepocketbalance());
         }
         if (c.getPocket() != null && c.getPocket().getPocketTemplateByPockettemplateid() != null) {
             entry.setSourcePocketTemplateDescription(c.getPocket().getPocketTemplateByPockettemplateid().getDescription());
@@ -158,7 +158,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
             entry.setDestPocketID(c.getDestpocketid().longValue());
         }
         if (c.getDestpocketbalance() != null) {
-            entry.setDestPocketBalance(new BigDecimal(c.getDestpocketbalance()));
+            entry.setDestPocketBalance(c.getDestpocketbalance());
         }
         if (c.getDestpocketid() != null) {
             Pocket destPocket = this.pocketDao.getById(c.getDestpocketid().longValue());
@@ -431,9 +431,9 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
     			entry.setCreditAmount(null);
     			if(c.getSourcepocketbalance()!=null){
     			if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
-    			entry.setSourcePocketClosingBalance(new BigDecimal( c.getSourcepocketbalance()).subtract(entry.getDebitAmount()));
+    			entry.setSourcePocketClosingBalance(c.getSourcepocketbalance().subtract(entry.getDebitAmount()));
     			}else{
-    				entry.setSourcePocketClosingBalance(new BigDecimal(c.getSourcepocketbalance()));
+    				entry.setSourcePocketClosingBalance(c.getSourcepocketbalance());
     			}
     			}
     		}else if(realMsg.getSourceDestnPocketID().equals(c.getDestpocketid())){
@@ -441,9 +441,9 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
     			entry.setDebitAmount(null);
     			if(c.getDestpocketbalance()!=null){
     			if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
-        			entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()).add(entry.getCreditAmount()));
+        			entry.setDestPocketClosingBalance(c.getDestpocketbalance().add(entry.getCreditAmount()));
         			}else{
-        				entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()));
+        				entry.setDestPocketClosingBalance(c.getDestpocketbalance());
         			}
     			}
     		}
@@ -461,9 +461,9 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         	   entry.setCreditAmount(null);
         	   if(c.getSourcepocketbalance()!=null){
         		if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
-        			entry.setSourcePocketClosingBalance(new BigDecimal(c.getSourcepocketbalance()).subtract(entry.getDebitAmount()));
+        			entry.setSourcePocketClosingBalance(c.getSourcepocketbalance().subtract(entry.getDebitAmount()));
         			}else{
-        				entry.setSourcePocketClosingBalance(new BigDecimal(c.getSourcepocketbalance()));
+        				entry.setSourcePocketClosingBalance(c.getSourcepocketbalance());
         			}
         	   }
            }else if((c.getDestmdnid()!=null&&c.getDestmdnid().equals(mdnID))
@@ -472,9 +472,9 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         	   entry.setDebitAmount(null);
         	   if(c.getDestpocketbalance()!=null){
         	   if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
-       			entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()).add(entry.getCreditAmount()));
+       			entry.setDestPocketClosingBalance(c.getDestpocketbalance().add(entry.getCreditAmount()));
        			}else{
-       				entry.setDestPocketClosingBalance(new BigDecimal(c.getDestpocketbalance()));
+       				entry.setDestPocketClosingBalance(c.getDestpocketbalance());
        			}
         	   }
            }

@@ -85,7 +85,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
         entry.setSourcePocketType((c.getSourcepockettype()).intValue());
         entry.setSourcePocketID(c.getPocket().getId().longValue());
         if (c.getSourcepocketbalance() != null) {
-            entry.setSourcePocketBalance(new BigDecimal(c.getSourcepocketbalance()));
+            entry.setSourcePocketBalance(c.getSourcepocketbalance());
         }
         if (c.getDestmdn() != null) {
             entry.setDestMDN(c.getDestmdn());
@@ -115,7 +115,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
             entry.setDestPocketID(c.getDestpocketid().longValue());
         }
         if (c.getDestpocketbalance() != null) {
-            entry.setDestPocketBalance(new BigDecimal(c.getDestpocketbalance()));
+            entry.setDestPocketBalance(c.getDestpocketbalance());
         }
         if (c.getBillingtype() != null) {
             entry.setBillingType(c.getBillingtype().intValue());

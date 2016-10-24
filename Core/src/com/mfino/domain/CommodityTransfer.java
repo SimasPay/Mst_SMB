@@ -95,7 +95,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private String sourcesubscribername;
 	private Integer sourcepocketallowance;
 	private Integer sourcepockettype;
-	private String sourcepocketbalance;
+	private BigDecimal sourcepocketbalance;
 	private String sourcecardpan;
 	private String sourcemessage;
 	private String destmdn;
@@ -105,7 +105,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private Integer destpocketallowance;
 	private Integer destpockettype;
 	private Long destpocketid;
-	private String destpocketbalance;
+	private BigDecimal destpocketbalance;
 	private String destbankaccountname;
 	private String destcardpan;
 	private Integer billingtype;
@@ -432,13 +432,13 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.sourcepockettype = sourcepockettype;
 	}
  
-	@Type(type = "uniqueencryptedString")
+	@Type(type = "encryptedBigDecimal")
 	@Column(name = "SOURCEPOCKETBALANCE", length = 1020)
-	public String getSourcepocketbalance() {
+	public BigDecimal getSourcepocketbalance() {
 		return this.sourcepocketbalance;
 	}
 
-	public void setSourcepocketbalance(String sourcepocketbalance) {
+	public void setSourcepocketbalance(BigDecimal sourcepocketbalance) {
 		this.sourcepocketbalance = sourcepocketbalance;
 	}
 
@@ -524,13 +524,13 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.destpocketid = destpocketid;
 	}
     
-	@Type(type = "uniqueencryptedString")
+	@Type(type = "encryptedBigDecimal")
 	@Column(name = "DESTPOCKETBALANCE", length = 1020)
-	public String getDestpocketbalance() {
+	public BigDecimal getDestpocketbalance() {
 		return this.destpocketbalance;
 	}
 
-	public void setDestpocketbalance(String destpocketbalance) {
+	public void setDestpocketbalance(BigDecimal destpocketbalance) {
 		this.destpocketbalance = destpocketbalance;
 	}
 

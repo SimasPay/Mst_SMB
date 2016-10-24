@@ -226,7 +226,7 @@ public class CommodityTransferDAOTest {
         pcmt.setCurrency("dollar");
         pcmt.setSourcecardpan("bunny");
         pcmt.setDestmdnid(mdn2.getId());
-        pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt.setDestpockettype(Integer.MAX_VALUE);
         pcmt.setDestpocketid(Long.MIN_VALUE);
         pcmt.setDestsubscriberid(Long.MIN_VALUE);
@@ -242,7 +242,7 @@ public class CommodityTransferDAOTest {
         pcmt.setOperatorresponsetime(new Timestamp());
         pcmt.setSourceapplication(Integer.MAX_VALUE);
         pcmt.setSourcecardpan("sda");
-        pcmt.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt.setSourcepockettype(Integer.MAX_VALUE);
         pcmt.setSourcereferenceid("dssd");
         pcmt.setSourcesubscribername("sunnys");
@@ -285,7 +285,7 @@ public class CommodityTransferDAOTest {
         pcmt1.setCurrency("dollar");
         pcmt1.setSourcecardpan("bunny");
         pcmt1.setDestmdnid(mdn1.getId());
-        pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt1.setDestpockettype(Integer.MAX_VALUE);
         pcmt1.setDestpocketid(Long.MIN_VALUE);
         pcmt1.setDestsubscriberid(Long.MIN_VALUE);
@@ -301,7 +301,7 @@ public class CommodityTransferDAOTest {
         pcmt1.setOperatorresponsetime(new Timestamp());
         pcmt1.setSourceapplication(Integer.MAX_VALUE);
         pcmt1.setSourcecardpan("sdahhkjhjk");
-        pcmt1.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt1.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt1.setSourcepockettype(Integer.MAX_VALUE);
         pcmt1.setSourcereferenceid("dssd");
         pcmt1.setSourcesubscribername("sunnys");

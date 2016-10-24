@@ -875,10 +875,10 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
   	
   	  //After Correcting the errors reported by Findbugs
         if (ct.getPocket().getId() != null && ct.getPocket().getId().equals(pocket.getId())) {
-        	BigDecimal sourcePocketBalance = new BigDecimal(ct.getSourcepocketbalance());
+        	BigDecimal sourcePocketBalance = ct.getSourcepocketbalance();
             balance = sourcePocketBalance.subtract(transferAmount);
         } else {
-        	BigDecimal destPocketBalance = new BigDecimal(ct.getDestpocketbalance());
+        	BigDecimal destPocketBalance = ct.getDestpocketbalance();
             balance = destPocketBalance.add(transferAmount);
         }
 
