@@ -358,7 +358,7 @@ public class CoreDataWrapper
 				Pocket suspensePocket = pocketDAO.getById(suspensePocketId);
 
 				if(null == suspensePocket.getCurrentbalance()){
-					suspensePocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+					suspensePocket.setCurrentbalance(BigDecimal.valueOf(0));
 				}
 				result = suspensePocket;
 				systemPocketsMap.put(MCEUtil.SUSPENSE_POCKET_ID_KEY, suspensePocket);
@@ -376,7 +376,7 @@ public class CoreDataWrapper
 			Pocket suspensePocket = pocketDAO.getById(suspensePocketId, LockMode.UPGRADE);
 
 			if(null == suspensePocket.getCurrentbalance()){
-				suspensePocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+				suspensePocket.setCurrentbalance(BigDecimal.valueOf(0));
 			}
 
 			return suspensePocket;
@@ -397,7 +397,7 @@ public class CoreDataWrapper
 				Pocket globalSVAPocket = pocketDAO.getById(globalSVAPocketId);
 
 				if(null == globalSVAPocket.getCurrentbalance()){
-					globalSVAPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+					globalSVAPocket.setCurrentbalance(BigDecimal.valueOf(0));
 				}
 				result = globalSVAPocket;
 				systemPocketsMap.put(MCEUtil.GLOBAL_SVA_POCKET_ID_KEY, globalSVAPocket);
@@ -415,7 +415,7 @@ public class CoreDataWrapper
 			Pocket globalSVAPocket = pocketDAO.getById(globalSVAPocketId, LockMode.UPGRADE);
 
 			if(null == globalSVAPocket.getCurrentbalance()){
-				globalSVAPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+				globalSVAPocket.setCurrentbalance(BigDecimal.valueOf(0));
 			}
 
 			return globalSVAPocket;
@@ -435,7 +435,7 @@ public class CoreDataWrapper
 				Pocket chargesPocket =  pocketDAO.getById(chargesPocketId);
 
 				if(null == chargesPocket.getCurrentbalance()){
-					chargesPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+					chargesPocket.setCurrentbalance(BigDecimal.valueOf(0));
 				}
 				result = chargesPocket;
 				systemPocketsMap.put(MCEUtil.CHARGES_POCKET_ID_KEY, chargesPocket);
@@ -453,7 +453,7 @@ public class CoreDataWrapper
 			Pocket chargesPocket =  pocketDAO.getById(chargesPocketId, LockMode.UPGRADE);
 
 			if(null == chargesPocket.getCurrentbalance()){
-				chargesPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+				chargesPocket.setCurrentbalance(BigDecimal.valueOf(0));
 			}
 
 			return chargesPocket;
@@ -478,7 +478,7 @@ public class CoreDataWrapper
 					   chargesPocket =  pocketDAO.getById(chargesPocketId,lockmode);
 
 					if(null == chargesPocket.getCurrentbalance()){
-						chargesPocket.setCurrentbalance(BigDecimal.valueOf(0).toPlainString());
+						chargesPocket.setCurrentbalance(BigDecimal.valueOf(0));
 					}
 					result = chargesPocket;
 					systemPocketsMap.put(key, chargesPocket);

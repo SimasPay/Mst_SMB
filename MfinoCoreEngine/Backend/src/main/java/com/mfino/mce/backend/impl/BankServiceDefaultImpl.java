@@ -309,14 +309,14 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
 					coreDataWrapper.save(lstMfsLedgers);
 
-					returnFix.setSourceMDNBalance(moneyService.round(new BigDecimal(objSrcPocket
-							.getCurrentbalance())));
+					returnFix.setSourceMDNBalance(moneyService.round(objSrcPocket
+							.getCurrentbalance()));
 					returnFix.setDestinationMDNBalance(BigDecimal.valueOf(-1));
 				}
 				if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
-						==(CmFinoFIX.PocketType_BankAccount))
+						.equals(CmFinoFIX.PocketType_BankAccount))
 						&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
-								==(CmFinoFIX.PocketType_SVA) || isLakupandaiPocketType(objDestPocket))) {
+								.equals(CmFinoFIX.PocketType_SVA) || isLakupandaiPocketType(objDestPocket))) {
 					pct.setDestpocketbalance(objDestPocket.getCurrentbalance());
 //					ledgerService.createLedgerEntry(suspensePocket,
 //							chargesPocket, null, pct, charges);
@@ -335,13 +335,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					}
 
 					returnFix.setSourceMDNBalance(BigDecimal.valueOf(-1));
-					returnFix.setDestinationMDNBalance(moneyService.round(new BigDecimal(objDestPocket
-							.getCurrentbalance())));
+					returnFix.setDestinationMDNBalance(moneyService.round(objDestPocket.getCurrentbalance()));
 				}
 				if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
-						==(CmFinoFIX.PocketType_BankAccount))
+						.equals(CmFinoFIX.PocketType_BankAccount))
 						&& (objDestPocket.getPocketTemplateByPockettemplateid().getType()
-								==(CmFinoFIX.PocketType_BankAccount))) {
+								.equals(CmFinoFIX.PocketType_BankAccount))) {
 					returnFix.setSourceMDNBalance(BigDecimal.valueOf(-1));
 					returnFix.setDestinationMDNBalance(BigDecimal.valueOf(-1));
 				}
@@ -707,11 +706,11 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 						if (isNullorZero(returnFix.getInternalErrorCode())) {
 
-							if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType()
+							if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType().intValue()
 									 == CmFinoFIX.PocketType_SVA
 									.intValue() || isNFCPocketType(objSrcPocket) || isLakupandaiPocketType(objSrcPocket))
 									&& (objDestPocket.getPocketTemplateByPockettemplateid()
-											.getType() == CmFinoFIX.PocketType_SVA
+											.getType().intValue() == CmFinoFIX.PocketType_SVA
 											.intValue() || isNFCPocketType(objDestPocket) || isLakupandaiPocketType(objDestPocket))) {
 								returnFix.setSourceMDN(objSrcSubMdn.getMdn());
 								returnFix
@@ -1385,10 +1384,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							.setInternalErrorCode(NotificationCodes.GetAvialableBalance
 									.getInternalErrorCode());
 				}
-				responseFix.setSourceMDNBalance(moneyService.round(new BigDecimal(moneyPocket
-						.getCurrentbalance())));
+				responseFix.setSourceMDNBalance(moneyService.round(moneyPocket
+						.getCurrentbalance()));
 				responseFix
-						.setAmount(moneyService.round(new BigDecimal(moneyPocket.getCurrentbalance())));
+						.setAmount(moneyService.round(moneyPocket.getCurrentbalance()));
 				responseFix.setResult(CmFinoFIX.ResponseCode_Success);
 
 				activitiesLog
@@ -1710,8 +1709,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										}
 										
 
-										returnFix.setSourceMDNBalance(moneyService.round(new BigDecimal(objSrcPocket.getCurrentbalance())));
-										returnFix.setDestinationMDNBalance(moneyService.round(new BigDecimal(objDestPocket.getCurrentbalance())));
+										returnFix.setSourceMDNBalance(moneyService.round(objSrcPocket.getCurrentbalance()));
+										returnFix.setDestinationMDNBalance(moneyService.round(objDestPocket.getCurrentbalance()));
 
 										// Changing the Notification code to
 										// show the Biller Code
@@ -2766,8 +2765,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										handlePCTonSuccess(pct);
 									
 									returnFix.setTransferID(pct.getId().longValue());
-									returnFix.setSourceMDNBalance(moneyService.round(new BigDecimal(sourcePocket.getCurrentbalance())));
-									returnFix.setDestinationMDNBalance(moneyService.round(new BigDecimal(destinationPocket.getCurrentbalance())));
+									returnFix.setSourceMDNBalance(moneyService.round(sourcePocket.getCurrentbalance()));
+									returnFix.setDestinationMDNBalance(moneyService.round(destinationPocket.getCurrentbalance()));
 									returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyCompleteToSender.getInternalErrorCode());
 									activitiesLog.setIssuccessful((short)1);
 
@@ -4206,8 +4205,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //							coreDataWrapper.save(chargesPocket);
 //						}
 
-						returnFix.setSourceMDNBalance(moneyService.round(new BigDecimal(objSrcPocket.getCurrentbalance())));
-						returnFix.setDestinationMDNBalance(moneyService.round(new BigDecimal(objDestPocket.getCurrentbalance())));
+						returnFix.setSourceMDNBalance(moneyService.round(objSrcPocket.getCurrentbalance()));
+						returnFix.setDestinationMDNBalance(moneyService.round(objDestPocket.getCurrentbalance()));
 						returnFix.setResult(CmFinoFIX.ResponseCode_Success);
 
 						handlePCTonFailure(pct);

@@ -83,7 +83,7 @@ public class PocketRetireServiceImpl  implements PocketRetireService {
 	
 	
 	private void checkNChangePocketStatus(Pocket p) {
-		if (p.getCurrentbalance() != null && BigDecimal.ZERO.compareTo(new BigDecimal(p.getCurrentbalance())) == 0) {
+		if (p.getCurrentbalance() != null && BigDecimal.ZERO.compareTo(p.getCurrentbalance()) == 0) {
 			
             CommodityTransferQuery ctQuery = new CommodityTransferQuery();
             ctQuery.setSourceDestnPocket(p);

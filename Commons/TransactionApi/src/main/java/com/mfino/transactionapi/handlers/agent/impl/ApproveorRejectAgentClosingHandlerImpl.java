@@ -256,9 +256,9 @@ public class ApproveorRejectAgentClosingHandlerImpl  extends FIXMessageHandler i
         		continue;
         	}
 
-        	if(!(new BigDecimal(eachPocket.getCurrentbalance()).compareTo(new BigDecimal(0)) == 0) && new BigDecimal(eachPocket.getCurrentbalance()).compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) <= 0) {
+        	if(!(eachPocket.getCurrentbalance().compareTo(new BigDecimal(0)) == 0) && eachPocket.getCurrentbalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) <= 0) {
         		
-        		transactionDetails.setAmount(new BigDecimal(eachPocket.getCurrentbalance()));
+        		transactionDetails.setAmount(eachPocket.getCurrentbalance());
         		
 	        	if(moveMoneyToNationalTreasury(transactionDetails, destMDN)) {
 	        			

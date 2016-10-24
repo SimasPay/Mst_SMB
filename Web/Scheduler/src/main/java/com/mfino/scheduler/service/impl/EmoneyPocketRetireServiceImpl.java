@@ -59,7 +59,7 @@ public class EmoneyPocketRetireServiceImpl implements EmoneyPocketRetireService{
 				for (Pocket eachRtrdPkt : pendingRetiredPockets) {
 					log.info("Get pocket: " + eachRtrdPkt.getId());
 					if (eachRtrdPkt.getCurrentbalance() == null ||
-							new BigDecimal(eachRtrdPkt.getCurrentbalance()).compareTo(BigDecimal.ZERO) == 0) 
+							eachRtrdPkt.getCurrentbalance().compareTo(BigDecimal.ZERO) == 0) 
 					{
 						CommodityTransferQuery ctQuery = new CommodityTransferQuery();
 						ctQuery.setSourceDestnPocket(eachRtrdPkt);

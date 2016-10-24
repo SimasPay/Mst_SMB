@@ -220,7 +220,7 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 			if(objSourcePocket.getCurrentbalance() != null)
 				pct.setSourcepocketbalance(objSourcePocket.getCurrentbalance());
 			else
-				pct.setSourcepocketbalance(String.valueOf(BigDecimal.valueOf(0)));
+				pct.setSourcepocketbalance(BigDecimal.valueOf(0));
 
 			if(pct.getCommodity() == CmFinoFIX.Commodity_Money)
 			{

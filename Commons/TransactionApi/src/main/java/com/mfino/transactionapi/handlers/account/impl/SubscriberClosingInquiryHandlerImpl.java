@@ -178,7 +178,7 @@ public class SubscriberClosingInquiryHandlerImpl  extends FIXMessageHandler impl
 			
 				result.setName(subMDN.getSubscriber().getFirstname());
 				
-				if(new BigDecimal(destPocket.getCurrentbalance()).compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT))) == -1) {
+				if(destPocket.getCurrentbalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT))) == -1) {
 					
 					if(CmFinoFIX.SubscriberStatus_Active.equals(subMDN.getSubscriber().getStatus())) {
 					

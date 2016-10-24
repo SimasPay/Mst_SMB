@@ -409,7 +409,7 @@ public class PocketServiceImpl implements PocketService{
 			end = transfer.getStarttime();
 		}
 		else {
-			pocketBalance = new BigDecimal(pocket.getCurrentbalance());
+			pocketBalance = pocket.getCurrentbalance();
 		}
 
 		// STEP 3: Deduct the RAF between asOfDate and end (the time

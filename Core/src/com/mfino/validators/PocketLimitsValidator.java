@@ -74,7 +74,7 @@ public class PocketLimitsValidator implements IValidator {
 		
 		if (tempTypeLI == CmFinoFIX.PocketType_SVA) {
 			if (null == pocket.getCurrentbalance()) {
-				pocket.setCurrentbalance(BigDecimal.ZERO.toString());
+				pocket.setCurrentbalance(BigDecimal.ZERO);
 			}
 		}
 
@@ -95,7 +95,7 @@ public class PocketLimitsValidator implements IValidator {
 			notificationCode = CmFinoFIX.NotificationCode_TransactionFailedDueToTimeLimitTransactionReached;
 		}
 		else if (tempTypeLI	==	CmFinoFIX.PocketType_SVA) {
-			BigDecimal currBalance = new BigDecimal(pocket.getCurrentbalance());
+			BigDecimal currBalance = pocket.getCurrentbalance();
 			if (isSource) {
 				
 				if (((currBalance.subtract(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaximumstoredvalue())) == -1)) {

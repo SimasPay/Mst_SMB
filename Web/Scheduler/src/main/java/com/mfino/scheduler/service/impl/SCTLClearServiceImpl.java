@@ -231,7 +231,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 			Partner partner = subscriberMDN.getSubscriber().getPartners().iterator().next();
 			Pocket thirdPartySuspensePocket = pocketService.getSuspencePocket(partner);
 			if (thirdPartySuspensePocket != null) {
-				thirdPartySuspensePocketBalnce = new BigDecimal(thirdPartySuspensePocket.getCurrentbalance());
+				thirdPartySuspensePocketBalnce = thirdPartySuspensePocket.getCurrentbalance();
 			}
 		}
 		

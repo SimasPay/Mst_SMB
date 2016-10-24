@@ -184,7 +184,7 @@ public class PendingCommodityTransferDAOTest {
         poc.setCardpan("sdas");
         poc.setCreatetime(new Timestamp());
         poc.setCreatedby("sasa");
-        poc.setCurrentbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        poc.setCurrentbalance(new BigDecimal(Long.MIN_VALUE));
         poc.setCurrentdailyexpenditure(new BigDecimal(Long.MIN_VALUE));
         poc.setCurrentdailytxnscount(Integer.MAX_VALUE);
         poc.setCurrentmonthlyexpenditure(new BigDecimal(Long.MIN_VALUE));
@@ -223,7 +223,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setCurrency("dollar");
         pcmt.setDestcardpan("bunny");
         pcmt.setDestmdnid(mdn2.getId());
-        pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt.setDestpockettype(Integer.MAX_VALUE);
         pcmt.setDestpocketid(Long.MIN_VALUE);
         pcmt.setDestsubscriberid(Long.MIN_VALUE);
@@ -239,7 +239,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt.setOperatorresponsetime(new Timestamp());
         pcmt.setSourceapplication(Integer.MAX_VALUE);
         pcmt.setSourcecardpan("sda");
-        pcmt.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt.setSourcepockettype(Integer.MAX_VALUE);
         pcmt.setSourcereferenceid("dssd");
         pcmt.setSourcesubscribername("sunnys");
@@ -280,7 +280,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setCurrency("dollar");
         pcmt1.setDestcardpan("bunny");
         pcmt1.setDestmdnid(mdn1.getId());
-        pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt1.setDestpocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt1.setDestpockettype(Integer.MAX_VALUE);
         pcmt1.setDestpocketid(Long.MIN_VALUE);
         pcmt1.setDestsubscriberid(Long.MIN_VALUE);
@@ -296,7 +296,7 @@ public class PendingCommodityTransferDAOTest {
         pcmt1.setOperatorresponsetime(new Timestamp());
         pcmt1.setSourceapplication(Integer.MAX_VALUE);
         pcmt1.setSourcecardpan("sdahhkjhjk");
-        pcmt1.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        pcmt1.setSourcepocketbalance(new BigDecimal(Long.MIN_VALUE));
         pcmt1.setSourcepockettype(Integer.MAX_VALUE);
         pcmt1.setSourcereferenceid("dssd");
         pcmt1.setSourcesubscribername("sunnys");

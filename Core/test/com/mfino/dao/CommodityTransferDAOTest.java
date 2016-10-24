@@ -186,7 +186,7 @@ public class CommodityTransferDAOTest {
         poc.setCardpan("sdas");
         poc.setCreatetime(new Timestamp());
         poc.setCreatedby("sasa");
-        poc.setCurrentbalance(new BigDecimal(Long.MIN_VALUE)+"");
+        poc.setCurrentbalance(new BigDecimal(Long.MIN_VALUE));
         poc.setCurrentdailyexpenditure(new BigDecimal(Long.MIN_VALUE));
         poc.setCurrentdailytxnscount(Integer.MAX_VALUE);
         poc.setCurrentmonthlyexpenditure(new BigDecimal(Long.MIN_VALUE));

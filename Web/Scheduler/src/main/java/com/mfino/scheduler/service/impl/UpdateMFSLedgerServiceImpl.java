@@ -82,10 +82,10 @@ public class UpdateMFSLedgerServiceImpl  implements UpdateMFSLedgerService {
 	log.debug("Pocket balance before update = " + pocket.getCurrentbalance());
 	
 	if (DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype())) {
-		pocket.setCurrentbalance(ms.subtract(new BigDecimal(pocket.getCurrentbalance()), mfsLedger.getAmount()).toPlainString());
+		pocket.setCurrentbalance(ms.subtract(pocket.getCurrentbalance(), mfsLedger.getAmount()));
 	}
 	else {
-		pocket.setCurrentbalance(ms.add(new BigDecimal(pocket.getCurrentbalance()), mfsLedger.getAmount()).toPlainString());
+		pocket.setCurrentbalance(ms.add(pocket.getCurrentbalance(), mfsLedger.getAmount()));
 	}
 	
 	mfsLedger.setLedgerstatus(DAOConstants.LEDGER_STATUS_UPDATED);

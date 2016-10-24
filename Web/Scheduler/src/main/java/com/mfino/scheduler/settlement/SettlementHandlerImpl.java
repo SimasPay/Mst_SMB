@@ -266,9 +266,9 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		
 //		if((collectorPocket.getCurrentBalance() != null) && (collectorPocket.getCurrentBalance() > minimumBalance)){
 //			settlementAmount = collectorPocket.getCurrentBalance() - minimumBalance;
-		BigDecimal currentBalance = new BigDecimal(collectorPocket.getCurrentbalance());
+		BigDecimal currentBalance = collectorPocket.getCurrentbalance();
 		if((currentBalance != null) && (currentBalance.compareTo(minimumBalance) > 0)){
-			settlementAmount = new BigDecimal(collectorPocket.getCurrentbalance()).subtract(minimumBalance);
+			settlementAmount = collectorPocket.getCurrentbalance().subtract(minimumBalance);
 			log.info("PartnerSettlementService :: doSettlement() settlement amount calculated="+settlementAmount);
 		}
 		else{

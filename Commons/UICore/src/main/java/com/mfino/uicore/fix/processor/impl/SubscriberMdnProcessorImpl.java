@@ -1998,7 +1998,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 	private boolean isSubscriberEligibleTobeRetired(SubscriberMdn subscriberMDN){	
 		List<Pocket> pocketList = getSubscriberPocketsList(subscriberMDN);
 		for(Pocket pk:pocketList){
-			if(Integer.parseInt(pk.getCurrentbalance()) != 0 ){
+			if(pk.getCurrentbalance().compareTo(BigDecimal.ZERO) != 0 ){	
 				return false;
 			}
 		}

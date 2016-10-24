@@ -211,7 +211,7 @@ public class NFCCardTopupHandlerImpl  extends FIXMessageHandler implements NFCCa
 		}
 		result.setCardAlias(srcPocket.getCardalias());
 		
-		if(new BigDecimal((srcPocket.getCurrentbalance())).subtract(txnDetails.getAmount()).compareTo(BigDecimal.ZERO) == -1){
+		if((srcPocket.getCurrentbalance()).subtract(txnDetails.getAmount()).compareTo(BigDecimal.ZERO) == -1){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionFailedDueToInsufficientBalance);
 			result.setAmount(txnDetails.getAmount());
 			return result;

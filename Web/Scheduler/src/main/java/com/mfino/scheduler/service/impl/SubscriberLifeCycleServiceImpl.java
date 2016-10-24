@@ -743,7 +743,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 		pkList = pocketService.get(pocketQuery);
 		if (pkList != null) {
 			for (Pocket pk : pkList) {
-				if (new BigDecimal(pk.getCurrentbalance()).compareTo(BigDecimal.ZERO) > 0) {
+				if (pk.getCurrentbalance().compareTo(BigDecimal.ZERO) > 0) {
 					pkListWithBalance.add(pk);
 				}
 			}
@@ -813,7 +813,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 			Pocket sourcePocket, SubscriberMdn destMDN, Pocket destPocket,
 			TransactionDetails txnDetails) {
 
-		BigDecimal sourceMDNBalanceAmount = new BigDecimal(sourcePocket.getCurrentbalance());
+		BigDecimal sourceMDNBalanceAmount = sourcePocket.getCurrentbalance();
 		String sourceMessage = ServiceAndTransactionConstants.MESSAGE_MOVE_RETIRED_SUBSCRIBER_BALANCE_MONEY;
 		XMLResult xmlResult = null;
 

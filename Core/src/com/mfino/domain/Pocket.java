@@ -45,7 +45,7 @@ public class Pocket extends Base implements java.io.Serializable {
 	private Company company;
 	private PocketTemplate pocketTemplateByOldpockettemplateid;
 	private Timestamp lasttransactiontime;
-	private String currentbalance;
+	private BigDecimal currentbalance;
 	private BigDecimal currentdailyexpenditure;
 	private BigDecimal currentweeklyexpenditure;
 	private BigDecimal currentmonthlyexpenditure;
@@ -169,13 +169,13 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.lasttransactiontime = lasttransactiontime;
 	}
 
-	@Type(type = "uniqueencryptedString")
+	@Type(type = "encryptedBigDecimal")
 	@Column(name = "CURRENTBALANCE", length = 1020)
-	public String getCurrentbalance() {
+	public BigDecimal getCurrentbalance() {
 		return this.currentbalance;
 	}
 
-	public void setCurrentbalance(String currentbalance) {
+	public void setCurrentbalance(BigDecimal currentbalance) {
 		this.currentbalance = currentbalance;
 	}
 

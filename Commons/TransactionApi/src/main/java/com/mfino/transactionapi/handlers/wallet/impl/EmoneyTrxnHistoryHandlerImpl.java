@@ -394,7 +394,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		    cal.set(Calendar.MILLISECOND, 0);
 		    Date currentDate = cal.getTime();
 		 if(txnDetails.getToDate().compareTo(currentDate)==0){
-			 endingBalance=new BigDecimal(pocket.getCurrentbalance());
+			 endingBalance=pocket.getCurrentbalance();
 		
 		 }else{
 			 bookingToDatedBalance = balanceService.getBookingDatedBalances(pocket, txnDetails.getToDate());

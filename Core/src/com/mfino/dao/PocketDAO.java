@@ -135,7 +135,7 @@ public class PocketDAO extends BaseDAO<Pocket> {
     public void save(Pocket pocket) {
        //initial balance to 0
     	if (pocket.getCurrentbalance()==null) {
-            pocket.setCurrentbalance("0");
+            pocket.setCurrentbalance(new BigDecimal(0));
          }
         super.save(pocket);
     }
@@ -144,7 +144,7 @@ public class PocketDAO extends BaseDAO<Pocket> {
     public void saveWithoutFlush(Pocket pocket){
     	 //initial balance to 0
     	if (pocket.getCurrentbalance()==null) {
-            pocket.setCurrentbalance("0");
+            pocket.setCurrentbalance(new BigDecimal(0));
          }
         super.saveWithoutFlush(pocket);
     }
@@ -210,7 +210,7 @@ public class PocketDAO extends BaseDAO<Pocket> {
 	}
 	
 		public BigDecimal getActualCurrentBalanceForPocket(Pocket pocket){
-			BigDecimal currentBalance = new BigDecimal(pocket.getCurrentbalance());
+			BigDecimal currentBalance = pocket.getCurrentbalance();
 			if(currentBalance ==null){
 				currentBalance = BigDecimal.ZERO;
 			}

@@ -263,7 +263,7 @@ public class AgentClosingInquiryHandlerImpl  extends FIXMessageHandler implement
 
         for (Pocket eachPocket : resultantPockets) {
         
-        	if(new BigDecimal(eachPocket.getCurrentbalance()).compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) == 1) {
+        	if(eachPocket.getCurrentbalance().compareTo(BigDecimal.valueOf(systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_AGENT_CLOSING_AMOUNT))) == 1) {
         		
         		isBalanceAvailable = true;
         		break;

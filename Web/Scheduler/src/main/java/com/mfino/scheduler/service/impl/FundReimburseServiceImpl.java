@@ -124,7 +124,7 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 	private void transferFunds(ChargeDefinition chargedef) {
 		Pocket fundsPocket = chargedef.getPocket();
 		fundsPocket = pocketService.getById(fundsPocket.getId().longValue());
-		if(new BigDecimal(fundsPocket.getCurrentbalance()).compareTo(BigDecimal.ZERO)==-1){
+		if(fundsPocket.getCurrentbalance().compareTo(BigDecimal.ZERO)==-1){
 			SubscriberMdn partnerMdn = fundsPocket.getSubscriberMdn();
 			Pocket fundsSourcePocket = subscriberService.getDefaultPocket(partnerMdn.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
 			if(fundsSourcePocket!=null){
@@ -181,7 +181,7 @@ public class FundReimburseServiceImpl  implements FundReimburseService {
 		transferInquiry.setSourceApplication((int)chanelCode.getChannelsourceapplication());
 		transferInquiry.setServiceName(ServiceAndTransactionConstants.SERVICE_SYSTEM);
 		transferInquiry.setSourceMDN(subMDN.getMdn());
-		transferInquiry.setAmount(new BigDecimal(destPocket.getCurrentbalance()).negate());
+		transferInquiry.setAmount(destPocket.getCurrentbalance().negate());
 		transferInquiry.setDestMDN(subMDN.getMdn());
 		transferInquiry.setDestPocketID(destPocket.getId().longValue());
 		transferInquiry.setServletPath(CmFinoFIX.ServletPath_Subscribers);

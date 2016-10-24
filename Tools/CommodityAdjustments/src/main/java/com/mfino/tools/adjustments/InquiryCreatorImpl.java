@@ -410,10 +410,10 @@ public class InquiryCreatorImpl implements InquiryCreator {
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		Pocket srcPocket = pocketDAO.getById(srcPocketID);
 
-		BigDecimal currBalance = new BigDecimal(srcPocket.getCurrentbalance());
+		BigDecimal currBalance = srcPocket.getCurrentbalance();
 		BigDecimal updatedBalance = currBalance.add(amount);
 
-		srcPocket.setCurrentbalance(updatedBalance.toPlainString());
+		srcPocket.setCurrentbalance(updatedBalance);
 		pocketDAO.save(srcPocket);
 	}
 	

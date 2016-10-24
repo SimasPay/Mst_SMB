@@ -82,7 +82,7 @@ public class CheckBalanceProcessorImpl extends BaseFixProcessor implements Check
 
     private void updateMessage(Pocket pocket, CMJSCheckBalance entry) {
         if (pocket.getCurrentbalance() != null) {
-            entry.setBalance(new BigDecimal(pocket.getCurrentbalance()));
+            entry.setBalance(pocket.getCurrentbalance());
         } else {
         	entry.setBalance(ZERO);
         }

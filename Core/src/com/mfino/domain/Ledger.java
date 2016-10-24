@@ -81,7 +81,7 @@ public class Ledger extends Base implements java.io.Serializable {
 		this.sourcepocketid = sourcepocketid;
 	}
 
-	@Type(type = "uniqueencryptedString")
+	@Type(type = "encryptedBigDecimal")
 	@Column(name = "SOURCEPOCKETBALANCE", length = 1020)
 	public String getSourcepocketbalance() {
 		return this.sourcepocketbalance;
@@ -109,7 +109,7 @@ public class Ledger extends Base implements java.io.Serializable {
 		this.destpocketid = destpocketid;
 	}
 
-	@Type(type = "uniqueencryptedString")
+	@Type(type = "encryptedBigDecimal")
 	@Column(name = "DESTPOCKETBALANCE", length = 1020)
 	public String getDestpocketbalance() {
 		return this.destpocketbalance;

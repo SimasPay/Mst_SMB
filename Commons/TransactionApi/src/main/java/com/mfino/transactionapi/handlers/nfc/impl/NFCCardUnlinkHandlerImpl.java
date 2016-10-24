@@ -145,7 +145,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_NFC);
 		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_NFC_CARD_UNLINK);
-		sc.setTransactionAmount(new BigDecimal(nfcPocket.getCurrentbalance()));
+		sc.setTransactionAmount(nfcPocket.getCurrentbalance());
 		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(nfcCardUnlink.getTransactionIdentifier());
 
@@ -190,7 +190,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 			sctl.setIntegrationtransactionid(Long.valueOf(transactionDetails.getTransID()));
 		}
 		if(proceedWithCardUnlink) {						
-			if(BigDecimal.ZERO.compareTo(new BigDecimal(nfcPocket.getCurrentbalance())) == 0) {
+			if(BigDecimal.ZERO.compareTo(nfcPocket.getCurrentbalance()) == 0) {
 				log.info("NFC Pocket has zero balance... so straightaway deactivate it");
 				isSuccess = true;
 			} else {				
@@ -213,7 +213,7 @@ public class NFCCardUnlinkHandlerImpl extends FIXMessageHandler implements NFCCa
 				transferInquiry.setDestMDN(nfcCardUnlink.getSourceMDN());
 				transferInquiry.setSourcePocketID(nfcPocket.getId().longValue());
 				transferInquiry.setDestPocketID(emoneyPocket.getId().longValue());
-				transferInquiry.setAmount(new BigDecimal(nfcPocket.getCurrentbalance()));
+				transferInquiry.setAmount(nfcPocket.getCurrentbalance());
 				transferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_EMoney_EMoney_Trf);
 				if(CmFinoFIX.SourceApplication_CMS.toString().equals(cc.getChannelcode())) {					
 					transferInquiry.setIsSystemIntiatedTransaction(BOOL_TRUE);

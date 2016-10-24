@@ -26,10 +26,10 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		Ledger ledger = new Ledger();
 		ledger.setSourcepocketid(srcPocket.getId());
 		ledger.setSourcemdn(srcPocket.getSubscriberMdn().getMdn());
-		ledger.setSourcepocketbalance(srcPocket.getCurrentbalance());
+		ledger.setSourcepocketbalance(srcPocket.getCurrentbalance().toString());
 		ledger.setDestmdn(destPocket.getSubscriberMdn().getMdn());
 		ledger.setDestpocketid(destPocket.getId());
-		ledger.setDestpocketbalance(destPocket.getCurrentbalance());
+		ledger.setDestpocketbalance(destPocket.getCurrentbalance().toString());
 		ledger.setAmount(amount);
 		if (ct != null) {
 			ledger.setCommoditytransferid(ct.getId());
@@ -37,8 +37,8 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		else if (pct != null) {
 			ledger.setCommoditytransferid(pct.getId());
 		}
-		srcPocket.setCurrentbalance(String.valueOf(moneyService.subtract(new BigDecimal(srcPocket.getCurrentbalance()), amount)));
-		destPocket.setCurrentbalance(String.valueOf(moneyService.add(new BigDecimal(destPocket.getCurrentbalance()), amount)));
+		srcPocket.setCurrentbalance(moneyService.subtract(srcPocket.getCurrentbalance(), amount));
+		destPocket.setCurrentbalance(moneyService.add(destPocket.getCurrentbalance(), amount));
 
 		coreDataWrapper.save(ledger);
 		return ledger;
@@ -82,7 +82,7 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		
 		lstMfsLedgers.add(generateLedgerEntry(isSettlement,sctlId, ctID, srcPocket, srcAmount, true, isImmediateUpdateRequired));
 		if (isSettlement || isImmediateUpdateRequired) {
-			srcPocket.setCurrentbalance(String.valueOf(moneyService.subtract(new BigDecimal(srcPocket.getCurrentbalance()), srcAmount)));
+			srcPocket.setCurrentbalance(moneyService.subtract(srcPocket.getCurrentbalance(), srcAmount));
 		}
 		
 		// Generates the Suspense pocket ledger entries as the Netting is OFF.
@@ -95,7 +95,7 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		
 		lstMfsLedgers.add(generateLedgerEntry(false,sctlId, ctID, destPocket, amount, false, isImmediateUpdateRequired));
 		if (isImmediateUpdateRequired) {
-			destPocket.setCurrentbalance(String.valueOf(moneyService.add(new BigDecimal(destPocket.getCurrentbalance()), amount)));
+			destPocket.setCurrentbalance(moneyService.add(destPocket.getCurrentbalance(), amount));
 		}
 		
 		if (charges.compareTo(BigDecimal.ZERO) == 1) {
@@ -210,10 +210,10 @@ public class LedgerServiceImpl extends BaseServiceImpl implements LedgerService 
 		
 		if (isImmediateUpdateRequired) {
 			if (DAOConstants.DEBIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype())) {
-				reversePocket.setCurrentbalance(String.valueOf(moneyService.add(new BigDecimal(reversePocket.getCurrentbalance()), mfsLedger.getAmount())));
+				reversePocket.setCurrentbalance(moneyService.add(reversePocket.getCurrentbalance(), mfsLedger.getAmount()));
 			}
 			else if (DAOConstants.CREDIT_LEDGER_TYPE.equals(mfsLedger.getLedgertype())) {
-				reversePocket.setCurrentbalance(String.valueOf(moneyService.subtract(new BigDecimal(reversePocket.getCurrentbalance()), mfsLedger.getAmount())));
+				reversePocket.setCurrentbalance(moneyService.subtract(reversePocket.getCurrentbalance(), mfsLedger.getAmount()));
 			}
 			coreDataWrapper.save(reversePocket);
 		}

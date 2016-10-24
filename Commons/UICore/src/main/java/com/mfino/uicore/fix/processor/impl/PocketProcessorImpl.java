@@ -788,10 +788,10 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
         }
 
         if (null != theEntries.getCurrentBalance()) {
-        	if(theEntries.getCurrentBalance().compareTo(new BigDecimal(thePocket.getCurrentbalance())) != 0){
+        	if(theEntries.getCurrentBalance().compareTo(thePocket.getCurrentbalance()) != 0){
         		log.info("Pocket:"+pocketDetail+" current balance is updated by user:"+getLoggedUserNameWithIP());
         	}
-            thePocket.setCurrentbalance(theEntries.getCurrentBalance()+"");
+            thePocket.setCurrentbalance(theEntries.getCurrentBalance());
         }
 
         if (null != theEntries.getOldPocketTemplateID()) {

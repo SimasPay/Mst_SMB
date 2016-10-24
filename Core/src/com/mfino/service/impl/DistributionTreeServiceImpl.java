@@ -176,7 +176,7 @@ public class DistributionTreeServiceImpl implements DistributionTreeService{
 		treeNode.setLevels(distributionChainTemplate.getDistributionChainLvls().size());
 		Pocket p = subscriberService.getDefaultPocket(partner.getSubscriber().getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 		
-		BigDecimal currBalance = new BigDecimal(p.getCurrentbalance());
+		BigDecimal currBalance = p.getCurrentbalance();
 		treeNode.setBalance(currBalance);
 		return treeNode;
 	}
