@@ -37,11 +37,11 @@ import com.mfino.dao.query.RolePermissionQuery;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.BranchCodes;
 import com.mfino.domain.Company;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Role;
 import com.mfino.domain.RolePermission;
 import com.mfino.domain.Subscriber;
-import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.InvalidPasswordException;
 import com.mfino.exceptions.MfinoRuntimeException;
 import com.mfino.fix.CFIXMsg;
@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
             log.error(MessageText._("No role defined with the enumCode : ") + enumCode);
             return false;
         }
-        return (role.getIssystemuser() != 0);
+        return role.getIssystemuser();
     }
     
     public  String getUserRole(Integer enumCode) {      
@@ -320,7 +320,7 @@ public class UserServiceImpl implements UserService {
 				user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 				user.setStatus(CmFinoFIX.UserStatus_Active);
 			}
-			user.setFirsttimelogin((short) 0);
+			user.setFirsttimelogin(Boolean.FALSE);
 			user.setLastpasswordchangetime(new Timestamp());
 			userDao.save(user);
         } else {
@@ -445,7 +445,7 @@ public class UserServiceImpl implements UserService {
 		    }
 		    user.setPassword(encPassword);
 		    // this triggers the user to change his password when he logs in
-		    user.setFirsttimelogin((short) 1);
+		    user.setFirsttimelogin(Boolean.TRUE);
 		    String emailMsg =
 		        String.format(
 		            "Dear %s %s,\n\tYour username is %s \n\tYour pwd has been reset to: %s"

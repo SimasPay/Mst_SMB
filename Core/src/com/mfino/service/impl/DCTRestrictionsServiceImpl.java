@@ -56,7 +56,7 @@ public class DCTRestrictionsServiceImpl implements DCTRestrictionsService{
 			dctRestriction.setRelationshiptype(CmFinoFIX.RelationShipType_BELONGS_TO_TREE.longValue());
 			Long temp = dctLevel.getDistributionlevel();
 			dctRestriction.setDistributionlevel(temp);
-			dctRestriction.setIsallowed((short) Boolean.compare(true, false));
+			dctRestriction.setIsallowed((short) 0);
 			
 			dctRestrictions.add(dctRestriction);
 		}

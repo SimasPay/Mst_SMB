@@ -474,7 +474,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 					boolean isActive = false;
 					for(Iterator<TransactionCharge> itTcLst = tcLst.iterator();itTcLst.hasNext();){
 						TransactionCharge txnChg = itTcLst.next();
-						if(txnChg.getIsactive() == (short) 1){
+						if(txnChg.getIsactive()){
 							isActive = true;
 							break;
 						}
@@ -760,7 +760,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 				 * once all charges are marked completed loop will end.
 				 */
 				for (TransactionCharge transactionCharge : setTC) {
-					if(transactionCharge.getIsactive() != 0){
+					if(transactionCharge.getIsactive()){
 					arrayTC[count] = transactionCharge;
 					count++;
 					}
@@ -1177,7 +1177,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 										TransactionChargeShareHolder tcShareHolder = new TransactionChargeShareHolder(sctl.getSourcepartnerid().longValue());
 										shareMap = updateShareMap(shareMap, tcShareHolder, calculateChargeShare(sp, calculatedCharge));										
 									}
-									else if(tc.getIschrgdstrbapplicabletosrcsub() != 0 && sctl.getSourcemdn() != null)
+									else if(tc.getIschrgdstrbapplicabletosrcsub() && sctl.getSourcemdn() != null)
 									{
 										SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sctl.getSourcemdn());
 										log.info("smdn -> "+ smdn);
@@ -1195,7 +1195,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 										TransactionChargeShareHolder tcShareHolder = new TransactionChargeShareHolder(sctl.getDestpartnerid().longValue());
 										shareMap = updateShareMap(shareMap, tcShareHolder, calculateChargeShare(sp, calculatedCharge));
 									}
-									else if(tc.getIschrgdstrbapplicabletodestsub() != 0 && StringUtils.isNotBlank(sctl.getDestmdn()))
+									else if(tc.getIschrgdstrbapplicabletodestsub() && StringUtils.isNotBlank(sctl.getDestmdn()))
 									{
 										SubscriberMdn smdn = DAOFactory.getInstance().getSubscriberMdnDAO().getByMDN(sctl.getDestmdn());
 										log.info("smdn -> "+ smdn);

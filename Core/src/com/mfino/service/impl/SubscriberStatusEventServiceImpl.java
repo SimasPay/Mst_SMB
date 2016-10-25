@@ -73,7 +73,7 @@ public class SubscriberStatusEventServiceImpl implements
 				statusNextEvent.setPickupdatetime(nextTimeStamp);
 				statusNextEvent.setStatusonpickup(subscriber.getStatus());
 				statusNextEvent.setSubscribertype(subscriber.getType());
-				statusNextEvent.setProcessingstatus((short) Boolean.compare(false, true));
+				statusNextEvent.setProcessingstatus((short)0);
 				statusEventDAO.save(statusNextEvent);
 			} else {
 				Long temp = subscriber.getStatus().longValue();
@@ -105,7 +105,7 @@ public class SubscriberStatusEventServiceImpl implements
 			statusNextEvent.setPickupdatetime(nextTimeStamp);
 			statusNextEvent.setStatusonpickup(subscriber.getStatus());
 			statusNextEvent.setSubscribertype(subscriber.getType());
-			statusNextEvent.setProcessingstatus((short) Boolean.compare(false, true));
+			statusNextEvent.setProcessingstatus((short) 0);
 			statusEventDAO.save(statusNextEvent);
 		}
 	}

@@ -342,7 +342,7 @@ public class AgentServiceImpl implements AgentService {
 		user.setStatus(CmFinoFIX.UserStatus_Active);
 		user.setStatustime(new Timestamp());
 		user.setFailedlogincount(0);
-		user.setFirsttimelogin((short) 1);
+		user.setFirsttimelogin(Boolean.TRUE);
 		user.setUseractivationtime(new Timestamp());
 		user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		String password = PasswordGenUtil.generate();

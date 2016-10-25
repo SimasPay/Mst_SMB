@@ -181,7 +181,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 			 * This part needs to be modified when date effectivity comes into picture.
 			 */
 			for(ServiceSettlementCfg sc : settlementConfigs){
-				if((sc.getIsdefault() != null) && (sc.getIsdefault() != 0)){
+				if(sc.getIsdefault()){
 					settlementConfig = sc;
 					break;
 				}

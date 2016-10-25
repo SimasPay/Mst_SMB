@@ -95,12 +95,7 @@ public class BranchCodeProcessorImpl extends BaseFixProcessor implements BranchC
 			role.setDisplaytext(e.getDisplayText());
 		}
 		
-		short isSystemUser = 1;
-		if (e.getIsSystemUser() != null) {
-			isSystemUser = (short) (e.getIsSystemUser() ? 1 : 0);
-		}
-		role.setIssystemuser(isSystemUser);
-		
+		role.setIssystemuser(e.getIsSystemUser());
 	}
 
 	private void updateMessage(BranchCodes r, CMJSBranchCodes.CGEntries e) {

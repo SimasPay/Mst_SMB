@@ -389,7 +389,7 @@ public class PartnerServiceImpl implements PartnerService {
 		user.setStatus(CmFinoFIX.UserStatus_Active);
 		user.setStatustime(new Timestamp());
 		user.setFailedlogincount(0);
-		user.setFirsttimelogin((short) Boolean.compare(true, false));
+		user.setFirsttimelogin(Boolean.TRUE);
 		user.setUseractivationtime(new Timestamp());
 		user.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		String password = PasswordGenUtil.generate();
@@ -1015,7 +1015,7 @@ public class PartnerServiceImpl implements PartnerService {
 		}
 		ServiceSettlementConfigDAO serviceSettlementConfigDAO = DAOFactory.getInstance().getServiceSettlementConfigDAO();
 		ServiceSettlementCfg serviceSettlementConfig = new ServiceSettlementCfg();
-		serviceSettlementConfig.setIsdefault((short) Boolean.compare(true, false));
+		serviceSettlementConfig.setIsdefault(Boolean.TRUE);
 		serviceSettlementConfig.setMfinoServiceProvider(serviceSettlementConfig.getMfinoServiceProvider());
 		serviceSettlementConfig.setPartnerServices(partnerService);
 		Pocket collectorPocket = pocketDAO.getById(partnerService.getCollectorpocket().longValue());

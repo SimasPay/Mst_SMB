@@ -172,7 +172,7 @@ public class UserDetailsServiceImpl implements UserDetails {
 	}
 
 	public boolean isPasswordChangeRequired() {
-		return (theUser.getFirsttimelogin() != 0);
+		return theUser.getFirsttimelogin();
 	}
 
 	public boolean isCredentialsNonExpired() {

@@ -208,7 +208,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
         e.setPassword(null);
 
         if (user.getFirsttimelogin() != null) {
-            e.setFirstTimeLogin(user.getFirsttimelogin() != 0);
+            e.setFirstTimeLogin(user.getFirsttimelogin());
         }
 
         if (bankAdmin.getCreatetime() != null) {

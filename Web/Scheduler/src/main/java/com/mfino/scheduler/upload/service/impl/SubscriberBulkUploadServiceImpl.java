@@ -478,7 +478,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		if (CollectionUtils.isNotEmpty(lstGroup)) {
 			for (Groups group:lstGroup) {
 				result.put(group.getGroupname().toLowerCase(), group);
-				if (group.getSystemgroup() != null && group.getSystemgroup() != 0) {
+				if (group.getSystemgroup()) {
 					defaultGroup = group;
 				}
 			}

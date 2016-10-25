@@ -88,7 +88,7 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 			notificationLog.setText(EncryptionUtil.getEncryptedString(text));
 			notificationLog.setSourceaddress(toAddress);
 			notificationLog.setEmailsubject(emailSubject);
-			notificationLog.setIssensitivedata((short) Boolean.compare(false, true));
+			notificationLog.setIssensitivedata((short) 0);
 			notificationLogService.saveNotificationLog(notificationLog);
 			
 			NlogDetails notificationLogDetails = new NlogDetails();
