@@ -128,7 +128,7 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 		SystemParametersDao systemParameterDao = DAOFactory.getInstance().getSystemParameterDao();
 		SystemParameters parameter=systemParameterDao.getSystemParameterByName(property) ;
 		if(parameter!=null){
-			return parameter.getParametervalue();
+			return parameter.getParametervalue().trim();
 		}
 		return null;
 	}

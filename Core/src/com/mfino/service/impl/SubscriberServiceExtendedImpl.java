@@ -386,14 +386,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
 			
-			if(subscriberGroups != null && !subscriberGroups.isEmpty()){
-				
-				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroupid();
-			}
 			
+			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+			Groups defaultGroup = groupDao.getSystemGroup();
+			groupID = defaultGroup.getId();
 			Long kycLevelNo = null;
 			if(null != subscriber.getUpgradablekyclevel()){
 				
@@ -492,10 +489,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
 			
 			//handling adding default group if the group doesnot exist here
-			if(groupID==null){
-				
-				GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-				Groups defaultGroup =groupDao.getSystemGroup();
+			if(groupID!=null){
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				SubscriberGroups sg = new SubscriberGroups();
 				sg.setSubscriberid(subscriber.getId().longValue());
@@ -539,9 +533,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				.getByMDN(subscriberRegistration.getSourceMDN());
 		
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
-		Long tempL = existingSubscriberMDN.getStatus().longValue();
-		Integer tempLI = tempL.intValue();
-		if (existingSubscriberMDN == null || tempLI.equals(CmFinoFIX.MDNStatus_NotRegistered)) {
+		if (existingSubscriberMDN == null || existingSubscriberMDN.getStatus().equals(CmFinoFIX.MDNStatus_NotRegistered)) {
 			Subscriber subscriber = new Subscriber();
 			SubscriberMdn subscriberMDN = new SubscriberMdn();
 			
@@ -921,14 +913,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		if (subscriberMDN.getAuthenticationphrase() == null) {
 			subscriberMDN.setAuthenticationphrase("mFino");
 		}
-		Long tempL = subscriberMDN.getRestrictions().longValue();
-		Long tempWrPinCtL = subscriberMDN.getWrongpincount().longValue();
-		
-		if ( tempL== null) {
+		if (subscriberMDN.getRestrictions()== null) {
 			subscriberMDN
 					.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if ( tempWrPinCtL== null) {
+		if (subscriberMDN.getWrongpincount()== null) {
 			subscriberMDN.setWrongpincount(0);
 		}
 	}
@@ -945,12 +934,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCurrency(systemParametersService
 					.getString(SystemParameterKeys.DEFAULT_CURRENCY_CODE));
 		}
-		Long tempL = subscriber.getRestrictions().longValue();
-		Long tempX = subscriber.getType().longValue();
-		if (tempL == null) {
+		if (subscriber.getRestrictions() == null) {
 			subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
 		}
-		if ( tempX== null) {
+		if (subscriber.getType()== null) {
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
 		}
 		if (subscriber.getCompany() == null) {

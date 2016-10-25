@@ -46,17 +46,17 @@ public class Pocket extends Base implements java.io.Serializable {
 	private PocketTemplate pocketTemplateByOldpockettemplateid;
 	private Timestamp lasttransactiontime;
 	private BigDecimal currentbalance;
-	private BigDecimal currentdailyexpenditure;
-	private BigDecimal currentweeklyexpenditure;
-	private BigDecimal currentmonthlyexpenditure;
-	private Integer currentdailytxnscount;
-	private Integer currentweeklytxnscount;
-	private Integer currentmonthlytxnscount;
+	private BigDecimal currentdailyexpenditure = new BigDecimal(0);
+	private BigDecimal currentweeklyexpenditure = new BigDecimal(0);
+	private BigDecimal currentmonthlyexpenditure = new BigDecimal(0);
+	private Integer currentdailytxnscount = new Integer(0);
+	private Integer currentweeklytxnscount = new Integer(0);
+	private Integer currentmonthlytxnscount = new Integer(0);
 	private Integer lastbankresponsecode;
 	private String lastbankauthorizationcode;
 	private Integer lastbankrequestcode;
 	private String cardpan;
-	private Integer restrictions;
+	private Integer restrictions = new Integer(0);
 	private Boolean isdefault;
 	private Integer status;
 	private Timestamp statustime;
@@ -179,7 +179,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentbalance = currentbalance;
 	}
 
-	@Column(name = "CURRENTDAILYEXPENDITURE", nullable = false, precision = 25, scale = 4)
+	@Column(name = "CURRENTDAILYEXPENDITURE")
 	public BigDecimal getCurrentdailyexpenditure() {
 		return this.currentdailyexpenditure;
 	}
@@ -188,7 +188,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentdailyexpenditure = currentdailyexpenditure;
 	}
 
-	@Column(name = "CURRENTWEEKLYEXPENDITURE", nullable = false, precision = 25, scale = 4)
+	@Column(name = "CURRENTWEEKLYEXPENDITURE")
 	public BigDecimal getCurrentweeklyexpenditure() {
 		return this.currentweeklyexpenditure;
 	}
@@ -197,7 +197,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentweeklyexpenditure = currentweeklyexpenditure;
 	}
 
-	@Column(name = "CURRENTMONTHLYEXPENDITURE", nullable = false, precision = 25, scale = 4)
+	@Column(name = "CURRENTMONTHLYEXPENDITURE")
 	public BigDecimal getCurrentmonthlyexpenditure() {
 		return this.currentmonthlyexpenditure;
 	}
@@ -207,7 +207,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentmonthlyexpenditure = currentmonthlyexpenditure;
 	}
 
-	@Column(name = "CURRENTDAILYTXNSCOUNT", nullable = false, precision = 10, scale = 0)
+	@Column(name = "CURRENTDAILYTXNSCOUNT")
 	public Integer getCurrentdailytxnscount() {
 		return this.currentdailytxnscount;
 	}
@@ -216,7 +216,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentdailytxnscount = currentdailytxnscount;
 	}
 
-	@Column(name = "CURRENTWEEKLYTXNSCOUNT", nullable = false, precision = 10, scale = 0)
+	@Column(name = "CURRENTWEEKLYTXNSCOUNT")
 	public Integer getCurrentweeklytxnscount() {
 		return this.currentweeklytxnscount;
 	}
@@ -225,7 +225,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentweeklytxnscount = currentweeklytxnscount;
 	}
 
-	@Column(name = "CURRENTMONTHLYTXNSCOUNT", nullable = false, precision = 10, scale = 0)
+	@Column(name = "CURRENTMONTHLYTXNSCOUNT")
 	public Integer getCurrentmonthlytxnscount() {
 		return this.currentmonthlytxnscount;
 	}
@@ -234,7 +234,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.currentmonthlytxnscount = currentmonthlytxnscount;
 	}
 
-	@Column(name = "LASTBANKRESPONSECODE", precision = 10, scale = 0)
+	@Column(name = "LASTBANKRESPONSECODE")
 	public Integer getLastbankresponsecode() {
 		return this.lastbankresponsecode;
 	}
@@ -252,7 +252,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.lastbankauthorizationcode = lastbankauthorizationcode;
 	}
 
-	@Column(name = "LASTBANKREQUESTCODE", precision = 10, scale = 0)
+	@Column(name = "LASTBANKREQUESTCODE")
 	public Integer getLastbankrequestcode() {
 		return this.lastbankrequestcode;
 	}
@@ -271,7 +271,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.cardpan = cardpan;
 	}
 
-	@Column(name = "RESTRICTIONS", nullable = false, precision = 10, scale = 0)
+	@Column(name = "RESTRICTIONS")
 	public Integer getRestrictions() {
 		return this.restrictions;
 	}
@@ -280,7 +280,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.restrictions = restrictions;
 	}
 
-	@Column(name = "ISDEFAULT", precision = 3, scale = 0)
+	@Column(name = "ISDEFAULT")
 	public Boolean getIsdefault() {
 		return this.isdefault;
 	}
@@ -289,7 +289,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.isdefault = isdefault;
 	}
 
-	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
+	@Column(name = "STATUS")
 	public Integer getStatus() {
 		return this.status;
 	}
@@ -338,7 +338,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.pockettemplatechangedby = pockettemplatechangedby;
 	}
 
-	@Column(name = "LOWBALNOTIFTYPE", precision = 10, scale = 0)
+	@Column(name = "LOWBALNOTIFTYPE")
 	public Integer getLowbalnotiftype() {
 		return this.lowbalnotiftype;
 	}
@@ -357,7 +357,7 @@ public class Pocket extends Base implements java.io.Serializable {
 		this.lowbalnotiftriggertime = lowbalnotiftriggertime;
 	}
 
-	@Column(name = "LOWBALNOTIFREGISTERED", precision = 10, scale = 0)
+	@Column(name = "LOWBALNOTIFREGISTERED")
 	public Integer getLowbalnotifregistered() {
 		return this.lowbalnotifregistered;
 	}

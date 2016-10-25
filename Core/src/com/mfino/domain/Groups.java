@@ -29,10 +29,10 @@ public class Groups extends Base implements java.io.Serializable {
 	public static final String FieldName_SystemGroup = "systemgroup";
 	
 	private Long id;
-	private long version;
+	
 	private String groupname;
 	private String description;
-	private Short systemgroup;
+	private Boolean systemgroup;
 	private Set<ActorChannelMapping> actorChannelMappings = new HashSet<ActorChannelMapping>(
 			0);
 	private Set<PtcGroupMapping> ptcGroupMappings = new HashSet<PtcGroupMapping>(
@@ -74,11 +74,11 @@ public class Groups extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SYSTEMGROUP", precision = 3, scale = 0)
-	public Short getSystemgroup() {
+	public Boolean getSystemgroup() {
 		return this.systemgroup;
 	}
 
-	public void setSystemgroup(Short systemgroup) {
+	public void setSystemgroup(Boolean systemgroup) {
 		this.systemgroup = systemgroup;
 	}
 

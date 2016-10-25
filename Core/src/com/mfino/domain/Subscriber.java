@@ -59,7 +59,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private KycLevel kycLevel;
 	private Company company;
 	private AuthPersonDetails authPersonDetails;
-	private Long parentid;
+	private Long parentid = 0L;
 	private String firstname;
 	private String lastname;
 	private String gender;
@@ -81,7 +81,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private String approveorrejectcomment;
 	private String appliedby;
 	private Timestamp appliedtime;
-	private Boolean dompetmerchant;
+	private Boolean dompetmerchant = Boolean.FALSE;
 	private String securityquestion;
 	private String securityanswer;
 	private Integer partnertype;
@@ -225,7 +225,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	
 
-	@Column(name = "PARENTID", nullable = false, scale = 0)
+	@Column(name = "PARENTID")
 	public Long getParentid() {
 		return this.parentid;
 	}
@@ -428,7 +428,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.appliedtime = appliedtime;
 	}
 
-	@Column(name = "DOMPETMERCHANT", nullable = false, precision = 3, scale = 0)
+	@Column(name = "DOMPETMERCHANT")
 	public Boolean getDompetmerchant() {
 		return this.dompetmerchant;
 	}
