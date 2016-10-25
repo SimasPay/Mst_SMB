@@ -81,9 +81,6 @@ public class CheckBalanceHandlerImpl extends FIXMessageHandler implements CheckB
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
 
-	//FIXME EMoney check balance can be done here itself instead of sending the request to Multix
-	//FIXME provision is added in dispatcherservlet as bank checkbalance and emoney checkbalance
-	//FIXME EMoney check balance needs to go to emoney partners like for bank
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("Extracting data from transactionDetails in CheckBalanceHandlerImpl for sourceMDN: "+transactionDetails.getSourceMDN());
 		ChannelCode cc = transactionDetails.getCc();
