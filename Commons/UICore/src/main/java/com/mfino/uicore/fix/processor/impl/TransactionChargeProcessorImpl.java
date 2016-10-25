@@ -46,13 +46,13 @@ public class TransactionChargeProcessorImpl extends BaseFixProcessor implements 
 			tc.setChargeDefinition(cdDAO.getById(e.getChargeDefinitionID()));
 		}
 		if (e.isRemoteModifiedIsActive() || e.getIsActive() != null) {
-			tc.setIsactive((short) Boolean.compare(e.getIsActive(), false));
+			tc.setIsactive(e.getIsActive());
 		}
 		if (e.isRemoteModifiedIsChrgDstrbApplicableToSrcSub() || e.getIsChrgDstrbApplicableToSrcSub() != null) {
-			tc.setIschrgdstrbapplicabletosrcsub((short) Boolean.compare(e.getIsChrgDstrbApplicableToSrcSub(), false));
+			tc.setIschrgdstrbapplicabletosrcsub(e.getIsChrgDstrbApplicableToSrcSub());
 		}
 		if (e.isRemoteModifiedIsChrgDstrbApplicableToDestSub() || e.getIsChrgDstrbApplicableToDestSub() != null) {
-			tc.setIschrgdstrbapplicabletodestsub((short) Boolean.compare(e.getIsChrgDstrbApplicableToDestSub(), false));
+			tc.setIschrgdstrbapplicabletodestsub(e.getIsChrgDstrbApplicableToDestSub());
 		}
 	}
 	

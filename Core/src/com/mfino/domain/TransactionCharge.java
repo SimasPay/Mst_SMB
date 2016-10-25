@@ -32,9 +32,9 @@ public class TransactionCharge  extends Base implements java.io.Serializable {
 	private ChargeType chargeType;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private ChargeDefinition chargeDefinition;
-	private Short isactive;
-	private Short ischrgdstrbapplicabletosrcsub;
-	private Short ischrgdstrbapplicabletodestsub;
+	private Boolean isactive;
+	private Boolean ischrgdstrbapplicabletosrcsub;
+	private Boolean ischrgdstrbapplicabletodestsub;
 	private Set<SharePartner> sharePartners = new HashSet<SharePartner>(0);
 	private Set<TransactionChargeLog> transactionChargeLogs = new HashSet<TransactionChargeLog>(
 			0);
@@ -101,32 +101,32 @@ public class TransactionCharge  extends Base implements java.io.Serializable {
 	}
 
 	
-	@Column(name = "ISACTIVE", precision = 3, scale = 0)
-	public Short getIsactive() {
+	@Column(name = "ISACTIVE")
+	public Boolean getIsactive() {
 		return this.isactive;
 	}
 
-	public void setIsactive(Short isactive) {
+	public void setIsactive(Boolean isactive) {
 		this.isactive = isactive;
 	}
 
-	@Column(name = "ISCHRGDSTRBAPPLICABLETOSRCSUB", precision = 3, scale = 0)
-	public Short getIschrgdstrbapplicabletosrcsub() {
+	@Column(name = "ISCHRGDSTRBAPPLICABLETOSRCSUB")
+	public Boolean getIschrgdstrbapplicabletosrcsub() {
 		return this.ischrgdstrbapplicabletosrcsub;
 	}
 
 	public void setIschrgdstrbapplicabletosrcsub(
-			Short ischrgdstrbapplicabletosrcsub) {
+			Boolean ischrgdstrbapplicabletosrcsub) {
 		this.ischrgdstrbapplicabletosrcsub = ischrgdstrbapplicabletosrcsub;
 	}
 
-	@Column(name = "ISCHRGDSTRBAPPLICABLETODESTSUB", precision = 3, scale = 0)
-	public Short getIschrgdstrbapplicabletodestsub() {
+	@Column(name = "ISCHRGDSTRBAPPLICABLETODESTSUB")
+	public Boolean getIschrgdstrbapplicabletodestsub() {
 		return this.ischrgdstrbapplicabletodestsub;
 	}
 
 	public void setIschrgdstrbapplicabletodestsub(
-			Short ischrgdstrbapplicabletodestsub) {
+			Boolean ischrgdstrbapplicabletodestsub) {
 		this.ischrgdstrbapplicabletodestsub = ischrgdstrbapplicabletodestsub;
 	}
 

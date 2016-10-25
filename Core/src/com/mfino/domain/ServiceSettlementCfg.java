@@ -38,7 +38,7 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 	private Pocket pocket;
 	private Timestamp startdate;
 	private Timestamp enddate;
-	private Short isdefault;
+	private Boolean isdefault;
 	private Long schedulerstatus;
 	private BigDecimal similarconfigid;
 
@@ -122,12 +122,12 @@ public class ServiceSettlementCfg extends Base implements java.io.Serializable {
 		this.enddate = enddate;
 	}
 
-	@Column(name = "ISDEFAULT", precision = 3, scale = 0)
-	public Short getIsdefault() {
+	@Column(name = "ISDEFAULT")
+	public Boolean getIsdefault() {
 		return this.isdefault;
 	}
 
-	public void setIsdefault(Short isdefault) {
+	public void setIsdefault(Boolean isdefault) {
 		this.isdefault = isdefault;
 	}
 

@@ -61,7 +61,7 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 	private long status;
 	private Timestamp statustime;
 	private long failedlogincount;
-	private Short firsttimelogin;
+	private Boolean firsttimelogin;
 	private Timestamp lastlogintime;
 	private String admincomment;
 	private Long role;
@@ -274,12 +274,12 @@ public class MfinoUser  extends Base implements java.io.Serializable {
 		this.failedlogincount = failedlogincount;
 	}
 
-	@Column(name = "FIRSTTIMELOGIN", precision = 3, scale = 0)
-	public Short getFirsttimelogin() {
+	@Column(name = "FIRSTTIMELOGIN")
+	public Boolean getFirsttimelogin() {
 		return this.firsttimelogin;
 	}
 
-	public void setFirsttimelogin(Short firsttimelogin) {
+	public void setFirsttimelogin(Boolean firsttimelogin) {
 		this.firsttimelogin = firsttimelogin;
 	}
 

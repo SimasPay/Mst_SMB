@@ -79,7 +79,7 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 			
 			for(CMJSGroup.CGEntries e: entries) {
 				Groups group = new Groups();
-				group.setSystemgroup((short) 0);
+				group.setSystemgroup(Boolean.FALSE);
 				updateEntity(group, e);
         		try {
 					dao.save(group);
@@ -126,7 +126,7 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 		}
 		
 		if(e.getSystemGroup() != null){
-			group.setSystemgroup((short) (e.getSystemGroup() ? 1 : 0));
+			group.setSystemgroup(e.getSystemGroup());
 		}
 	}
 	
@@ -134,7 +134,7 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 		e.setID(""+group.getId());
 		e.setGroupName(group.getGroupname());
 		e.setDescription(group.getDescription());
-		e.setSystemGroup(group.getSystemgroup() != 0);
+		e.setSystemGroup(group.getSystemgroup());
 		e.setRecordVersion(((Long)group.getVersion()).intValue());
 		e.setCreatedBy(group.getCreatedby());
 		e.setCreateTime(group.getCreatetime());

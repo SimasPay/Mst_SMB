@@ -51,7 +51,7 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 			if(!e.getIsDefault().equals(sc.getIsdefault())){
         		log.info("Service Settlement Config:" + sc.getId() + " Is Default value updated to " + e.getIsDefault() + " by user:"+getLoggedUserNameWithIP());
         	}
-			sc.setIsdefault((short) Boolean.compare(e.getIsDefault(), false));
+			sc.setIsdefault(e.getIsDefault());
 		}
 		
 		if (e.getIsDefault() != null && e.getIsDefault().booleanValue()) {

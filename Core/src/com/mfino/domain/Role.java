@@ -26,7 +26,7 @@ public class Role extends Base implements java.io.Serializable {
 	private String enumcode;
 	private String enumvalue;
 	private String displaytext;
-	private short issystemuser;
+	private Boolean issystemuser;
 	private Short prioritylevel;
 	private Long id;
 
@@ -72,12 +72,12 @@ public class Role extends Base implements java.io.Serializable {
 		this.displaytext = displaytext;
 	}
 
-	@Column(name = "ISSYSTEMUSER", nullable = false, precision = 3, scale = 0)
-	public short getIssystemuser() {
+	@Column(name = "ISSYSTEMUSER")
+	public Boolean getIssystemuser() {
 		return this.issystemuser;
 	}
 
-	public void setIssystemuser(short issystemuser) {
+	public void setIssystemuser(Boolean issystemuser) {
 		this.issystemuser = issystemuser;
 	}
 

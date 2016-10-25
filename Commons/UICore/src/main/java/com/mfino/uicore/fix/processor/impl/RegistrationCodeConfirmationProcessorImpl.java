@@ -24,12 +24,11 @@ import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.UserDAO;
 import com.mfino.domain.CardInfo;
 import com.mfino.domain.CreditcardDestinations;
-import com.mfino.domain.CreditcardDestinations;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.MfinoUser;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSConfirmationCode;
@@ -116,7 +115,7 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 							throw new Exception();
 						}
 						card.setCardstatus(CmFinoFIX.UserStatus_Active);
-						card.setIsconformationrequired((short) Boolean.compare(false, true));
+						card.setIsconformationrequired(Boolean.FALSE);
 					}
 				}
 				cardDao.save(cards);
@@ -187,10 +186,10 @@ public class RegistrationCodeConfirmationProcessorImpl extends BaseFixProcessor 
 //				Long tempCardConfirm = card.getIsconformationrequired();
 				
 				if (tempCardStatusLI.equals(CmFinoFIX.UserStatus_Active) && 
-						(card.getIsconformationrequired() != null && card.getIsconformationrequired() != 0)) {
+						(card.getIsconformationrequired() != null && card.getIsconformationrequired())) {
 					if ((System.currentTimeMillis()- card.getLastupdatetime().getTime() 
 							< ConfigurationUtil.getCreditcardRegistrationExpirationTimeInHrs() * 60 * 60 * 1000)) {
-						card.setIsconformationrequired((short) Boolean.compare(true, false));
+						card.setIsconformationrequired(Boolean.FALSE);
 						errorMsg.setErrorCode(4);
 						errorMsg.setErrorDescription(MessageText._("Your profile changes has been confirmed"));
 						updatedcards++;

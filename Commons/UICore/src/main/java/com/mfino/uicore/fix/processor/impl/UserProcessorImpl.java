@@ -17,8 +17,8 @@ import com.mfino.dao.RoleDAO;
 import com.mfino.dao.UserDAO;
 import com.mfino.dao.query.UserQuery;
 import com.mfino.domain.Company;
-import com.mfino.domain.Role;
 import com.mfino.domain.MfinoUser;
+import com.mfino.domain.Role;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSUsers;
@@ -294,7 +294,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 			MfinoUser u = new MfinoUser();
 			u.setPassword(e.getPassword());
 			if(e.getFirstTimeLogin() != null)
-				u.setFirsttimelogin((short) Boolean.compare(e.getFirstTimeLogin(), false));
+				u.setFirsttimelogin(e.getFirstTimeLogin());
 
 			updateEntity(u, e);
 

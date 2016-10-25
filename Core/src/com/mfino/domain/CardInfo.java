@@ -38,7 +38,7 @@ public class CardInfo extends Base implements java.io.Serializable {
 	private String oldissuername;
 	private String oldnameoncard;
 	private long cardstatus;
-	private Short isconformationrequired;
+	private Boolean isconformationrequired;
 	private Long id;
 
 	public CardInfo() {
@@ -200,11 +200,11 @@ public class CardInfo extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "ISCONFORMATIONREQUIRED", precision = 3, scale = 0)
-	public Short getIsconformationrequired() {
+	public Boolean getIsconformationrequired() {
 		return this.isconformationrequired;
 	}
 
-	public void setIsconformationrequired(Short isconformationrequired) {
+	public void setIsconformationrequired(Boolean isconformationrequired) {
 		this.isconformationrequired = isconformationrequired;
 	}
 

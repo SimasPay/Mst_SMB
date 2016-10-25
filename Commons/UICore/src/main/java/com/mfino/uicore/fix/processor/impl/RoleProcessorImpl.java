@@ -11,15 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.RoleDAO;
 import com.mfino.dao.query.RoleQuery;
-import com.mfino.domain.Role;
 import com.mfino.domain.MfinoUser;
+import com.mfino.domain.Role;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.fix.CmFinoFIX.CMJSRole;
-import com.mfino.service.UserService;
 import com.mfino.i18n.MessageText;
-import com.mfino.service.impl.UserServiceImpl;
+import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.RoleProcessor;
 
@@ -119,14 +118,13 @@ public class RoleProcessorImpl extends BaseFixProcessor implements RoleProcessor
 		if(e.getDisplayText() != null) {
 			role.setDisplaytext(e.getDisplayText());
 		}
-		role.setIssystemuser((short) Boolean.compare((e.getIsSystemUser() == null) ? true : e.getIsSystemUser(), false));		
+		role.setIssystemuser(e.getIsSystemUser());		
 	}
 
 	private void updateMessage(Role r, CMJSRole.CGEntries e) {
 		e.setID(r.getId().longValue());
 		e.setDisplayText(r.getDisplaytext());
-		;
-		e.setIsSystemUser(Boolean.valueOf(Short.valueOf(r.getIssystemuser()).toString()));
+		e.setIsSystemUser(r.getIssystemuser());
 		e.setPriorityLevel(r.getPrioritylevel().intValue());
 		
 		Long tempVersionL = r.getVersion();
