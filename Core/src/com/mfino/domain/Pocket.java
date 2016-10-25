@@ -126,8 +126,8 @@ public class Pocket extends Base implements java.io.Serializable {
 
 	
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "POCKETTEMPLATEID", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "POCKETTEMPLATEID")
 	public PocketTemplate getPocketTemplateByPockettemplateid() {
 		return this.pocketTemplateByPockettemplateid;
 	}

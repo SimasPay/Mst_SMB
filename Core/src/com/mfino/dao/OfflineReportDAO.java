@@ -64,7 +64,7 @@ public class OfflineReportDAO extends BaseDAO<OfflineReport> {
 	@SuppressWarnings("unchecked")
 	public List<OfflineReport> getOnlineReports() {
 		 Criteria criteria = createCriteria();
-		 criteria.add(Restrictions.eq(OfflineReport.FieldName_IsOnlineReport, Short.valueOf((short) Boolean.compare(true, false))));
+		 criteria.add(Restrictions.eq(OfflineReport.FieldName_IsOnlineReport, true));
 		 List<OfflineReport> results=criteria.list();
 		 if(results==null||results.isEmpty()){
 			 log.info("No entry found with IsOnlineReport true");
