@@ -295,27 +295,29 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		Map<String, Long> result = new HashMap<String, Long>();
 		
 		if (StringUtils.isNotBlank(MDN)) {
-			SubscriberMDNDAO sMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-			SubscriberMdn smdn = sMDNDAO.getByMDN(MDN);
-			Subscriber subscriber = smdn.getSubscriber();
-			result.put(TYPE, subscriber.getType().longValue());
-			result.put(KYC_LEVEL, subscriber.getKycLevel().getKyclevel().longValue());
-			SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			SubscriberGroups subscriberGroup = sgDao.getBySubscriberID(subscriber.getId().longValue());
-			if((null != subscriberGroup)){
-				result.put(GROUP, subscriberGroup.getGroupid());
-			}
-			
-			if (CmFinoFIX.SubscriberType_Partner.equals((int)subscriber.getType())) {
-				Set<Partner> setPartner = subscriber.getPartners();
-				for (Partner p : setPartner) {
-					result.put(PARTNER_ID, p.getId().longValue());
-				}
+			   SubscriberMDNDAO sMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
+			   SubscriberMdn smdn = sMDNDAO.getByMDN(MDN);
+			   if (smdn != null) {
+			    Subscriber subscriber = smdn.getSubscriber();
+			    result.put(TYPE, subscriber.getType().longValue());
+			    result.put(KYC_LEVEL, subscriber.getKycLevel().getKyclevel());
+			    SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
+			    SubscriberGroups subscriberGroup = sgDao.getBySubscriberID(subscriber.getId());
+			    if(null != subscriberGroup) {
+			     	result.put(GROUP, subscriberGroup.getGroupid());
+			    }
+			    
+			    if (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType())) {
+			      Set<Partner> setPartner = subscriber.getPartners();
+			      for (Partner p : setPartner) {
+			    	  result.put(PARTNER_ID, p.getId());
+			     }
+			   }
 			}
 		}
-		
 		return result;
 	}
+		
 	public Transaction getChargeDetails(ServiceCharge sc) throws DataException, InvalidServiceException, InvalidChargeDefinitionException{
 		Transaction transaction = getCharge(sc);
 		return transaction;
