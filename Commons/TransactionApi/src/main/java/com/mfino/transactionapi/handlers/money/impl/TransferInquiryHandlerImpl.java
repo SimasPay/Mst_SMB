@@ -224,8 +224,8 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 			}
 		}
 
- 		bankAccountToBankAccount.setDestPocketID(destPocket.getId().longValue());
- 		transactionDetails.setDestinationPocketId(destPocket.getId().longValue());
+ 		bankAccountToBankAccount.setDestPocketID(destPocket.getId());
+ 		transactionDetails.setDestinationPocketId(destPocket.getId());
  		result = bankTransferInquiryHandler.handle(transactionDetails);
 		return result;
 
