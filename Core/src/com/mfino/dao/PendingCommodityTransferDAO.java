@@ -38,8 +38,8 @@ import com.mfino.hibernate.Timestamp;
  */
 public class PendingCommodityTransferDAO extends BaseDAO<PendingCommodityTransfer> {
 
-    private static final String PocketBySourcePocketID = "PocketBySourcePocketID";
-    private static final String SubscriberMDNBySourceMDNID = "SubscriberMDNBySourceMDNID";
+    private static final String PocketBySourcePocketID = "pocket";
+    private static final String SubscriberMDNBySourceMDNID = "subscriberMdn";
 
     public PendingCommodityTransferDAO() {
         super();
