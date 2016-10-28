@@ -259,7 +259,7 @@ public class PartnerDAO extends BaseDAO<Partner> {
 		Criteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(Partner.FieldName_BusinessPartnerType, query.getBusinessPartnerType()));
 		criteria.add(Restrictions.eq(Partner.FieldName_BranchCode, query.getBranchCode()));
-		criteria.addOrder(Order.desc("ID"));
+		criteria.addOrder(Order.desc("id"));
 		criteria.setMaxResults(1);
 		List<Partner> results = criteria.list();
 		if (results.size() > 0) {
