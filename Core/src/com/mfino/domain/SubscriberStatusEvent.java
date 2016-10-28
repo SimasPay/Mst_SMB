@@ -31,9 +31,9 @@ public class SubscriberStatusEvent extends Base implements java.io.Serializable 
 	public static final String FieldName_SubscriberId = "subscriberid";
 	private BigDecimal subscriberid;
 	private Timestamp pickupdatetime;
-	private Short processingstatus;
-	private long statusonpickup;
-	private long subscribertype;
+	private Boolean processingstatus;
+	private Integer statusonpickup;
+	private Integer subscribertype;
 
 	private Long id;
 	
@@ -73,29 +73,29 @@ public class SubscriberStatusEvent extends Base implements java.io.Serializable 
 	}
 
 	@Column(name = "PROCESSINGSTATUS", precision = 3, scale = 0)
-	public Short getProcessingstatus() {
+	public Boolean getProcessingstatus() {
 		return this.processingstatus;
 	}
 
-	public void setProcessingstatus(Short processingstatus) {
+	public void setProcessingstatus(Boolean processingstatus) {
 		this.processingstatus = processingstatus;
 	}
 
 	@Column(name = "STATUSONPICKUP", nullable = false, precision = 10, scale = 0)
-	public long getStatusonpickup() {
+	public Integer getStatusonpickup() {
 		return this.statusonpickup;
 	}
 
-	public void setStatusonpickup(long statusonpickup) {
+	public void setStatusonpickup(Integer statusonpickup) {
 		this.statusonpickup = statusonpickup;
 	}
 
 	@Column(name = "SUBSCRIBERTYPE", nullable = false, precision = 10, scale = 0)
-	public long getSubscribertype() {
+	public Integer getSubscribertype() {
 		return this.subscribertype;
 	}
 
-	public void setSubscribertype(long subscribertype) {
+	public void setSubscribertype(Integer subscribertype) {
 		this.subscribertype = subscribertype;
 	}
 

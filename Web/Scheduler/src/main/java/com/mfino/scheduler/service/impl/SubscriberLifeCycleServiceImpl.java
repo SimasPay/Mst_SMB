@@ -337,7 +337,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							partnerService.savePartner(partner);
 						}
 						log.info("Suspended the Partner with subscriber id --> " + subscriber.getId());
-						subscriberStatusEvent.setProcessingstatus((short) 1);
+						subscriberStatusEvent.setProcessingstatus(Boolean.TRUE);
 						subscriberStatusEventService.save(subscriberStatusEvent);
 						subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 					}
@@ -359,7 +359,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 							partnerService.savePartner(partner);
 						}
 					}
-					subscriberStatusEvent.setProcessingstatus((short)1);
+					subscriberStatusEvent.setProcessingstatus(Boolean.TRUE);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 					log.info("Suspended the Subscriber with id --> " + subscriber.getId());
@@ -388,7 +388,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 						}
 					}
 					log.info("Moved to Pending retired the subscriber with id -->" + subscriber.getId());
-					subscriberStatusEvent.setProcessingstatus((short)1);
+					subscriberStatusEvent.setProcessingstatus(Boolean.TRUE);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 
@@ -641,7 +641,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 					}
 				}
 				log.info("Subscriber Status is changed to Inactive because of no activity with id --> " + subscriber.getId());
-				subscriberStatusEvent.setProcessingstatus((short)1);
+				subscriberStatusEvent.setProcessingstatus(Boolean.TRUE);
 				subscriberStatusEventService.save(subscriberStatusEvent);
 				subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 			}else if(Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.equals(subscriber.getType()))){
@@ -676,7 +676,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 						partnerService.savePartner(partner);
 					}
 				}
-				subscriberStatusEvent.setProcessingstatus((short)1);
+				subscriberStatusEvent.setProcessingstatus(Boolean.TRUE);
 				subscriberStatusEventService.save(subscriberStatusEvent);
 				subscriberStatusNextEventService.upsertNextPickupDateForStatusChange(subscriber,false);
 				log.info("Subscriber Status is changed to Inactive  because of no activity with id --> " + subscriber.getId());
@@ -707,7 +707,7 @@ public class SubscriberLifeCycleServiceImpl  implements SubscriberLifeCycleServi
 					subscriber.setStatustime(now);
 					subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 					subscriberService.saveSubscriber(subscriber);
-					subscriberStatusEvent.setProcessingstatus((short)1);
+					subscriberStatusEvent.setProcessingstatus(Boolean.TRUE);
 					subscriberStatusEventService.save(subscriberStatusEvent);
 					if (Long.valueOf(subscriber.getType()) != null && (CmFinoFIX.SubscriberType_Partner.intValue() == subscriber.getType())) {
 						Partner partner = getPartnerForSubscriber(subscriber);
