@@ -23,7 +23,7 @@ import com.mfino.domain.PtcGroupMapping;
  */
 public class PocketTemplateConfigDAO extends BaseDAO<PocketTemplateConfig> {
 
-	public static final String ID_COLNAME = "ID";
+	public static final String ID_COLNAME = "id";
 	public static final String POCKETTEMPLATETABLE = "PocketTemplate";
     public static final String POCKETTEMPLATE_ALIAS = "PocketTemplateAlias";
     public static final String KYCLEVELTABLE = "KYCLevel";
@@ -61,7 +61,7 @@ public class PocketTemplateConfigDAO extends BaseDAO<PocketTemplateConfig> {
 		if (query.get_commodity() != null) {
 			criteria.add(Restrictions.eq(
 					PocketTemplateConfig.FieldName_Commodity,
-					query.get_commodity().longValue()));
+					query.get_commodity()));
 		}
 		if (query.get_pocketTemplateID() != null) {
 //			/*criteria.createAlias(PocketTemplateConfig.FieldName_PocketTemplate, "pt");
