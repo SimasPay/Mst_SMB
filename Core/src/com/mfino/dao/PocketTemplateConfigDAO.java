@@ -61,7 +61,7 @@ public class PocketTemplateConfigDAO extends BaseDAO<PocketTemplateConfig> {
 		if (query.get_commodity() != null) {
 			criteria.add(Restrictions.eq(
 					PocketTemplateConfig.FieldName_Commodity,
-					query.get_commodity()));
+					query.get_commodity().longValue()));
 		}
 		if (query.get_pocketTemplateID() != null) {
 //			/*criteria.createAlias(PocketTemplateConfig.FieldName_PocketTemplate, "pt");
