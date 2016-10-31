@@ -114,17 +114,16 @@ public class SubscriberStatusEventServiceImpl implements
 	private SubscriberStatusEvent getSubscriberStatusEventForSubscriber(
 			Subscriber subscriber,boolean  isOnline) {
 		SubscriberStatusEvent subscriberStatusEvent = null;
-		if (subscriber != null) {
+		if (subscriber != null && subscriber.getId()!=null) {
 			SubscriberStatusEventDAO subscriberStatusEventDAO = DAOFactory.getInstance().getSubscriberStatusEventDAO();
 			List<SubscriberStatusEvent> subscriberStatusEvents = subscriberStatusEventDAO.getAllBySubscriberId(BigDecimal.valueOf(subscriber.getId()));
-			
 			if ((subscriberStatusEvents != null)
 					&& (subscriberStatusEvents.size() != 0)) {
 				for (SubscriberStatusEvent statusEvent : subscriberStatusEvents) {
-					if (isOnline&&!Boolean.valueOf(statusEvent.getProcessingstatus().toString()) ) {
+					if (isOnline && !statusEvent.getProcessingstatus() ) {
 						subscriberStatusEvent = statusEvent;
 						return subscriberStatusEvent;
-					}else if(!isOnline&&Boolean.valueOf(statusEvent.getProcessingstatus().toString())){
+					}else if(!isOnline && statusEvent.getProcessingstatus()){
 						subscriberStatusEvent = statusEvent;
 						return subscriberStatusEvent;
 					}

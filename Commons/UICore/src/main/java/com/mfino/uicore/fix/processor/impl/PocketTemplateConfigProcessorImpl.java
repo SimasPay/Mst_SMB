@@ -159,8 +159,8 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 			entry.setPocketType(p.getPockettype());
 		}
 
-		if ((Long) p.getCommodity() != null) {
-			entry.setCommodity(((Long) p.getCommodity()).intValue());
+		if (p.getCommodity() != null) {
+			entry.setCommodity(p.getCommodity());
 		}
 
 		if (p.getIssuspencepocket() != null) {
@@ -451,8 +451,8 @@ public class PocketTemplateConfigProcessorImpl extends BaseFixProcessor implemen
 					query.set_businessPartnerType(p.getBusinesspartnertype());
 				}
 
-				if((Long) p.getCommodity() != null){
-					query.set_commodity(((Long) p.getCommodity()).intValue());
+				if(p.getCommodity() != null){
+					query.set_commodity(p.getCommodity());
 				}        
 
 				if(p.getKycLevel() != null){

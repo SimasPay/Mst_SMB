@@ -47,7 +47,7 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	private PocketTemplate pocketTemplate;
 	private int subscribertype;
 	private Integer businesspartnertype;
-	private long commodity;
+	private Integer commodity;
 	private Integer pockettype;
 	private Boolean issuspencepocket;
 	private Boolean iscollectorpocket;
@@ -112,11 +112,11 @@ public class PocketTemplateConfig extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "COMMODITY", nullable = false, precision = 10, scale = 0)
-	public long getCommodity() {
+	public Integer getCommodity() {
 		return this.commodity;
 	}
 
-	public void setCommodity(long commodity) {
+	public void setCommodity(Integer commodity) {
 		this.commodity = commodity;
 	}
 

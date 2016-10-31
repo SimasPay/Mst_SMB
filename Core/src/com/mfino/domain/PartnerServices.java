@@ -67,7 +67,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PARTNERID", nullable = false)
+	@JoinColumn(name = "PARTNERID")
 	public Partner getPartnerByPartnerid() {
 		return this.partnerByPartnerid;
 	}

@@ -677,7 +677,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 
 		if ( s.getLasttransactionid() != null) {
-			entry.setLastTransactionID(s.getLasttransactionid().longValue());
+			entry.setLastTransactionID(s.getLasttransactionid());
 		}
 
 		if (s.getLasttransactiontime() != null) {
@@ -711,8 +711,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			entry.setKTPID(s.getKtpid());
 		}
 
-		entry.setMDNRestrictions(Integer.valueOf(Long.valueOf(s.getRestrictions()).intValue()));
-		entry.setStatus(Integer.valueOf(Long.valueOf(s.getStatus()).intValue()));
+		entry.setMDNRestrictions(s.getRestrictions());
+		entry.setStatus(s.getStatus());
 
 		if (s.getUpdatedby() != null) {
 			entry.setUpdatedBy(s.getUpdatedby());
@@ -728,10 +728,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 		// a mdn will always have a subscriber
 		if (s.getSubscriber() != null) {
-			entry.setSubscriberID(s.getSubscriber().getId().longValue());
+			entry.setSubscriberID(s.getSubscriber().getId());
 		}
 
-		entry.setWrongPINCount(Integer.valueOf(Long.valueOf(s.getWrongpincount()).intValue()));
+		entry.setWrongPINCount(s.getWrongpincount());
 
 		// subscriber realted fields
 		if (s.getSubscriber().getFirstname() != null) {
@@ -1380,10 +1380,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					ap = new AuthPersonDetails();
 				}
 				//check on kyc level need to be added on edit to lower kycleve
-				if(Boolean.valueOf(sub.getDetailsrequired().toString())!=null&&Boolean.valueOf(sub.getDetailsrequired().toString())){
+				if(sub.getDetailsrequired()!=null && sub.getDetailsrequired()){
 					sub.setDetailsrequired(CmFinoFIX.Boolean_True);
 				}
-				if(Integer.valueOf(Long.valueOf(sub.getStatus()).intValue()).equals(CmFinoFIX.SubscriberStatus_NotRegistered)){
+				if(sub.getStatus().equals(CmFinoFIX.SubscriberStatus_NotRegistered)){
 					updatePocket(s);
 //					SubscriberServiceExtended.updateUnRegisteredTxnInfoToActivated(s);
 				}
