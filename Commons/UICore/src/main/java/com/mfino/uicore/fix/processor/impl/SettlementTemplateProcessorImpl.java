@@ -16,6 +16,7 @@ import com.mfino.dao.ScheduleTemplateDAO;
 import com.mfino.dao.ServiceSettlementConfigDAO;
 import com.mfino.dao.SettlementTemplateDAO;
 import com.mfino.dao.query.SettlementTemplateQuery;
+import com.mfino.domain.ScheduleTemplate;
 import com.mfino.domain.ServiceSettlementCfg;
 import com.mfino.domain.SettlementTemplate;
 import com.mfino.fix.CFIXMsg;
@@ -30,18 +31,17 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 		PartnerDAO pDAO = DAOFactory.getInstance().getPartnerDAO();
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 		ScheduleTemplateDAO scheduleTemplateDAO = DAOFactory.getInstance().getScheduleTemplateDao();
-		
+		ScheduleTemplate tst = scheduleTemplateDAO.getById(e.getScheduleTemplateID());
 		
 		if (e.getSettlementName() != null) {
 			if(!e.getSettlementName().equals(st.getSettlementname())){
         		log.info("Settlement ID:"+ st.getId()+" Settlement Name updated to "+e.getSettlementName()+" by user:"+getLoggedUserNameWithIP());
         	}
 			st.setSettlementname(e.getSettlementName());
-			
 		}
 		
 		if(e.getScheduleTemplateID() != null){
-			st.setScheduleTemplateByCutofftime(scheduleTemplateDAO.getById(e.getScheduleTemplateID()));
+			st.setScheduleTemplateByCutofftime(tst);
 		}
 		
 		if (e.getSettlementPocket() != null) {
@@ -58,6 +58,7 @@ public class SettlementTemplateProcessorImpl extends BaseFixProcessor implements
 			st.setPartner(pDAO.getById(e.getPartnerID()));
 		}
 		
+		st.setScheduleTemplateByScheduletemplateid(tst);
 	}
 	
 	private void updateMessage(SettlementTemplate st, CMJSSettlementTemplate.CGEntries e) {
