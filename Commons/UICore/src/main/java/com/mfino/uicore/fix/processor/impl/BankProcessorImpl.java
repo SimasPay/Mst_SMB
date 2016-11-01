@@ -132,9 +132,9 @@ public class BankProcessorImpl extends BaseFixProcessor implements BankProcessor
         	e.setBankCode(bank.getBankcode().intValue());
         }
 
-        if((Long)bank.getVersion() != null)
+        if(bank.getVersion() != null)
         {
-            e.setRecordVersion(((Long)bank.getVersion()).intValue());
+            e.setRecordVersion(bank.getVersion());
         }
     }
 }

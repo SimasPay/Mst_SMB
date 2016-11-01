@@ -280,7 +280,7 @@ public class IntegrationPartnerMappingProcessorImpl extends BaseFixProcessor imp
 		e.setIsAuthenticationKeyEnabled(integrationPartnerMapping.getIsauthenticationkeyenabled() != 0);
 		e.setIsLoginEnabled(integrationPartnerMapping.getIsloginenabled() != 0);
 		e.setIsAppTypeCheckEnabled(integrationPartnerMapping.getIsapptypecheckenabled() != 0);
-		e.setRecordVersion(((Long)integrationPartnerMapping.getVersion()).intValue());
+		e.setRecordVersion(integrationPartnerMapping.getVersion());
 		e.setCreatedBy(integrationPartnerMapping.getCreatedby());
 		e.setCreateTime(integrationPartnerMapping.getCreatetime());
 		e.setUpdatedBy(integrationPartnerMapping.getUpdatedby());

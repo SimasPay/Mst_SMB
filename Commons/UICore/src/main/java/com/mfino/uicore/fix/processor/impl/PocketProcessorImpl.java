@@ -938,8 +938,8 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setUpdatedBy(updatedBy);
         }
 
-        if (null != (Long)thePocket.getVersion()) {
-            theEntries.setRecordVersion(((Long)thePocket.getVersion()).intValue());
+        if (null !=thePocket.getVersion()) {
+            theEntries.setRecordVersion(thePocket.getVersion());
         }
         
         if (StringUtils.isNotBlank(thePocket.getCardpan()) && thePocket.getPocketTemplateByPockettemplateid() != null) {

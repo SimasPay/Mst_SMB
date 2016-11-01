@@ -126,11 +126,7 @@ public class RoleProcessorImpl extends BaseFixProcessor implements RoleProcessor
 		e.setDisplayText(r.getDisplaytext());
 		e.setIsSystemUser(r.getIssystemuser());
 		e.setPriorityLevel(r.getPrioritylevel().intValue());
-		
-		Long tempVersionL = r.getVersion();
-		Integer tempVersionLI = tempVersionL.intValue();
-		
-		e.setRecordVersion(tempVersionLI);
+		e.setRecordVersion(r.getVersion());
 		e.setCreatedBy(r.getCreatedby());
 		e.setCreateTime(r.getCreatetime());
 		e.setUpdatedBy(r.getUpdatedby());

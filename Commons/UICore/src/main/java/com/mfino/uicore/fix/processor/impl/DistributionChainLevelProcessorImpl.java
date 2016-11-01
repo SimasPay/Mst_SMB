@@ -63,8 +63,8 @@ public class DistributionChainLevelProcessorImpl extends BaseFixProcessor implem
         m.setLOPMinCommission(e.getMincommission());
         m.setMaxWeeklyPurchaseAmount(e.getMaxweeklylopamount());
         m.setMaxAmountPerTransaction(e.getMaxlopamount());
-        if (null != ((Long)e.getVersion())) {
-            m.setRecordVersion(((Long)e.getVersion()).intValue());
+        if (null !=e.getVersion()) {
+            m.setRecordVersion(e.getVersion());
         }
         if(null != e.getTransactiontypeid()){
         	TransactionTypeDAO transactionTypeDAO = DAOFactory.getInstance().getTransactionTypeDAO();

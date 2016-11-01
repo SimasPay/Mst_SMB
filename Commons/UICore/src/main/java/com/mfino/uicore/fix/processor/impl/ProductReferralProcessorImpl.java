@@ -72,7 +72,7 @@ public class ProductReferralProcessorImpl extends BaseFixProcessor implements Pr
 		e.setEmail(productReferral.getEmail());		
 		e.setProductDesired(productReferral.getProductdesired());
 		e.setOthers(productReferral.getOthers());
-		e.setRecordVersion(((Long)productReferral.getVersion()).intValue());
+		e.setRecordVersion(productReferral.getVersion());
 		e.setCreatedBy(productReferral.getCreatedby());
 		e.setCreateTime(productReferral.getCreatetime());
 		e.setUpdatedBy(productReferral.getUpdatedby());

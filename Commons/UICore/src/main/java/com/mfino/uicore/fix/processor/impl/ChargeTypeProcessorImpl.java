@@ -45,7 +45,7 @@ public class ChargeTypeProcessorImpl extends BaseFixProcessor implements ChargeT
 		e.setMSPID(ct.getMfinoServiceProvider().getId().longValue());
 		e.setName(ct.getName());
 		e.setDescription(ct.getDescription());
-		e.setRecordVersion(((Long)ct.getVersion()).intValue());
+		e.setRecordVersion(ct.getVersion());
 		e.setCreatedBy(ct.getCreatedby());
 		e.setCreateTime(ct.getCreatetime());
 		e.setUpdatedBy(ct.getUpdatedby());

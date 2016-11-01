@@ -74,7 +74,7 @@ public class ChargePricingProcessorImpl extends BaseFixProcessor implements Char
 		e.setCharge(cp.getCharge());
 		e.setMaxCharge(cp.getMaxcharge());
 		e.setMinCharge(cp.getMincharge());
-		e.setRecordVersion(((Long) cp.getVersion()).intValue());
+		e.setRecordVersion(cp.getVersion());
 	}
 
 	@Override

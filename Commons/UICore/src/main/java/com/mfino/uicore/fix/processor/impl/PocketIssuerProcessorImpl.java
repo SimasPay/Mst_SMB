@@ -283,8 +283,8 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 				CmFinoFIX.TagID_BankAccountCardType, null,
 				p.getBankaccountcardtype()));
 
-		if ((Long)p.getVersion() != null) {
-			entry.setRecordVersion(((Long)p.getVersion()).intValue());
+		if (p.getVersion() != null) {
+			entry.setRecordVersion(p.getVersion());
 		}
 		if (p.getLowbalancenotificationenabled() != null) {
 			entry.setLowBalanceNotificationEnabled(p.getLowbalancenotificationenabled() != null 

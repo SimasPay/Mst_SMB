@@ -29,7 +29,7 @@ public class MFSBillerPartnerProcessorImpl extends BaseFixProcessor implements M
 	private void updateMessage(MfsbillerPartnerMap s, CMJSMFSBillerPartner.CGEntries e) {
 		e.setID(s.getId().longValue());
 		e.setMSPID(s.getMfinoServiceProvider().getId().longValue());
-		e.setRecordVersion(((Long)s.getVersion()).intValue());
+		e.setRecordVersion(s.getVersion());
 		if (s.getMfsBiller() != null) {
 			e.setMFSBillerId(s.getMfsBiller().getId().longValue());
 		}

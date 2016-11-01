@@ -99,8 +99,8 @@ public class ChannelCodeProcessorImpl extends BaseFixProcessor implements Channe
         if (channelCode.getUpdatedby() != null) {
             entry.setUpdatedBy(channelCode.getUpdatedby());
         }
-        if (((Long)channelCode.getVersion()) != null) {
-            entry.setRecordVersion(((Long)channelCode.getVersion()).intValue());
+        if (channelCode.getVersion() != null) {
+            entry.setRecordVersion(channelCode.getVersion());
         }
     }
 

@@ -77,8 +77,8 @@ public class LOPHistoryProcessorImpl extends BaseFixProcessor implements LOPHist
         if (lopHistory.getUpdatedby() != null) {
             entry.setUpdatedBy(lopHistory.getUpdatedby());
         }
-        if (((Long)lopHistory.getVersion()) != null) {
-            entry.setRecordVersion(((Long)lopHistory.getVersion()).intValue());
+        if (lopHistory.getVersion() != null) {
+            entry.setRecordVersion(lopHistory.getVersion());
         }
         if (lopHistory.getComments() != null) {
             entry.setComments(lopHistory.getComments());

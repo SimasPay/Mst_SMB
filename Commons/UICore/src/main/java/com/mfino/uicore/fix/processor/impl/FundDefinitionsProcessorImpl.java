@@ -145,7 +145,7 @@ public class FundDefinitionsProcessorImpl extends BaseFixProcessor implements Fu
 					fundDefinition.getFundEventsByGenerationofotponfailure().getFundeventtype()));
 		}
 		e.setIsMultipleWithdrawalAllowed(fundDefinition.getIsmultiplewithdrawalallowed() != 0);
-		e.setRecordVersion(((Long)fundDefinition.getVersion()).intValue());
+		e.setRecordVersion(fundDefinition.getVersion());
 		e.setCreatedBy(fundDefinition.getCreatedby());
 		e.setCreateTime(fundDefinition.getCreatetime());
 		e.setUpdatedBy(fundDefinition.getUpdatedby());

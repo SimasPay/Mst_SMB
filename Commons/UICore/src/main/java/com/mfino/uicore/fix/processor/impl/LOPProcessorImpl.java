@@ -165,8 +165,8 @@ public class LOPProcessorImpl extends BaseFixProcessor implements LOPProcessor{
         if (lop.getUpdatedby() != null) {
             entry.setUpdatedBy(lop.getUpdatedby());
         }
-        if ((Long)lop.getVersion() != null) {
-            entry.setRecordVersion(((Long)lop.getVersion()).intValue());
+        if (lop.getVersion() != null) {
+            entry.setRecordVersion(lop.getVersion());
         }
         if (lop.getLopcomment() != null) {
             entry.setComment(lop.getLopcomment());

@@ -532,8 +532,8 @@ public class PartnerProcessorImpl extends BaseFixProcessor implements PartnerPro
 	        if(partner.getAuthorizedemail() != null){
 	        	entry.setAuthorizedEmail(partner.getAuthorizedemail());
 	        }
-	        if ((Long)partner.getVersion() != null) {
-	            entry.setRecordVersion(((Long)partner.getVersion()).intValue());
+	        if (partner.getVersion() != null) {
+	            entry.setRecordVersion(partner.getVersion());
 	        }
         }
         if(subscriber != null){

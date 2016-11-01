@@ -125,8 +125,8 @@ public class BrandProcessorImpl extends BaseFixProcessor implements BrandProcess
         if (brand.getUpdatedby() != null) {
             entry.setUpdatedBy(brand.getUpdatedby());
         }
-        if ((Long)brand.getVersion() != null) {
-            entry.setRecordVersion(((Long)brand.getVersion()).intValue());
+        if (brand.getVersion() != null) {
+            entry.setRecordVersion(brand.getVersion());
         }
     }
 

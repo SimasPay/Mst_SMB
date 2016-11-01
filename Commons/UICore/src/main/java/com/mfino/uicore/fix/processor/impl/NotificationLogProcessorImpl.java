@@ -234,7 +234,7 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 		}
 		e.setSourceAddress(notificationLog.getSourceaddress());
 		e.setEmailSubject(notificationLog.getEmailsubject());		
-		e.setRecordVersion(((Long)notificationLog.getVersion()).intValue());
+		e.setRecordVersion(notificationLog.getVersion());
 		e.setCreatedBy(notificationLog.getCreatedby());
 		e.setCreateTime(notificationLog.getCreatetime());
 		e.setUpdatedBy(notificationLog.getUpdatedby());

@@ -39,8 +39,8 @@ public class DistributionChainTemplateProcessorImpl extends BaseFixProcessor imp
         m.setCreateTime(e.getCreatetime());
         m.setUpdatedBy(e.getUpdatedby());
         m.setLastUpdateTime(e.getLastupdatetime());
-        if (null != ((Long)e.getVersion())) {
-            m.setRecordVersion(((Long)e.getVersion()).intValue());
+        if (null != e.getVersion()) {
+            m.setRecordVersion(e.getVersion());
         }
         if(((Long)e.getServiceid()) != null){
         	ServiceDAO serviceDAO = DAOFactory.getInstance().getServiceDAO();

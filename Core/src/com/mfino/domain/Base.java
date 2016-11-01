@@ -19,7 +19,7 @@ public class Base {
 	public static final String FieldName_CreatedBy = "createdby";
 	
 	
-	protected long version;
+	protected Integer version;
 	protected Timestamp lastupdatetime;
 	protected String updatedby;
 	protected Timestamp createtime;
@@ -27,11 +27,11 @@ public class Base {
 	
 	@Version
 	@Column(name = "VERSION", nullable = false, precision = 10, scale = 0)
-	public long getVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 
-	public void setVersion(long version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 	@Type(type = "userDefinedTimeStamp")

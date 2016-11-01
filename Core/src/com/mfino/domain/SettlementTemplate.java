@@ -55,7 +55,7 @@ public class SettlementTemplate extends Base implements java.io.Serializable {
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SCHEDULETEMPLATEID", nullable = false)
+	@JoinColumn(name = "SCHEDULETEMPLATEID")
 	public ScheduleTemplate getScheduleTemplateByScheduletemplateid() {
 		return this.scheduleTemplateByScheduletemplateid;
 	}

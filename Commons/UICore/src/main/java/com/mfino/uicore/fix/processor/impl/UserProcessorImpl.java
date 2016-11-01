@@ -685,11 +685,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 		if(user.getWorkphone()!=null){
 			e.setWorkPhone(user.getWorkphone());
 		}
-		
-		Long tempRecordVersionL=user.getVersion();
-		Integer tempRecordVersionLI = tempRecordVersionL.intValue();
-		
-		e.setRecordVersion(tempRecordVersionLI);
+		e.setRecordVersion(user.getVersion());
 	}
 
 	private boolean modifiedOtherFields(CMJSUsers.CGEntries entry) {

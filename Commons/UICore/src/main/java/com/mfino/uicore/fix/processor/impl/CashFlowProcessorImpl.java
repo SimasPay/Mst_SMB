@@ -178,7 +178,7 @@ public class CashFlowProcessorImpl extends BaseFixProcessor implements CashFlowP
         entry.setOperatorResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorResponseCode, null, c.getOperatorresponsecode()));
         entry.setOperatorCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorCodeForRouting, null, c.getOperatorcode()));
 //        entry.setBankCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankCodeForRouting, null, c.getBankCode()));
-        entry.setRecordVersion(((Long)c.getVersion()).intValue());
+        entry.setRecordVersion(c.getVersion());
     }
     /*
      *  This Method is to be used when we are doing a Group By Opearation

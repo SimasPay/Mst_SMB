@@ -135,7 +135,7 @@ public class GroupsProcessorImpl extends BaseFixProcessor implements GroupsProce
 		e.setGroupName(group.getGroupname());
 		e.setDescription(group.getDescription());
 		e.setSystemGroup(group.getSystemgroup());
-		e.setRecordVersion(((Long)group.getVersion()).intValue());
+		e.setRecordVersion(group.getVersion());
 		e.setCreatedBy(group.getCreatedby());
 		e.setCreateTime(group.getCreatetime());
 		e.setUpdatedBy(group.getUpdatedby());

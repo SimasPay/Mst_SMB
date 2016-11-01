@@ -47,7 +47,7 @@ public class MFSDenominationsProcessorImpl extends BaseFixProcessor implements M
 		e.setDenominationAmount(md.getDenominationamount());
 		e.setDescription(md.getDescription());
 		e.setProductCode(md.getProductcode());	
-		e.setRecordVersion(((Long)md.getVersion()).intValue());
+		e.setRecordVersion(md.getVersion());
 	}
 
 	@Override

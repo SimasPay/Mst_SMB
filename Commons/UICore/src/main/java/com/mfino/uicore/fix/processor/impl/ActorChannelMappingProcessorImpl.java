@@ -107,7 +107,7 @@ public class ActorChannelMappingProcessorImpl extends BaseFixProcessor implement
 			e.setGroupID(acm.getGroups().getId().toString());
 			e.setGroupName(acm.getGroups().getGroupname());
 		}
-		e.setRecordVersion(((Long)acm.getVersion()).intValue());
+		e.setRecordVersion(acm.getVersion());
 		e.setCreatedBy(acm.getCreatedby());
 		e.setCreateTime(acm.getCreatetime());
 		e.setUpdatedBy(acm.getUpdatedby());

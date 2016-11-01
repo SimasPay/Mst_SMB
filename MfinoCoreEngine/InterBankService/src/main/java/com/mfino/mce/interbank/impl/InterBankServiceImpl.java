@@ -59,7 +59,7 @@ public class InterBankServiceImpl implements InterBankService{
 		ibt.setCharges(ibtInquiry.getCharges());
 		
 		ibt.setIbtstatus(Long.valueOf(CmFinoFIX.IBTStatus_INQUIRY));
-		ibt.setSctlid(new BigDecimal(ibtInquiry.getServiceChargeTransactionLogID()));
+		ibt.setSctlid(ibtInquiry.getServiceChargeTransactionLogID());
 
 		InterBankTransfersDao interBankTransferDao = DAOFactory.getInstance().getInterBankTransferDao();
 		interBankTransferDao.save(ibt);

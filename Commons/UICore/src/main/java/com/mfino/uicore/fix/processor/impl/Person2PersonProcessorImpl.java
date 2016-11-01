@@ -195,9 +195,9 @@ public class Person2PersonProcessorImpl extends BaseFixProcessor implements Pers
             e.setUpdatedBy((s.getUpdatedby()));
         }
 
-        if((Long)s.getVersion() != null)
+        if(s.getVersion() != null)
         {
-            e.setRecordVersion(((Long)s.getVersion()).intValue());
+            e.setRecordVersion(s.getVersion());
         }
 
     }

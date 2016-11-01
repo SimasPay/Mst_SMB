@@ -47,7 +47,7 @@ public class IPMappingprocessorImpl extends BaseFixProcessor implements IPMappin
 		if (ipm.getIpaddress() != null) {
 			e.setIPAddress(ipm.getIpaddress());
 		}
-		e.setRecordVersion(((Long)ipm.getVersion()).intValue());
+		e.setRecordVersion(ipm.getVersion());
 	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)

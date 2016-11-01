@@ -419,7 +419,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         entry.setOperatorResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorResponseCode, null, c.getOperatorresponsecode()));
         entry.setOperatorCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorCodeForRouting, null, c.getOperatorcode()));
 //        entry.setBankCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankCodeForRouting, null, c.getBankCode()));
-        entry.setRecordVersion(((Long)c.getVersion()).intValue());
+        entry.setRecordVersion(c.getVersion());
     }
 	
 	private void processCreditDebits(CMJSCommodityTransfer realMsg, CommodityTransfer c, CGEntries entry) {

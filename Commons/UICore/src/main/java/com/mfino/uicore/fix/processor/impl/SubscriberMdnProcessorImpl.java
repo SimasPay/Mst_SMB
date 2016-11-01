@@ -1192,7 +1192,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 				Integer oldRestrictions = Integer.valueOf(Long.valueOf(s.getRestrictions()).intValue());
 
-				if (!e.getRecordVersion().equals(s.getVersion())) {
+				if (e.getRecordVersion()!=s.getVersion()) {
 					log.warn("SubscriberMDN:"+s.getId()+" Stale Data Exception for user:"+getLoggedUserNameWithIP());
 					handleStaleDataException();
 				}

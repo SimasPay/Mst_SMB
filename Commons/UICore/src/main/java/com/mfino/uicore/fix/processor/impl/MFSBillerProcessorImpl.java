@@ -41,7 +41,7 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 	public void updateMessage(MfsBiller mb, CMJSMFSBiller.CGEntries e) {
 		e.setID(mb.getId().longValue());
 		e.setMSPID(mb.getMfinoServiceProvider().getId().longValue());
-		e.setRecordVersion(((Long)mb.getVersion()).intValue());
+		e.setRecordVersion(mb.getVersion());
 		e.setMFSBillerName(mb.getMfsbillername());
 		e.setMFSBillerCode(mb.getMfsbillercode());
 		e.setMFSBillerType(mb.getMfsbillertype());
@@ -64,7 +64,7 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 			for (CMJSMFSBiller.CGEntries e: entries) {
 				MfsBiller sc = dao.getById(e.getID());
 				
-				if (!(((Long)sc.getVersion()).equals(e.getRecordVersion()))) {
+				if (sc.getVersion()!=e.getRecordVersion()) {
 					handleStaleDataException();
 				}
 				

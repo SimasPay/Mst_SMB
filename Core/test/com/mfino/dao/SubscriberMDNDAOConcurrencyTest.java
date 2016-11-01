@@ -127,7 +127,7 @@ public class SubscriberMDNDAOConcurrencyTest {
 
         SubscriberMdnQuery query = new SubscriberMdnQuery();
 
-        query.setVersion(((Long)subMdn.getVersion()).intValue());
+        query.setVersion(subMdn.getVersion());
         query.setLimit(10);
         query.setStart(0);
 

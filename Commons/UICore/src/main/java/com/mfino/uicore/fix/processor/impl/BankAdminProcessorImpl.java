@@ -308,7 +308,7 @@ public class BankAdminProcessorImpl extends BaseFixProcessor implements BankAdmi
                 if(user.getRestrictions() != null){
                     //e.set
                 }
-                e.setRecordVersion(((Long)bankAdmin.getVersion()).intValue());
+                e.setRecordVersion(bankAdmin.getVersion());
     }
     
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)

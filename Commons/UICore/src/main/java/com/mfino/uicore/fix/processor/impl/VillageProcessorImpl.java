@@ -59,7 +59,7 @@ public class VillageProcessorImpl extends BaseFixProcessor implements VillagePro
 	}
 
 private void updateMessage(Village r, CMJSVillage.CGEntries e) {
-	e.setID(r.getId().longValue());
+	e.setID(r.getId());
 	e.setDisplayText(r.getDisplaytext());
-	e.setIdDistrict(r.getDistrict().getVersion());
+	e.setIdDistrict(r.getDistrict().getId());
 }}

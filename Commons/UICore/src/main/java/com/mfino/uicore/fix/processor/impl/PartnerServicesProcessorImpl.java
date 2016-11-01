@@ -237,7 +237,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			e.setIsServiceChargeShareText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_IsServiceChargeShare, null, e.getIsServiceChargeShare()));
 		}
 		
-		e.setRecordVersion(((Long)ps.getVersion()).intValue());
+		e.setRecordVersion(ps.getVersion());
 		e.setCreatedBy(ps.getCreatedby());
 		e.setCreateTime(ps.getCreatetime());
 		e.setUpdatedBy(ps.getUpdatedby());
@@ -303,7 +303,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 				PartnerServices ps = dao.getById(e.getID());
 				log.info("Partner Services: "+ps.getId()+" details edit requested by user:"+getLoggedUserNameWithIP());
 				
-				if (!(((Long)ps.getVersion()).equals(e.getRecordVersion()))) {
+				if (ps.getVersion()!=e.getRecordVersion()) {
 					log.warn("Partner Services: "+ps.getId()+" stale data exception for user:"+getLoggedUserNameWithIP());
 					handleStaleDataException();					
 				}

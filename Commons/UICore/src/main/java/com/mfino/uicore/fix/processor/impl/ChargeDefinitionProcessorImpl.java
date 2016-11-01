@@ -114,7 +114,7 @@ public class ChargeDefinitionProcessorImpl extends BaseFixProcessor implements C
 		if ( (Short) cd.getIstaxable() != null) {
 			e.setIsTaxable(cd.getIstaxable() != 0);
 		}
-		e.setRecordVersion(((Long)cd.getVersion()).intValue());
+		e.setRecordVersion(cd.getVersion());
 		e.setCreatedBy(cd.getCreatedby());
 		e.setCreateTime(cd.getCreatetime());
 		e.setUpdatedBy(cd.getUpdatedby());

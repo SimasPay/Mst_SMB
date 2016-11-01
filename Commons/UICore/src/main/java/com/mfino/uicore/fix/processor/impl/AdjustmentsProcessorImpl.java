@@ -90,7 +90,7 @@ public class AdjustmentsProcessorImpl extends FIXMessageHandler implements Adjus
 		if(adj.getApproveorrejecttime() != null) {
 			e.setApproveOrRejectTime(adj.getApproveorrejecttime());
 		}
-		e.setRecordVersion(((Long)adj.getVersion()).intValue());
+		e.setRecordVersion(adj.getVersion());
 		e.setCreatedBy(adj.getCreatedby());
 		e.setCreateTime(adj.getCreatetime());
 		e.setUpdatedBy(adj.getUpdatedby());

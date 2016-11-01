@@ -32,7 +32,7 @@ public class InterbankTransfers extends Base implements java.io.Serializable {
 	private BigDecimal amount;
 	private BigDecimal charges;
 	private BigDecimal transferid;
-	private BigDecimal sctlid;
+	private Long sctlid;
 	private String sessionid;
 	private String narration;
 	private String paymentreference;
@@ -139,11 +139,11 @@ public class InterbankTransfers extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SCTLID", scale = 0)
-	public BigDecimal getSctlid() {
+	public Long getSctlid() {
 		return this.sctlid;
 	}
 
-	public void setSctlid(BigDecimal sctlid) {
+	public void setSctlid(Long sctlid) {
 		this.sctlid = sctlid;
 	}
 
