@@ -71,7 +71,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			if(ps.getPartnerByParentid()==null || !e.getPartnerID().equals(ps.getPartnerByParentid().getId())){
 				log.info("Partner Services ID: " + ps.getId() + " Partner ID updated to "+ e.getPartnerID() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setPartnerByParentid(pDAO.getById(e.getPartnerID()));
+			ps.setPartnerByPartnerid(pDAO.getById(e.getPartnerID()));
 		}
 		
 		if(e.isRemoteModifiedParentID() || e.getParentID()!=null){
