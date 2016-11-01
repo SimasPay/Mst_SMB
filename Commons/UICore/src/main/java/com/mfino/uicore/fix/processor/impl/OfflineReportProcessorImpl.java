@@ -68,7 +68,7 @@ public class OfflineReportProcessorImpl extends BaseFixProcessor implements Offl
 			entry.setReportClass(report.getReportclass());
 		}
 		if(report.getTriggerenable()!=null){
-			entry.setTriggerEnable(report.getTriggerenable() != 0);
+			entry.setTriggerEnable(report.getTriggerenable());
 		}
 		
 	}

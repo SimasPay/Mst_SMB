@@ -32,10 +32,10 @@ public class OfflineReport extends Base implements java.io.Serializable {
 	private String name;
 	private Clob reportsql;
 	private String reportclass;
-	private Short triggerenable;
-	private Short isdaily;
-	private Short ismonthly;
-	private Short isonlinereport;
+	private Boolean triggerenable;
+	private Boolean isdaily;
+	private Boolean ismonthly;
+	private Boolean isonlinereport;
 	private Long id;
 	private Set<OfflineReportReceiver> offlineReportReceivers = new HashSet<OfflineReportReceiver>(
 			0);
@@ -84,39 +84,39 @@ public class OfflineReport extends Base implements java.io.Serializable {
 		this.reportclass = reportclass;
 	}
 
-	@Column(name = "TRIGGERENABLE", precision = 3, scale = 0)
-	public Short getTriggerenable() {
+	@Column(name = "TRIGGERENABLE")
+	public Boolean getTriggerenable() {
 		return this.triggerenable;
 	}
 
-	public void setTriggerenable(Short triggerenable) {
+	public void setTriggerenable(Boolean triggerenable) {
 		this.triggerenable = triggerenable;
 	}
 
-	@Column(name = "ISDAILY", precision = 3, scale = 0)
-	public Short getIsdaily() {
+	@Column(name = "ISDAILY")
+	public Boolean getIsdaily() {
 		return this.isdaily;
 	}
 
-	public void setIsdaily(Short isdaily) {
+	public void setIsdaily(Boolean isdaily) {
 		this.isdaily = isdaily;
 	}
 
-	@Column(name = "ISMONTHLY", precision = 3, scale = 0)
-	public Short getIsmonthly() {
+	@Column(name = "ISMONTHLY")
+	public Boolean getIsmonthly() {
 		return this.ismonthly;
 	}
 
-	public void setIsmonthly(Short ismonthly) {
+	public void setIsmonthly(Boolean ismonthly) {
 		this.ismonthly = ismonthly;
 	}
 
-	@Column(name = "ISONLINEREPORT", precision = 3, scale = 0)
-	public Short getIsonlinereport() {
+	@Column(name = "ISONLINEREPORT")
+	public Boolean getIsonlinereport() {
 		return this.isonlinereport;
 	}
 
-	public void setIsonlinereport(Short isonlinereport) {
+	public void setIsonlinereport(Boolean isonlinereport) {
 		this.isonlinereport = isonlinereport;
 	}
 
