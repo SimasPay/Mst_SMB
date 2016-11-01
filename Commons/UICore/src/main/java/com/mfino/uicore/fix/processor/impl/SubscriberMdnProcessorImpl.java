@@ -506,14 +506,18 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getSubscriber().getId()));
+			List<SubscriberGroups> subscriberGroups = null;
+					
+				if (s.getSubscriber() != null && s.getSubscriber().getId()!=null) {	
+					subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getSubscriber().getId()));
 			
-			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
-				SubscriberGroups sg = subscriberGroups.iterator().next();
-				if(sg.getGroupid() != Long.valueOf(e.getGroupID()).longValue()){
-					Groups group = (Groups)groupDao.getById(Long.valueOf(e.getGroupID()));
-					sg.setGroupid(group.getId().longValue());
-					subscriberGroupDao.save(sg);
+				if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
+					SubscriberGroups sg = subscriberGroups.iterator().next();
+					if(sg.getGroupid() != Long.valueOf(e.getGroupID()).longValue()){
+						Groups group = (Groups)groupDao.getById(Long.valueOf(e.getGroupID()));
+						sg.setGroupid(group.getId().longValue());
+						subscriberGroupDao.save(sg);
+					}
 				}
 			}
 			else{
@@ -1703,7 +1707,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getId()));
-				if(subscriberGroups.size() > 0){
+				if(subscriberGroups!=null && subscriberGroups.size() > 0){
 					for(SubscriberGroups sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
 					}

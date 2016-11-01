@@ -49,7 +49,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Integer status;
 	private String authenticationphrase;
 	private Integer restrictions;
-	private Integer wrongpincount;
+	private Integer wrongpincount = new Integer(0);
 	private String digestedpin;
 	private String merchantdigestedpin;
 	private String mdnbrand;
@@ -213,7 +213,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.restrictions = restrictions;
 	}
 
-	@Column(name = "WRONGPINCOUNT", nullable = false, precision = 10, scale = 0)
+	@Column(name = "WRONGPINCOUNT")
 	public Integer getWrongpincount() {
 		return this.wrongpincount;
 	}
