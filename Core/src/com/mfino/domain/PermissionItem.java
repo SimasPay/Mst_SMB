@@ -24,8 +24,8 @@ public class PermissionItem extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private PermissionGroup permissionGroup;
-	private long permission;
-	private long itemtype;
+	private Integer permission;
+	private Integer itemtype;
 	private String itemid;
 	private String fieldid;
 	private String action;
@@ -59,20 +59,20 @@ public class PermissionItem extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "PERMISSION", nullable = false, precision = 10, scale = 0)
-	public long getPermission() {
+	public Integer getPermission() {
 		return this.permission;
 	}
 
-	public void setPermission(long permission) {
+	public void setPermission(Integer permission) {
 		this.permission = permission;
 	}
 
 	@Column(name = "ITEMTYPE", nullable = false, precision = 10, scale = 0)
-	public long getItemtype() {
+	public Integer getItemtype() {
 		return this.itemtype;
 	}
 
-	public void setItemtype(long itemtype) {
+	public void setItemtype(Integer itemtype) {
 		this.itemtype = itemtype;
 	}
 
@@ -111,30 +111,30 @@ public class PermissionItem extends Base implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	 @Override
-	    public boolean equals(Object newObject)
-	    {
+	@Override
+	public boolean equals(Object newObject)
+    {
 
-	        if(!(newObject instanceof PermissionItem))
-	            return false;
+        if(!(newObject instanceof PermissionItem))
+            return false;
 
-	        PermissionItem pNewObject = (PermissionItem) newObject;
+        PermissionItem pNewObject = (PermissionItem) newObject;
 
 
-	        if(((Long)this.getItemtype()).equals(pNewObject.getItemtype()) &&
-	            this.getItemid().trim().equals(pNewObject.getItemid().trim()) &&
-	            this.getFieldid().trim().equals(pNewObject.getFieldid().trim()) &&
-	            this.getAction().trim().equals(pNewObject.getAction().trim()))
-	        {
-	            return true;
-	        }
-	        else
-	            return false;
-	        
-	    }
+        if(this.getItemtype().equals(pNewObject.getItemtype()) &&
+            this.getItemid().trim().equals(pNewObject.getItemid().trim()) &&
+            this.getFieldid().trim().equals(pNewObject.getFieldid().trim()) &&
+            this.getAction().trim().equals(pNewObject.getAction().trim()))
+        {
+            return true;
+        }
+        else
+            return false;
+        
+    }
 
-	    public boolean matchesWithoutField(PermissionItem permissionItems){
-	        return ((Long)this.getItemtype()).equals(permissionItems.getItemtype()) &&
+	 	public boolean matchesWithoutField(PermissionItem permissionItems){
+	        return this.getItemtype().equals(permissionItems.getItemtype()) &&
 	            this.getItemid().trim().equals(permissionItems.getItemid().trim()) &&
 	            this.getAction().trim().equals(permissionItems.getAction().trim());
 	    }

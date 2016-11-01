@@ -22,8 +22,8 @@ public class RolePermission extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_Role = "role";
 	public static final String FieldName_Permission = "permission";
-	private long role;
-	private long permission;
+	private Integer role;
+	private Integer permission;
 	private Long id;
 
 	public RolePermission() {
@@ -43,20 +43,20 @@ public class RolePermission extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "ROLE", nullable = false, precision = 10, scale = 0)
-	public long getRole() {
+	public Integer getRole() {
 		return this.role;
 	}
 
-	public void setRole(long role) {
+	public void setRole(Integer role) {
 		this.role = role;
 	}
 
 	@Column(name = "PERMISSION", nullable = false, precision = 10, scale = 0)
-	public long getPermission() {
+	public Integer getPermission() {
 		return this.permission;
 	}
 
-	public void setPermission(long permission) {
+	public void setPermission(Integer permission) {
 		this.permission = permission;
 	}
 

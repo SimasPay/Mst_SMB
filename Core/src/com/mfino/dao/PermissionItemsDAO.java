@@ -29,7 +29,7 @@ public class PermissionItemsDAO extends BaseDAO<PermissionItem> {
     
     public List<PermissionItem> loadRolePermissionsByGroup(Integer role) {
     	String hqlString = "Select pi from RolePermission as rp, PermissionItem as pi where" +
-    								" pi.Permission = rp.Permission and rp.Role = :role order by pi.PermissionGroup";
+    								" pi.permission = rp.permission and rp.role = :role order by pi.permissionGroup";
         Query queryObj = getQuery(hqlString);
         queryObj.setInteger("role", role);
         List<PermissionItem> results = queryObj.list();

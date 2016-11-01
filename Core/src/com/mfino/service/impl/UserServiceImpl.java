@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
         if (iter != null) {
             while (iter.hasNext()) {
                 RolePermission rp = (RolePermission) iter.next();
-                permissions.add(((Long)rp.getPermission()).intValue());
+                permissions.add(rp.getPermission());
             }
         }
         

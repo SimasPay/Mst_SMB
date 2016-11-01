@@ -135,9 +135,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         //Check if there is at least one of the permission items is authorized!
         for(Integer match : matches){
             PermissionItem aItem = (PermissionItem) getPermissionItemsList().get(match);
-            Long temp = aItem.getPermission();
-            Integer tempI = temp.intValue();
-            retValueBoolean = isAuthorized(tempI);
+            retValueBoolean = isAuthorized(aItem.getPermission());
             if(true == retValueBoolean)
                 break;
         }
