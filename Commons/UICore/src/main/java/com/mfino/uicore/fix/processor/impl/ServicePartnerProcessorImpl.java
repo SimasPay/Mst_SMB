@@ -853,7 +853,11 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         			
         			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
         			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-        			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+        			List<SubscriberGroups> subscriberGroups = null;
+        			
+        			if (subscriber!=null && subscriber.getId()!=null) {
+        				subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+        				
         			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroups sg = subscriberGroups.iterator().next();
         				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
@@ -862,13 +866,14 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         					subscriberGroupDao.save(sg);
         				}
         			}
+        		  }
         			else{
         				Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
-        				SubscriberGroups sg = new SubscriberGroups();
-        				sg.setSubscriberid(subscriber.getId().longValue());
-        				sg.setGroupid(group.getId().longValue());
         				
-        				if(subscriber.getId() != null){
+        				if(subscriber!=null && subscriber.getId() != null){
+        					SubscriberGroups sg = new SubscriberGroups();
+        					sg.setSubscriberid(subscriber.getId().longValue());
+        					sg.setGroupid(group.getId().longValue());
         					subscriberGroupDao.save(sg);
         				}
         				
