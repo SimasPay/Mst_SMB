@@ -120,7 +120,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
             uiCategories.add(CmFinoFIX.TransactionUICategory_Dompet_Topup_Another);
             criteria.add(Restrictions.in(CommodityTransfer.FieldName_TransactionUICategory, uiCategories));
         }
-
+ 
         if (query.hasExternalCall()) {
             criteria.add(Restrictions.disjunction().add(Restrictions.isNotNull(CommodityTransfer.FieldName_BankCodeForRouting)).add(Restrictions.isNotNull(CommodityTransfer.FieldName_BankResponseCode)).add(Restrictions.isNotNull(CommodityTransfer.FieldName_OperatorResponseCode)));
         }
