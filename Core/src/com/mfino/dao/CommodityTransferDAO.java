@@ -496,25 +496,25 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	if (query.getSourceDestnPocket() != null 
     			&& query.getLimit() <= ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
 
-    		String selectString = "select distinct ct, ctmap.SctlId from CommodityTransfer ct, ChargeTxnCommodityTransferMap ctmap, ServiceChargeTransactionLog sctl ";
+    		String selectString = "select distinct ct, ctmap.sctlid from CommodityTransfer ct, ChargetxnTransferMap ctmap, ServiceChargeTxnLog sctl ";
     		//String orderString = " order by sctl.ID desc, ct.ID desc ";
-    		String orderString = " order by ctmap.SctlId desc, ct.ID desc ";
-    		String queryString = " where ( ct.PocketBySourcePocketID = :sourcePocket" 
-    				+ " or ct.DestPocketID = :destPocketID )"
-    				+ " and ctmap.CommodityTransferID = ct.ID "
-    				+ " and sctl.ID = ctmap.SctlId "  ;
+    		String orderString = " order by ctmap.sctlid desc, ct.id desc ";
+    		String queryString = " where ( ct.pocket = :sourcePocket" 
+    				+ " or ct.destpocketid = :destPocketID )"
+    				+ " and ctmap.commoditytransferid = ct.id "
+    				+ " and sctl.id = ctmap.sctlid "  ;
 
     		boolean requiresSuccfullTxns = ConfigurationUtil.getRequiresSuccessfullTransactionsInEmoneyHistory();
     		if(requiresSuccfullTxns){
-    			queryString = queryString +" and sctl.Status in ( :transferStatus )";
+    			queryString = queryString +" and sctl.status in ( :transferStatus )";
     		}
 
     		if (query.getStartTimeGE() != null) {
-    			queryString = queryString +" and sctl.CreateTime >= :startTimeGE" ;
+    			queryString = queryString +" and sctl.createtime >= :startTimeGE" ;
     		}
 
     		if (query.getStartTimeLT() != null) {
-    			queryString = queryString +" and sctl.CreateTime < :startTimeLT";
+    			queryString = queryString +" and sctl.createtime < :startTimeLT";
     		}
 
     		Query newQuery = getSession().createQuery(selectString + queryString + orderString); 
@@ -561,24 +561,24 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     
     public Long getTxnCount(CommodityTransferQuery query)
     {
-    	String selectString = "select distinct count(*) from CommodityTransfer ct, ChargeTxnCommodityTransferMap ctmap, ServiceChargeTransactionLog sctl ";
-    	String orderString = " order by sctl.ID desc, ct.ID desc ";
-    	String queryString = " where ( ct.PocketBySourcePocketID = :sourcePocket" 
-    			+ " or ct.DestPocketID = :destPocketID )"
-    			+ " and ctmap.CommodityTransferID = ct.ID "
-    			+ " and sctl.ID = ctmap.SctlId "  ;
+    	String selectString = "select distinct count(*) from CommodityTransfer ct, ChargetxnTransferMap ctmap, ServiceChargeTxnLog sctl ";
+    	String orderString = " order by sctl.id desc, ct.id desc ";
+    	String queryString = " where ( ct.pocket = :sourcePocket" 
+    			+ " or ct.destpocketid = :destPocketID )"
+    			+ " and ctmap.commoditytransferid = ct.id "
+    			+ " and sctl.id = ctmap.sctlid "  ;
 
     	boolean requiresSuccfullTxns = ConfigurationUtil.getRequiresSuccessfullTransactionsInEmoneyHistory();
     	if(requiresSuccfullTxns){
-    		queryString = queryString +" and sctl.Status in ( :transferStatus )";
+    		queryString = queryString +" and sctl.status in ( :transferStatus )";
     	}
 
     	if (query.getStartTimeGE() != null) {
-    		queryString = queryString +" and sctl.CreateTime >= :startTimeGE" ;
+    		queryString = queryString +" and sctl.createtime >= :startTimeGE" ;
     	}
 
     	if (query.getStartTimeLT() != null) {
-    		queryString = queryString +" and sctl.CreateTime < :startTimeLT";
+    		queryString = queryString +" and sctl.createtime < :startTimeLT";
     	}
 
     	Query newQuery = getSession().createQuery(selectString + queryString + orderString); 
@@ -834,7 +834,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     }
 
     public List<Integer> getAllDistinctBankCodes(Date startGE, Date startLT) {
-        String sqlQuery = "SELECT distinct " + CommodityTransfer.FieldName_ISO8583_AcquiringInstIdCode + " FROM CommodityTransfer where startTime >= :startGE and startTime < :startLT";
+        String sqlQuery = "SELECT distinct " + CommodityTransfer.FieldName_ISO8583_AcquiringInstIdCode + " FROM CommodityTransfer where starttime >= :startGE and starttime < :startLT";
 
         Query queryObj = getQuery(sqlQuery);
         queryObj.setTimestamp("startGE", startGE);
@@ -850,7 +850,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         // But we might not have any, so make do with the immediate transfer preceding this time.
         Criteria criteria = createCriteria();
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-        criteria.add(Restrictions.eq(PendingCommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
+        criteria.add(Restrictions.eq(PendingCommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "id",
                 pocket.getId()));
         criteria.add(Restrictions.le(CommodityTransfer.FieldName_StartTime, date));
         criteria.addOrder(Order.desc(CommodityTransfer.FieldName_StartTime));
@@ -965,7 +965,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     private CommodityTransfer getLastTransferAsSourceBefore(Pocket pocket, Date date) {
         Criteria criteria = createCriteria();
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-        Criterion sourcePocketIDCriterion = Restrictions.eq(CommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
+        Criterion sourcePocketIDCriterion = Restrictions.eq(CommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "id",
                 pocket.getId());
 
         criteria.add(sourcePocketIDCriterion);
@@ -1013,7 +1013,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         Criteria criteria = createCriteria();
 
         criteria.createAlias(PocketBySourcePocketID, PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX);
-        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "ID",
+        criteria.add(Restrictions.eq(CommodityTransfer.FieldName_PocketBySourcePocketID + DAOConstants.ALIAS_SUFFIX + DAOConstants.ALIAS_COLNAME_SEPARATOR + "id",
                 pocket.getId()));
         criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, CmFinoFIX.TransferStatus_Failed));
         criteria.add(Restrictions.eq(CommodityTransfer.FieldName_CSRAction, CmFinoFIX.CSRAction_Cancel));
@@ -1115,7 +1115,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 
     public List<CommodityTransfer> getAllRAFTxnsAfter(int start, int maxResults, Date date, Long pocketID, Long companyId){
         String hql = "from CommodityTransfer where csraction=:csraction and csractiontime >= :csractiontime and sourcepocketid = :sourcepocketid " +
-        		"and Company= :companyId order by ID desc";
+        		"and company= :companyId order by id desc";
         Query queryObj = getQuery(hql);
     	queryObj.setInteger("csraction", CmFinoFIX.CSRAction_Cancel);
     	queryObj.setTimestamp("csractiontime", date);
