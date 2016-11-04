@@ -336,13 +336,13 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 		Criteria criteria = createCriteria();
 		criteria.createAlias(CommodityTransfer.FieldName_PocketBySourcePocketID, "sourcePocket");
 		Criterion sourcePocket = Restrictions.eq("sourcePocket." + Pocket.FieldName_RecordID, query.getSourceDestnPocket().getId());
-		Criterion destPocket = Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, new BigDecimal(query.getSourceDestnPocket().getId()));
+		Criterion destPocket = Restrictions.eq(CommodityTransfer.FieldName_DestPocketID, query.getSourceDestnPocket().getId());
 		
 		criteria.add(Restrictions.or(sourcePocket, destPocket));
 		
 		boolean requiresSuccfullTxns = ConfigurationUtil.getRequiresSuccessfullTransactionsInEmoneyHistory();
 		if(requiresSuccfullTxns){
-			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, new Long(CmFinoFIX.TransferState_Complete)));
+			criteria.add(Restrictions.eq(CommodityTransfer.FieldName_TransferStatus, CmFinoFIX.TransferState_Complete));
 		}
 		
 		if (query.getStartTimeGE() != null) {
