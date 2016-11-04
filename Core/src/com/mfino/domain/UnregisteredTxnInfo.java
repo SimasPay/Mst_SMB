@@ -45,11 +45,11 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	private SubscriberMdn subscriberMdn;
 	private ServiceChargeTxnLog serviceChargeTxnLog;
 	private FundDefinition fundDefinition;
-	private BigDecimal transferctid;
+	private Long transferctid;
 	private Long cashoutsctlid;
 	private BigDecimal cashoutctid;
 	private String digestedpin;
-	private Long unregisteredtxnstatus;
+	private Integer unregisteredtxnstatus;
 	private String transactionname;
 	private BigDecimal amount;
 	private String failurereason;
@@ -113,11 +113,11 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "TRANSFERCTID", scale = 0)
-	public BigDecimal getTransferctid() {
+	public Long getTransferctid() {
 		return this.transferctid;
 	}
 
-	public void setTransferctid(BigDecimal transferctid) {
+	public void setTransferctid(Long transferctid) {
 		this.transferctid = transferctid;
 	}
 
@@ -150,11 +150,11 @@ public class UnregisteredTxnInfo extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "UNREGISTEREDTXNSTATUS", precision = 10, scale = 0)
-	public Long getUnregisteredtxnstatus() {
+	public Integer getUnregisteredtxnstatus() {
 		return this.unregisteredtxnstatus;
 	}
 
-	public void setUnregisteredtxnstatus(Long unregisteredtxnstatus) {
+	public void setUnregisteredtxnstatus(Integer unregisteredtxnstatus) {
 		this.unregisteredtxnstatus = unregisteredtxnstatus;
 	}
 

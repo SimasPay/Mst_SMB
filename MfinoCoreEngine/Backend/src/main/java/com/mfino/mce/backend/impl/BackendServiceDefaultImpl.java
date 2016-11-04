@@ -427,11 +427,11 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 			if (CmFinoFIX.ResponseCode_Success.equals(((BackendResponse) returnFix).getResult())) {
 				log.debug("Updating the Status to CashOut complete for the UnRegisteredTxn -->"+ cashoutForNonRegistered.getSourceMDN());
 				// Update the UnRegisteredTxnInfo
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 			}else{
 				log.debug("Updating the Status to CashOut failed for the UnRegisteredTxn -->"+ cashoutForNonRegistered.getSourceMDN());
 				
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 			}
 			coreDataWrapper.save(unRegTxnInfo);
 		}
@@ -460,7 +460,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				Long transferID = response.getTransferID();
 				
 				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
-				unRegTxnInfo.setTransferctid(new BigDecimal(transferID));
+				unRegTxnInfo.setTransferctid(transferID);
 			
 				unRegTxnInfo.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(sctlid));
 				unRegTxnInfo.setSubscriberMdn(objDestSubMdn);
@@ -470,7 +470,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				String code = unRegisteredTxnInfoService.generateFundAccessCode();
 				String digestedCode = MfinoUtil.calculateDigestPin(objDestSubMdn.getMdn(), code);
 				unRegTxnInfo.setDigestedpin(digestedCode);
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED);
 				coreDataWrapper.save(unRegTxnInfo);
 				((BackendResponse) returnFix).setOneTimePin(code);
 			}
@@ -492,7 +492,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				Long transferID = response.getTransferID();
 				
 				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
-				unRegTxnInfo.setTransferctid(BigDecimal.valueOf(transferID));
+				unRegTxnInfo.setTransferctid(transferID);
 				unRegTxnInfo.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(sctlid));
 				unRegTxnInfo.setSubscriberMdn(objSubMdn);
 				unRegTxnInfo.setTransactionname(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM);
@@ -500,7 +500,7 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				String code = unRegisteredTxnInfoService.generateFundAccessCode();
 				String digestedCode = MfinoUtil.calculateDigestPin(objSubMdn.getMdn(), code);
 				unRegTxnInfo.setDigestedpin(digestedCode);
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED);
 				coreDataWrapper.save(unRegTxnInfo);
 				((BackendResponse) returnFix).setOneTimePin(code);
 			}

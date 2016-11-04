@@ -302,7 +302,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		realMsg.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		txnInfo.setCashoutsctlid(sctl.getId());
-		txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.longValue());
+		txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
 		unRegisteredTxnInfoService.save(txnInfo);		
     	
     	CMCashOutInquiryForNonRegistered unregisteredSubscriberCashOutInquiry= new CMCashOutInquiryForNonRegistered();
@@ -329,7 +329,7 @@ public class BankTellerUnregisteredCashOutInquiryProcessorImpl extends MultixCom
 		realMsg.setAmount(transaction.getAmountToCredit());
 		errorMsg= (CMJSError) handleRequestResponse(unregisteredSubscriberCashOutInquiry);
 		if(!CmFinoFIX.ErrorCode_NoError.equals(errorMsg.getErrorCode())){
-			txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.longValue());
+			txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 			if(errorMsg.getTransferID()!=null){
 				txnInfo.setCashoutctid(new BigDecimal(errorMsg.getTransferID()) );
 			}

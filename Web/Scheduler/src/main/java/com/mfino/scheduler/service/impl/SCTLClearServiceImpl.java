@@ -308,7 +308,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 				sctl.setFailurereason(MessageText._("Cash out Request Expired and Money reverted to Account"));
 				serviceChargeTransactionLogService.save(sctl);
 				
-				urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED));
+				urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED);
 				urti.setFailurereason(MessageText._("Cash out Request Expired and Money reverted to Account"));
 				unRegisteredTxnInfoService.save(urti);
 			}
@@ -354,7 +354,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 					CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnregisteredtxnstatus()))) {
 				
 				log.info("Reversal of Cash Out at ATM request: " + sctl.getId() + " is initialized");
-				urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+				urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 				unRegisteredTxnInfoService.save(urti);
 				
 
@@ -369,14 +369,14 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 					sctl.setFailurereason(MessageText._("Cash out Request Expired and Money reverted to Account"));
 					serviceChargeTransactionLogService.save(sctl);
 					
-					urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED));
+					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED);
 					urti.setFailurereason(MessageText._("Cash out Request Expired and Money reverted to Account"));
 					unRegisteredTxnInfoService.save(urti);
 					log.info("Success fully Reversed the Cash Out at ATM request: " + sctl.getId());	
 				}
 				else if (CmFinoFIX.NotificationCode_AutoReverseFailed.equals(result.getNotificationCode())) {
 					log.info("Reversal of Cash Out at ATM request: " + sctl.getId() + " is failed");
-					urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
+					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 					urti.setFailurereason(MessageText._("Reversal of the Cash out request is failed and will try in next trigger fire event..."));
 					unRegisteredTxnInfoService.save(urti);
 				}
@@ -428,7 +428,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 							}else if(CmFinoFIX.TransactionUICategory_Cashout_To_UnRegistered.equals(ct.getUicategory())
 									&&txnInfo!=null
 									&&CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(txnInfo.getUnregisteredtxnstatus())){
-								txnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED));
+								txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 								txnInfo.setCashoutctid(new BigDecimal(ct.getId()));
 								unRegisteredTxnInfoService.save(txnInfo);
 							}
@@ -440,7 +440,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 									transactionChargingService.failTheTransaction(sctl,enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, ct.getTransferfailurereason()));
 									if(txnInfo!=null){
 										txnInfo.setCashoutctid(new BigDecimal(ct.getId()));
-										txnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
+										txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 										unRegisteredTxnInfoService.save(txnInfo);
 									}
 									break;
@@ -487,7 +487,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 			if(unRegisteredTxnInfo!=null&&!unRegisteredTxnInfo.isEmpty()){
 				txnInfo= unRegisteredTxnInfo.get(0);
 				if(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED.equals(txnInfo.getUnregisteredtxnstatus())){
-					txnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
+					txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 					unRegisteredTxnInfoService.save(txnInfo);
 				}
 			}

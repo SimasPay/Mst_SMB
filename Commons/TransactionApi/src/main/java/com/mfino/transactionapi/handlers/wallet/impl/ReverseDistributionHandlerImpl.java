@@ -67,13 +67,13 @@ public class ReverseDistributionHandlerImpl implements ReverseDistributionHandle
 			if(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN.equals(status) || 
 					CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN.equals(status)){
 				if(availableAmount.equals(unRegisteredTxnInfo.getAmount())){
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
 				}
 				else{
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 				}
 			}else if(!CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE.equals(unRegisteredTxnInfo.getUnregisteredtxnstatus())){
-				unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+				unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 			}
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 			fundStorageService.withdrawFunds(fundDistributionInfo);

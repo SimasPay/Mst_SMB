@@ -61,14 +61,11 @@ public class ResendNotificationProcessorImpl extends BaseFixProcessor implements
 				{
 					String text = EncryptionUtil.getDecryptedString(notificationLog.getText());
 					
-					Long tempNotLogCodeL = notificationLog.getCode();
-					Integer tempNotLogCodeLI = tempNotLogCodeL.intValue();
-					
 					if(CmFinoFIX.NotificationMethod_SMS.equals(notificationLog.getNotificationmethod())) 
 					{
 						smsService.setDestinationMDN(notificationLog.getSourceaddress());
 						smsService.setMessage(text);
-						smsService.setNotificationCode(tempNotLogCodeLI);
+						smsService.setNotificationCode(notificationLog.getCode());
 						smsService.setSctlId(notificationLog.getSctlid().longValue());
 						smsService.setDuplicateSMS(true);
 						smsService.setNotificationLogDetailsID(notificationLogDetails.getId().longValue());

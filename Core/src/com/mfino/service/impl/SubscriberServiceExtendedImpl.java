@@ -1411,7 +1411,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				if (isValidFac == true) {
 					for (UnregisteredTxnInfo txnInfo : txnInfoList) {
 						if (StringUtils.isBlank(txnInfo.getTransactionname())) { 
-							txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE.longValue());
+							txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
 						}
 					}
 					unRegisteredTxnInfoDAO.save(txnInfoList);
@@ -1491,7 +1491,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				.get(txnInfoQuery);
 		for (UnregisteredTxnInfo txnInfo : txnInfoList) {
 			if (StringUtils.isBlank(txnInfo.getTransactionname())) {
-				txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE.longValue());
+				txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);
 			}
 		}
 		unRegisteredTxnInfoDAO.save(txnInfoList);

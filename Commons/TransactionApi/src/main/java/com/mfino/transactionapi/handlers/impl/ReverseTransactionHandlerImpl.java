@@ -308,7 +308,7 @@ public class ReverseTransactionHandlerImpl extends FIXMessageHandler implements 
 			UnregisteredTxnInfo urti = urtiList.get(0);
 			if (CmFinoFIX.UnRegisteredTxnStatus_TRANSFER_COMPLETED.equals(urti.getUnregisteredtxnstatus()) || 
 					CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.equals(urti.getUnregisteredtxnstatus())) {
-				urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED.longValue());
+				urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED);
 				urti.setFailurereason(MessageText._("Transaction is Reversed."));
 				unRegisteredTxnInfoService.save(urti);
 				log.info("UnRegisteredTxnInfo status chnaged to expired for Transfer SCTLId:" + sctlId);

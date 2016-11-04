@@ -92,14 +92,13 @@ public class SubscriberStatusEventServiceImpl implements
 			}
 		}else if(!CmFinoFIX.SubscriberStatus_Initialized.equals(subscriber.getStatus())){
 			SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
-			statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
-			Long temp = subscriber.getStatus().longValue();
-			Integer tempI = temp.intValue();
-			Timestamp nextTimeStamp = new Timestamp(
-					subscriber.getStatustime().getTime()
+			if (subscriber!=null && subscriber.getId()!=null)
+				statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
+			
+			Timestamp nextTimeStamp = new Timestamp(subscriber.getStatustime().getTime()
 							+ subscriberStatusTimeService
-									.getTimeToNextStatus(tempI));
-			if (subMDN!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString())!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString()) &&
+									.getTimeToNextStatus(subscriber.getStatus()));
+			if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
 					subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 				nextTimeStamp = new Timestamp();
 			statusNextEvent.setPickupdatetime(nextTimeStamp);

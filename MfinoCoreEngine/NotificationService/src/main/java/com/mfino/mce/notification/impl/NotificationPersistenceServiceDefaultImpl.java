@@ -53,17 +53,17 @@ public class NotificationPersistenceServiceDefaultImpl  implements NotificationP
 				
 		if(ServiceChargeTransactionLogID != null)
 		{
-			notificationLog.setSctlid(BigDecimal.valueOf(ServiceChargeTransactionLogID));
+			notificationLog.setSctlid(ServiceChargeTransactionLogID);
 			notificationLog.setNotificationmethod(notificationMethod);
 			notificationLog.setNotificationreceivertype(notificationReceiverType);
 			notificationLog.setCode(notification.getNotificationCode());
 			if(sensitiveNotificationCodes.contains(notification.getNotificationCode()))
 			{
-				notificationLog.setIssensitivedata((short)1);
+				notificationLog.setIssensitivedata(Boolean.TRUE);
 			}
 			else
 			{
-				notificationLog.setIssensitivedata((short)0);
+				notificationLog.setIssensitivedata(Boolean.FALSE);
 			}
 			if(notification instanceof SMSNotification)
 			{

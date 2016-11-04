@@ -119,7 +119,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 		Long chargeRevFundPocket = systemParametersService.getLong(SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET);
 		
 		log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctl.getId() + " is initialized");
-		urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+		urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 		unRegisteredTxnInfoService.save(urti);
 		
 
@@ -134,7 +134,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 			sctl.setFailurereason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
 			serviceChargeTransactionLogService.save(sctl);
 			
-			urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED));
+			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_EXPIRED);
 			urti.setFailurereason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
 			unRegisteredTxnInfoService.save(urti);
 			
@@ -152,7 +152,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 		}
 		else if (CmFinoFIX.NotificationCode_AutoReverseFailed.equals(result.getNotificationCode())) {
 			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctlId + " is failed");
-			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.longValue());
+			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 			urti.setFailurereason(MessageText._("Reversal of 'Transfer to UnRegistered' is failed and will try in next trigger fire event"));
 			unRegisteredTxnInfoService.save(urti);
 		}

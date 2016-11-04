@@ -30,14 +30,14 @@ public class NotificationLog extends Base implements java.io.Serializable {
 	public static final String FieldName_NotificationReceiverType = "notificationreceivertype";
 	public static final String FieldName_IsSensitiveData = "issensitivedata";
 	
-	private BigDecimal sctlid;
-	private long code;
+	private Long sctlid;
+	private Integer code;
 	private String text;
-	private long notificationmethod;
+	private Integer notificationmethod;
 	private String sourceaddress;
-	private long notificationreceivertype;
+	private Integer notificationreceivertype;
 	private String emailsubject;
-	private Short issensitivedata;
+	private Boolean issensitivedata;
 	private Long id;
 	private Set<NlogDetails> nlogDetailses = new HashSet<NlogDetails>(0);
 
@@ -56,25 +56,25 @@ public class NotificationLog extends Base implements java.io.Serializable {
 		this.id = id;
 	}
 	
-	@Column(name = "SCTLID", nullable = false, scale = 0)
-	public BigDecimal getSctlid() {
+	@Column(name = "SCTLID")
+	public Long getSctlid() {
 		return this.sctlid;
 	}
 
-	public void setSctlid(BigDecimal sctlid) {
+	public void setSctlid(Long sctlid) {
 		this.sctlid = sctlid;
 	}
 
-	@Column(name = "CODE", nullable = false, precision = 11, scale = 0)
-	public long getCode() {
+	@Column(name = "CODE")
+	public Integer getCode() {
 		return this.code;
 	}
 
-	public void setCode(long code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 
-	@Column(name = "TEXT", length = 1000)
+	@Column(name = "TEXT")
 	public String getText() {
 		return this.text;
 	}
@@ -83,16 +83,16 @@ public class NotificationLog extends Base implements java.io.Serializable {
 		this.text = text;
 	}
 
-	@Column(name = "NOTIFICATIONMETHOD", nullable = false, precision = 10, scale = 0)
-	public long getNotificationmethod() {
+	@Column(name = "NOTIFICATIONMETHOD")
+	public Integer getNotificationmethod() {
 		return this.notificationmethod;
 	}
 
-	public void setNotificationmethod(long notificationmethod) {
+	public void setNotificationmethod(Integer notificationmethod) {
 		this.notificationmethod = notificationmethod;
 	}
 
-	@Column(name = "SOURCEADDRESS", nullable = false, length = 1020)
+	@Column(name = "SOURCEADDRESS")
 	public String getSourceaddress() {
 		return this.sourceaddress;
 	}
@@ -101,16 +101,16 @@ public class NotificationLog extends Base implements java.io.Serializable {
 		this.sourceaddress = sourceaddress;
 	}
 
-	@Column(name = "NOTIFICATIONRECEIVERTYPE", nullable = false, precision = 10, scale = 0)
-	public long getNotificationreceivertype() {
+	@Column(name = "NOTIFICATIONRECEIVERTYPE")
+	public Integer getNotificationreceivertype() {
 		return this.notificationreceivertype;
 	}
 
-	public void setNotificationreceivertype(long notificationreceivertype) {
+	public void setNotificationreceivertype(Integer notificationreceivertype) {
 		this.notificationreceivertype = notificationreceivertype;
 	}
 
-	@Column(name = "EMAILSUBJECT", length = 1020)
+	@Column(name = "EMAILSUBJECT")
 	public String getEmailsubject() {
 		return this.emailsubject;
 	}
@@ -119,12 +119,12 @@ public class NotificationLog extends Base implements java.io.Serializable {
 		this.emailsubject = emailsubject;
 	}
 
-	@Column(name = "ISSENSITIVEDATA", precision = 3, scale = 0)
-	public Short getIssensitivedata() {
+	@Column(name = "ISSENSITIVEDATA")
+	public Boolean getIssensitivedata() {
 		return this.issensitivedata;
 	}
 
-	public void setIssensitivedata(Short issensitivedata) {
+	public void setIssensitivedata(Boolean issensitivedata) {
 		this.issensitivedata = issensitivedata;
 	}
 

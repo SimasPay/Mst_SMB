@@ -226,7 +226,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 				return result;
 			}
 			else {
-				unRegisteredTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED));
+				unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
 				unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 				log.info("Processing the Withdraw request ...");
 				result = (XMLResult)processCashOut(unRegisteredTxnInfo, result, isUnRegistered,thirdPartyCashOut);
@@ -394,7 +394,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 					atmWithdrawStatus = 0;
 					log.info("ATM withdraw has been Successfully Completed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SuccessfulCashOutFromATM);
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 					unRegisteredTxnInfo.setCashoutctid(new BigDecimal(transactionResponse.getTransferId()));
 					unRegisteredTxnInfo.setCashoutsctlid(sctl.getId());
 					unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
@@ -422,7 +422,7 @@ public class WithdrawFromATMHandlerImpl extends FIXMessageHandler implements Wit
 	
 	private void failCashOutRequest(String failureReason,UnregisteredTxnInfo unRegisteredTxnInfo,ServiceChargeTxnLog sctl) {
 		failureReason = (failureReason.length() > 255) ? failureReason.substring(0,255) : failureReason;
-		unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+		unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 		unRegisteredTxnInfo.setFailurereason(failureReason);
 
 		unRegisteredTxnInfoService.save(unRegisteredTxnInfo);

@@ -95,7 +95,7 @@ public class SctlStatusBeanImpl implements SctlStatusBean {
 			{
 				UnregisteredTxnInfo unRegTxnInfo = txns.get(0);
 				log.info("ManualAdjustment: UnRegisteredTxnInfo status is set to complete for sctl: "+sctl.getId()+ " original status is: "+unRegTxnInfo.getUnregisteredtxnstatus());
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED);
 				unRegTxnInfoDAO.save(unRegTxnInfo);
 			}
 		}

@@ -276,7 +276,7 @@ public class UnregisteredSubscriberCashOutInquiryHandlerImpl extends FIXMessageH
 		unregisteredSubscriberCashOutInquiry.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		
 		unTxnInfo.setCashoutsctlid(sctl.getId());
-		unTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
+		unTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_REQUESTED);
 		unRegisteredTxnInfoService.save(unTxnInfo);
 		unregisteredSubscriberCashOutInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
 		log.info("sending the unregisteredSubscriberCashOutInquiry request to backend for processing");

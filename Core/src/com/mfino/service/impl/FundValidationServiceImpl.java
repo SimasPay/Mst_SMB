@@ -120,7 +120,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 				//query the definition table for fund event id and proceed accordingly
 				if(fundDefinition.getFundEventsByOnfailedattemptsexceeded().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
 					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferctid());
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 					unRegisteredTxnInfo.setReversalreason("Max fail attempts reached");
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					return CmFinoFIX.NotificationCode_ReverseFundRequestInitaited;
@@ -202,7 +202,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 				availableAmount = unRegisteredTxnInfo.getAvailableamount().subtract(fundWithdrawalInquiry.getAmount());
 				unRegisteredTxnInfo.setAvailableamount(availableAmount);
 				if(BigDecimal.ZERO.compareTo(availableAmount)==0){
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
 				}
 			}
 			log.info("creating FundDistributionInfo entry......for is debit="+isDebit);
@@ -221,9 +221,9 @@ public class FundValidationServiceImpl implements FundValidationService {
 			availableAmount = unRegisteredTxnInfo.getAvailableamount().add(amount);
 			unRegisteredTxnInfo.setAvailableamount(availableAmount);
 			if(availableAmount.equals(unRegisteredTxnInfo.getAmount())){
-				unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
+				unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
 			}else if(unRegisteredTxnInfo.getUnregisteredtxnstatus().equals(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN)){
-				unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
+				unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 			}
 			fundStorageService.allocateFunds(unRegisteredTxnInfo);
 		}
@@ -333,7 +333,7 @@ public class FundValidationServiceImpl implements FundValidationService {
 
 				if(fundDefinition.getFundEventsByOnfundallocationtimeexpiry().getFundeventtype().equals(CmFinoFIX.FundEventType_Reversal)){//reversal
 					log.info("Reversing allocated fund.Reversing transaction with sctlID as:"+unRegisteredTxnInfo.getTransferctid());
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 					unRegisteredTxnInfo.setReversalreason("Fund Expired");
 					fundStorageService.allocateFunds(unRegisteredTxnInfo);
 					notificationCode=CmFinoFIX.NotificationCode_FundAllocatedExpiredReversal;

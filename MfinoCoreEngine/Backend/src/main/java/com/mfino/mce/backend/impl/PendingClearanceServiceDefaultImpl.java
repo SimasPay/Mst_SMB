@@ -129,7 +129,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 						UnregisteredTxnInfo urti = null;
 						if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 							urti = lstUnRegisteredTxnInfos.get(0);
-							urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
+							urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 							urtiDAO.save(urti);
 						}
 					}
@@ -192,7 +192,7 @@ public class PendingClearanceServiceDefaultImpl extends BaseServiceImpl implemen
 						UnregisteredTxnInfo urti = null;
 						if (CollectionUtils.isNotEmpty(lstUnRegisteredTxnInfos)) {
 							urti = lstUnRegisteredTxnInfos.get(0);
-							urti.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED));
+							urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 							urtiDAO.save(urti);
 						}
 					}					

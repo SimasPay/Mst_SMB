@@ -147,15 +147,15 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 		{
 			throw new Exception("Sctl ID can't be null.");
 		}
-		if(((Long)notificationLog.getNotificationmethod()) == null)
+		if(notificationLog.getNotificationmethod() == null)
 		{
 			throw new Exception("NotificationMethod can't be null. It should be either SMS or Email");
 		}
-		if( (Long)notificationLog.getCode() == null)
+		if(notificationLog.getCode() == null)
 		{
 			throw new Exception("NotificationCode can't be null.");
 		}
-		if((Long)notificationLog.getNotificationreceivertype() == null)
+		if(notificationLog.getNotificationreceivertype() == null)
 		{
 			throw new Exception("Notification Receiver Type can't be null.");
 		}
@@ -167,7 +167,7 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 
 	private void updateEntity(NotificationLog notificationLog, CMJSNotificationLog.CGEntries e) {
 		if (e.getSctlId() != null) {
-			notificationLog.setSctlid(new BigDecimal(e.getSctlId()));
+			notificationLog.setSctlid(e.getSctlId());
 		}
 		if (StringUtils.isNotBlank(e.getText())) {
 			notificationLog.setText(EncryptionUtil.getEncryptedString(e.getText()));
@@ -191,8 +191,8 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 
 	private void updateMessage(NotificationLog notificationLog, CMJSNotificationLog.CGEntries e) {
 		e.setNotificationLogID(notificationLog.getId().longValue());
-		e.setSctlId(notificationLog.getSctlid().longValue());
-		if(notificationLog.getIssensitivedata() != 0)
+		e.setSctlId(notificationLog.getSctlid());
+		if(notificationLog.getIssensitivedata())
 		{
 			e.setText(" ***** This message contains sensitive information and hence its not displayed here ***** ");
 		}
@@ -200,17 +200,17 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 		{
 			e.setText(EncryptionUtil.getDecryptedString(notificationLog.getText()));
 		}
-		e.setNotificationCode(((Long)notificationLog.getCode()).intValue());
+		e.setNotificationCode(notificationLog.getCode());
 		
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 
 		
-		Notification notification = DAOFactory.getInstance().getNotificationDAO().getByNotificationCodeAndLang(((Long)notificationLog.getCode()).intValue(), language);
+		Notification notification = DAOFactory.getInstance().getNotificationDAO().getByNotificationCodeAndLang(notificationLog.getCode(), language);
 		if(notification != null)
 		{
 			e.setNotificationCodeName(notification.getCodename());
 		}
-		e.setNotificationMethod(((Long)notificationLog.getNotificationmethod()).intValue());
+		e.setNotificationMethod(notificationLog.getNotificationmethod());
 		if(CmFinoFIX.NotificationMethod_SMS.equals(notificationLog.getNotificationmethod()))
 		{
 			e.setNotificationMethodText("SMS");
@@ -219,7 +219,7 @@ public class NotificationLogProcessorImpl extends BaseFixProcessor implements No
 		{
 			e.setNotificationMethodText("Email");
 		}
-		e.setNotificationReceiverType(((Long)notificationLog.getNotificationreceivertype()).intValue());
+		e.setNotificationReceiverType(notificationLog.getNotificationreceivertype());
 		if(CmFinoFIX.NotificationReceiverType_Source.equals(notificationLog.getNotificationreceivertype()))
 		{
 			e.setNotificationReceiverTypeText("Sender");

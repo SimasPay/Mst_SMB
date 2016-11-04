@@ -16,27 +16,22 @@ public class NotificationLogDAO extends BaseDAO<NotificationLog>{
         Criteria criteria = createCriteria();
 
         if(query.getSctlID() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_SctlId, 
-            		new BigDecimal(query.getSctlID())));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_SctlId,query.getSctlID()));
         }
         if(query.getCode() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationCode, 
-            		query.getCode().longValue()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationCode, query.getCode()));
         }
         if(query.getNotificationMethod() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationMethod, 
-            		query.getNotificationMethod().longValue()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationMethod,query.getNotificationMethod()));
         }
         if(query.getSourceAddress() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_SourceAddress, 
-            		query.getSourceAddress()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_SourceAddress,query.getSourceAddress()));
         }
         if(query.getNotificationReceiverType() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationReceiverType, 
-            		query.getNotificationReceiverType().intValue()));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_NotificationReceiverType,query.getNotificationReceiverType()));
         }
         if(query.isSensitiveData() != null) {
-            criteria.add(Restrictions.eq(NotificationLog.FieldName_IsSensitiveData, (short) (query.isSensitiveData() ? '1': '0')));
+            criteria.add(Restrictions.eq(NotificationLog.FieldName_IsSensitiveData, query.isSensitiveData()));
         }
         
         processBaseQuery(query, criteria);

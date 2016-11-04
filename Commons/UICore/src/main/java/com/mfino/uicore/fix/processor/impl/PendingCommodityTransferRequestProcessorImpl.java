@@ -200,10 +200,10 @@ public class PendingCommodityTransferRequestProcessorImpl extends MultixCommunic
 			if (CollectionUtils.isNotEmpty(lstUrti)) {
 				urti = lstUrti.get(0);
 				if (transactionResponse.isResult()) {
-					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED.longValue());
+					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 				}
 				else {
-					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED.longValue());
+					urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 					log.info("Changing the SCTL status to processing as the withdraw from ATM is failed..." + sctl.getId());
 
 					sctl.setFailurereason("");

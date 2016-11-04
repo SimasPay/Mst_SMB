@@ -123,7 +123,7 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				log.info("using the FundDefinition with id: "+fundDefinition.getId());
 				
 				UnregisteredTxnInfo unRegTxnInfo = new UnregisteredTxnInfo();
-				unRegTxnInfo.setTransferctid(new BigDecimal(transferID));
+				unRegTxnInfo.setTransferctid(transferID);
 				ServiceChargeTransactionLogDAO serviceChargeTransactionLogDAO=DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 				unRegTxnInfo.setServiceChargeTxnLog(serviceChargeTransactionLogDAO.getById(sctlid));
 
@@ -141,7 +141,7 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				String code = fundStorageService.generateFundAccessCode(fundDefinition);
 				String digestedCode = fundStorageService.generateDigestedFAC(fundAllocationConfirm.getWithdrawalMDN(), code);
 				unRegTxnInfo.setDigestedpin(digestedCode);
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
 				
 				coreDataWrapper.save(unRegTxnInfo);
 				((BackendResponse) returnFix).setOneTimePin(code);
@@ -223,18 +223,18 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 				
 				if(CmFinoFIX.DistributionType_Withdrawal.equals(fundWithdrawalConfirm.getDistributionType())){
 					if(unRegTxnInfo.getAvailableamount().compareTo(BigDecimal.ZERO)==0){
-						unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN));
+						unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
 						((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode());
 					}else{
 						if(fundDefinition.getIsmultiplewithdrawalallowed()==1){
 							String code = fundStorageService.generateFundAccessCode(fundDefinition);
 							String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalmdn(), code);
 							unRegTxnInfo.setDigestedpin(digestedCode);
-							unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN));
+							unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 							((BackendResponse) returnFix).setOneTimePin(code);
 							((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundPartialWithdrawalConfirmedToMerchant.getInternalErrorCode());
 						}else{
-							unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+							unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 							unRegTxnInfo.setReversalreason("Partial Withdrawal complete.Multiple withdrawal not allowed.");
 						}
 					}
@@ -242,7 +242,7 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 					((BackendResponse) returnFix).setReceiverMDN(fundWithdrawalConfirm.getDestMDN());
 					((BackendResponse) returnFix).setSourceMDN(null);
 				}else{
-					unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED));
+					unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_COMPLETED);
 					((BackendResponse) returnFix).setInternalErrorCode(NotificationCodes.FundAllocationReversalToSender.getInternalErrorCode());
 					((BackendResponse) returnFix).setReceiverMDN(fundWithdrawalConfirm.getDestMDN());
 					((BackendResponse) returnFix).setOnBehalfOfMDN(fundWithdrawalConfirm.getWithdrawalMDN());
@@ -307,18 +307,18 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 
 		
 		if(unRegTxnInfo.getAvailableamount().compareTo(BigDecimal.ZERO)==0){
-			unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN));
+			unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_COMPLETELY_WITHDRAWN);
 			notificationCode = NotificationCodes.FundCompleteWithdrawalConfirmedToMerchant.getInternalErrorCode();
 		}else{
 			if(fundDefinition.getIsmultiplewithdrawalallowed()==1){
 				String code = fundStorageService.generateFundAccessCode(fundDefinition);
 				String digestedCode = fundStorageService.generateDigestedFAC(unRegTxnInfo.getWithdrawalmdn(), code);
 				unRegTxnInfo.setDigestedpin(digestedCode);
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 				((BackendResponse) returnFix).setOneTimePin(code);
 				notificationCode = NotificationCodes.FundPartialWithdrawalConfirmedToMerchant.getNotificationCode();
 			}else{
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 				unRegTxnInfo.setReversalreason("Partial Withdrawal complete.Multiple withdrawal not allowed.");
 			}
 		}
@@ -340,9 +340,9 @@ public class FundServiceImpl extends BaseServiceImpl implements FundService{
 			FundDefinition fundDefinition=unRegTxnInfo.getFundDefinition();
 			fundValidationService.updateAvailableAmount(unRegTxnInfo, null, false, fundDistributionInfo.getDistributedamount());
 			if(unRegTxnInfo.getAvailableamount().compareTo(unRegTxnInfo.getAmount())==0){
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUNDALLOCATION_COMPLETE);
 			}else{
-				unRegTxnInfo.setUnregisteredtxnstatus(Long.valueOf(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN));
+				unRegTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_FUND_PARTIALLY_WITHDRAWN);
 			}
 			int notificationCode = fundValidationService.updateFailureAttempts(unRegTxnInfo, fundDefinition);
 			if(fundDefinition.getMaxfailattemptsallowed()!=-1){

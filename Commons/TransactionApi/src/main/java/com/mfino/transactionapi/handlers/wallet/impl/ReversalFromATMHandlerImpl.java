@@ -314,7 +314,7 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 					commodityTransferService.addCommodityTransferToResult(result, transactionResponse.getTransferId());
 					log.info("ATM Reversal has been Successfully Completed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_SuccessfulReversalFromATM);
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 					unRegisteredTxnInfo.setFailurereason("Reversal Request From ATM");
 					unRegisteredTxnInfo.setCashoutctid(null);
 					unRegisteredTxnInfo.setCashoutsctlid(null);
@@ -323,14 +323,14 @@ public class ReversalFromATMHandlerImpl extends FIXMessageHandler implements Rev
 				else {
 					log.info("ATM Reversal has failed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
 					result.setNotificationCode(CmFinoFIX.NotificationCode_FailedReversalFromATM);
-					unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+					unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 					unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 				}
 			} 
 		}
 		else { // Inquiry fails
 			log.info("ATM Reversal inquiry has failed for " + thirdPartyCashOut.getSourceMDN() + " with amount " + thirdPartyCashOut.getAmount());
-			unRegisteredTxnInfo.setUnregisteredtxnstatus((long)CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
+			unRegisteredTxnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_COMPLETED);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_FailedReversalFromATM);
 			unRegisteredTxnInfoService.save(unRegisteredTxnInfo);
 		}

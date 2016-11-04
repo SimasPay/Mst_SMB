@@ -81,14 +81,14 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 		
 		if(ServiceChargeTransactionLogID != null)
 		{
-			notificationLog.setId(ServiceChargeTransactionLogID);
+			notificationLog.setSctlid(ServiceChargeTransactionLogID);
 			notificationLog.setNotificationmethod(notificationMethod);
 			notificationLog.setNotificationreceivertype(notificationReceiverType);
 			notificationLog.setCode(notificationCode);
 			notificationLog.setText(EncryptionUtil.getEncryptedString(text));
 			notificationLog.setSourceaddress(toAddress);
 			notificationLog.setEmailsubject(emailSubject);
-			notificationLog.setIssensitivedata((short) 0);
+			notificationLog.setIssensitivedata(Boolean.FALSE);
 			notificationLogService.saveNotificationLog(notificationLog);
 			
 			NlogDetails notificationLogDetails = new NlogDetails();
@@ -96,7 +96,7 @@ public class NotificationLogDetailsServiceImpl implements NotificationLogDetails
 			notificationLogDetails.setStatus(CmFinoFIX.SendNotificationStatus_Sending);
 			saveNotificationLogDetails(notificationLogDetails);
 			
-			return notificationLogDetails.getId().longValue();
+			return notificationLogDetails.getId();
 		}
 		return null;
 	}

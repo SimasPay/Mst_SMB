@@ -291,6 +291,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 			 if(!ConfigurationUtil.getSendOTPBeforeApproval()){
 				Integer OTPLength = systemParametersService.getOTPLength();
 				String oneTimePin = MfinoUtil.generateOTP(OTPLength);
+				log.info("Generated Value ......  " + oneTimePin);
 				String digestPin1 = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), oneTimePin);
 				subscriberMDN.setOtp(digestPin1);
 				subscriberMDN.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
