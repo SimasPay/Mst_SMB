@@ -196,11 +196,11 @@ public class CommodityTransferServiceImpl extends BaseServiceImpl implements Com
 		pct.setSubscriberMdn(objSourceSubMdn);
 		pct.setSourcesubscribername(safeString(objSourceSubscriber.getFirstname()) + " " + safeString(objSourceSubscriber.getLastname()));
 		pct.setStarttime(new Timestamp());
-		//TransactionLog tLog =  coreDataWrapper.getTransactionsLogById(requestFix.getTransactionID());
-		TransactionLog tLog = new TransactionLog();
-		tLog.setId(requestFix.getTransactionID());
+		TransactionLog tLog =  coreDataWrapper.getTransactionsLogById(requestFix.getTransactionID());
+		//TransactionLog tLog = new TransactionLog();
+		//tLog.setId(requestFix.getTransactionID());
 		pct.setTransactionLog(tLog);
-		pct.setTransferstatus((int)initialTransferStatus);
+		pct.setTransferstatus(initialTransferStatus);
 		pct.setLocalrevertrequired(CmFinoFIX.Boolean_True);
 		
 		if(objSourcePocket.getPocketTemplateByPockettemplateid().getType()	==	CmFinoFIX.PocketType_BankAccount) {
