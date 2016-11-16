@@ -348,7 +348,7 @@ public class ConfigurationUtil {
 			String osName = System.getProperty("os.name");
 			if (osName.startsWith("Windows")) {
 				isWindows = true;
-			} else if (osName.startsWith("Linux")) {
+			} else if (osName.startsWith("Linux") || osName.startsWith("Mac")) {
 				isUnixLike = true;
 				codeSourceFilePrefixlength = 5;
 			}
