@@ -78,6 +78,9 @@ public class SubscriberStatusHandlerImpl extends FIXMessageHandler implements Su
 			}
 			result.setAllowedTxns(txnList);
 			result.setMessage(alertMsg);
+			result.setNotificationCode(CmFinoFIX.ResponseCode_Success);
+		} else {
+			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 		}
 		
 		log.info("Subscriber Status request: END");
