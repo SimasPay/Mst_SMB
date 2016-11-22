@@ -86,7 +86,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
 	
-	
+
+
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public XMLResult handle(TransactionDetails transDetails) {
 		CMWebApiLoginRequest request = new CMWebApiLoginRequest();
@@ -264,8 +265,19 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			}
 			int subscriberType=(int)srcSubscriberMDN.getSubscriber().getType();
 			boolean isBankTypePocket=false;
+			boolean isEmoneyTypePocket=false;
+			boolean isLakuPandiaTypePocket=false;
+			boolean isKyc=false;
+			
+				
 			
 			Pocket bankPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+			
+			Pocket emoneyPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
+			
+			Pocket lakupandiaPocket = subscriberService.getDefaultPocket(srcSubscriberMDN.getId().longValue(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
+			
+			
 			
 			if(subscriberType==CmFinoFIX.SubscriberType_Partner){
 				
@@ -274,18 +286,38 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			} else if(subscriberType==CmFinoFIX.SubscriberType_Subscriber){
 				
 				if(bankPocket != null && bankPocket.getStatus() == CmFinoFIX.PocketStatus_Active){
-					
 					isBankTypePocket=true;
 				
 				}else{
 					
 					isBankTypePocket=false;
 				}
+				
+				if(emoneyPocket != null && emoneyPocket.getStatus() == CmFinoFIX.PocketStatus_Active){
+					isEmoneyTypePocket=true;
+				
+				}
+				if(lakupandiaPocket != null && lakupandiaPocket.getStatus() == CmFinoFIX.PocketStatus_Active){
+					isLakuPandiaTypePocket=true;
+				
+				}
+				
 			}
 			
 			if(isBankTypePocket) {
 				
 				result.setBankAccountNumber(bankPocket.getCardpan());
+				
+			}
+			if(srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_NoKyc)
+				{
+				isKyc=false;
+				}
+			else if(srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_UnBanked||
+					srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_SemiBanked||
+					srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_FullyBanked)
+			{
+				isKyc=true;
 			}
 			
 			byte[] encryptedAESKey = CryptographyService.encryptWithPBE(aesKey, authToken.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
@@ -300,7 +332,11 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setSubscriberType(subscriberType);
 			result.setUserAPIKey(srcSubscriberMDN.getUserapikey());
 			result.setIsBank(isBankTypePocket);
+			result.setIsEmoney(isEmoneyTypePocket);
+			result.setIsLakupandia(isLakuPandiaTypePocket);
+			result.setIsKyc(isKyc);
 			result.setName(srcSubscriberMDN.getSubscriber().getFirstname());
+			
 			
 			if(srcSubscriberMDN.getWrongpincount() > 0){
 				log.info("setting wrong pin count to 0, and saving subscribermdn status");
