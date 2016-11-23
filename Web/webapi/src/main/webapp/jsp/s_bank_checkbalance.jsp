@@ -38,8 +38,15 @@
 	</tr>
 	<tr>
 		<td>pocketCode</td>
-		<td><input type="hidden" name="sourcePocketCode" value="2" />2</td>
+		<td>
+		<select name="sourcePocketCode">
+	  				<option value="1">E-Money</option>
+	  				<option value="2">Bank</option>
+	  				<option value="6">Laku Pandia</option>
+			</select>
+		</td>
 	</tr>
+	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>
