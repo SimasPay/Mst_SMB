@@ -309,16 +309,12 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				result.setBankAccountNumber(bankPocket.getCardpan());
 				
 			}
+			isKyc=true;
 			if(srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_NoKyc)
 				{
 				isKyc=false;
 				}
-			else if(srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_UnBanked||
-					srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_SemiBanked||
-					srcSubscriberMDN.getSubscriber().getKycLevel().getKyclevel().intValue()==CmFinoFIX.SubscriberKYCLevel_FullyBanked)
-			{
-				isKyc=true;
-			}
+			
 			
 			byte[] encryptedAESKey = CryptographyService.encryptWithPBE(aesKey, authToken.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
 			byte[] encryptedZeroes = CryptographyService.encryptWithAES(aesKey, GeneralConstants.ZEROES_STRING.getBytes(GeneralConstants.UTF_8));
