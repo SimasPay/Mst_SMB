@@ -107,7 +107,7 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 			for (CMJSServiceSettlementConfig.CGEntries e: entries) {
 				ServiceSettlementCfg sc = dao.getById(e.getID());
 				
-				if (!(Integer.valueOf(Long.valueOf(sc.getVersion()).intValue()).equals(e.getRecordVersion()))) {
+				if (!(sc.getVersion()).equals(e.getRecordVersion())) {
 					log.warn("Service settlement Configuration: " + sc.getId() + " stale data exception for user:" + getLoggedUserNameWithIP());
 					handleStaleDataException();
 				}

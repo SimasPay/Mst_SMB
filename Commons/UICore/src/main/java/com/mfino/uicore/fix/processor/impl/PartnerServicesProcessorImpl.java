@@ -303,7 +303,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 				PartnerServices ps = dao.getById(e.getID());
 				log.info("Partner Services: "+ps.getId()+" details edit requested by user:"+getLoggedUserNameWithIP());
 				
-				if (ps.getVersion()!=e.getRecordVersion()) {
+				if (!(ps.getVersion().equals(e.getRecordVersion()))) {
 					log.warn("Partner Services: "+ps.getId()+" stale data exception for user:"+getLoggedUserNameWithIP());
 					handleStaleDataException();					
 				}
