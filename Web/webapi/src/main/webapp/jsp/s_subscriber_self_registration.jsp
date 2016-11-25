@@ -4,11 +4,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>subscriber Self Registration</title>
+<title>Subscriber Self Registration as Non-KYC E-Money</title>
 </head>
 <body>
 <center>
-<h1>subscriber Self Registration</h1>
+<h1>Subscriber Self Registration as Non-KYC E-Money</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Account" name="service" /> 
 <input type="hidden" value="SubscriberRegistration" name="txnName" />
@@ -30,21 +30,33 @@
 		<td><input type="text" name="subFirstName" value="" /></td>
 	</tr>
 	<tr>
-		<td>Last Name</td>
-		<td><input type="text" name="subLastName" value="" /></td>
-	</tr>
-	<tr>
-		<td>Date Of Birth(ddMMyyyy)</td>
-		<td><input type="text" name="dob" value="" /></td>
-	</tr>
-	<tr>
-		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
+		<td>ChannelId</td>
+		<td><input type="text" name="channelID" value="7" /></td>
 	</tr>	
 	<tr>
 		<td>Email</td>
 		<td><input type="text" name="email" value="" /></td>
 	</tr>	
+	<tr>
+		<td>New Pin</td>
+		<td><input type="text" name="activationNewPin" value="" /></td>
+	</tr>
+	<tr>
+		<td>Confirm Pin</td>
+		<td><input type="text" name="activationConfirmPin" value="" /></td>
+	</tr>
+	<tr>
+		<td>Security Question</td>
+		<td><input type="text" name="securityQuestion" value="" /></td>
+	</tr>
+	<tr>
+		<td>Security Answer</td>
+		<td><input type="text" name="securityAnswer" value="" /></td>
+	</tr>
+	<tr>
+		<td>OneTimePin</td>
+		<td><input type="text" name="otp" value="" /></td>
+	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

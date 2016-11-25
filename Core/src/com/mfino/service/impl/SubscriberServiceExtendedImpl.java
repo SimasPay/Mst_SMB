@@ -525,6 +525,227 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		}
 		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
 	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public Integer registerNonKycSubscriber(Subscriber subscriber, SubscriberMdn subscriberMDN, CMSubscriberRegistration subscriberRegistration) {
+		
+		SubscriberMdn existingSubscriberMDN = subscriberMdnDao.getByMDN(subscriberRegistration.getMDN());
+		
+		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
+		if (existingSubscriberMDN == null || isUnRegistered) {
+			
+			if (isUnRegistered) {
+				
+				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
+				subscriberMDN = existingSubscriberMDN;
+				subscriber = subscriberMDN.getSubscriber();
+				subscriber.setRegisteringpartnerid(regPartnerID);
+			}
+			
+			boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();
+			String newpin = subscriberRegistration.getPin();
+			
+			if(!isHashedPin) {
+				
+				if (systemParametersService.getPinLength() != newpin.length()) {
+					
+					log.error("PIN length does not match the system pin's length");
+					return CmFinoFIX.NotificationCode_ChangeEPINFailedInvalidPINLength;
+				}
+				
+				log.info("Checking for the strength of pin XXXX for subscribermdn" + subscriberRegistration.getMDN());
+				
+				if (!MfinoUtil.isPinStrongEnough(newpin)) {
+					
+					log.info("The pin is not strong enough for subscriber " + subscriberRegistration.getMDN());
+					return CmFinoFIX.NotificationCode_PinNotStrongEnough;
+				}
+				
+				log.info("Pin passed strength conditions for subscribermdn" + subscriberRegistration.getMDN());
+				
+			} else {
+				
+				log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
+			}
+
+			fillSubscriberMandatoryFields(subscriber);
+			fillSubscriberMDNMandatoryFields(subscriberMDN);
+			String createdByName = "system";
+			
+			subscriber.setFirstname(subscriberRegistration.getFirstName());
+			subscriber.setLastname(subscriberRegistration.getLastName());
+			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());			
+			subscriber.setSecurityquestion(subscriberRegistration.getMothersMaidenName());
+			subscriber.setSecurityanswer(subscriberRegistration.getMothersMaidenName());
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
+			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
+			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
+			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
+			
+			if(StringUtils.isNotBlank(subscriber.getEmail())) {
+			
+				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS|CmFinoFIX.NotificationMethod_Email);
+				
+			} else {
+				
+				subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
+			}
+			
+			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
+			subscriber.setStatustime(new Timestamp());
+			subscriber.setCreatedby(createdByName);
+			subscriber.setUpdatedby(createdByName);
+			subscriber.setCreatetime(new Timestamp());
+			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
+			
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(Long.parseLong("1"));
+			
+			if (kycLevel == null ) {
+				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
+			}
+			
+			subscriber.setKycLevel(kycLevel);
+			Long groupID = null;
+			
+			
+			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+			Groups defaultGroup = groupDao.getSystemGroup();
+			groupID = defaultGroup.getId();
+			Long kycLevelNo = null;
+			if(null != subscriber.getUpgradablekyclevel()){
+				
+				kycLevelNo = subscriber.getUpgradablekyclevel().longValue();
+			}
+			else {
+				
+				kycLevelNo = kycLevel.getKyclevel().longValue();
+			}
+			
+			PocketTemplate emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevelNo, true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+			
+			if (emoneyPocketTemplate == null) {
+				
+				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
+			}
+			
+			subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel());
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
+			
+			int pocketStatus = CmFinoFIX.PocketStatus_Active;
+			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration.getSubscriberStatus()) {
+				
+				Long templateID = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
+				
+				if (templateID > 0) {
+					
+					PocketTemplateDAO templateDAO = DAOFactory.getInstance().getPocketTemplateDao();
+					PocketTemplate unRegisteredTemplate = templateDAO.getById(templateID);
+					
+					if (unRegisteredTemplate != null) {
+						
+						emoneyPocketTemplate = unRegisteredTemplate;
+						pocketStatus = CmFinoFIX.PocketStatus_OneTimeActive;
+						
+					} else {
+						
+						log.error("ERROR: Pocket Template for Emoney Unregistered system is not found");
+						return CmFinoFIX.NotificationCode_UnRegisteredPocketTemplateNotFound;
+					}
+				}
+			}
+			
+			subscriber.setActivationtime(new Timestamp());
+			subscriber.setAppliedby(createdByName);
+			subscriber.setAppliedtime(new Timestamp());
+			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
+			subscriberDao.save(subscriber);
+			
+			if(subscriber.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
+				
+				mailService.generateEmailVerificationMail(subscriber, subscriber.getEmail());				
+			}
+			
+			String calcPIN = null;
+			try	{
+				
+				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), newpin);
+			}
+			catch(Exception e){
+				log.error("Error during PIN conversion "+e);
+				return CmFinoFIX.NotificationCode_Failure;
+			}
+			
+			subscriberMDN.setDigestedpin(calcPIN);
+			subscriberMDN.setSubscriber(subscriber);
+			subscriberMDN.setMdn(subscriberRegistration.getMDN());
+			subscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
+			
+			if (subscriberRegistration.getSubscriberStatus() != null) {
+				
+				subscriberMDN.setStatus(subscriberRegistration.getSubscriberStatus());
+			}
+			
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.setCreatedby(createdByName);
+			subscriberMDN.setCreatetime(new Timestamp());
+			subscriberMDN.setUpdatedby(createdByName);
+			subscriberMdnDao.save(subscriberMDN);
+			
+			Long subid = subscriberMDN.getId().longValue();
+            
+            int cifnoLength = systemParametersService.getInteger(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH);
+    		String cifnoPrefix = systemParametersService.getString(SystemParameterKeys.LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO);
+    		
+    		if((cifnoPrefix.length() + String.valueOf(subid).length()) >= cifnoLength) {
+    			
+    			log.info("CIF No number length is invalid.....");
+    			return CmFinoFIX.NotificationCode_SubscriberRegistrationfailed;
+       		}
+    		
+    		String cifno = cifnoPrefix + StringUtils.leftPad(String.valueOf(subid),(cifnoLength - cifnoPrefix.length()),"0");
+    		
+    		subscriberMDN.setApplicationid(cifno);
+    		
+    		subscriberMdnDao.save(subscriberMDN);
+			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
+			
+			//handling adding default group if the group doesnot exist here
+			if(groupID!=null){
+				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+				SubscriberGroups sg = new SubscriberGroups();
+				sg.setSubscriberid(subscriber.getId().longValue());
+				sg.setGroupid(defaultGroup.getId().longValue());
+				if(subscriber.getId() != null){
+					subscriberGroupDao.save(sg);
+				}
+			}
+			
+			Pocket emoneyPocket = null;
+			emoneyPocket = pocketService.createPocket(emoneyPocketTemplate,subscriberMDN, pocketStatus, true, null);
+			
+			if(null != emoneyPocket) {
+				
+				emoneyPocket.setId(emoneyPocket.getId());
+				
+				String cardPan = null;
+				
+				try {
+					
+					cardPan = pocketService.generateLakupandia16DigitCardPAN(subscriberMDN.getMdn());
+					
+				} catch (Exception e) {
+					
+					log.error("Cardpan creation failed", e);
+				}
+				
+				emoneyPocket.setCardpan(cardPan);
+				pocketDao.save(emoneyPocket);
+			}
+			
+			return CmFinoFIX.ResponseCode_Success;
+		}
+		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
+	}
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer registerWithActivationSubscriber(

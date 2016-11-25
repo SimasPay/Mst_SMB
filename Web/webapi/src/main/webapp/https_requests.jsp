@@ -21,23 +21,6 @@
 			Subscriber Activity
 		</th>
 	</tr>
-	<tr>
-	<td>
-	<a href="jsp/s_subscriber_Activation.jsp">Subscriber Activation</a>
-	</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_register_through_web.jsp">subscriber registration through web</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_self_registration.jsp">Subscriber Self Registartion</a>
-		</td>
-	</tr>
 	
 	<tr>
 		<td>
@@ -45,12 +28,6 @@
 		</td>
 	</tr>
 	
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_registration_with_activation.jsp">Subscriber registration with activation</a>
-		</td>
-	</tr>
-
 	<tr>
 		<td>
 			<a href="jsp/s_subscriber_Reactivation.jsp">Subscriber Reactivation</a>
@@ -90,19 +67,6 @@
 	
 	<tr>
 		<td>
-			<a href="jsp/s_transfer_inquiry.jsp"> Transfer Inquiry</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_transfer.jsp"> Transfer Confirmation</a>
-		</td>
-	</tr>
-	
-	
-	<tr>
-		<td>
 			<a href="jsp/s_subscriber_cashoutinquiry.jsp"> Subscriber_to_Agent_CashOut_Inquiry</a>
 		</td>
 	</tr>
@@ -125,37 +89,6 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="jsp/s_InterEmoneyTransferinquiry.jsp"> Inter Emoney Transfer Inquiry</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_InterEmoneyTransferconfirm.jsp"> Inter Emoney Transfer confirm</a>
-		</td>
-	</tr>	
-	<tr>
-		<td>
-			<a href="jsp/s_fund_allocationInquiry.jsp"> Fund Allocation Inquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_fund_allocationConfirm.jsp"> Fund Allocation confirm</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_fund_withdrawalInquiry.jsp"> Fund Withdrawal Inquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_fund_withdrawalConfirm.jsp"> Fund Withdrawal confirm</a>
-		</td>
-	</tr>	
-	<tr>
-		<td>
 			<a href="jsp/s_EMoney_txnhistory.jsp">Emoney History</a>
 		</td>
 	</tr>
@@ -175,28 +108,6 @@
 			<a href="jsp/s_emoney_txnhistory_as_pdf_download.jsp">Download Emoney Txn History</a>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_transactionstatus.jsp">Transaction Status</a>
-		</td>
-	</tr>
-		<tr>
-		<td>
-			<a href="jsp/s_purchase_inquiry.jsp"> Buy Inquiry</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_purchase_confirm.jsp"> Buy Confirm</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_bill_inquiry.jsp"> Bill  Inquiry</a>
-		</td>
-	</tr>	
-	
 	<tr>
 		<td>
 			<a href="jsp/s_changepin.jsp"> ChangePin</a>
@@ -550,69 +461,20 @@
 		</td>
 	</tr>
 	
-	</table></td></tr>
-
-	<tr><td><table>
-	<tr>
-		<th>
-			Hub Activity
-		</th>
-	</tr>
-	<tr></tr>
-
 	<tr>
 		<td>
 			<a href="jsp/s_generate_otp.jsp">Generate OTP</a>
 		</td>
 	</tr>
-
-	<tr>
-		<td>
-			<a href="jsp/s_validate_otp.jsp">Validate OTP</a>
-		</td>
-	</tr>
 	
 	<tr>
 		<td>
-			<a href="jsp/s_subscriber_registration_with_activation_hub.jsp">Subscriber Registration With Activation For Hub</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_kyc_upgrade_inquiry.jsp">KYC Upgrade Inquiry</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_kyc_upgrade.jsp">KYC Upgrade</a>
+			<a href="jsp/s_subscriber_self_registration.jsp">Subscriber Self Registration as Non-KYC E-Money</a>
 		</td>
 	</tr>
 	
 	</table></td></tr>
-	
-	<tr><td><table>
-	<tr>
-		<th>
-			Bayar.NET
-		</th>
-	</tr>
 
-	<tr>
-		<td>
-			<a href="jsp/s_bayarnet_product.jsp">Product List</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_bayarnet_price.jsp">Price List</a>
-		</td>
-	</tr>
-
-	</table></td></tr>
-	
 	<tr><td><table>
 	<tr>
 		<th>
@@ -649,119 +511,6 @@
 	<tr>
 		<td>
 			<a href="jsp/s_get_promo_image_path.jsp">Get Promo Image</a>
-		</td>
-	</tr>	
-	</table></td></tr>
-	<tr><td><table>
-	<tr>
-		<th>
-			NFC Services
-		</th>
-	</tr>
-	<tr></tr>
-
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_pocket_Balance.jsp"> NFC Pocket Balance</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_card_balance.jsp"> NFC Card Balance</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_card_link.jsp">NFC Card Link</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_card_unlink.jsp"> NFC Card Unlink</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_card_topup.jsp"> NFC Card Topup</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_card_topup_reversal.jsp"> NFC Card Topup Reversal</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_txn_history_detailed_stmt.jsp"> NFC Transaction History Detailed Stmt</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_txn_history_as_pdf_email.jsp"> Email NFC Txn History</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_txn_history_as_pdf_download.jsp">Download NFC Txn History</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_transaction_history.jsp"> NFC Transaction History</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_pocket_topup_inquiry.jsp"> NFC Pocket Topup Inquiry</a>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_nfc_pocket_topup_confirm.jsp"> NFC Pocket Topup Confirm</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_modify_nfccard_alias.jsp"> Modify NFC Card Alias</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_add_favorite.jsp">Add Favorite</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_edit_favorite.jsp">Edit Favorite</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_delete_favorite.jsp">Delete Favorite</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_generate_favorite_json.jsp">Generate Favorites as JSON</a>
-		</td>
-	</tr>
-	</table></td></tr>
-	<tr><td><table>
-	<tr>
-		<th>
-			Partner
-		</th>
-	</tr>
-	<tr></tr>	
-
-	<tr>
-		<td>
-			<a href="jsp/s_partner_registration.jsp">PartnerRegistration Through API</a>
 		</td>
 	</tr>	
 	</table></td></tr>

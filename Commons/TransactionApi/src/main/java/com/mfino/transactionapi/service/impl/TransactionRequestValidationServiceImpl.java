@@ -636,6 +636,17 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		}
 	}
 	
+	public void validateSubscriberRegistrationForNonKyc(TransactionDetails transactionDetails) throws InvalidDataException {
+		
+		validateRegisteringMDN(transactionDetails.getSourceMDN());
+		validateFirstName(transactionDetails);
+		
+		if(StringUtils.isNotBlank(transactionDetails.getEmail())) {
+			
+			validateEmail(transactionDetails);
+		}
+	}
+	
 	public void validateSubscriberRegistrationWithActivation(TransactionDetails transactionDetails) throws InvalidDataException {
 		validateRegisteringMDN(transactionDetails.getSourceMDN());
 		validateFirstName(transactionDetails);

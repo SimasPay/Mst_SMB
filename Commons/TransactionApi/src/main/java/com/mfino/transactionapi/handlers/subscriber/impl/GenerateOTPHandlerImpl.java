@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MdnOtpDAO;
@@ -56,8 +57,8 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 	private SubscriberService subscriberService;
 
  	public XMLResult handle(TransactionDetails txnDetails) {
-		 ChannelCode cc= txnDetails.getCc();
-		 CMGenerateOTP  generateOTP = new CMGenerateOTP();
+		ChannelCode cc= txnDetails.getCc();
+		CMGenerateOTP  generateOTP = new CMGenerateOTP();
 		generateOTP.setMDN(txnDetails.getSourceMDN());
 		generateOTP.setChannelCode(cc.getChannelcode());
 		generateOTP.setSourceApplication((int)cc.getChannelsourceapplication());
@@ -106,6 +107,7 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 		result.setOneTimePin(oneTimePin);
 		result.setOtpExpirationTime(mdnOtp.getOtpexpirationtime());
 		result.setIdNumber(mdnOtp.getId().toString());
+		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 		sendSMS(generateOTP.getMDN(), oneTimePin, result.getOtpExpirationTime(),mdnOtp.getId().longValue());
 		log.info("OTP generation successful for MDN " + generateOTP.getMDN());
 		return result;
@@ -173,9 +175,8 @@ public class GenerateOTPHandlerImpl extends FIXMessageHandler implements Generat
 
 	private void sendSMS(String mdn, String oneTimePin, String otpExpirationTime, Long tokenID) {
 		SMSServiceImpl smsService = new SMSServiceImpl();
-		//smsService.setSctlId(mdnOtp.getServiceChargeTransactionLogID());		
-//		String message = "<st>" + tokenID + "###" + oneTimePin + "</st>";
-		String message = "Kode verifikasi Uangku anda adalah " + oneTimePin + " (no ref: " + tokenID + ")";
+		//String message = "Kode verifikasi Uangku anda adalah " + oneTimePin + " (no ref: " + tokenID + ")";
+		String message = "Kode OTP Simaspay anda : " + oneTimePin + ". Atau silahkan klik link berikut simaspay://?token=" + oneTimePin;
 		smsService.setDestinationMDN(mdn);
 		smsService.setMessage(message);
 		smsService.send();

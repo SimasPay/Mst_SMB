@@ -3392,7 +3392,10 @@
 			<field name="ApplicationID" required="N" />
 			<field name="TransferAmount" required="N" />
 			<field name="Pin" required="N" isSecure="Y"/>  
-			<field name="SubscriberStatus" required="N" />   
+			<field name="SubscriberStatus" required="N" />
+			<field name="Email" required="N" />
+			<field name="SecurityQuestion" required="N" />
+			<field name="SecurityAnswer" required="N" />
 		</message>
 		<message name="SubscriberRegistrationThroughWeb" msgtype="1361" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="SubscriberRegistration">
 			<field name="City" required="N" />
@@ -23317,6 +23320,34 @@ ERROR:Mismatch of  mdn type and app type
 							<Text>Transaction ID: $(TransferID). Dear Customer, you have successfully transferred $(Currency) $(Amount) to $(ReceiverMDN) and  Service Charge $(Currency) $(serviceCharge).</Text>
 						</SMS>
 					</English>
+				</C1>
+			</value>
+			<value description="NonKycSubscriberSuccessfullyRegistered" enum="2180">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Congratulations, Registration successful.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Congratulations, Registration successful.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="NonKycSubscriberRegisteredFailed" enum="2181">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Registration Failed.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Registration Failed.</Text>
+						</SMS>
+					</Bahasa>
 				</C1>
 			</value>
 		</field>
