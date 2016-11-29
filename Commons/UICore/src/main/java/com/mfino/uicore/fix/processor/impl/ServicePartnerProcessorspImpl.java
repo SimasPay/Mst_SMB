@@ -1786,8 +1786,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				log.error("Error :"+e.getMessage(),e);
 			}
         }
-        if(partner.getPartnerstatus()!=0){
-        	entry.setPartnerStatus(Integer.valueOf(Long.valueOf(partner.getPartnerstatus()).intValue()));
+        if(partner.getPartnerstatus()!=null){
+        	entry.setPartnerStatus(partner.getPartnerstatus());
         }
         
 /*        if(partner.getUser()!=null){
