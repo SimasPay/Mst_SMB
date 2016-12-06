@@ -1105,13 +1105,15 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 		return this.container.getOtherWork();
 	}
 	
+	@Override
+	public String getSecurityQuestion() {
+		// TODO Auto-generated method stub
+		return this.container.getSecurityQuestion();
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public String getSecurityAnswer() {
+		// TODO Auto-generated method stub
+		return this.container.getSecurityAnswer();
+	}
 }

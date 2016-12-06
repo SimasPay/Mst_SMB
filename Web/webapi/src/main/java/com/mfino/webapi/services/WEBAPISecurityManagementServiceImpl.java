@@ -267,6 +267,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String language = request.getParameter(ApiConstants.PARAMETER_LANG);
 		String notificationMethod = request.getParameter(ApiConstants.PARAMETER_NOTIFICATION_METHOD);
 		String institutionID = request.getParameter(ApiConstants.PARAMETER_INSTITUTION_ID);
+		String securityQuestion = request.getParameter(ApiConstants.SECURITY_QUESTIONS);
+		String securityAnswer = request.getParameter(ApiConstants.SECURITY_ANSWERS);
 		//tarun
 		boolean approvalRequired = true;
 		//approvalRequired = (request.getParameter(ApiConstants.PARAMETER_APPROVAL_REQUIRED)).equalsIgnoreCase("true");
@@ -545,6 +547,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setOthers(others);
 		
 		rudContainer.setOtherWork(otherWork);
+		rudContainer.setSecurityQuestion(securityQuestion);
+		rudContainer.setSecurityAnswer(securityAnswer);
 		
 		log.info("initUserDataContainer: End");
 		return rudContainer;
