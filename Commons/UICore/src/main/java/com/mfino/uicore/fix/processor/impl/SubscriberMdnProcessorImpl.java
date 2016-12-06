@@ -1041,8 +1041,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						entry.setUpgradeAcctStatusText("Approved");	
 					}else if(upgradeSttus==CmFinoFIX.SubscriberUpgradeStatus_Reject.intValue()){
 						entry.setUpgradeAcctStatusText("Rejected");	
+					}else if(upgradeSttus == CmFinoFIX.SubscriberUpgradeKycStatus_Revision.intValue()){
+						entry.setUpgradeAcctStatusText("Revision");
 					}
-					
 				}
 				if(s.getUpgradeacctapprovedby()!=null){
 					entry.setUpgradeAcctApprovedBy(s.getUpgradeacctapprovedby());
@@ -1195,8 +1196,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 
 				Integer oldRestrictions = Integer.valueOf(Long.valueOf(s.getRestrictions()).intValue());
-
-				if (e.getRecordVersion()!=s.getVersion()) {
+				
+				if (!e.getRecordVersion().equals(s.getVersion())){
 					log.warn("SubscriberMDN:"+s.getId()+" Stale Data Exception for user:"+getLoggedUserNameWithIP());
 					handleStaleDataException();
 				}
@@ -1547,6 +1548,11 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			if(null != realMsg.getKYCFieldsLevelID()) {
 				
 				query.setKycLevelId(realMsg.getKYCFieldsLevelID());
+			}
+			
+			if(realMsg.getUpgradeKycStatusSearch() != null && 
+					!CmFinoFIX.UpgradeKycStatusSearch_All.equals(realMsg.getUpgradeKycStatusSearch())){
+				query.setAccountUpgradeKycStatus(realMsg.getUpgradeKycStatusSearch());
 			}
 			
 			if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {

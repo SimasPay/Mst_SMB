@@ -782,6 +782,7 @@
 			<field name="MDNStatus" required="N" />
 			<field name="KYCFieldsLevelID" required="N"/>
 			<field name="KYCLevelName" required="N"/>
+			<field name="UpgradeKycStatusSearch" required="N"/>
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="MDNID" id="ID" required="N" />
 				<field name="SubscriberID" required="N" />
@@ -883,6 +884,7 @@
 				<field name="SupportingDocumentPath" required="N" />
 				<field name="UpgradeAcctStatus" required="N" />
 				<field name="UpgradeAcctApprovedBy" required="N" />
+				<field name="UpgradeAcctRequestBy" required="N" />
 				<field name="UpgradeAcctTime" required="N" />
 				<field name="UpgradeAcctComments" required="N" />
 				<field name="UpgradeAcctStatusText" required="N" />
@@ -3392,7 +3394,10 @@
 			<field name="ApplicationID" required="N" />
 			<field name="TransferAmount" required="N" />
 			<field name="Pin" required="N" isSecure="Y"/>  
-			<field name="SubscriberStatus" required="N" />   
+			<field name="SubscriberStatus" required="N" />
+			<field name="Email" required="N" />
+			<field name="SecurityQuestion" required="N" />
+			<field name="SecurityAnswer" required="N" />
 		</message>
 		<message name="SubscriberRegistrationThroughWeb" msgtype="1361" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="SubscriberRegistration">
 			<field name="City" required="N" />
@@ -5727,7 +5732,45 @@
 			<field name="DestAccountNumber" required="Y"/>
 	</message>
 	<message name="TransferToUangku" msgtype="1784" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
-	</message>		
+	</message>
+		
+		<message name="JSSubscriberUpgradeKyc" msgtype="1785" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+			<field name="MDNID" id="ID" required="Y" />
+			<field name="FirstName" required="Y" />
+			<field name="IDType" required="Y" />
+			<field name="IDNumber" required="Y" />
+			<field name="BirthPlace" required="Y" />
+			<field name="DateOfBirth" required="Y" />
+			<field name="MothersMaidenName" required="Y" />
+			<field name="Email" required="N" />
+			<field name="KTPDocumentPath" required="N" />
+			<field name="RegionName" required="Y" />
+			<field name="City" required="Y" />
+			<field name="State" required="Y" />
+			<field name="SubState" required="Y" />
+			<field name="StreetAddress" required="Y" />
+			<field name="SubscriberUpgradeStatus" required="Y" />
+			<field name="UpgradeAcctComments" required="N"/>
+			
+			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
+				<field name="MDNID" id="ID" required="Y" />
+				<field name="FirstName" required="Y" />
+				<field name="IDType" required="Y" />
+				<field name="IDNumber" required="Y" />
+				<field name="BirthPlace" required="Y" />
+				<field name="DateOfBirth" required="Y" />
+				<field name="MothersMaidenName" required="Y" />
+				<field name="Email" required="N" />
+				<field name="KTPDocumentPath" required="N" />
+				<field name="RegionName" required="Y" />
+				<field name="City" required="Y" />
+				<field name="State" required="Y" />
+				<field name="SubState" required="Y" />
+				<field name="StreetAddress" required="Y" />
+				<field name="SubscriberUpgradeStatus" required="Y" />
+			</group>
+		</message>
+		
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -6133,6 +6176,7 @@
 			<field name="CloseAgent" required="N" />
 			<field name="CloseUser" required="N" />
 			<field name="KTPID" required="N" />
+			<field name="UpgradeAcctRequestBy" required="N" />
 		</record>
 		<record name="TransactionLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
@@ -8384,7 +8428,7 @@
 			<value enum="1782" description="JSResendMFAOTP"/>
 			<value enum="1783" description="TransferToUangkuInquiry"/>
 			<value enum="1784" description="TransferToUangku"/>	
-			
+			<value enum="1785" descripption="JSSubscriberUpgradeKyc" />
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -23319,6 +23363,43 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="SubscriberUpgradeRequestRevision" enum="2177">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your Subscriber Upgrade Request Need Revision.</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>
+			<value description="NonKycSubscriberSuccessfullyRegistered" enum="2180">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Congratulations, Registration successful.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Congratulations, Registration successful.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="NonKycSubscriberRegisteredFailed" enum="2181">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Registration Failed.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Registration Failed.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -24677,6 +24758,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="10245" description="SubscriberUpgradeApproveReject" />
 			<value enum="10246" description="AgetntClosingApproveReject" />
 			<value enum="10247" description="ClosingAccount" />
+			<value enum="10248" description="SubscriberUpgradeKyc" />
+			<value enum="10249" description="SubscriberUpgradeKycChecker" />
 			<!-- Merchant Tab Permissions -->
 			<!--  <value enum="10301" description="Merchant_Details_All_Merchants_View" />
 			<value enum="10302" description="Merchant_Details_Self_Downline_View" />
@@ -27112,6 +27195,25 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="6" description="Lainnya"/>
 		</field>
 	<field number="8458" name="OtherWork" type="STRING" required="N" />
+	<field number="8459" name="IDTypeForKycUpgrade" type="STRING">
+		<value enum="1" description="Passport" />
+		<value enum="2" description="KTP" />
+		<value enum="3" description="SIM" />
+	</field>
+	<field number="8460" name="UpgradeKycStatusSearch" type="INT32">
+		<value enum="5" description="All"/>
+		<value enum="0" description="Initialized"/>
+		<value enum="1" description="Approved"/>
+		<value enum="2" description="Rejected"/>
+		<value enum="3" description="Revision"/>
+	</field>
+	<field number="8461" name="SubscriberUpgradeKycStatus" type="INT32">
+		<value enum="0" description="Initialized" />
+		<value enum="1" description="Approve" />
+		<value enum="2" description="Reject" />
+		<value enum="3" description="Revision" />
+	</field>
+	<field number="8462" name="UpgradeAcctRequestBy" type="STRING" />
     </fields>
     <primitives>
 		<dbtype name="mysql">
