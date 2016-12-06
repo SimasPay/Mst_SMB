@@ -83,6 +83,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private Long closeagent;
 	private String closeuser;
 	private String ktpid;
+	private Timestamp lastapppinchange;
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(
 			0);
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(
@@ -523,6 +524,16 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 
 	public void setKtpid(String ktpid) {
 		this.ktpid = ktpid;
+	}
+	
+	@Type(type = "userDefinedTimeStamp")
+	@Column(name = "LASTAPPPINCHANGE")
+	public Timestamp getLastapppinchange() {
+		return this.lastapppinchange;
+	}
+
+	public void setLastapppinchange(Timestamp lastapppinchange) {
+		this.lastapppinchange = lastapppinchange;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdnByRefundmdnid")
