@@ -33,16 +33,16 @@
 			<groupId>com.mfino.commons</groupId>
 			<artifactId>UICore</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jasypt</groupId>
+		    <artifactId>jasypt-spring31</artifactId>
+		    <version>1.9.0</version>
 		</dependency>		
 		<dependency>
 		    <groupId>org.jasypt</groupId>
 		    <artifactId>jasypt</artifactId>
-		    <version>1.8</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.jasypt</groupId>
-		    <artifactId>jasypt-spring3</artifactId>
-		    <version>1.9.0</version>
+		    <version>1.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -88,6 +88,7 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.5.8</version>
 		</dependency>
+	 <!-- 	
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -98,6 +99,7 @@
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>4.2.19.Final</version>
 		</dependency>
+	 -->	
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -116,27 +118,29 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.2.9.RELEASE</version>
+			<version>3.1.4.RELEASE</version>
 		</dependency>
+		
 		<dependency>
       		<groupId>org.springframework.security</groupId>
       		<artifactId>spring-security-web</artifactId>
-      		<version>3.2.9.RELEASE</version>
+      		<version>3.1.4.RELEASE</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>3.2.9.RELEASE</version>
+			<version>3.1.4.RELEASE</version>
 		</dependency>			
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core-tiger</artifactId>
 			<version>2.0.7.RELEASE</version>
 		</dependency>
-	    <dependency>
+	     <dependency>
 	      	<groupId>org.springframework.security</groupId>
 	      	<artifactId>spring-security-taglibs</artifactId>
-	      	<version>3.2.9.RELEASE</version>
+	      	<version>3.1.4.RELEASE</version>
 	    </dependency>		
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -196,10 +200,11 @@
 		    <artifactId>guice</artifactId>
 		    <version>3.0</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.0.1</version>
+			<version>4.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -211,11 +216,13 @@
 			<artifactId>poi</artifactId>
 			<version>3.8</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.11.0.GA</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>

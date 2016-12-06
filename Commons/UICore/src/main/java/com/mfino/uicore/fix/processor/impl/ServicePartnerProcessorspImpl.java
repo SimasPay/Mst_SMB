@@ -1035,7 +1035,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        				SubscriberGroups sg = subscriberGroups.iterator().next();
 	        				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
 	        					Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
-	        					sg.setGroupid(group.getId().longValue());
+	        					sg.setGroupid(group.getId());
 	        					subscriberGroupDao.save(sg);
 	        				}
         				}
@@ -1043,10 +1043,9 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         			else{
         				Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         				SubscriberGroups sg = new SubscriberGroups();
-        				sg.setSubscriberid(subscriber.getId().longValue());
-        				sg.setGroupid(group.getId().longValue());
-        				
+        				sg.setGroupid(group.getId());
         				if(subscriber.getId() != null){
+        					sg.setSubscriberid(subscriber.getId());
         					subscriberGroupDao.save(sg);
         				}
         			}
@@ -1432,7 +1431,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        	entry.setCompanyEmailId(partner.getCompanyemailid());
 	        }
 	        if (partner.getVersion() != 0) {
-	            entry.setRecordVersion(Integer.valueOf(Long.valueOf(partner.getVersion()).intValue()));
+	            entry.setRecordVersion(partner.getVersion());
 	        }
 	        if (partner.getBranchcode() != null) {
 	        	entry.setBranchCodeText(userService.getUserBranchCode(Integer.valueOf(partner.getBranchcode())));
@@ -1443,12 +1442,12 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        }
 	        if(partner.getBusinesspartnertype() != null){
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerTypeAgent, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), partner.getBusinesspartnertype()));
-	        	entry.setBusinessPartnerType(partner.getBusinesspartnertype().intValue());
+	        	entry.setBusinessPartnerType(partner.getBusinesspartnertype());
 	        	entry.setAgentType(String.valueOf(partner.getBusinesspartnertype()));
 	        	entry.setAgentTypeText(entry.getBusinessPartnerTypeText());
 	        }
-	        entry.setRestrictions(Integer.valueOf(Long.valueOf(subscriberMdn.getRestrictions()).intValue()));
-	        entry.setCloseAcctStatus(partner.getCloseacctstatus().intValue());
+	        entry.setRestrictions(subscriberMdn.getRestrictions());
+	        entry.setCloseAcctStatus(partner.getCloseacctstatus());
         }
         if(subscriber != null){
         	if(subscriber.getFirstname() != null){
@@ -1787,8 +1786,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 				log.error("Error :"+e.getMessage(),e);
 			}
         }
-        if(partner.getPartnerstatus()!=0){
-        	entry.setPartnerStatus(Integer.valueOf(Long.valueOf(partner.getPartnerstatus()).intValue()));
+        if(partner.getPartnerstatus()!=null){
+        	entry.setPartnerStatus(partner.getPartnerstatus());
         }
         
 /*        if(partner.getUser()!=null){

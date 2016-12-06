@@ -173,7 +173,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	private SubscriberStatusHandler subStatusHandler;
 	
 	@Autowired
-	@Qualifier("SelfRegistrationHandlerImpl")
+	@Qualifier("SelfRegistrationForNonKYCHandlerImpl")
 	private SelfRegistrationHandler selfRegistrationHandler;
 	
 	@Autowired
@@ -235,7 +235,6 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("KYCUpgradeInquiryHandlerImpl")
 	private KYCUpgradeInquiryHandler kycUpgradeInquiryHandler;
-	
 	
 	@Autowired
 	@Qualifier("KYCUpgradeHandlerImpl")
@@ -329,7 +328,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 
 		} else if (ApiConstants.TRANSACTION_SUBSCRIBERREGISTRATION.equalsIgnoreCase(transactionName)) {
 			
-			validationService.validateSubscriberRegistration(transactionDetails);
+			validationService.validateSubscriberRegistrationForNonKyc(transactionDetails);
 			xmlResult = (XMLResult) selfRegistrationHandler.handle(transactionDetails);
 
 		} else if (ApiConstants.TRANSACTION_REGISTRATION_WITH_ACTIVATION.equalsIgnoreCase(transactionName)) {

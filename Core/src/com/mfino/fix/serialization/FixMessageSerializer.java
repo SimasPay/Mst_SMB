@@ -36,7 +36,11 @@ public class FixMessageSerializer extends AbstractFixMessageSerializer {
         CMultiXBuffer buffer = new CMultiXBuffer();
 
         try {
-            msg.toFIX(buffer);
+        	
+        	String messageText = msg.DumpFields();
+        	log.info("Message Data:" + messageText);
+        	
+        	msg.toFIX(buffer);
             byte[]  ToSend  =   new byte[buffer.Length()];
             System.arraycopy(buffer.DataPtr(),0,ToSend,0,buffer.Length());
             

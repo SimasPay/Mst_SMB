@@ -273,4 +273,6 @@ public interface TransactionRequestValidationService {
 	public void validateTransferToUangkuInquiryDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 
 	public void validateTransferToUangkuConfirmDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateSubscriberRegistrationForNonKyc(TransactionDetails transactionDetails) throws InvalidDataException;
 }

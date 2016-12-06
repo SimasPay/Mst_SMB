@@ -16,6 +16,9 @@ public class LoginXMLResult extends XMLResult {
 	private boolean isBank;
 	private String name;
 	private String bankAccountNumber;
+	private boolean isEmoney;
+	private boolean isLakupandia;
+	private boolean isKyc;
 	
 	/**
 	 * @return the bankAccountNumber
@@ -89,6 +92,25 @@ public class LoginXMLResult extends XMLResult {
 	public void setUserAPIKey(String userAPIKey) {
 		this.userAPIKey = userAPIKey;
 	}
+	public boolean getIsEmoney() {
+		return isEmoney;
+	}
+	public void setIsEmoney(boolean isEmoney) {
+		this.isEmoney = isEmoney;
+	}
+	
+	public boolean getIsLakupandia() {
+		return isLakupandia;
+	}
+	public void setIsLakupandia(boolean isLakupandia) {
+		this.isLakupandia = isLakupandia;
+	}
+	public boolean getIsKyc() {
+		return isKyc;
+	}
+	public void setIsKyc(boolean isKyc) {
+		this.isKyc = isKyc;
+	}
 	public void render() throws Exception{
 		writeStartOfDocument();
 		
@@ -144,6 +166,33 @@ public class LoginXMLResult extends XMLResult {
 			getXmlWriter().writeEndElement();
 			
 		}
+		if(isEmoney){
+			getXmlWriter().writeStartElement("isEmoney");
+			getXmlWriter().writeCharacters("true",false);
+			getXmlWriter().writeEndElement();
+		}else{
+			getXmlWriter().writeStartElement("isEmoney");
+			getXmlWriter().writeCharacters("false",false);
+			getXmlWriter().writeEndElement();
+		}
+		if(isLakupandia){
+			getXmlWriter().writeStartElement("isLakupandia");
+			getXmlWriter().writeCharacters("true",false);
+			getXmlWriter().writeEndElement();
+		}else{
+			getXmlWriter().writeStartElement("isLakupandia");
+			getXmlWriter().writeCharacters("false",false);
+			getXmlWriter().writeEndElement();
+		}
+		if(isKyc){
+			getXmlWriter().writeStartElement("isKyc");
+			getXmlWriter().writeCharacters("true",false);
+			getXmlWriter().writeEndElement();
+		}else{
+			getXmlWriter().writeStartElement("isKyc");
+			getXmlWriter().writeCharacters("false",false);
+			getXmlWriter().writeEndElement();
+		}
 		
 		getXmlWriter().writeStartElement("bankAccountNumber");
 		getXmlWriter().writeCharacters(bankAccountNumber,false);
@@ -151,5 +200,7 @@ public class LoginXMLResult extends XMLResult {
 		
 		writeEndOfDocument();
 	}
+	
+	
 
 }

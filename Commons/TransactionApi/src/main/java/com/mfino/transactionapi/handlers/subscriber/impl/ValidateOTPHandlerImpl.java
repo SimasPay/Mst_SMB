@@ -2,6 +2,7 @@ package com.mfino.transactionapi.handlers.subscriber.impl;
 
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,8 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService;
 	
-	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public XMLResult handle(TransactionDetails txnDetails) {
+		
 		CMValidateOTP validateOTP= new CMValidateOTP();
 		ChannelCode cc = txnDetails.getCc();
 		
@@ -66,20 +67,34 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 		log.info("Handling ValidateOTP webapi request");
 		XMLResult result = new ValidateOtpXMLResult();
 
-		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GenerateOTP,validateOTP.DumpFields());
+		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ValidateOTP,validateOTP.DumpFields());
 		result.setSourceMessage(validateOTP);
 		result.setDestinationMDN(validateOTP.getMDN());
 		result.setTransactionTime(transactionsLog.getTransactiontime());
 		result.setTransactionID(transactionsLog.getId().longValue());
 		validateOTP.setTransactionID(transactionsLog.getId().longValue());
-		//addCompanyANDLanguageToResult(result);
 		result.setActivityStatus(false);
 
 		MdnOtpDAO mdnOtpDao = DAOFactory.getInstance().getMdnOtpDAO();
-		Long idNumber = new Long(txnDetails.getIdNumber());
-		MdnOtp mdnOtp = mdnOtpDao.getByMDNAndId(validateOTP.getMDN(),idNumber);
-		if (mdnOtp != null)
-		{
+		MdnOtp mdnOtp = null;
+		
+		if(null != txnDetails.getIdNumber()) {
+			
+			Long idNumber = new Long(txnDetails.getIdNumber());
+			mdnOtp = mdnOtpDao.getByMDNAndId(validateOTP.getMDN(),idNumber);
+			
+		} else {
+			
+			List<MdnOtp> mdnList = mdnOtpDao.getByMdn(validateOTP.getMDN());
+			
+			if(null != mdnList) {
+				
+				mdnOtp = mdnList.get(0);
+			}
+		}
+		
+		if (mdnOtp != null) {
+			
 			String receivedOTP = validateOTP.getOTP();
 			String receivedOTPDigest = MfinoUtil.calculateDigestPin(validateOTP.getMDN(), receivedOTP);
 
@@ -88,22 +103,27 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 				log.info("OTP validation failed for MDN " + validateOTP.getMDN());
 			}
 			else if (mdnOtp.getOtpexpirationtime().after(new Date()) ) {
-				if(mdnOtp.getOtp().equals(receivedOTPDigest))
-				{
+				
+				if(mdnOtp.getOtp().equals(receivedOTPDigest)) {
+					
 					mdnOtp.setStatus(CmFinoFIX.OTPStatus_Validated);
 					mdnOtpDao.save(mdnOtp);
 					result.setNotificationCode(CmFinoFIX.NotificationCode_OTPValidationSuccessful);
 					SubscriberMdn subscriberMDN = subscriberMdnService.getNotRetiredSubscriberMDN(validateOTP.getMDN());
+					
 					if(subscriberMDN!=null){
+						
 						result.setUnRegistered(false);
-					}
-					else{
+					
+					} else{
+						
 						result.setUnRegistered(true);
 					}
+					
 					log.info("OTP validation successful for MDN " + validateOTP.getMDN());
-				}
-				else
-				{
+					
+				} else {
+					
 					int currentOtpTrials = mdnOtp.getOtpretrycount().intValue()+1;
 					mdnOtp.setOtpretrycount((long)currentOtpTrials);
 					int remainingTrials = getNumberOfRemainingTrials(currentOtpTrials);
@@ -117,27 +137,28 @@ public class ValidateOTPHandlerImpl extends FIXMessageHandler implements Validat
 					mdnOtpDao.save(mdnOtp);
 					log.info("Invalid OTP for MDN " + validateOTP.getMDN());					
 				}
-			}
-			else
-			{
+				
+			} else{
+				
 				mdnOtp.setStatus(CmFinoFIX.OTPStatus_FailedOrExpired);
 				mdnOtpDao.save(mdnOtp);
 				result.setActivityStatus(false);
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
 				log.info("OTP validation failed for MDN " + validateOTP.getMDN());
 			}
-		}
-		else
-		{
+			
+		} else {
+			
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
 			log.info("MDN " +  validateOTP.getMDN() + "doesn't exist");
 		}
+		
 		return result;
 	}
 
 	private int getNumberOfRemainingTrials(int currentOtpTrials) {
+		
 		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
 		return (maxOtpTrials-currentOtpTrials);
 	}
-
 }

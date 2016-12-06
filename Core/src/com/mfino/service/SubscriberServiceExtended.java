@@ -30,6 +30,8 @@ public interface SubscriberServiceExtended {
 			SubscriberMdn subscriberMDN,
 			CMSubscriberRegistration subscriberRegistration, Pocket epocket,
 		    Partner registeringPartner, Address ktpAddress, Address dometicAddress, SubscriberAddiInfo subscriberAddiFields);
+	
+	public Integer registerNonKycSubscriber(Subscriber subscriber, SubscriberMdn subscriberMDN, CMSubscriberRegistration subscriberRegistration);
 
 	public Integer registerWithActivationSubscriber(
 			CMSubscriberRegistrationThroughWeb subscriberRegistration);
