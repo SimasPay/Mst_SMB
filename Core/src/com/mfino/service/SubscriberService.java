@@ -223,4 +223,6 @@ public interface SubscriberService {
 	public Company getDefaultCompanyForSubscriber();
 	
 	public List<Object[]> getNewSubscribersCount(Date startDate, Date endDate);
+
+	public void save(Subscriber subscriber);
 }

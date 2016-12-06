@@ -34,8 +34,17 @@ public class SubscriberMdnQuery extends BaseQuery{
     private String accountNumber;
     private Boolean isForceCloseRequested;
     private Long kycLevelId;
+    private Integer accountUpgradeKycStatus;
     
-    /**
+    public Integer getAccountUpgradeKycStatus() {
+		return accountUpgradeKycStatus;
+	}
+
+	public void setAccountUpgradeKycStatus(Integer accountUpgradeKycStatus) {
+		this.accountUpgradeKycStatus = accountUpgradeKycStatus;
+	}
+
+	/**
 	 * @return the kycLevelId
 	 */
 	public Long getKycLevelId() {

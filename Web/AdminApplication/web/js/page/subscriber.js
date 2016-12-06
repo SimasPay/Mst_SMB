@@ -63,6 +63,16 @@ mFino.page.subscriber = function(config){
     
     var subscriberUpgradeApproveRejectWindow = new mFino.widget.SubscriberUpgradeApproveRejectWindow(config);
     
+    var subscriberUpgradeKycApproveRejectWindow = new mFino.widget.SubscriberUpgradeKycApproveRejectWindow(config);
+    
+    var subscriberUpgradeKycLevelWindow = new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.SubscriberUpgradeKycLevelWindow(config),
+        title : _("Upgrade from Non-KYC E-Money to KYC E-Money"),
+        width:520,
+        height: 550,
+        mode:"upgradekyc"
+    },config));
+    
     var subClosing = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberClosingInquiry(config),
         title : _("Subscriber Account Closing"),
@@ -503,6 +513,23 @@ mFino.page.subscriber = function(config){
                 }
             },
             {
+                iconCls: 'mfino-button-upgrade',
+                tooltip : _('Upgrade to Kyc'),
+                itemId : 'sub.details.upgrade.kyc',
+                handler : function(){
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.UnBanked){
+                    	Ext.MessageBox.alert(_("Info"), _("Subscriber's level is not Non-Kyc."));
+                    } else{
+                    	subscriberUpgradeKycLevelWindow.show();
+                    	subscriberUpgradeKycLevelWindow.setRecord(detailsForm.record);
+                    }
+                }
+            },
+            {
                 iconCls : "mfino-button-upgrade-approve",
                 tooltip : _('Approve/Reject Subscriber Upgrade'),
                 itemId: 'sub.approveUpgrade',
@@ -517,6 +544,31 @@ mFino.page.subscriber = function(config){
                         	subscriberUpgradeApproveRejectWindow.setRecord(detailsForm.record);
 //                        	subscriberUpgradeApproveRejectWindow.setStore(detailsForm.store);
                     		
+                        } else {
+                        	Ext.Msg.show({
+                                title: _('Alert !'),
+                                minProgressWidth:250,
+                                msg: _("Subscriber Upgrade Status Should be Initialized State Only!"),
+                                buttons: Ext.MessageBox.OK,
+                                multiline: false
+                            });
+                        }
+                    }
+                }
+            },
+            {
+                iconCls : "mfino-button-upgrade-approve",
+                tooltip : _('Response Subscriber Upgrade Kyc'),
+                itemId: 'sub.details.upgrade.kyc.checker',
+                handler : function(){
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active!"));
+                    }else{
+                    	if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctStatus._name)==CmFinoFIX.SubscriberUpgradeStatus.Initialized){
+                    		subscriberUpgradeKycApproveRejectWindow.show();
+                    		subscriberUpgradeKycApproveRejectWindow.setRecord(detailsForm.record);
                         } else {
                         	Ext.Msg.show({
                                 title: _('Alert !'),

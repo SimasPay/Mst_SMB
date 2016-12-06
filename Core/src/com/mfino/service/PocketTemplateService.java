@@ -3,6 +3,9 @@
  */
 package com.mfino.service;
 
+import java.util.List;
+
+import com.mfino.dao.query.PocketTemplateQuery;
 import com.mfino.domain.PocketTemplate;
 
 /**
@@ -40,4 +43,5 @@ public interface PocketTemplateService {
      */
     public PocketTemplate getById(Long pocketTemplateId);
 
+    public List<PocketTemplate> findByCriteria(PocketTemplateQuery query);
 }

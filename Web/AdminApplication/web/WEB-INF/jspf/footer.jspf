@@ -68,6 +68,10 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberUpgradeApproveRejectWindow.js" />">
 </script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberUpgradeKycApproveRejectWindow.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberUpgradeKycLevelWindow.js" />">
+</script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberForm.js"/>">
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberFormSPView.js"/>"></script>

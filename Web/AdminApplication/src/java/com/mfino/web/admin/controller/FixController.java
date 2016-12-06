@@ -4,13 +4,11 @@
 package com.mfino.web.admin.controller;
 
 import java.io.IOException;
-import java.sql.Clob;
 import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialClob;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +62,7 @@ import com.mfino.fix.CmFinoFIX.CMJSServiceProvider;
 import com.mfino.fix.CmFinoFIX.CMJSShowBalanceDetails;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosing;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosingInquiry;
+import com.mfino.fix.CmFinoFIX.CMJSSubscriberUpgradeKyc;
 import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
 import com.mfino.fix.CmFinoFIX.CMJSValidateChargeExpr;
@@ -672,6 +671,10 @@ public class FixController {
 	@Qualifier("SubscriberUpgradeProcessorImpl")
 	private SubscriberUpgradeProcessor subscriberUpgradeProcessor;
 
+	@Autowired
+	@Qualifier("SubscriberUpgradeKycProcessorImpl")
+	private SubscriberUpgradeKycProcessor subscriberUpgradeKycProcessor;
+	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -1295,6 +1298,9 @@ public class FixController {
 			} else if (msgClassName.equals(CMJSProductReferral.class.getName())) {
 				fixProcessor = productReferralProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSProductReferral);
+			} else if (msgClassName.equals(CMJSSubscriberUpgradeKyc.class.getName())){
+				fixProcessor = subscriberUpgradeKycProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberUpgradeKyc);
 			}
 
 			/*

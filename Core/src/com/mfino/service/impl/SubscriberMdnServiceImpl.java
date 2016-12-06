@@ -162,4 +162,11 @@ public class SubscriberMdnServiceImpl implements SubscriberMdnService {
 		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
 		return mdnDAO.getByMDNAndNotRetiredStatus(subscriberService.normalizeMDN(MDN));
 	}
+
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public void save(SubscriberMdn subscriberMdn) {
+		SubscriberMDNDAO mdnDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
+		mdnDAO.save(subscriberMdn);
+	}
 }

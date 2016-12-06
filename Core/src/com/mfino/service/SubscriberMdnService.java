@@ -57,4 +57,6 @@ public interface SubscriberMdnService {
 	public List<SubscriberMdn> getStatusForMdns(SubscriberMdnQuery query);
  	public Subscriber getSubscriberFromMDN(String MDN);
 	public SubscriberMdn getNotRetiredSubscriberMDN(String MDN);
+
+	public void save(SubscriberMdn subscriberMdn);
 	}

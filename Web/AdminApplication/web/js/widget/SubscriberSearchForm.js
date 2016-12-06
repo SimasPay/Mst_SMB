@@ -12,121 +12,134 @@ mFino.widget.SubscriberSearchForm = function (config) {
         title: _('Subscriber Search'),
         bodyStyle:'padding:5px 5px 0',
         items: [
-        {
-            xtype : 'textfield',
-            fieldLabel: _('First Name'),
-            labelSeparator : '',
-            anchor :'98%',
-            maxLength:255,
-            name: CmFinoFIX.message.JSSubscriberMDN.FirstNameSearch._name,
-            listeners   : {
-                specialkey: this.enterKeyHandler.createDelegate(this)
-            }
-        },
-        {
-            xtype : 'textfield',
-            fieldLabel: _('Last Name'),
-            labelSeparator : '',
-            anchor :'98%',
-            maxLength:255,
-            name: CmFinoFIX.message.JSSubscriberMDN.LastNameSearch._name,
-            listeners   : {
-                specialkey: this.enterKeyHandler.createDelegate(this)
-            }
-        },
-        {
-            xtype : 'textfield',
-            vtype: 'smarttelcophoneAdd',
-            fieldLabel: _('MDN'),
-            labelSeparator : '',
-            anchor :'98%',
-            maxLength : 16,
-            name: CmFinoFIX.message.JSSubscriberMDN.MDNSearch._name,
-            listeners   : {
-                specialkey: this.enterKeyHandler.createDelegate(this)
-            }
-        },
-        {
-            xtype : 'textfield',
-            fieldLabel: _("Account No."),
-            vtype:'tendigitnumber',
-            labelSeparator : '',
-            anchor : '98%',
-            name: CmFinoFIX.message.JSSubscriberMDN.CardPAN._name,
-            listeners   : {
-                specialkey: this.enterKeyHandler.createDelegate(this)
-            }
-        },
-        {
-            xtype : 'daterangefield',
-            fieldLabel: _('Date range'),
-            labelSeparator : '',
-            anchor :'98%',
-            listeners   : {
-                specialkey: this.enterKeyHandler.createDelegate(this)
-            }
-        },
-        {
-        xtype : "enumdropdown",
-        fieldLabel: _('State'),
-        labelSeparator : '',
-        itemId: "sub.state",
-        anchor : '98%',
-        emptyText : _('<select one..>'),
-        addEmpty : false,
-        enumId : CmFinoFIX.TagID.UpgradeStateSearch,
-        name: CmFinoFIX.message.JSSubscriberMDN.UpgradeStateSearch._name,
-        value: CmFinoFIX.TagID.UpgradeStateSearch.All,
-        listeners   : {
-            specialkey: this.enterKeyHandler.createDelegate(this)
-        }
-        },
-        {
-            xtype : "combo",
-            anchor : '98%',
-            labelSeparator : '',
-            fieldLabel :_('KYC'),
-            emptyText : _('<select one..>'),
-            addEmpty : false,
-            store : new FIX.FIXStore("fix.htm",CmFinoFIX.message.JSKYCCheck),
-            displayField: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
-            valueField : CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name,
-            name: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
-            triggerAction: 'all',
-            listeners: {
-                select: function(field,record) {
-                	var KYCLevel = record.get(CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name);
-                	/*var kyc= field.getValue();
-                	if(kyc === 0) {
-                		Ext.MessageBox.alert(_("Alert"), _("Subscriber with NoKyc is not allowed to create"));
-                		field.clearValue();
-                		return;
-                	}*/
-                	
-                	var kf_combo = Ext.getCmp("sub.form.kycfield.search");
-                	kf_combo.setValue(KYCLevel)
-                }
-            }
-        },
-        {
-            xtype : "enumdropdown",
-            fieldLabel: _('Status'),
-            labelSeparator : '',
-            itemId: "sub.status",
-            anchor : '98%',
-            emptyText : _('<select one..>'),            
-            enumId : CmFinoFIX.TagID.MDNStatus,
-            name: CmFinoFIX.message.JSSubscriberMDN.MDNStatus._name,
-            listeners   : {
-                specialkey: this.enterKeyHandler.createDelegate(this)
-            }
-          },
-          {
-            	xtype : "hidden",
-                itemId : 'sub.form.kycfield.search',
-                id : 'sub.form.kycfield.search',
-                name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name
-          }
+	        {
+	            xtype : 'textfield',
+	            fieldLabel: _('First Name'),
+	            labelSeparator : '',
+	            anchor :'98%',
+	            maxLength:255,
+	            name: CmFinoFIX.message.JSSubscriberMDN.FirstNameSearch._name,
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	            xtype : 'textfield',
+	            fieldLabel: _('Last Name'),
+	            labelSeparator : '',
+	            anchor :'98%',
+	            maxLength:255,
+	            name: CmFinoFIX.message.JSSubscriberMDN.LastNameSearch._name,
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	            xtype : 'textfield',
+	            vtype: 'smarttelcophoneAdd',
+	            fieldLabel: _('MDN'),
+	            labelSeparator : '',
+	            anchor :'98%',
+	            maxLength : 16,
+	            name: CmFinoFIX.message.JSSubscriberMDN.MDNSearch._name,
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	            xtype : 'textfield',
+	            fieldLabel: _("Account No."),
+	            vtype:'tendigitnumber',
+	            labelSeparator : '',
+	            anchor : '98%',
+	            name: CmFinoFIX.message.JSSubscriberMDN.CardPAN._name,
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	            xtype : 'daterangefield',
+	            fieldLabel: _('Date range'),
+	            labelSeparator : '',
+	            anchor :'98%',
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	        	xtype : "enumdropdown",
+	        	fieldLabel: _('State'),
+	        	labelSeparator : '',
+	        	itemId: "sub.state",
+	        	anchor : '98%',
+	        	emptyText : _('<select one..>'),
+	        	addEmpty : false,
+	        	enumId : CmFinoFIX.TagID.UpgradeStateSearch,
+	        	name: CmFinoFIX.message.JSSubscriberMDN.UpgradeStateSearch._name,
+	        	value: CmFinoFIX.TagID.UpgradeStateSearch.All,
+	        	listeners   : {
+	        		specialkey: this.enterKeyHandler.createDelegate(this)
+	        	}
+	        },
+	        {
+	            xtype : "combo",
+	            anchor : '98%',
+	            labelSeparator : '',
+	            fieldLabel :_('KYC'),
+	            emptyText : _('<select one..>'),
+	            addEmpty : false,
+	            store : new FIX.FIXStore("fix.htm",CmFinoFIX.message.JSKYCCheck),
+	            displayField: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
+	            valueField : CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name,
+	            name: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
+	            triggerAction: 'all',
+	            listeners: {
+	                select: function(field,record) {
+	                	var KYCLevel = record.get(CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name);
+	                	/*var kyc= field.getValue();
+	                	if(kyc === 0) {
+	                		Ext.MessageBox.alert(_("Alert"), _("Subscriber with NoKyc is not allowed to create"));
+	                		field.clearValue();
+	                		return;
+	                	}*/
+	                	
+	                	var kf_combo = Ext.getCmp("sub.form.kycfield.search");
+	                	kf_combo.setValue(KYCLevel)
+	                }
+	            }
+	        },
+	        {
+	            xtype : "enumdropdown",
+	            fieldLabel: _('Status'),
+	            labelSeparator : '',
+	            itemId: "sub.status",
+	            anchor : '98%',
+	            emptyText : _('<select one..>'),            
+	            enumId : CmFinoFIX.TagID.MDNStatus,
+	            name: CmFinoFIX.message.JSSubscriberMDN.MDNStatus._name,
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	            xtype : "enumdropdown",
+	            fieldLabel: _('Upgrade Status'),
+	            labelSeparator : '',
+	            itemId: "sub.kyc.upgrade.status",
+	            anchor : '98%',
+	            emptyText : _('<select one..>'),            
+	            enumId : CmFinoFIX.TagID.UpgradeKycStatusSearch,
+	            name: CmFinoFIX.message.JSSubscriberMDN.UpgradeKycStatusSearch._name,
+	            listeners   : {
+	                specialkey: this.enterKeyHandler.createDelegate(this)
+	            }
+	        },
+	        {
+	            	xtype : "hidden",
+	                itemId : 'sub.form.kycfield.search',
+	                id : 'sub.form.kycfield.search',
+	                name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name
+	        }
         ]
     });
 

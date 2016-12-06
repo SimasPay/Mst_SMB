@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +38,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	public static final String FieldName_IsForceCloseRequested = "isforcecloserequested";
 	public static final String FieldName_LastTransactionTime = "lasttransactiontime";
 	public static final String FieldName_Subscriber = "subscriber";
+	public static final String FieldName_UpgradeAcctStatus = "upgradeacctstatus";
 	private Subscriber subscriber;
 	private String mdn;
 	private String imsi;
@@ -77,6 +77,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String closecomments;
 	private Integer upgradeacctstatus;
 	private String upgradeacctapprovedby;
+	private String upgradeacctrequestby;
 	private Timestamp upgradeaccttime;
 	private String upgradeacctcomments;
 	private Long closeagent;
@@ -469,6 +470,15 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 		this.upgradeacctapprovedby = upgradeacctapprovedby;
 	}
 
+	@Column(name = "UPGRADEACCTREQUESTBY")
+	public String getUpgradeacctrequestby() {
+		return upgradeacctrequestby;
+	}
+
+	public void setUpgradeacctrequestby(String upgradeacctrequestby) {
+		this.upgradeacctrequestby = upgradeacctrequestby;
+	}
+	
 	@Type(type = "userDefinedTimeStamp")
 	@Column(name = "UPGRADEACCTTIME")
 	public Timestamp getUpgradeaccttime() {

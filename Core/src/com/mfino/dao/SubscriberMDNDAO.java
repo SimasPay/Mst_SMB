@@ -111,6 +111,10 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
             	queryString.append(" and mdn.createtime < :endTime");
             }
             
+            if(query.getAccountUpgradeKycStatus() != null){
+            	queryString.append(" and mdn.upgradeacctstatus = :upgradeKycStatus");
+            }
+            
             if(null != query.getKycLevelId()) {
         		
             	queryString.append(" and k.kyclevel = :kycLevel and s.kycLevel = k.kyclevel");
@@ -184,6 +188,10 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
                 newQuery.setLong("kycLevel", query.getKycLevelId());
             }
             
+            if(query.getAccountUpgradeKycStatus() != null){
+            	newQuery.setInteger("upgradeKycStatus", query.getAccountUpgradeKycStatus());
+            }
+            
             @SuppressWarnings("unchecked")
             List<SubscriberMdn> list = newQuery.list();
             return list;
@@ -255,6 +263,10 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMdn> {
         		
         		kycLevel = kycResults.get(0);
         	}
+        }
+        
+        if(query.getAccountUpgradeKycStatus() != null){
+        	criteria.add(Restrictions.eq(SubscriberMdn.FieldName_UpgradeAcctStatus, query.getAccountUpgradeKycStatus()));
         }
         
         final String subcriberTableNameAlias = SUBSCRIBER_TABLE_NAME + DAOConstants.ALIAS_SUFFIX;

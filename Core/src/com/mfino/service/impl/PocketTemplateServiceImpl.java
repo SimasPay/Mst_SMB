@@ -5,6 +5,8 @@
 
 package com.mfino.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PocketTemplateDAO;
+import com.mfino.dao.query.PocketTemplateQuery;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.service.PocketTemplateService;
 
@@ -110,4 +113,8 @@ public class PocketTemplateServiceImpl implements PocketTemplateService {
         return template;
     }
 
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public List<PocketTemplate> findByCriteria(PocketTemplateQuery query){
+		return this.templateDAO.get(query);
+	}
 }

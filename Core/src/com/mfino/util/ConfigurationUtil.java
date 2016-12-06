@@ -319,7 +319,8 @@ public class ConfigurationUtil {
 		MailAwsUser("mfino.mail.aws.user", "AKIAIZW252ECC7BIJ5QQ"),
 		MailAwsSecret("mfino.mail.aws.password", "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"),
 		MailAwsFrom("mfino.mail.aws.from", "noreply@dimo.co.id"),
-		MailUseSmtp("mfino.mail.use.smtp", "true");
+		MailUseSmtp("mfino.mail.use.smtp", "true"),
+		KTPImagePath("ktp.image.path", "images/id/");
 		
 		private final String key;
 		private final String defaultValue;
@@ -601,6 +602,10 @@ public class ConfigurationUtil {
 		return get(ConfigurationKey.UploadFileSizeLimit);
 	}
 
+	public static String getKTPImagePath(){
+		return get(ConfigurationKey.KTPImagePath);
+	}
+	
 	public static String getBackendUsername() {
 		return get(ConfigurationKey.BackendUsername);
 	}

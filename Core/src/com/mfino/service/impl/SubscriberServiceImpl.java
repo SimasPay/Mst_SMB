@@ -865,4 +865,10 @@ public class SubscriberServiceImpl implements SubscriberService{
 		SubscriberDAO sDao = daoFactory.getSubscriberDAO();
 		return sDao.getNewSubscribersCount(startDate, endDate);
 	}
+
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public void save(Subscriber subscriber) {
+		SubscriberDAO sDao = daoFactory.getSubscriberDAO();
+		sDao.save(subscriber);
+	}
 }

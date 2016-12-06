@@ -93,7 +93,12 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             itemId: "confirmTransfer",
             text: _('Confirm & Proceed'),
             handler: this.onConfirmTransfer.createDelegate(this)
-        } 
+        },
+        {
+        	itemId: "upgradekyc",
+        	text: _('Upgrade'),
+        	handler: this.onUpgradeKyc.createDelegate(this)
+        }
         ];
 
         this.items = [this.form];
@@ -148,6 +153,10 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
                 item.show();
             }
             if(mode === "confirmTransfer" && (item.itemId === "confirmTransfer" || item.itemId === "cancelConfirm")){
+                item.show();
+            }
+
+            if(mode === "upgradekyc" && (item.itemId === "upgradekyc" || item.itemId === "cancel")){
                 item.show();
             }
             if(mode === "cancel" && (item.itemId === "cancel")){
@@ -406,6 +415,20 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
                 }
                 this.form.onCancelConfirm(this);
             }, this);
+    },
+    
+    onUpgradeKyc : function(){
+    	if(this.form.getForm().isValid()){
+    		Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to Upgrade the KYC Level?"),
+		        function(btn){
+		            if(btn !== "yes"){
+		                return;
+		            }
+		            this.form.onUpgradeKyc(this);
+		        }, this);
+        }else{
+            Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
+        }
     },
     
     setRecord : function(record){
