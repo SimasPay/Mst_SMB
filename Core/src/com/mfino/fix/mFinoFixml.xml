@@ -23363,14 +23363,32 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
-			<value description="SubscriberUpgradeRequestRevision" enum="2177">
+			<value description="ForceUpgradeAppForUsers" enum="2177">
 				<C1>
 					<English>
 						<SMS>
-							<Text>Your Subscriber Upgrade Request Need Revision.</Text>
+							<Text>A new vesion of App is available so upgrade the App.</Text>
 						</SMS>
 					</English>
-				</C1>				
+				</C1>
+			</value>
+			<value description="SequenceNumberAsPin" enum="2178">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Please don't use sequence numbers as your mPIN.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="SameNumbersAsPin" enum="2179">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Please don't use same numbers as your mPIN.</Text>
+						</SMS>
+					</English>
+				</C1>
 			</value>
 			<value description="NonKycSubscriberSuccessfullyRegistered" enum="2180">
 				<C1>
@@ -23399,6 +23417,29 @@ ERROR:Mismatch of  mdn type and app type
 						</SMS>
 					</Bahasa>
 				</C1>
+			</value>
+			<value description="PinHasExpired" enum="2182">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Pin Has Expired.</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Pin Has Expired.</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+			</value>
+			<value description="SubscriberUpgradeRequestRevision" enum="2183">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your Subscriber Upgrade Request Need Revision.</Text>
+						</SMS>
+					</English>
+				</C1>				
 			</value>
 		</field>
 		
