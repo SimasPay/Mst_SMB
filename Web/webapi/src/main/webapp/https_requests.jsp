@@ -33,12 +33,6 @@
 			<a href="jsp/s_subscriber_Reactivation.jsp">Subscriber Reactivation</a>
 		</td>
 	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/get_registration_medium.jsp">Get Registration Medium</a>
-		</td>
-	</tr>
 	<tr>
 		<td>
 			<a href="jsp/get_third_party_data.jsp">Get Third Party Data</a>
@@ -59,12 +53,6 @@
 			<a href="jsp/resend_otp.jsp">Resend OneTimePin</a>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_emoney_checkbalance.jsp">Emoney checkbalance</a>
-		</td>
-	</tr>
-	
 	<tr>
 		<td>
 			<a href="jsp/s_subscriber_cashoutinquiry.jsp"> Subscriber_to_Agent_CashOut_Inquiry</a>
@@ -89,11 +77,6 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="jsp/s_EMoney_txnhistory.jsp">Emoney History</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
 			<a href="jsp/s_emoney_txnhistory_detailed_statement.jsp">Detailed Emoney History</a>
 		</td>
 	</tr>
@@ -107,18 +90,7 @@
 		<td>
 			<a href="jsp/s_emoney_txnhistory_as_pdf_download.jsp">Download Emoney Txn History</a>
 		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_changepin.jsp"> ChangePin</a>
-		</td>
-	</tr>	
-	
-	<tr>
-		<td>
-			<a href="jsp/s_change_settings.jsp"> ChangeSettings</a>
-		</td>
-	</tr>	
+	</tr>		
 	<tr>
 		<td>
 			<a href="jsp/s_subscriber_status.jsp"> Subscriber Status</a>
@@ -163,31 +135,9 @@
 	</tr>
 	<tr>
 		<td>
-			<a href="jsp/s_frsc_payment_inquiry.jsp"> FRSCPaymentInquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_frsc_payment_confirm.jsp"> FRSCPaymentConfirm</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
 			<a href="jsp/get_user_api_key.jsp">Get User API Key</a>
 		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_donation_inquiry.jsp">Donation Inquiry</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_subscriber_donation_confirm.jsp">Donation Confirm</a>
-		</td>
-	</tr>
-	
+	</tr>	
 	<tr>
 		<td>
 			<a href="jsp/s_resend_mfa_otp.jsp">Resend MFA OTP</a>
@@ -200,7 +150,7 @@
 	<tr><td><table>
 	<tr>
 		<th>
-			Agent Activity
+			LakuPandai Agent Activity
 		</th>
 	</tr>
 	<tr></tr>
@@ -472,32 +422,6 @@
 			<a href="jsp/s_subscriber_self_registration.jsp">Subscriber Self Registration as Non-KYC E-Money</a>
 		</td>
 	</tr>
-	
-	</table></td></tr>
-
-	<tr><td><table>
-	<tr>
-		<th>
-			Settings
-		</th>
-	</tr>
-	<tr></tr>
-
-	<tr>
-		<td>
-			<a href="jsp/s_settings_changeemail.jsp">Change Email Address</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_settings_changenickname.jsp">Change Nickname</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_settings_changeothermdn.jsp">Change Other MDN</a>
-		</td>
-	</tr>	
 	<tr>
 		<td>
 			<a href="jsp/s_settings_forgotpin_inquiry.jsp">Forgot Pin Inquiry</a>
@@ -508,13 +432,9 @@
 			<a href="jsp/s_settings_forgotpin_confirm.jsp">Forgot Pin confirm</a>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a href="jsp/s_get_promo_image_path.jsp">Get Promo Image</a>
-		</td>
-	</tr>	
+	
 	</table></td></tr>
-	</table>
+
 	</center>		
 </body>
 </html>
