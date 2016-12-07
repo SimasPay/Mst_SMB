@@ -388,4 +388,7 @@ public interface IUserDataContainer {
 	public String getOthers();
 
 	public String getOtherWork();
+	
+	public String getSecurityQuestion();
+	public String getSecurityAnswer();
 }

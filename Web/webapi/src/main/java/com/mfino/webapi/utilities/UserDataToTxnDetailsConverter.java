@@ -302,6 +302,8 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setRT(userDataContainer.getRT());
 		txnDetails.setRW(userDataContainer.getRW());
 		txnDetails.setOtherWork(userDataContainer.getOtherWork());
+		txnDetails.setSecurityQuestion(userDataContainer.getSecurityQuestion());
+		txnDetails.setSecurityAnswer(userDataContainer.getSecurityAnswer());
 		
 		return txnDetails;
 	}

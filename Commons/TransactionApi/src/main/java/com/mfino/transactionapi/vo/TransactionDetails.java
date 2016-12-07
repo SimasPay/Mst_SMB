@@ -204,6 +204,8 @@ public class TransactionDetails {
 	private String closeAccountStatus;
 	
 	private String otherWork;
+	private String securityQuestion;
+	private String securityAnswer;
 	
 	public String getOtherWork() {
 		return otherWork;
@@ -1500,5 +1502,30 @@ public class TransactionDetails {
 	}
 	public void setAmountRedeemed(BigDecimal amountRedeemed) {
 		this.amountRedeemed = amountRedeemed;
+	}
+	
+	/**
+	 * @return the securityQuestion
+	 */
+	public String getSecurityQuestion() {
+		return securityQuestion;
+	}
+	/**
+	 * @param securityQuestion the securityQuestion to set
+	 */
+	public void setSecurityQuestion(String securityQuestion) {
+		this.securityQuestion = securityQuestion;
+	}
+	/**
+	 * @return the securityAnswer
+	 */
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+	/**
+	 * @param securityAnswer the securityAnswer to set
+	 */
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
 	}
 }

@@ -575,8 +575,11 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setFirstname(subscriberRegistration.getFirstName());
 			subscriber.setLastname(subscriberRegistration.getLastName());
 			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());			
-			subscriber.setSecurityquestion(subscriberRegistration.getMothersMaidenName());
-			subscriber.setSecurityanswer(subscriberRegistration.getMothersMaidenName());
+			subscriber.setSecurityquestion(subscriberRegistration.getSecurityQuestion());
+			
+			String answer = MfinoUtil.calculateDigestPin(subscriberRegistration.getMDN(), subscriberRegistration.getSecurityAnswer());
+			subscriber.setSecurityanswer(answer);
+			
 			subscriber.setDetailsrequired(CmFinoFIX.Boolean_True);
 			subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_Self);
 			subscriber.setType(CmFinoFIX.SubscriberType_Subscriber);
@@ -598,7 +601,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCreatetime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			
-			KycLevel kycLevel = kycLevelDAO.getByKycLevel(Long.parseLong("1"));
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(CmFinoFIX.RecordType_SubscriberUnBanked.longValue());
 			
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
@@ -628,7 +631,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
 			}
 			
-			subscriber.setUpgradablekyclevel(subscriberRegistration.getKYCLevel());
+			subscriber.setUpgradablekyclevel(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()));
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 			
 			int pocketStatus = CmFinoFIX.PocketStatus_Active;
@@ -672,7 +675,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			catch(Exception e){
 				log.error("Error during PIN conversion "+e);
-				return CmFinoFIX.NotificationCode_Failure;
+				return CmFinoFIX.NotificationCode_SubscriberRegistrationfailed;
 			}
 			
 			subscriberMDN.setDigestedpin(calcPIN);

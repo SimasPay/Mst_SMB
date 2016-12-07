@@ -128,5 +128,5 @@ public class SystemParameterKeys {
 	public static final String LAKUPANDIA_SUBSCRIBER_PREFIX_CIFNO = "lakupandia.subscriber.prefix.cifno";
 	public static final String LAKUPANDIA_SUBSCRIBER_CIFNO_LENGTH = "lakupandia.subscriber.cifno.length";
 	public static final String TRANSFER_TO_UANGKU_PREFIX_NUMBER = "transfer.to.uangku.prefix.number";
-	public static final String DAYS_TO_EXPIRE_PIN_MOBILE_APP_PIN = "days.to.expire.mobile.app.pin";
+	public static final String DAYS_TO_EXPIRY_OF_MPIN_DAYS = "days.to.expiry.of.mpin.days";
 }
