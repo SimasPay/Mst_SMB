@@ -89,6 +89,8 @@ public class SelfRegistrationForNonKYCHandlerImpl extends FIXMessageHandler impl
 		subscriberRegistration.setChannelCode(cc.getChannelcode());
 		subscriberRegistration.setSourceApplication((int)cc.getChannelsourceapplication());
 		subscriberRegistration.setTransactionIdentifier(transDetails.getTransactionIdentifier());
+		subscriberRegistration.setSecurityQuestion(transDetails.getSecurityQuestion());
+		subscriberRegistration.setSecurityAnswer(transDetails.getSecurityAnswer());
 		email = transDetails.getEmail();
 		
 		TransactionLog transactionsLog = null;

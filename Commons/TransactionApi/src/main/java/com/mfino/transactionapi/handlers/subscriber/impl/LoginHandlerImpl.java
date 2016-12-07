@@ -1,5 +1,7 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -41,6 +43,7 @@ import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LoginXMLResult;
 import com.mfino.transactionapi.service.AppTypeCheckService;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 
 @Service("LoginHandlerImpl")
@@ -128,6 +131,19 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 
 		}
 		
+		Timestamp lastPinExpiry = srcSubscriberMDN.getLastapppinchange();
+		String configuredPinExpiryDays = systemParametersService.getString(SystemParameterKeys.DAYS_TO_EXPIRY_OF_MPIN_DAYS);
+		
+		Date currentDateTime = DateUtil.addDays(new Date(lastPinExpiry.getTime()), Integer.parseInt(configuredPinExpiryDays));
+		Timestamp currentTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+		
+		if(currentDateTime.before(currentTime)) {
+			
+			log.error("Subscriber with mdn : "+request.getSourceMDN()+" has failed validations for pin expiry");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_PinHasExpired);
+			return result;
+			
+		}
 		
 	//	addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 
