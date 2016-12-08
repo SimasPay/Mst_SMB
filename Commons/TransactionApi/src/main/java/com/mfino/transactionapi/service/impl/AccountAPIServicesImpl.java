@@ -38,6 +38,7 @@ import com.mfino.transactionapi.handlers.account.GetUserAPIKeyHandler;
 import com.mfino.transactionapi.handlers.account.KYCUpgradeHandler;
 import com.mfino.transactionapi.handlers.account.MFAExistingSubscriberReactivationHandler;
 import com.mfino.transactionapi.handlers.account.MFASubscriberActivationHandler;
+import com.mfino.transactionapi.handlers.account.MdnValidationForForgotPINHandler;
 import com.mfino.transactionapi.handlers.account.PartnerRegistrationHandler;
 import com.mfino.transactionapi.handlers.account.PendingSettlementsForPartnerHandler;
 import com.mfino.transactionapi.handlers.account.ResendOtp;
@@ -247,6 +248,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("GetPromoImageHandlerImpl")
 	private GetPromoImageHandler getPromoImageHandler;
+	
+	@Autowired
+	@Qualifier("MdnValidationForForgotPINHandlerImpl")
+	private MdnValidationForForgotPINHandler mdnValidationForForgotPINHandler;
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		
@@ -478,6 +483,9 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult) getUserAPIKeyHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_PROMO_IMAGE.equals(transactionName)){
 			xmlResult = (XMLResult) getPromoImageHandler.handle(transactionDetails);
+			
+		}else if(ServiceAndTransactionConstants.TRANSACTION_MDN_VALIDATION_FOR_FORGOTPIN.equals(transactionName)){
+			xmlResult = (XMLResult) mdnValidationForForgotPINHandler.handle(transactionDetails);
 		
 		}else if (ServiceAndTransactionConstants.SUBSCRIBER_CLOSING_INQUIRY.equals(transactionName)) {
 			

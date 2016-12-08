@@ -23441,6 +23441,25 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>				
 			</value>
+			<value description="BankNotificationForForgotPin" enum="2300">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Reset the PIN in BSIM ATM.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			<value description="EmoneyNotificationForForgotPin" enum="2301">
+				<C1>
+					<English>
+						<SMS>
+							<Text>User is e-Money user.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

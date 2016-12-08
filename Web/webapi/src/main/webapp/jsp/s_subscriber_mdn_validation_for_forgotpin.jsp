@@ -4,14 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>ForgotPin Inquiry</title>
+<title>MDN validation for Forgot PIN</title>
 </head>
 <body>
 <center>
-<h1>Forgot Pin Inquiry</h1>
+<h1>MDN validation for ForgotPIN</h1>
 <form action="../sdynamic" method="POST">
 <input type="hidden" value="Account" name="service" /> 
-<input type="hidden" value="ForgotPinInquiry"	name="txnName" /> 
+<input type="hidden" value="MDNvalidationforForgotPIN"	name="txnName" /> 
 <table>
 	<tr>
 		<td>Institution ID*</td>
@@ -22,17 +22,9 @@
 		<td><input type="text" name="authenticationKey" value="" /></td>
 	</tr>
 	<tr>
-		<td>SourceMDN*</td>
+		<td>SourceMDN</td>
 		<td><input type="text" name="sourceMDN" value="" /></td>
-	</tr>
-	<tr>
-		<td>Security Question</td>
-		<td><input type="text" name="securityQuestion" value="" /></td>
-	</tr>
-	<tr>
-		<td>Security Answer</td>
-		<td><input type="text" name="securityAnswer" value="" /></td>
-	</tr>
+	</tr>	
 	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID" value="" /></td>

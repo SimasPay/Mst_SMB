@@ -143,6 +143,11 @@
 			<a href="jsp/s_resend_mfa_otp.jsp">Resend MFA OTP</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_subscriber_mdn_validation_for_forgotpin.jsp">MDN Validation For ForgotPIN</a>
+		</td>
+	</tr>
 	
 	</table></td>
 	
