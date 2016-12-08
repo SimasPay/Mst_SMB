@@ -482,7 +482,7 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 			return CmFinoFIX.NotificationCode_PINResetRequired;
 		}
 		String storedPin = digestedPin;
-		String pinValidationResponse = mfinoUtilService.validatePin(String.valueOf(subscriberMDN.getId()), pin, storedPin, systemParametersService.getPinLength());
+		String pinValidationResponse = mfinoUtilService.validatePin(String.valueOf(subscriberMDN.getMdn()), pin, storedPin, systemParametersService.getPinLength());
 		if (GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse)) {
 			log.error("Invalid PIN entered MDN="+subscriberMDN.getId());
 			int wrongPINCount = (int)subscriberMDN.getWrongpincount();
