@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/Resources/pages/template/fullLayout.xhtml">
+	
+	
+	<ui:define name="content">
+	
+	<p:panel id="basic" header="ATM" footer="Terima kasih telah menggunakan layanan ATM ini" style="margin-bottom:20px">
+        <h:panelGrid columns="2" cellpadding="10">
+            <p:commandButton value="M-Banking Registration" id="mBankReg" action="#{linkPages.mBankingRegistration}" styleClass="ui-priority-primary" />
+            <p:commandButton value="M-Banking Pin Change" id="mBankPinChange" action="#" styleClass="ui-priority-primary" />
+            <p:commandButton value="Tarik Tunai" id="tarikTunai" action="#" styleClass="ui-priority-primary" />
+            <p:commandButton value="Pembayaran" id="pembayaran" action="#" styleClass="ui-priority-primary" />
+            <p:commandButton value="Pembelian" id="pembelian" action="#" styleClass="ui-priority-primary" />
+        </h:panelGrid>
+    </p:panel>
+	
+	</ui:define>
+</ui:composition>
+

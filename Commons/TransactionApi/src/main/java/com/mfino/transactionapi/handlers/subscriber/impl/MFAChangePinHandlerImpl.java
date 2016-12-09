@@ -24,6 +24,7 @@ import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMChangePin;
 import com.mfino.handlers.FIXMessageHandler;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
@@ -220,6 +221,7 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 			srcSubscriberMDN.setDigestedpin(calcPIN);
 			String authToken = MfinoUtil.calculateAuthorizationToken(changePin.getSourceMDN(), changePin.getNewPin());
 			srcSubscriberMDN.setAuthorizationtoken(authToken);
+			srcSubscriberMDN.setLastapppinchange(new Timestamp());
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 		}
 		catch (Exception ex) {

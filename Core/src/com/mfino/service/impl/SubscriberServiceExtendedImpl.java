@@ -601,7 +601,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setCreatetime(new Timestamp());
 			subscriber.setLanguage(systemParametersService.getSubscribersDefaultLanguage());
 			
-			KycLevel kycLevel = kycLevelDAO.getByKycLevel(CmFinoFIX.RecordType_SubscriberUnBanked.longValue());
+			KycLevel kycLevel = kycLevelDAO.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_NoKyc.longValue());
 			
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
@@ -631,7 +631,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
 			}
 			
-			subscriber.setUpgradablekyclevel(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()));
+			subscriber.setUpgradablekyclevel(Long.parseLong(CmFinoFIX.RecordType_SubscriberUnBanked.toString()));
 			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
 			
 			int pocketStatus = CmFinoFIX.PocketStatus_Active;
@@ -671,7 +671,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			String calcPIN = null;
 			try	{
 				
-				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberMDN.getMdn(), newpin);
+				calcPIN = mfinoUtilService.modifyPINForStoring(subscriberRegistration.getMDN(), newpin);
 			}
 			catch(Exception e){
 				log.error("Error during PIN conversion "+e);
@@ -692,6 +692,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setCreatedby(createdByName);
 			subscriberMDN.setCreatetime(new Timestamp());
 			subscriberMDN.setUpdatedby(createdByName);
+			subscriberMDN.setLastapppinchange(new Timestamp());
+			subscriberMDN.setActivationtime(new Timestamp());
 			subscriberMdnDao.save(subscriberMDN);
 			
 			Long subid = subscriberMDN.getId().longValue();

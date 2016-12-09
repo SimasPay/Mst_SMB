@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>Connection</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+     
+    <h:body>
+        <h:form>
+        	<p:panel id="createConnection" header="Create Connection" footer="--" style="margin-bottom:20px">
+        		<h:panelGrid columns="2" cellpadding="10">
+        			<h:outputText value="Packager Value"></h:outputText>
+        			<p:inputText id="packagerValue"></p:inputText>
+        			
+        			<h:outputText value="Channel Type"></h:outputText>
+        			<p:inputText id="channelType"></p:inputText>
+        			
+        			<h:outputText value="ISO Header"></h:outputText>
+        			<p:inputText id="isoHeader"></p:inputText>
+        			
+        			<h:outputText value="Host"></h:outputText>
+        			<p:inputText id="host"></p:inputText>
+        			
+        			<h:outputText value="Port"></h:outputText>
+        			<p:inputText id="port"></p:inputText>
+        		</h:panelGrid>
+        		
+        		<p:commandButton id="btnCreateConnection" action="#" value="Create"></p:commandButton>
+        	</p:panel>
+        </h:form>
+    </h:body>
+     
+</html>

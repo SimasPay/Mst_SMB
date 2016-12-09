@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/Resources/pages/template/fullLayout.xhtml">
+	
+	
+	<ui:define name="content">
+	
+	<h:form id="mainForm">
+		<p:panel id="basic" header="ATM" footer="Terima kasih telah menggunakan layanan ATM ini" style="margin-bottom:20px">
+	        <h:panelGrid id="grid" columns="3" cellpadding="5">
+	            <h:outputLabel for="mdn" value="Mobile Device No" style="font-weight:bold"/>                    
+	            <p:inputText id="mdn" value="#{administrativeTransaction.mdn}" required="true" label="MDN"/>
+	            <p:message for="mdn" />
+	            
+	            <h:outputLabel for="acctNo" value="Bank Account No" style="font-weight:bold"/>                    
+	            <p:inputText id="acctNo" value="#{administrativeTransaction.acctNo}" required="true" label="AcctNo"/>
+	            <p:message for="acctNo" />
+	            
+	            <h:outputLabel for="mPin" value="Pin No" style="font-weight:bold"/>                    
+	            <p:inputText id="mPin" value="#{administrativeTransaction.mPin}" required="true" label="MPin"/>
+	            <p:message for="mPin" />
+	        </h:panelGrid>
+	        <p:commandButton value="Back" id="back" action="#{linkMenu.atmSimulator}" styleClass="ui-icon-extlink" />
+	        <p:commandButton value="Enter" update="grid" icon="ui-icon-check" validateClient="true" style="margin-right:10px" action="#{administrativeTransaction.mBankingRegistration(mdn,acctNo,mPin)}"/>
+	        <p:commandButton update=":formCreateConnection" oncomplete="PF('createConnection').show()" icon="ui-icon-power" value="Connection" style="margin-right:10px"/>
+	    </p:panel>
+	</h:form>
+	
+	</ui:define>
+	<ui:define name="dialog">
+		<p:dialog header="Create Connection" widgetVar="createConnection" modal="true" showEffect="fade" hideEffect="fade" resizable="true" closable="true" >
+		 	<h:form id="formCreateConnection">
+		    	<p:panel id="createConnection" header="Create Connection" footer="--" style="margin-bottom:20px" >
+	        		<h:panelGrid columns="2" cellpadding="10">
+	        			
+	        		<h:outputText value="Host"></h:outputText>
+	        		<p:inputText id="host" value="#{administrativeTransaction.host}"></p:inputText>
+	        			
+	        		<h:outputText value="Port"></h:outputText>
+	        		<p:inputText id="port" value="#{administrativeTransaction.port}"></p:inputText>
+	        		</h:panelGrid>
+        		
+        			<p:commandButton id="btnCreateConnection" value="Create" icon="ui-icon-check" ajax="false" validateClient="true" onclick="loadingDlg.show()" update=":mainForm :formCreateConnection" oncomplete="loadingDlg.hide();" action="#{administrativeTransaction.atmCreateConnection}"></p:commandButton>
+        		</p:panel>
+		 	</h:form>
+		 </p:dialog>
+	</ui:define>
+</ui:composition>
+

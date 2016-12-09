@@ -23,6 +23,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MFAService;
 import com.mfino.service.MfinoUtilService;
 import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
@@ -47,6 +48,10 @@ import com.mfino.util.MfinoUtil;
 public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPinHandler {
 	private static Logger	log	= LoggerFactory.getLogger(ForgotPinHandlerImpl.class);
 	private boolean isHttps;
+	
+	 @Autowired
+	 @Qualifier("MFAServiceImpl")
+	 private MFAService mfaService;
 
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
@@ -167,59 +172,35 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
 		}
 
-		String originalOTP = srcSubscriberMDN.getOtp();
-
-		//Validate OTP 
-		if(originalOTP!=null && isOtpExpired(srcSubscriberMDN)){
-			log.info("The otp entered has expired for mdn:"+ resetPin.getSourceMDN());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPExpired);
-			return result;
-		}
-		
-		String receivedOTP=MfinoUtil.calculateDigestPin(resetPin.getSourceMDN(), resetPin.getOTP());
-		if(!(receivedOTP.equals(originalOTP)))
-		{
-			int retryCount = srcSubscriberMDN.getOtpretrycount().intValue()+1;
-			srcSubscriberMDN.setOtpretrycount(retryCount);
-			log.error("The otp entered is wrong for subscribermdn "+ resetPin.getSourceMDN());
-			int remainingTrials = getNumberOfRemainingTrials(retryCount);
-			result.setNumberOfTriesLeft(remainingTrials);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
-			if(remainingTrials < 0) {
-				absoluteLockSubscriber(subscriber, srcSubscriberMDN);
-				String remainingHours = systemParametersService.getString(SystemParameterKeys.ABSOLUTE_LOCK_DURATION_HOURS);
-				result.setRemainingBlockTimeHours(remainingHours);
-				result.setRemainingBlockTimeMinutes("00");
-				result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenBlockedForLockedAccount);
-				log.error("Account locked for mdn: "+ resetPin.getSourceMDN());
-			}
-			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
-			return result;
-		}
-		srcSubscriberMDN.setOtp(null); // reseting the OTP to null as the OTP is used for new pin generation.
-		srcSubscriberMDN.setOtpretrycount(0);
-		srcSubscriberMDN.setOtpexpirationtime(null);
-
-
-		log.info("OTP validation Successfull");
-
 		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(transDetails.getSctlId());
 		result.setSctlID(sctl.getId().longValue());
+
+		//Validate OTP 
+		if(mfaService.isMFATransaction(transDetails.getServiceName(), transDetails.getTransactionName(), cc.getId().longValue())){
+			   
+			   if(resetPin.getOTP() == null || !(mfaService.isValidOTP(resetPin.getOTP() ,sctl.getId().longValue(), srcSubscriberMDN.getMdn()))){
+			    
+			    result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
+			    return result;
+			   }
+			  }
+		log.info("OTP validation Successfull");
+
 		try {
+
+			//String calcPIN = MfinoUtil.calculateDigestPin(changePin.getSourceMDN(), changePin.getNewPin());
 			String calcPIN = mfinoUtilService.modifyPINForStoring(resetPin.getSourceMDN(), resetPin.getNewPin());
 			srcSubscriberMDN.setDigestedpin(calcPIN);
 			String authToken = MfinoUtil.calculateAuthorizationToken(resetPin.getSourceMDN(), resetPin.getNewPin());
 			srcSubscriberMDN.setAuthorizationtoken(authToken);
-			subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			srcSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
-			subscriberService.saveSubscriber(subscriber);
+			srcSubscriberMDN.setLastapppinchange(new Timestamp());
 			subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
 		}
 		catch (Exception ex) {
 			log.error("Exception occured while updating the new pin", ex);
 			result.setNotificationCode(CmFinoFIX.NotificationCode_Failure);
 			if (sctl != null) {
-				transactionChargingService.failTheTransaction(sctl, MessageText._("Reset / Forgot Pin transaction Falied"));
+				transactionChargingService.failTheTransaction(sctl, MessageText._("Change Pin transaction Falied"));
 			}
 			return result;
 		}
@@ -232,16 +213,16 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 
 	}
 
-	private void absoluteLockSubscriber(Subscriber subscriber, SubscriberMdn srcSubscriberMDN) {
+	/*private void absoluteLockSubscriber(Subscriber subscriber, SubscriberMdn srcSubscriberMDN) {
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_InActive);
 		subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
 		srcSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_InActive);
 		srcSubscriberMDN.setRestrictions(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked);
 		srcSubscriberMDN.setDigestedpin(null);
 		subscriberService.saveSubscriber(subscriber);
-	}
 	
-	private int getNumberOfRemainingTrials(int currentOtpTrials) {
+	}*/
+	/*private int getNumberOfRemainingTrials(int currentOtpTrials) {
 		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
 		return (maxOtpTrials-currentOtpTrials);
 	}
@@ -251,5 +232,5 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 			return false;
 		}
 		return true;
-	}
+	}*/
 }
