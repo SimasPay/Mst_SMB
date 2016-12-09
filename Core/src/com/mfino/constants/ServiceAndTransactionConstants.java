@@ -277,6 +277,8 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_DONATION = "Donation";
 	
 	public static final String TRANSACTION_RESEND_MFAOTP = "ResendMFAOTP";
+	
+	public static final String TRANSACTION_MDN_VALIDATION_FOR_FORGOTPIN = "MDNvalidationforForgotPIN";
 
 	// Messages
 	
@@ -369,4 +371,5 @@ public class ServiceAndTransactionConstants {
 	public static final String SUBSCRIBER_UPGRADE = "SubscriberUpgrade";
 
 	public static final String SUBSCRIBER_UPGRADE_KYC = "SubscriberUpgradeKyc";
+	
 }
