@@ -374,6 +374,7 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 	public static final String PARAMETER_OTHER_WORK = "otherwork";
 	public static final String SECURITY_QUESTIONS = "securityQuestion";
 	public static final String SECURITY_ANSWERS = "securityAnswer";
+	public static final String PROFILE_IMAGE_STRING = "profileImageString";
 
 	public static boolean isSecuredParameter(String parameterName){
 		boolean isSecure = false;
@@ -392,6 +393,7 @@ public class ApiConstants extends ServiceAndTransactionConstants{
 				(PARAMETER_KTP_DOCUMENT.equals(parameterName)) ||
 				(PARAMETER_SUBSCRIBER_FORM_DOCUMENT.equals(parameterName)) ||
 				(PARAMETER_SUPPORTING_DOCUMENT.equals(parameterName)) ||
+				(PROFILE_IMAGE_STRING.equals(parameterName)) ||
 				(PARAMETER_MFA_OTP.equals(parameterName))){
 			isSecure = true;
 		}

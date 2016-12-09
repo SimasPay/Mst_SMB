@@ -6177,6 +6177,7 @@
 			<field name="CloseUser" required="N" />
 			<field name="KTPID" required="N" />
 			<field name="UpgradeAcctRequestBy" required="N" />
+			<field name="ProfileImagePath" required="N"/>
 		</record>
 		<record name="TransactionLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="MfinoServiceProvider" />
@@ -23012,6 +23013,24 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
+			<value description="UpdateProfileCompleted" enum="2143">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your profile has been successfully updated.</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>
+			<value description="UpdateProfileFailed" enum="2144">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your profile update has failed.</Text>
+						</SMS>
+					</English>
+				</C1>				
+			</value>			
 			<value description="AgentSubscriberCashinSuccessToSender" enum="2156">
 				<C1>
 					<English>
@@ -26749,6 +26768,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="7112" name="OpenAccountFee" type="NEWAMT"/>
 	<field number="7113" name="CustomerBalanceFee" type="NEWAMT"/>
 	<field number="7114" name="IsTrfToSuspense" type="BOOLEAN"/>
+	<field number="7120" name="ProfileImagePath" type="STRING"/>
 	<field number="8000" name="GenerationOfOTPOnFailure" type="RecordID"/>
 	<field number="8001" name="ExpiryID" type="RecordID" />
 	<field number="8002" name="FundAllocationId" type="RecordID"/>

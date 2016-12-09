@@ -206,6 +206,7 @@ public class TransactionDetails {
 	private String otherWork;
 	private String securityQuestion;
 	private String securityAnswer;
+	private String profileImageString;
 	
 	public String getOtherWork() {
 		return otherWork;
@@ -1527,5 +1528,11 @@ public class TransactionDetails {
 	 */
 	public void setSecurityAnswer(String securityAnswer) {
 		this.securityAnswer = securityAnswer;
+	}
+	public String getProfileImageString() {
+		return profileImageString;
+	}
+	public void setProfileImageString(String profileImageString) {
+		this.profileImageString = profileImageString;
 	}
 }

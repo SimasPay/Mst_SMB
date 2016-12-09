@@ -84,6 +84,7 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String closeuser;
 	private String ktpid;
 	private Timestamp lastapppinchange;
+	private String profileImagePath;
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(
 			0);
 	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(
@@ -535,6 +536,15 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	public void setLastapppinchange(Timestamp lastapppinchange) {
 		this.lastapppinchange = lastapppinchange;
 	}
+	
+	@Column(name = "PROFILEIMAGEPATH")
+	public String getProfileImagePath() {
+		return this.profileImagePath;
+	}
+
+	public void setProfileImagePath(String profileImagePath) {
+		this.profileImagePath = profileImagePath;
+	}	
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdnByRefundmdnid")
 	public Set<MoneyClearanceGraved> getMoneyClearanceGravedsForRefundmdnid() {

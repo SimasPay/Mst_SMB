@@ -19,6 +19,7 @@ public class LoginXMLResult extends XMLResult {
 	private boolean isEmoney;
 	private boolean isLakupandia;
 	private boolean isKyc;
+	private String profileImageString;
 	
 	/**
 	 * @return the bankAccountNumber
@@ -198,7 +199,17 @@ public class LoginXMLResult extends XMLResult {
 		getXmlWriter().writeCharacters(bankAccountNumber,false);
 		getXmlWriter().writeEndElement();
 		
+		getXmlWriter().writeStartElement("profileImageString");
+		getXmlWriter().writeCharacters(profileImageString, false);
+		getXmlWriter().writeEndElement();
+		
 		writeEndOfDocument();
+	}
+	public String getProfileImageString() {
+		return profileImageString;
+	}
+	public void setProfileImageString(String profileImageString) {
+		this.profileImageString = profileImageString;
 	}
 	
 	

@@ -1116,4 +1116,10 @@ public class SecurityEnabledUserDataContainer implements IUserDataContainer {
 		// TODO Auto-generated method stub
 		return this.container.getSecurityAnswer();
 	}
+	
+	
+	@Override
+	public String getProfileImageString() {
+		return this.container.getProfileImageString();
+	}
 }
