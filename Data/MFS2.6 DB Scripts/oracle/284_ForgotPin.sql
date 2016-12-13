@@ -26,12 +26,25 @@ INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,
 
 
 
-INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,' ','MDN validation for ForgotPIN');
+INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,'MDNvalidationforForgotPIN','MDN validation for ForgotPIN');
 
 
 INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,'ForgotPinInquiry','ForgotPin Inquiry');
 INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,'ForgotPin','ForgotPin');
 
+
+INSERT INTO SERVICE_TRANSACTION(VERSION,LASTUPDATETIME,UPDATEDBY,CREATETIME,CREATEDBY,MSPID,SERVICEID,TRANSACTIONTYPEID)  VALUES 
+(1,SYSDATE,'System',SYSDATE,'System',1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Account'),
+ (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'MDNvalidationforForgotPIN'));
+
+INSERT INTO SERVICE_TRANSACTION(VERSION,LASTUPDATETIME,UPDATEDBY,CREATETIME,CREATEDBY,MSPID,SERVICEID,TRANSACTIONTYPEID)  VALUES 
+(1,SYSDATE,'System',SYSDATE,'System',1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Account'),
+ (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'ForgotPinInquiry'));
+
+
+INSERT INTO SERVICE_TRANSACTION(VERSION,LASTUPDATETIME,UPDATEDBY,CREATETIME,CREATEDBY,MSPID,SERVICEID,TRANSACTIONTYPEID)  VALUES 
+(1,SYSDATE,'System',SYSDATE,'System',1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Account'),
+ (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'ForgotPin'));
 
 
 INSERT INTO mfa_transactions_info VALUES (mfa_transactions_info_ID_SEQ.nextval,1,sysdate,'System',sysdate,'System',1,(select id from service where SERVICENAME = 'Account')
