@@ -35,7 +35,7 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
-	@SequenceGenerator(name = "id_Sequence", sequenceName = "SUBSCRIBER_UPGRADE_ID_SEQ")
+	@SequenceGenerator(name = "id_Sequence", sequenceName = "SUBSCRIBER_UPGRADE_DATA_ID_SEQ")
 	@Column(name = "ID", unique = true, nullable = false, scale = 0)
 	public Long getId() {
 		return id;
