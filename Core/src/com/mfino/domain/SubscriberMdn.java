@@ -85,8 +85,10 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String ktpid;
 	private Timestamp lastapppinchange;
 	private String profileImagePath;
-	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(0);
-	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(0);
+	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(
+			0);
+	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(
+			0);
 	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
 	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(0);
 	private Set<CloseAcctSetlMdn> closeAcctSetlMdns = new HashSet<CloseAcctSetlMdn>(0);

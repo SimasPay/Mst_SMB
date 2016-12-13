@@ -371,7 +371,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		String productDesired = request.getParameter(ApiConstants.PARAMETER_PRODUCT_DESIRED);
 		String others = request.getParameter(ApiConstants.PARAMETER_OTHERS);
 		String otherWork=request.getParameter(ApiConstants.PARAMETER_OTHER_WORK);
-		
+		String profileImageString = request.getParameter(ApiConstants.PROFILE_IMAGE_STRING); 
 		
 		
 		
@@ -549,6 +549,7 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		rudContainer.setOtherWork(otherWork);
 		rudContainer.setSecurityQuestion(securityQuestion);
 		rudContainer.setSecurityAnswer(securityAnswer);
+		rudContainer.setProfileImageString(profileImageString);
 		
 		log.info("initUserDataContainer: End");
 		return rudContainer;

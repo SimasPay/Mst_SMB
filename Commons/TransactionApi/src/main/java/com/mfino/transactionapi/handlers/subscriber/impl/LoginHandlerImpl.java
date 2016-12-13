@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -43,6 +44,8 @@ import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LoginXMLResult;
 import com.mfino.transactionapi.service.AppTypeCheckService;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.Base64;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -348,7 +351,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			result.setIsLakupandia(isLakuPandiaTypePocket);
 			result.setIsKyc(isKyc);
 			result.setName(srcSubscriberMDN.getSubscriber().getFirstname());
-			
+			//Getting the profile image as string if available during the login process.
+			getProfileImageString(srcSubscriberMDN, result);
 			
 			if(srcSubscriberMDN.getWrongpincount() > 0){
 				log.info("setting wrong pin count to 0, and saving subscribermdn status");
@@ -369,6 +373,19 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		return result;
 	}
 
+	private void getProfileImageString(SubscriberMdn subscriberMDN, LoginXMLResult result) {
+		try {	
+			File profileImageFile = new File(ConfigurationUtil.getSubscriberProfileImageFilePath() + File.separator + subscriberMDN.getProfileImagePath());
+			if (profileImageFile.exists()) {
+				String encodedString = Base64.encodeFromFile(profileImageFile.getAbsolutePath());
+				result.setProfileImageString(encodedString);
+			}
+		}
+		catch (Exception ex) {
+			log.error("Exception occured while viewing profile", ex);
+		}
+	}
+	
 	private void recalculateWrongPinCounts(SubscriberMdn mdn, LoginXMLResult result) {
 		int wrongPinCount = systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT);
 		if (mdn.getWrongpincount() <wrongPinCount )

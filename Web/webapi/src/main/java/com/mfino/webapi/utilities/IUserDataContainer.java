@@ -391,4 +391,6 @@ public interface IUserDataContainer {
 	
 	public String getSecurityQuestion();
 	public String getSecurityAnswer();
+	
+	public abstract String getProfileImageString();
 }

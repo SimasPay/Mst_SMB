@@ -1293,4 +1293,7 @@ public class ConfigurationUtil {
 	public static boolean isUseSmtp() {
 		return getBoolean(ConfigurationKey.MailUseSmtp);
 	}
+	public static String getSubscriberProfileImageFilePath() {
+		return get(ConfigurationKey.SubscriberProfileImageFilePath);
+	}	
 }

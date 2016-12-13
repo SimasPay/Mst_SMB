@@ -428,6 +428,11 @@
 		</td>
 	</tr>
 	<tr>
+        <td>
+            <a href="jsp/s_update_profile.jsp">Update Profile Photo</a>
+        </td>
+    </tr>  	
+	<tr>
 		<td>
 			<a href="jsp/s_settings_forgotpin_inquiry.jsp">Forgot Pin Inquiry</a>
 		</td>

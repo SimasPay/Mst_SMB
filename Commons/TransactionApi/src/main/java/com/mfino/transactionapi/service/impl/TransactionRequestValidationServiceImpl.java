@@ -1248,8 +1248,17 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 			throw new InvalidDataException("Invalid partnerType", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, ApiConstants.PARAMETER_PARTNER_TYPE);
 		}		
 	}
+	
+	private void validateprofileImageString(TransactionDetails transactionDetails) throws InvalidDataException {
+		if(StringUtils.isBlank(transactionDetails.getProfileImageString()))
+			throw new InvalidDataException("Invalid Profile Image data", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+					ApiConstants.PROFILE_IMAGE_STRING);		
+	}
 
-
+	public void validateUpdateProfile(TransactionDetails transactionDetails) throws InvalidDataException {
+		validateSourcePin(transactionDetails);
+		validateprofileImageString(transactionDetails);
+	}
 
 
 public void validateProductReferralDetails(TransactionDetails transactionDetails) throws InvalidDataException {	

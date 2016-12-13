@@ -304,7 +304,7 @@ public class UserDataToTxnDetailsConverter {
 		txnDetails.setOtherWork(userDataContainer.getOtherWork());
 		txnDetails.setSecurityQuestion(userDataContainer.getSecurityQuestion());
 		txnDetails.setSecurityAnswer(userDataContainer.getSecurityAnswer());
-		
+		txnDetails.setProfileImageString(userDataContainer.getProfileImageString());
 		return txnDetails;
 	}
 	

@@ -64,6 +64,7 @@ import com.mfino.transactionapi.handlers.subscriber.SubscriberDetailsHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationThroughWebHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithActivationHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberStatusHandler;
+import com.mfino.transactionapi.handlers.subscriber.UpdateProfileHandler;
 import com.mfino.transactionapi.handlers.subscriber.ValidateOTPHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.XMLError;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.PublicKeyXMLResult;
@@ -250,6 +251,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	private GetPromoImageHandler getPromoImageHandler;
 	
 	@Autowired
+	@Qualifier("UpdateProfileHandlerImpl")
+	private UpdateProfileHandler updateProfileHandler;	
+	
+	@Autowired
 	@Qualifier("MdnValidationForForgotPINHandlerImpl")
 	private MdnValidationForForgotPINHandler mdnValidationForForgotPINHandler;
 
@@ -348,6 +353,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult) subRegistrationWithActivationHandler.handle(transactionDetails);
 
 		}
+        else if (ServiceAndTransactionConstants.TRANSACTION_UPDATE_PROFILE.equalsIgnoreCase(transactionName)) {
+            validationService.validateUpdateProfile(transactionDetails);
+            xmlResult = (XMLResult) updateProfileHandler.handle(transactionDetails);
+        }		
 		else if (ApiConstants.TRANSACTION_GENERATE_OTP.equalsIgnoreCase(transactionName)) {
 			validationService.validateGenerateOTPDetails(transactionDetails);
 			xmlResult = (XMLResult) generateOTPHandler.handle(transactionDetails);
