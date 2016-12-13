@@ -98,7 +98,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		sc.setDestMDN(null);
 		sc.setChannelCodeId(cc.getId().longValue());
 		sc.setServiceName(transactionDetails.getServiceName());
-		sc.setTransactionTypeName(transactionDetails.getTransactionName());
+		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN);
 		sc.setTransactionAmount(BigDecimal.ZERO);
 		sc.setTransactionLogId(transactionLog.getId().longValue());
 		sc.setTransactionIdentifier(forgotPinInquiry.getTransactionIdentifier());
