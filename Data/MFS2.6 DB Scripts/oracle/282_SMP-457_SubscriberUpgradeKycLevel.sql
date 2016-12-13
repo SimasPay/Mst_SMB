@@ -68,13 +68,13 @@ v_newVal NUMBER(12) := 0;
 v_incval NUMBER(12) := 0;
 BEGIN
   IF INSERTING AND :new.ID IS NULL THEN
-    SELECT  SUBSCRIBER_UPGRADE_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    SELECT  SUBSCRIBER_UPGRADE_DATA_ID_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
     IF v_newVal = 1 THEN
       SELECT NVL(max(ID),0) INTO v_newVal FROM subscriber;
       v_newVal := v_newVal + 1;
       LOOP
            EXIT WHEN v_incval>=v_newVal;
-           SELECT SUBSCRIBER_UPGRADE_ID_SEQ.nextval INTO v_incval FROM dual;
+           SELECT SUBSCRIBER_UPGRADE_DATA_ID_SEQ.nextval INTO v_incval FROM dual;
       END LOOP;
     END IF;
    :new.ID := v_newVal;
