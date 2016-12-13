@@ -35,19 +35,20 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 		    anchor : '100%',
 		    columns: 1,
 		    items: [
+						{
+							xtype : "hidden",
+							itemId : 'subupgradekyc.form.mdnid',
+							name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.ID._name
+						},
                      	{
                      		xtype : 'textfield',
                      		fieldLabel: _(' Full Name'),
                      		allowBlank: false,
                      		blankText : _('Full Name is required'),
                      		anchor : '100%',
-                     		name: CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name
+							itemId : 'subupgradekyc.form.fullname',
+                     		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.FirstName._name
                      	},
-						{
-							xtype : "hidden",
-							itemId : 'subupgradekyc.form.ProvincialVal',
-							name: CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name
-						},
                      	{
                      		xtype : 'enumdropdown',
                      		fieldLabel: _(' ID Type'),
@@ -60,8 +61,9 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		allowBlank: false,
                      		blankText : _('ID Type is required'),
 							emptyText : _('<select one..>'),
+							itemId : 'subupgradekyc.form.idtype',
 							enumId : CmFinoFIX.TagID.IDTypeForKycUpgrade,
-                     		name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDType._name
+                     		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.IDType._name
                      	},
                      	{
                      		xtype : 'textfield',
@@ -69,7 +71,8 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		allowBlank: false,
                      		blankText : _('ID Number is required'),
                      		anchor : '100%',
-                     		name: CmFinoFIX.message.JSSubscriberMDN.Entries.IDNumber._name
+							itemId : 'subupgradekyc.form.idnumber',
+                     		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.IDNumber._name
                      	},
                      	{
                      		xtype : 'textfield',
@@ -77,7 +80,8 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		allowBlank: false,
                      		blankText : _('Birth Place is required'),
                      		anchor : '100%',
-                     		name: CmFinoFIX.message.JSSubscriberMDN.Entries.BirthPlace._name
+							itemId : 'subupgradekyc.form.birthplace',
+                     		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.BirthPlace._name
                      	},
                      	{
                             anchor : '100%',
@@ -87,7 +91,8 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		allowBlank: false,
                      		blankText : _('Birth Date is required'),
                             fieldLabel: _(' Date of Birth'),
-                            name: CmFinoFIX.message.JSSubscriberMDN.Entries.DateOfBirth._name
+							itemId : 'subupgradekyc.form.birthdate',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.DateOfBirth._name
                         },
                      	{
                      		xtype : 'textfield',
@@ -95,14 +100,16 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		allowBlank: false,
                      		blankText : _('Mother Maiden Name is required'),
                      		anchor : '100%',
-                     		name: CmFinoFIX.message.JSSubscriberMDN.Entries.MothersMaidenName._name
+							itemId : 'subupgradekyc.form.mothermaidenname',
+                     		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.MothersMaidenName._name
                      	},
                      	{
                             xtype : 'textfield',
                             fieldLabel: _('Email'),
                             vtype: 'email',
                             anchor : '100%',
-                            name: CmFinoFIX.message.JSSubscriberMDN.Entries.Email._name
+							itemId : 'subupgradekyc.form.email',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.Email._name
                         },
                      	{
                             xtype : 'fileuploadfield',
@@ -110,7 +117,26 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                             buttonText: _('Browse'),
                             emptyText:_(''),
                             anchor : '100%',
-                            name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPDocumentPath._name
+							itemId : 'subupgradekyc.form.idpath',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.KTPDocumentPath._name
+                        },
+                     	{
+                            xtype : 'displayfield',
+                            fieldLabel: _(' '),
+                            anchor : '100%',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.KTPDocumentPath._name,
+							itemId : 'subupgradekyc.form.displayfield.idpath',
+                            style: {
+            					color: '#0000ff',
+            					cursor:'pointer'
+            				},
+                            listeners:{
+                           	 	afterrender: function(component) {
+                           	 		component.getEl().on('click', function() { 
+                           	 			mFino.widget.SubscriberUpgradeKycLevelWindow.prototype.showImage(component.getValue())
+                           	        });  
+                           	    }
+                            }
                         }
             ]
 		},
@@ -131,11 +157,11 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 							allowBlank: false,
 							blankText : _('Province/Propinsi is required'),
 							emptyText : '<Select one..>',
-							name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPRegionName._name,
+							name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.RegionName._name,
 							store: new FIX.FIXStore("./fix.htm", CmFinoFIX.message.JSProvince), 
 							displayField: CmFinoFIX.message.JSProvince.Entries.DisplayText._name,
 							valueField : CmFinoFIX.message.JSProvince.Entries.DisplayText._name,
-							hiddenName : CmFinoFIX.message.JSSubscriberMDN.Entries.KTPRegionName._name,
+							hiddenName : CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.RegionName._name,
 							listeners: {
 							 	select: function(field, record) {
 							 		this.findParentByType('SubscriberUpgradeKycLevelWindow').onProvince2(record.id);
@@ -153,11 +179,11 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 				            blankText : _('City/Kota is required'),
 				            emptyText : '<Select one..>',
 				            mode: 'local',
-				            name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPCity._name,
+				            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.City._name,
 				            store: new FIX.FIXStore("./fix.htm", CmFinoFIX.message.JSProvinceRegion), 
 				            displayField: CmFinoFIX.message.JSProvinceRegion.Entries.DisplayText._name,
 				            valueField : CmFinoFIX.message.JSProvinceRegion.Entries.DisplayText._name,
-				            hiddenName :CmFinoFIX.message.JSSubscriberMDN.Entries.KTPCity._name,
+				            hiddenName : CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.City._name,
 							listeners: {
 								 	select: function(field,record) {
 								 	this.findParentByType('SubscriberUpgradeKycLevelWindow').onProvinceRegion2(record.id);
@@ -175,11 +201,11 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 				            triggerAction: "all",
 				            emptyText : '<Select one..>',
 				            mode: 'local',
-				            name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPState._name,
+				            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.State._name,
 				            store: new FIX.FIXStore("./fix.htm", CmFinoFIX.message.JSDistrict), 
 				            displayField: CmFinoFIX.message.JSDistrict.Entries.DisplayText._name, 
 				            valueField : CmFinoFIX.message.JSDistrict.Entries.DisplayText._name, 
-				            hiddenName : CmFinoFIX.message.JSSubscriberMDN.Entries.KTPState._name,
+				            hiddenName : CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.State._name,
 							listeners: {
 								 	select: function(field,record) {
 								 	this.findParentByType('SubscriberUpgradeKycLevelWindow').onDistrict2(record.id);
@@ -197,11 +223,11 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 				            triggerAction: "all",
 				            emptyText : '<Select one..>',
 				            mode: 'local',
-				            name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPSubState._name,
+				            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.SubState._name,
 				            store: new FIX.FIXStore("./fix.htm", CmFinoFIX.message.JSVillage), 
 				            displayField: CmFinoFIX.message.JSVillage.Entries.DisplayText._name, 
 				            valueField : CmFinoFIX.message.JSVillage.Entries.DisplayText._name, 
-				            hiddenName : CmFinoFIX.message.JSSubscriberMDN.Entries.KTPSubState._name,
+				            hiddenName : CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.SubState._name,
 						},
 						{
 						    xtype : 'textfield',
@@ -209,7 +235,8 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 						    allowBlank: false,
 				            blankText : _('Alamat is required'),
 						    anchor : '100%',
-						    name: CmFinoFIX.message.JSSubscriberMDN.Entries.KTPPlotNo._name
+				            itemId : 'subupgradekyc.form.StreetAddress',
+						    name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.StreetAddress._name
 						}
 				]
         },
@@ -219,12 +246,8 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
         	fieldLabel: _(' Mandatory'),
         	labelSeparator : ''
         }]
-    	
     	mFino.widget.SubscriberUpgradeKycLevelWindow.superclass.initComponent.call(this);
-        markMandatoryFields(this.form);
-        if(this.record){
-            this.getForm().loadRecord(this.record);
-        }
+    	markMandatoryFields(this.form);
     },
     onUpgradeKyc : function(formWindow){
         if(this.getForm().isValid()){
@@ -262,12 +285,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
             Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
         }
     },
-    setRecord : function(record){
-        this.getForm().reset();
-        this.record = record;
-        this.getForm().loadRecord(record);
-        this.getForm().clearInvalid();
-    },
     onProvince2 : function(provinceId){
     	var region_combo = this.find('itemId','subupgradekyc.form.CityCom')[0];
     	region_combo.reset();
@@ -297,6 +314,76 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     },
     setStore : function(store){
         this.store = store;
-    }
+    },
+    setDetails : function(response, mdnid){
+        this.form.reset();
+    	this.form.items.get("subupgradekyc.form.displayfield.idpath").hide();
+    	this.form.items.get("subupgradekyc.form.mdnid").setValue(mdnid);
+    	if(response.m_ptotal > 0){
+    		console.log(response.m_pEntries[0]);
+    		var d = response.m_pEntries[0].m_pDateOfBirth.m_Date;
+    		var month = '' + (d.getMonth() + 1);
+            var day = '' + d.getDate();
+            var year = d.getFullYear();
+
+	        if (month.length < 2) month = '0' + month;
+	        if (day.length < 2) day = '0' + day;
+	
+	        var formatedDate = [year, month, day].join('-');
+	        
+	        if(response.m_pEntries[0].m_pKTPDocumentPath != null){
+				var docFullPath = response.m_pEntries[0].m_pKTPDocumentPath;
+				docFullPath = docFullPath.replace("\\","/");
+				docFullPath = docFullPath.replace("\\","/");
+				if(mFino.widget.SubscriberUpgradeKycLevelWindow.path == null || mFino.widget.SubscriberUpgradeKycLevelWindow.path == '' || mFino.widget.SubscriberUpgradeKycLevelWindow.path == undefined){
+						mFino.widget.SubscriberUpgradeKycLevelWindow.path = docFullPath.substring(0, docFullPath.lastIndexOf('/')+1);
+				}
+				var docName = docFullPath.substring(docFullPath.lastIndexOf('/')+1, docFullPath.length);
+	        	this.form.items.get("subupgradekyc.form.idpath").setValue(docName);
+	        	this.form.items.get("subupgradekyc.form.displayfield.idpath").setValue(docName);
+	        	this.form.items.get("subupgradekyc.form.displayfield.idpath").show();
+			}
+	        
+    		this.form.items.get("subupgradekyc.form.fullname").setValue(response.m_pEntries[0].m_pFirstName);
+        	this.form.items.get("subupgradekyc.form.idtype").setValue(response.m_pEntries[0].m_pIDType);
+        	this.form.items.get("subupgradekyc.form.idnumber").setValue(response.m_pEntries[0].m_pIDNumber);
+        	this.form.items.get("subupgradekyc.form.birthplace").setValue(response.m_pEntries[0].m_pBirthPlace);
+        	this.form.items.get("subupgradekyc.form.birthdate").setValue(formatedDate);
+        	this.form.items.get("subupgradekyc.form.mothermaidenname").setValue(response.m_pEntries[0].m_pMothersMaidenName);
+        	this.form.items.get("subupgradekyc.form.email").setValue(response.m_pEntries[0].m_pEmail);
+        	this.form.items.get("subupgradekyc.form.ProvincialCom").setValue(response.m_pEntries[0].m_pRegionName);
+        	this.form.items.get("subupgradekyc.form.CityCom").setValue(response.m_pEntries[0].m_pCity);
+        	this.form.items.get("subupgradekyc.form.DistrictCom").setValue(response.m_pEntries[0].m_pState);
+        	this.form.items.get("subupgradekyc.form.VillageCom").setValue(response.m_pEntries[0].m_pSubState);
+        	this.form.items.get("subupgradekyc.form.StreetAddress").setValue(response.m_pEntries[0].m_pStreetAddress);
+        }
+    },
+    showImage:function(imageName){
+    	var imagePath = mFino.widget.SubscriberUpgradeKycLevelWindow.path+imageName
+		if(imagePath.indexOf('.') != -1){
+			var window = new Ext.Window({
+				layout:'anchor',
+				width:500,
+				height:500,
+				autoScroll:true,
+				bodyStyle:'backgroundColor:white',
+				title:imageName,
+				items:[{
+					anchor : '100%',
+					html: "<div display=\"block\" style=''>" + 
+						
+					"<div style=\"text-align:left;line-height:3px;padding:5px 3px 4px;\">" +
+						"<span>" + 
+								"<img height=300 width=400 alt=\"image\" src=\""+imagePath+"\" />" +
+						"</span>" + 
+					"</div>" +
+				   "</div>"
+				}]
+			});
+			window.show();
+		}else{
+			Ext.Msg.alert('Info', 'Document Not Available!');
+		}
+    },
 });
 Ext.reg("SubscriberUpgradeKycLevelWindow", mFino.widget.SubscriberUpgradeKycLevelWindow);

@@ -320,6 +320,14 @@ public class DAOFactory {
 	
 	private CommodityTransferNextIDDAO commodityTransferNextIDDAO;
 	
+	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO;
+	
+	public SubscriberUpgradeDataDAO getSubscriberUpgradeDataDAO(){
+		subscriberUpgradeDataDAO = new SubscriberUpgradeDataDAO();
+		subscriberUpgradeDataDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return subscriberUpgradeDataDAO;
+	}
+	
 	public ProductReferralDAO getProductReferralDAO() {
 		productReferralDAO=new ProductReferralDAO();		
 		productReferralDAO.setHibernateSessionHolder(getHibernateSessionHolder());

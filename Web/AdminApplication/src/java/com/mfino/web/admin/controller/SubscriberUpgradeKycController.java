@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
-import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.PocketTemplateQuery;
 import com.mfino.domain.Address;
@@ -34,6 +33,7 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -44,8 +44,8 @@ import com.mfino.service.PocketService;
 import com.mfino.service.PocketTemplateService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SubscriberUpgradeDataService;
 import com.mfino.service.UserService;
-import com.mfino.uicore.fix.processor.BranchCodeProcessor;
 import com.mfino.uicore.web.JSONView;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
@@ -87,17 +87,21 @@ public class SubscriberUpgradeKycController {
 	@Autowired
 	@Qualifier("BranchCodeServiceImpl")
 	private BranchCodeService branchCodeService;
+
+	@Autowired
+	@Qualifier("SubscriberUpgradeDataServiceImpl")
+	private SubscriberUpgradeDataService subscriberUpgradeDataService;
 	
 	@RequestMapping("/upgradesubscriberkyc.htm")
     protected View handleUpload(HttpServletRequest request, HttpServletResponse response) {
 		log.info("Upgrade Subscriber KYC Level");
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		responseMap.put("success", false);
-		
+		String idCardpath = null;
 		try {
 			String idType = request.getParameter("IDType");
 			String mdnId = request.getParameter("ID");
-			
+
 			SubscriberMdn subscriberMdn = subscriberMdnService.getById(Long.valueOf(mdnId));
 			if(subscriberMdn == null){
 	        	responseMap.put("Error", MessageText._("Invalid MDN ID"));
@@ -145,7 +149,7 @@ public class SubscriberUpgradeKycController {
 					return new JSONView(responseMap);
 				
 				if(StringUtils.isNotBlank(path))
-					subscriberMdn.setKtpdocumentpath(path);
+					idCardpath = path;
 			}
 	        
 	        PocketTemplateQuery pocketTemplateQuery = new PocketTemplateQuery();
@@ -157,42 +161,44 @@ public class SubscriberUpgradeKycController {
 	        if (eMoneyNonKycTemplateList != null && eMoneyNonKycTemplateList.size() > 0) {
 				
 				Pocket nonKycPocket = getNonKycPocket(subscriberMdn, eMoneyNonKycTemplateList);	
-            	if(nonKycPocket == null){
+            	if (nonKycPocket == null) {
                 	responseMap.put("Error", MessageText._("Subscriber Not Have Emoney-UnBanked Pocket."));
     	        	return new JSONView(responseMap);
             	}
-
-            	Address addressBaseOnIdCard = new Address();
-            	addressBaseOnIdCard.setCreatedby(userService.getCurrentUser().getUsername());
-            	addressBaseOnIdCard.setCreatetime(new Timestamp());
-            	
-            	if(subscriber.getAddressBySubscriberaddressktpid() != null){
-            		addressBaseOnIdCard = subscriber.getAddressBySubscriberaddressktpid();
-                	addressBaseOnIdCard.setUpdatedby(userService.getCurrentUser().getUsername());
-                	addressBaseOnIdCard.setLastupdatetime(new Timestamp());
-            	}
-            	addressBaseOnIdCard.setRegionname(request.getParameter("KTPRegionName"));
-            	addressBaseOnIdCard.setState(request.getParameter("KTPState"));
-            	addressBaseOnIdCard.setSubstate(request.getParameter("KTPSubState"));
-            	addressBaseOnIdCard.setCity(request.getParameter("KTPCity"));
-            	addressBaseOnIdCard.setLine1(request.getParameter("KTPPlotNo"));
-            	addressService.save(addressBaseOnIdCard);
             	
             	String dateOfBirthStr = request.getParameter("DateOfBirth");
             	Date dateOfBirth = DateUtil.getDate(dateOfBirthStr, "dd-MM-yyyy");
+            	SubscriberUpgradeData upgradeData = subscriberUpgradeDataService.getByMdnId(subscriberMdn.getId());
+
+            	Address addressBaseOnIdCard = new Address();
+            	if(upgradeData == null){
+            		upgradeData = new SubscriberUpgradeData();
+            	}else{
+            		addressBaseOnIdCard = upgradeData.getAddress();
+            	}
             	
-            	subscriber.setAddressBySubscriberaddressktpid(addressBaseOnIdCard);
-            	subscriber.setBirthplace(request.getParameter("BirthPlace"));
-            	subscriber.setDateofbirth(new Timestamp(dateOfBirth));
-            	subscriber.setFirstname(request.getParameter("FirstName"));
-            	subscriber.setMothersmaidenname(request.getParameter("MothersMaidenName"));
-            	subscriber.setEmail(request.getParameter("Email"));
-            	subscriberService.save(subscriber);
+            	addressBaseOnIdCard.setRegionname(request.getParameter("RegionName"));
+            	addressBaseOnIdCard.setState(request.getParameter("State"));
+            	addressBaseOnIdCard.setSubstate(request.getParameter("SubState"));
+            	addressBaseOnIdCard.setCity(request.getParameter("City"));
+            	addressBaseOnIdCard.setLine1(request.getParameter("StreetAddress"));
+            	addressService.save(addressBaseOnIdCard);
             	
-            	String idTypeValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_IDTypeForKycUpgrade, null, idType);
+            	upgradeData.setAddress(addressBaseOnIdCard);
+            	upgradeData.setBirthPlace(request.getParameter("BirthPlace"));
+            	upgradeData.setBirthDate(new Timestamp(dateOfBirth));
+            	upgradeData.setFullName(request.getParameter("FirstName"));
+            	upgradeData.setMotherMaidenName(request.getParameter("MothersMaidenName"));
+            	upgradeData.setEmail(request.getParameter("Email"));
+            	upgradeData.setMdnId(subscriberMdn.getId());
+            	upgradeData.setIdType(idType);
+            	upgradeData.setIdNumber(request.getParameter("IDNumber"));
             	
-            	subscriberMdn.setIdtype(idTypeValue);
-            	subscriberMdn.setIdnumber(request.getParameter("IDNumber"));
+            	if(StringUtils.isNotBlank(idCardpath))
+            		upgradeData.setIdCardScanPath(idCardpath);
+            	
+            	subscriberUpgradeDataService.save(upgradeData);
+            	
             	subscriberMdn.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeKycStatus_Initialized);
             	subscriberMdn.setUpgradeacctrequestby(userService.getCurrentUser().getUsername());
         		subscriberMdnService.save(subscriberMdn);

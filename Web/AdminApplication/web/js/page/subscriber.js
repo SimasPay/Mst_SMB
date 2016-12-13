@@ -71,7 +71,7 @@ mFino.page.subscriber = function(config){
         width:520,
         height: 550,
         mode:"upgradekyc"
-    },config));
+    }, config));
     
     var subClosing = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberClosingInquiry(config),
@@ -524,8 +524,21 @@ mFino.page.subscriber = function(config){
                     } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.UnBanked){
                     	Ext.MessageBox.alert(_("Info"), _("Subscriber's level is not Non-Kyc."));
                     } else{
-                    	subscriberUpgradeKycLevelWindow.show();
-                    	subscriberUpgradeKycLevelWindow.setRecord(detailsForm.record);
+                    	var amsg = new CmFinoFIX.message.JSSubscriberUpgradeKyc();
+                        amsg.m_pID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                        amsg.m_paction = "default";
+                        var params = mFino.util.showResponse.getDisplayParam();
+                        mFino.util.fix.send(amsg, params);
+                        Ext.apply(params, {
+                			success :  function(response){
+                				if(response.m_psuccess == true){
+                					subscriberUpgradeKycLevelWindow.show();
+                					subscriberUpgradeKycLevelWindow.form.setDetails(response, amsg.m_pID); 
+                			   }else{
+                				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
+                			   }
+                			}
+                		});
                     }
                 }
             },
@@ -567,8 +580,22 @@ mFino.page.subscriber = function(config){
                     	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active!"));
                     }else{
                     	if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctStatus._name)==CmFinoFIX.SubscriberUpgradeStatus.Initialized){
-                    		subscriberUpgradeKycApproveRejectWindow.show();
-                    		subscriberUpgradeKycApproveRejectWindow.setRecord(detailsForm.record);
+                    		var amsg = new CmFinoFIX.message.JSSubscriberUpgradeKyc();
+                            amsg.m_pID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                            amsg.m_paction = "default";
+                            var params = mFino.util.showResponse.getDisplayParam();
+                            mFino.util.fix.send(amsg, params);
+                            Ext.apply(params, {
+                    			success :  function(response){
+                    				if(response.m_psuccess == true){
+                    					subscriberUpgradeKycApproveRejectWindow.show();
+                    					var comments = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name);
+                    					subscriberUpgradeKycApproveRejectWindow.setDetails(response, amsg.m_pID, comments); 
+                    			   }else{
+                    				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
+                    			   }
+                    			}
+                    		});
                         } else {
                         	Ext.Msg.show({
                                 title: _('Alert !'),

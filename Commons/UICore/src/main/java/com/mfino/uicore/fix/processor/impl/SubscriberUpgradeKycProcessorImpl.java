@@ -18,8 +18,10 @@ import com.mfino.dao.PocketDAO;
 import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
+import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.PocketTemplateQuery;
+import com.mfino.domain.Address;
 import com.mfino.domain.BranchCodes;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.MfinoUser;
@@ -30,6 +32,7 @@ import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
@@ -42,6 +45,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.ChannelCodeService;
+import com.mfino.service.EnumTextService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SMSService;
 import com.mfino.service.TransactionChargingService;
@@ -60,6 +64,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	private static SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
 	private static AddressDAO addressDao = DAOFactory.getInstance().getAddressDAO();
 	private static BranchCodeDAO branchCodeDao = DAOFactory.getInstance().getBranchCodeDAO(); 
+	private static SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
 	
 	private static final String DEFAULT_BRANCH = "000";
 	
@@ -86,6 +91,10 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	@Autowired
 	@Qualifier("ChannelCodeServiceImpl")
 	private ChannelCodeService channelCodeService;
+	
+	@Autowired
+	@Qualifier("EnumTextServiceImpl")
+	private EnumTextService enumTextService;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -127,10 +136,52 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         pocketTemplateQuery.setDescriptionSearch("Emoney-UnBanked");
         
         List<PocketTemplate> eMoneyNonKycTemplateList = pocketTemplateDAO.get(pocketTemplateQuery);
+        if (eMoneyNonKycTemplateList == null || eMoneyNonKycTemplateList.size() <= 0) {
+        	error.setErrorDescription(MessageText._("Emoney-UnBanked Not Available."));
+        	return error;
+        }
         
-		String actionString = realMsg.getaction();
-		log.info("Action is : "+actionString);
-		
+        Pocket nonKycPocket = getNonKycPocket(subscriberMDN, eMoneyNonKycTemplateList);
+		if (nonKycPocket == null){
+			error.setErrorDescription(MessageText._("Subscriber Not Have Emoney-UnBanked Pocket."));
+        	return error;
+		}
+
+        String actionString = realMsg.getaction();
+        log.info("Action is :"+actionString);
+        if (StringUtils.equals(actionString, "default")){
+        	SubscriberUpgradeData subscriberUpgradeData = subscriberUpgradeDataDAO.getByMdnId(subscriberMDN.getId());
+    		realMsg.settotal(0);
+        	if(subscriberUpgradeData != null){
+        		realMsg.allocateEntries(1);
+        		String idTypeValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_IDTypeForKycUpgrade, null, subscriberUpgradeData.getIdType());
+        		
+        		CMJSSubscriberUpgradeKyc.CGEntries entry = new CMJSSubscriberUpgradeKyc.CGEntries();
+        		entry.setBirthPlace(subscriberUpgradeData.getBirthPlace());
+        		entry.setDateOfBirth(subscriberUpgradeData.getBirthDate());
+        		entry.setEmail(subscriberUpgradeData.getEmail());
+        		entry.setFirstName(subscriberUpgradeData.getFullName());
+        		entry.setIDType(subscriberUpgradeData.getIdType());
+        		entry.setIDNumber(subscriberUpgradeData.getIdNumber());
+        		entry.setKTPDocumentPath(subscriberUpgradeData.getIdCardScanPath());
+        		entry.setMothersMaidenName(subscriberUpgradeData.getMotherMaidenName());
+        		entry.setID(subscriberMDN.getId());
+        		entry.setIDTypeText(idTypeValue);
+        		
+        		Address address = subscriberUpgradeData.getAddress();
+        		entry.setCity(address.getCity());
+        		entry.setRegionName(address.getRegionname());
+        		entry.setState(address.getState());
+        		entry.setSubState(address.getSubstate());
+        		entry.setStreetAddress(address.getLine1());
+        		realMsg.getEntries()[0] = entry;
+        		realMsg.settotal(1);
+        	}
+        	realMsg.setsuccess(Boolean.TRUE);
+        	return realMsg;
+        } 
+        
+        
 		if(subscriberMDN.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeStatus_Initialized){
 			
 			String makerUsername = subscriberMDN.getUpgradeacctrequestby();
@@ -145,30 +196,18 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				pocketTemplateQuery.setDescriptionSearch("Emoney-SemiBanked");
             	List<PocketTemplate> eMoneyKycTemplateList = pocketTemplateDAO.get(pocketTemplateQuery);
             	
-            	if (eMoneyNonKycTemplateList != null && eMoneyNonKycTemplateList.size() > 0) {
-            		Pocket nonKycPocket = getNonKycPocket(subscriberMDN, eMoneyNonKycTemplateList);
-            		
-            		if (nonKycPocket == null){
-            			error.setErrorDescription(MessageText._("Subscriber Not Have Emoney-UnBanked Pocket."));
-                    	return error;
-            		} 
-            		
-            		if (eMoneyKycTemplateList == null || eMoneyKycTemplateList.size() == 0){
-        				error.setErrorDescription(MessageText._("Emoney-SemiBanked Not Available."));
-                    	return error;
-        			}
-        			
-        			Integer notificationCode = updateStatus(realMsg, error,
-							subscriberMDN, subscriber, eMoneyKycTemplateList,
-							nonKycPocket);
-            		
-            		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-            		sendSMS(subscriberMDN,notificationCode);
-            		
-            	} else{
-                	error.setErrorDescription(MessageText._("Emoney-UnBanked Not Available."));
+            	if (eMoneyKycTemplateList == null || eMoneyKycTemplateList.size() == 0){
+    				error.setErrorDescription(MessageText._("Emoney-SemiBanked Not Available."));
                 	return error;
-                }
+    			}
+    			
+    			Integer notificationCode = updateStatus(realMsg, error,
+						subscriberMDN, subscriber, eMoneyKycTemplateList,
+						nonKycPocket);
+        		
+        		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+        		sendSMS(subscriberMDN,notificationCode);
+        		
 			} else{
 				error.setErrorDescription(MessageText._("Admin Branch is not available or different"));
             	return error;
@@ -227,38 +266,43 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		subscriberMDN.setUpgradeacctapprovedby(userService.getCurrentUser().getUsername());
 		subscriberMDN.setUpgradeaccttime(new Timestamp());
 		
+		SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getByMdnId(subscriberMDN.getId());
 		Integer notificationCode = null;
-		if (upgradeStatus == CmFinoFIX.SubscriberUpgradeStatus_Approve){			
-			nonKycPocket.setPocketTemplateByPockettemplateid(eMoneyKycTemplateList.get(0));
-			pocketDAO.save(nonKycPocket);
-			error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Approved successfully"));
-			notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestApproved;
-			log.info("Request for Subscriber Upgraded Approved successfully");
-			
-		} else if(upgradeStatus == CmFinoFIX.SubscriberUpgradeKycStatus_Revision){
-			error.setErrorDescription(MessageText._("Request for Subscriber Need Revision"));
-			notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRevision;
-			log.info("Request for Subscriber Need Revision");
-			
-		} else{
-			subscriberMDN.setUpgradeacctstatus(null);
-			subscriberMDN.setKtpdocumentpath(null);
-			subscriberMDN.setIdtype(null);
-			subscriberMDN.setIdnumber(null);
-			
-			addressDao.delete(subscriber.getAddressBySubscriberaddressid());
-			
-			subscriber.setBirthplace(null);
-			subscriber.setMothersmaidenname(null);
-			subscriber.setAddressBySubscriberaddressid(null);
-			subscriber.setDateofbirth(null);
-			subscriberDao.save(subscriber);
-			
-			error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Rejected successfully"));
-			notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRejected;
-			log.info("Request for Subscriber Upgraded Rejected successfully");
+		if(upgradeData != null){
+			if (upgradeStatus == CmFinoFIX.SubscriberUpgradeStatus_Approve){			
+				nonKycPocket.setPocketTemplateByPockettemplateid(eMoneyKycTemplateList.get(0));
+				pocketDAO.save(nonKycPocket);
+				
+				subscriber.setAddressBySubscriberaddressid(upgradeData.getAddress());
+				subscriber.setEmail(upgradeData.getEmail());
+				subscriber.setBirthplace(upgradeData.getBirthPlace());
+				subscriber.setDateofbirth(upgradeData.getBirthDate());
+				subscriber.setFirstname(upgradeData.getFullName());
+				subscriber.setMothersmaidenname(upgradeData.getMotherMaidenName());
+				subscriberDao.save(subscriber);
+				
+				subscriberMDN.setIdtype(upgradeData.getIdType());
+				subscriberMDN.setIdnumber(upgradeData.getIdNumber());
+				subscriberMDN.setKtpdocumentpath(upgradeData.getIdCardScanPath());
+				
+				error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Approved successfully"));
+				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestApproved;
+				log.info("Request for Subscriber Upgraded Approved successfully");
+				
+			} else if(upgradeStatus == CmFinoFIX.SubscriberUpgradeKycStatus_Revision){
+				error.setErrorDescription(MessageText._("Request for Subscriber Need Revision"));
+				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRevision;
+				log.info("Request for Subscriber Need Revision");
+				
+			} else {
+				subscriberMDN.setUpgradeacctstatus(null);
+				subscriberUpgradeDataDAO.delete(upgradeData);
+				addressDao.delete(upgradeData.getAddress());
+				error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Rejected successfully"));
+				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRejected;
+				log.info("Request for Subscriber Upgraded Rejected successfully");
+			}
 		}
-
 		subMdndao.save(subscriberMDN);
 		return notificationCode;
 	}
