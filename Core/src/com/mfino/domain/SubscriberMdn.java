@@ -84,26 +84,18 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	private String closeuser;
 	private String ktpid;
 	private Timestamp lastapppinchange;
-	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(
-			0);
-	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(
-			0);
+	private String profileImagePath;
+	private Set<MoneyClearanceGraved> moneyClearanceGravedsForRefundmdnid = new HashSet<MoneyClearanceGraved>(0);
+	private Set<MoneyClearanceGraved> moneyClearanceGravedsForMdnid = new HashSet<MoneyClearanceGraved>(0);
 	private Set<BulkLop> bulkLops = new HashSet<BulkLop>(0);
-	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(
-			0);
-	private Set<CloseAcctSetlMdn> closeAcctSetlMdns = new HashSet<CloseAcctSetlMdn>(
-			0);
+	private Set<PendingCommodityTransfer> pendingCommodityTransfers = new HashSet<PendingCommodityTransfer>(0);
+	private Set<CloseAcctSetlMdn> closeAcctSetlMdns = new HashSet<CloseAcctSetlMdn>(0);
 	private Set<Pocket> pockets = new HashSet<Pocket>(0);
-	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(
-			0);
-	private Set<ExcludeSubscriberLc> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLc>(
-			0);
-	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(
-			0);
-	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(
-			0);
-	private Set<ChannelSessionMgmt> channelSessionMgmts = new HashSet<ChannelSessionMgmt>(
-			0);
+	private Set<CommodityTransfer> commodityTransfers = new HashSet<CommodityTransfer>(0);
+	private Set<ExcludeSubscriberLc> excludeSubscriberLcs = new HashSet<ExcludeSubscriberLc>(0);
+	private Set<LetterOfPurchase> letterOfPurchases = new HashSet<LetterOfPurchase>(0);
+	private Set<UnregisteredTxnInfo> unregisteredTxnInfos = new HashSet<UnregisteredTxnInfo>(0);
+	private Set<ChannelSessionMgmt> channelSessionMgmts = new HashSet<ChannelSessionMgmt>(0);
 
 	private Long id;
 	
@@ -535,6 +527,15 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	public void setLastapppinchange(Timestamp lastapppinchange) {
 		this.lastapppinchange = lastapppinchange;
 	}
+	
+	@Column(name = "PROFILEIMAGEPATH")
+	public String getProfileImagePath() {
+		return this.profileImagePath;
+	}
+
+	public void setProfileImagePath(String profileImagePath) {
+		this.profileImagePath = profileImagePath;
+	}	
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriberMdnByRefundmdnid")
 	public Set<MoneyClearanceGraved> getMoneyClearanceGravedsForRefundmdnid() {

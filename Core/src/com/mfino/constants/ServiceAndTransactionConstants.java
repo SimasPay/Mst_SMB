@@ -352,6 +352,8 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_REGISTRATION_WITH_ACTIVATION_HUB = "RegistrationWithActivationForHub";
 	
+	public static final String TRANSACTION_UPDATE_PROFILE = "UpdateProfile";
+	
 	public static final String MESSAGE_STARTIMES_PAYMENT = "StarTimes Payment";
 	
 	public static final String MESSAGE_QR_PAYMENT 			=	"QR Payment";
