@@ -830,6 +830,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             } else {
                 theEntries.setDenomination(1L);
             }
+	    theEntries.setPocketType(thePocket.getPocketTemplateByPockettemplateid().getType());
             theEntries.setPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, null, thePocket.getPocketTemplateByPockettemplateid().getType()));
             theEntries.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, thePocket.getPocketTemplateByPockettemplateid().getCommodity()));
             theEntries.setPartnerCode(thePocket.getPocketTemplateByPockettemplateid().getBankcode().intValue());
