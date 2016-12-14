@@ -1099,6 +1099,7 @@
 				<field name="PocketPartnerCode" id="PartnerCode" required="N" />
 				<field name="CommodityText" required="N" />
 				<field name="PocketDispText" required="N"/>
+				<field name="PocketType" required="N" />
 			</group>
 		</message>
 		<message name="JSPerson2Person" msgtype="1046" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
