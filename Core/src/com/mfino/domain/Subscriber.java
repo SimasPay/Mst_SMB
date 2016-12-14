@@ -193,7 +193,7 @@ public class Subscriber extends Base implements java.io.Serializable {
 		this.MfinoServiceProvider = MfinoServiceProvider;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "KYCLEVEL")
 	public KycLevel getKycLevel() {
 		return this.kycLevel;

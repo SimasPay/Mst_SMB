@@ -74,93 +74,105 @@ public class ATMRequestHandler extends FIXMessageHandler {
 			notificationLanguage=notificationLanguage.toUpperCase(); 
 		} 
 		try{
-		log.info("ATMRequestHandler :: handle()");
-		FIXMessageHandler handler = null;
-		Integer response=null;
-		sessionFactory = htm.getSessionFactory();
-		Session session = sessionFactory.getCurrentSession();
-		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
-		try {
-			property.load(new FileInputStream("mfino_conf"+File.separator+"ATMCodes.properties"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			log.error("Cannot load ATMCodes properties file " +e.getMessage());
-			msg.set(39,GetConstantCodes.FAILURE);
-			return;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error("Cannot load ATMCodes properties file " + e.getMessage());
-			msg.set(39,GetConstantCodes.FAILURE);
-			return;
-		}
-		String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));
-		String accountNumber=msg.getString("102");
-		SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
-		SubscriberMdn subMDNByAccountNumber = null;
-		PocketQuery query = new PocketQuery();
-		query.setCardPan(accountNumber);
-		List<Pocket> pocketList = pocketService.get(query);
-		if (!pocketList.isEmpty()) {
-			subMDNByAccountNumber = pocketList.get(0).getSubscriberMdn();
-		}
-		if(null==subMDNByMDN && null==subMDNByAccountNumber){
-			//new mdn and new account number
-			handler= ATMRegistrationHandler.getInstance();
-			response = ((ATMRegistrationHandler) handler).handle(msg,session);
-			if(response.equals(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToAgent)){
-				msg.set(62, property.getProperty(GetConstantCodes.ATMCode_NewRegistrationSuccess+"_"+notificationLanguage));
-			}else if(response.equals(CmFinoFIX.NotificationCode_InvalidMDNLength)){ 
-			    msg.set(62, property.getProperty(GetConstantCodes.ATMCode_RejectRequest+"_"+notificationLanguage));
-			}else{
-				msg.set(62,property.getProperty(GetConstantCodes.ATMCode_InternalFailure+"_"+notificationLanguage));
+			
+			log.info("ATMRequestHandler :: handle()");
+			FIXMessageHandler handler = null;
+			Integer response=null;
+			sessionFactory = htm.getSessionFactory();
+			Session session = sessionFactory.openSession();
+			
+			if(!TransactionSynchronizationManager.hasResource(sessionFactory)){
+				
+				log.info("Opening and Binding Session for thread : "+ Thread.currentThread().getName());
+				TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 			}
-		}else if(null!=subMDNByMDN && null!=subMDNByAccountNumber && subMDNByAccountNumber.equals(subMDNByMDN)){
-			//old mdn and old accountnumber . Change pin request
-			handler= ATMChangePinHandler.getInstance();
-			response = ((ATMChangePinHandler) handler).handle(msg,session);
-			if(response.equals(CmFinoFIX.NotificationCode_ChangePINCompleted)){
-				msg.set(62,property.getProperty(GetConstantCodes.ATMCode_ChangePinSuccess+"_"+notificationLanguage));
-			}else{
-				msg.set(62,property.getProperty(GetConstantCodes.ATMCode_InternalFailure+"_"+notificationLanguage));
+			
+			try {
+				property.load(new FileInputStream("mfino_conf"+File.separator+"ATMCodes.properties"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				log.error("Cannot load ATMCodes properties file " +e.getMessage());
+				msg.set(39,GetConstantCodes.FAILURE);
+				return;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.error("Cannot load ATMCodes properties file " + e.getMessage());
+				msg.set(39,GetConstantCodes.FAILURE);
+				return;
 			}
-		}else if(null!=subMDNByMDN && null!=subMDNByAccountNumber && !(subMDNByAccountNumber.equals(subMDNByMDN))){
-			//existing mdn and accountnumber mapped to different mdn. Reject Request
-			log.info("ATMRequestHandler :: handle() Received request for existing mdn and accountnumber mapped to different mdn");
-			msg.set(39,GetConstantCodes.REJECT);
-			msg.set(62,property.getProperty(GetConstantCodes.ATMCode_RejectRequest+"_"+notificationLanguage));
-		}else if(null==subMDNByMDN && null!=subMDNByAccountNumber){
-			//new mdn and existing account . Change MDN not handling as of now
-			log.info("ATMRequestHandler :: handle() Received request for change mdn. Reject the request");
-			msg.set(39,GetConstantCodes.REJECT);
-			msg.set(62,property.getProperty(GetConstantCodes.ATMCode_ChangeMDNFailure+"_"+notificationLanguage));
-		}else if(null!=subMDNByMDN && null==subMDNByAccountNumber){
-			//existing mdn and new account number . Reject the request
-			log.info("ATMRequestHandler :: handle() Received request for existing mdn and new account number. Reject the request");
-			msg.set(39,GetConstantCodes.REJECT);
-			msg.set(62,property.getProperty(GetConstantCodes.ATMCode_RejectRequest+"_"+notificationLanguage));
-		}
-
-		Integer notificationCode = null;
-		if(null==response){
-			log.info("ATMRequestHandler :: handle Got Response Null");
-			return;
-		}else{
-			notificationCode=response;
-		}
-		try{
-			NotificationWrapper notificationWrapper=new NotificationWrapper();
-			notificationWrapper.setCode(notificationCode);
-			notificationWrapper.setDestMDN(sourceMDN);
-			smsService.setDestinationMDN(sourceMDN);
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			smsService.setMessage(notificationMessageParserService.buildMessage(notificationWrapper,true));
-			//smsService.setSctlId(sctl.getID());
-			smsService.send();
+			String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));
+			String accountNumber=msg.getString("102");
+			SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
+			SubscriberMdn subMDNByAccountNumber = null;
+			PocketQuery query = new PocketQuery();
+			query.setCardPan(accountNumber);
+			List<Pocket> pocketList = pocketService.get(query);
+			if (!pocketList.isEmpty()) {
+				subMDNByAccountNumber = pocketList.get(0).getSubscriberMdn();
+			}
+			if(null == subMDNByAccountNumber){
+				//new mdn and new account number
+				handler= ATMRegistrationHandler.getInstance();
+				response = ((ATMRegistrationHandler) handler).handle(msg,session);
+				if(response.equals(CmFinoFIX.NotificationCode_SubscriberRegistrationSuccessfulToAgent)){
+					msg.set(62, property.getProperty(GetConstantCodes.ATMCode_NewRegistrationSuccess+"_"+notificationLanguage));
+				}else if(response.equals(CmFinoFIX.NotificationCode_InvalidMDNLength)){ 
+				    msg.set(62, property.getProperty(GetConstantCodes.ATMCode_RejectRequest+"_"+notificationLanguage));
+				}else{
+					msg.set(62,property.getProperty(GetConstantCodes.ATMCode_InternalFailure+"_"+notificationLanguage));
+				}
+			}else if(null!=subMDNByMDN && null!=subMDNByAccountNumber && subMDNByAccountNumber.equals(subMDNByMDN)){
+				//old mdn and old accountnumber . Change pin request
+				handler= ATMChangePinHandler.getInstance();
+				response = ((ATMChangePinHandler) handler).handle(msg,session);
+				if(response.equals(CmFinoFIX.NotificationCode_ChangePINCompleted)){
+					msg.set(62,property.getProperty(GetConstantCodes.ATMCode_ChangePinSuccess+"_"+notificationLanguage));
+				}else{
+					msg.set(62,property.getProperty(GetConstantCodes.ATMCode_InternalFailure+"_"+notificationLanguage));
+				}
+			}else if(null!=subMDNByMDN && null!=subMDNByAccountNumber && !(subMDNByAccountNumber.equals(subMDNByMDN))){
+				//existing mdn and accountnumber mapped to different mdn. Reject Request
+				log.info("ATMRequestHandler :: handle() Received request for existing mdn and accountnumber mapped to different mdn");
+				msg.set(39,GetConstantCodes.REJECT);
+				msg.set(62,property.getProperty(GetConstantCodes.ATMCode_RejectRequest+"_"+notificationLanguage));
+			}else if(null==subMDNByMDN && null!=subMDNByAccountNumber){
+				//new mdn and existing account . Change MDN not handling as of now
+				log.info("ATMRequestHandler :: handle() Received request for change mdn. Reject the request");
+				msg.set(39,GetConstantCodes.REJECT);
+				msg.set(62,property.getProperty(GetConstantCodes.ATMCode_ChangeMDNFailure+"_"+notificationLanguage));
+			}else if(null!=subMDNByMDN && null==subMDNByAccountNumber){
+				//existing mdn and new account number . Reject the request
+				log.info("ATMRequestHandler :: handle() Received request for existing mdn and new account number. Reject the request");
+				msg.set(39,GetConstantCodes.REJECT);
+				msg.set(62,property.getProperty(GetConstantCodes.ATMCode_RejectRequest+"_"+notificationLanguage));
+			}
+	
+			Integer notificationCode = null;
+			if(null==response){
+				log.info("ATMRequestHandler :: handle Got Response Null");
+				return;
+			}else{
+				notificationCode=response;
+			}
+			try{
+				NotificationWrapper notificationWrapper=new NotificationWrapper();
+				notificationWrapper.setCode(notificationCode);
+				notificationWrapper.setDestMDN(sourceMDN);
+				smsService.setDestinationMDN(sourceMDN);
+				notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+				smsService.setMessage(notificationMessageParserService.buildMessage(notificationWrapper,true));
+				//smsService.setSctlId(sctl.getID());
+				smsService.send();
 		}catch(Exception e){
 			log.error(e.getMessage());
 			msg.set(62,property.getProperty(GetConstantCodes.ATMCode_InternalFailure+"_"+notificationLanguage));
-		}
-		}finally{
+		} 
+		} catch(Exception e){
+			
+			log.error(e.getMessage());
+			
+		} finally{
+			
 			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
 			SessionFactoryUtils.closeSession(sessionHolder.getSession());
 		}

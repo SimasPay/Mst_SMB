@@ -361,8 +361,65 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			}
 			pocketService.createPocket(bankPocketTemplate, subscriberMDN, CmFinoFIX.PocketStatus_Active, true,accountNumber);
 			return CmFinoFIX.ResponseCode_Success;
+		
+		} else {
+			
+			subscriber = existingSubscriberMDN.getSubscriber();
+			
+			if(subscriber != null && null != subscriber.getKycLevel()) {
+				
+				KycLevel subKycLevel = subscriber.getKycLevel();
+				
+				if(subKycLevel != null && subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) {
+					
+					KycLevel kycLevel = kycLevelService.getByKycLevel(new Long(CmFinoFIX.SubscriberKYCLevel_FullyBanked));
+					
+					subscriber.setKycLevel(kycLevel);
+					subscriber.setUpgradablekyclevel(null);
+					subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
+					subscriber.setApproveorrejectcomment(MessageText._("Upgrade N Approved by System"));
+					subscriber.setApprovedorrejectedby("System");
+					
+					String calcPIN = null; 
+					try{ 
+						
+						calcPIN = mfinoUtilService.modifyPINForStoring(existingSubscriberMDN.getMdn(), subscriberRegistration.getPin()); 
+						log.info("ATMRegistrationHanlder :: handle calcPIN = " + calcPIN);
+						
+					} catch(Exception e) { 
+						
+						log.error("Error during PIN conversion "+e); 
+						msg.set(39, GetConstantCodes.FAILURE); 
+						return CmFinoFIX.ResponseCode_Failure; 
+					} 
+					
+					subscriberMDN.setDigestedpin(calcPIN);
+					
+					subscriberService.saveSubscriber(subscriber);
+					
+					PocketTemplate bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Subscriber, null, 1L);
+					
+					if(bankPocketTemplate == null) {
+						
+						msg.set(39, GetConstantCodes.FAILURE);
+						return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
+					}
+					
+					pocketService.createPocket(bankPocketTemplate, existingSubscriberMDN, CmFinoFIX.PocketStatus_Active, true,accountNumber);
+					
+					return CmFinoFIX.ResponseCode_Success;
+				} else {
+					
+					msg.set(39, GetConstantCodes.FAILURE);
+					return CmFinoFIX.NotificationCode_SourceSVAEMoneyPocketNotFound;
+				}
+				
+			} else {
+				
+				msg.set(39, GetConstantCodes.FAILURE);
+				return CmFinoFIX.NotificationCode_SourceSVAEMoneyPocketNotFound;
+			}			
 		}
-		return CmFinoFIX.NotificationCode_MDNAlreadyRegistered_Source;
 	}
 
 

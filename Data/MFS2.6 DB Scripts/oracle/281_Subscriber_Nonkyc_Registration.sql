@@ -10,6 +10,8 @@ INSERT INTO PTC_GROUP_MAPPING (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, C
 
 INSERT INTO TRANSACTION_TYPE VALUES (TRANSACTION_TYPE_ID_SEQ.NEXTVAL,1,SYSDATE,'System',SYSDATE,'System',1,'SubscriberRegistration','Subscriber Registration');
 
+INSERT INTO SERVICE_TRANSACTION VALUES (SERVICE_TRANSACTION_ID_SEQ.NEXTVAL,1,SYSDATE,'System',SYSDATE,'System',1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Account'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'SubscriberRegistration'),1);
+
 DELETE FROM notification WHERE CODE = 2180;
 
 INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2180', 'NonKycSubscriberSuccessfullyRegistered', '1', 'Congratulations, Registration successful.', '0', '0', sysdate, '1', '1');
