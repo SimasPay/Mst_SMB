@@ -102,7 +102,7 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		log.info("Handling Subscriber Forgot PIN webapi request");
 		XMLResult result = new ResetPinByOTPXMLResult();
 		result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_ResetPinByOTP, resetPin.DumpFields());
+		TransactionLog transactionLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_Forgotpin, resetPin.DumpFields());
 		resetPin.setTransactionID(transactionLog.getId().longValue());
 
 		result.setSourceMessage(resetPin);
