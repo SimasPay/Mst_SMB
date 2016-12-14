@@ -5771,7 +5771,12 @@
 				<field name="IDTypeText" required="Y" />
 			</group>
 		</message>
-		
+		<message name="SubRegularWithEMoneyInquiry" msgtype="1786" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
+	</message>
+	<message name="SubRegularWithEMoney" msgtype="1787" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
+	</message>
+	<message name="Forgotpin" msgtype="1788" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
+	</message>
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -23476,6 +23481,24 @@ ERROR:Mismatch of  mdn type and app type
 					<English>
 						<SMS>
 							<Text>User is e-Money user.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="EmoneyPocketAlreadyExists" enum="2302">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber already have Emoney pocket</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="BankPocketNotFound" enum="2303">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber does not have Bank pocket</Text>
 						</SMS>
 					</English>
 				</C1>
