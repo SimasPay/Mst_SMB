@@ -182,7 +182,7 @@ public class ATMRequestHandler extends FIXMessageHandler {
 	public void updateDetails(ISOMsg msg){
 		try{
 			sessionFactory = htm.getSessionFactory();
-			Session session = sessionFactory.getCurrentSession();
+			Session session = sessionFactory.openSession();
 			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 			CmFinoFIX.CMGetSubscriberDetailsToBank toBank = new CmFinoFIX.CMGetSubscriberDetailsToBank();
 			String sourceMDN=subscriberService.normalizeMDN(msg.getString("61"));

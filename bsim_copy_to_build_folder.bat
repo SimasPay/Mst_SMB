@@ -98,7 +98,7 @@ copy Core\settings\bsim\bc2qmap.cfg %1\servicemix\mfino_conf\
 copy Core\settings\bsim\mfino.properties %1\servicemix\mfino_conf\
 copy MfinoCoreEngine\mfino_conf\externalcodedescriptions.xml %1\servicemix\mfino_conf\
 copy Core\settings\bsim\mce.properties %1\servicemix\mfino_conf\
-
+copy MfinoCoreEngine\mfino_conf\ATMCodes.properties %1\servicemix\mfino_conf\
 
 copy MfinoCoreEngine\HSM\ThalesConfiguration\src\main\resources\jpos\thales_logger.xml %1\servicemix\jpos\deploy\
 copy MfinoCoreEngine\HSM\ThalesConfiguration\src\main\resources\jpos\thales_config.xml %1\servicemix\jpos\deploy\
