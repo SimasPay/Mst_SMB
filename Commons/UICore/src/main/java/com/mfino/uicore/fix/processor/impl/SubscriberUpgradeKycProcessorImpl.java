@@ -14,16 +14,17 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.AddressDAO;
 import com.mfino.dao.BranchCodeDAO;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PocketDAO;
-import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.SubscriberDAO;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.dao.query.PocketQuery;
-import com.mfino.dao.query.PocketTemplateQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.BranchCodes;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
@@ -31,6 +32,7 @@ import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.domain.Transaction;
@@ -47,6 +49,7 @@ import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.ChannelCodeService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.NotificationMessageParserService;
+import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
@@ -58,13 +61,14 @@ import com.mfino.uicore.fix.processor.SubscriberUpgradeKycProcessor;
 public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implements
 		SubscriberUpgradeKycProcessor {
 	
-	private static SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
-	private static PocketTemplateDAO pocketTemplateDAO = DAOFactory.getInstance().getPocketTemplateDao();
-	private static PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-	private static SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
-	private static AddressDAO addressDao = DAOFactory.getInstance().getAddressDAO();
-	private static BranchCodeDAO branchCodeDao = DAOFactory.getInstance().getBranchCodeDAO(); 
-	private static SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
+	private SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
+	private PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
+	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
+	private AddressDAO addressDao = DAOFactory.getInstance().getAddressDAO();
+	private BranchCodeDAO branchCodeDao = DAOFactory.getInstance().getBranchCodeDAO(); 
+	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
+	private KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
+	private SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 	
 	private static final String DEFAULT_BRANCH = "000";
 	
@@ -95,6 +99,10 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	@Autowired
 	@Qualifier("EnumTextServiceImpl")
 	private EnumTextService enumTextService;
+
+	@Autowired
+	@Qualifier("PocketServiceImpl")
+	private PocketService pocketService;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -131,19 +139,26 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         	return error;
         }
         
-		PocketTemplateQuery pocketTemplateQuery = new PocketTemplateQuery();
-        pocketTemplateQuery.setPocketType(CmFinoFIX.PocketType_SVA);
-        pocketTemplateQuery.setDescriptionSearch("Emoney-UnBanked");
+        Long groupID = null;
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(
+				BigDecimal.valueOf(subscriber.getId()));
+		if(subscriberGroups != null && !subscriberGroups.isEmpty()){
+			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
+			groupID = subscriberGroup.getGroupid();
+		}
         
-        List<PocketTemplate> eMoneyNonKycTemplateList = pocketTemplateDAO.get(pocketTemplateQuery);
-        if (eMoneyNonKycTemplateList == null || eMoneyNonKycTemplateList.size() <= 0) {
-        	error.setErrorDescription(MessageText._("Emoney-UnBanked Not Available."));
+        KycLevel nonKycLevel = kycLevelDao.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_NoKyc.longValue());
+        PocketTemplate eMoneyNonKycTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(
+        		nonKycLevel.getKyclevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+        
+        if (eMoneyNonKycTemplate == null) {
+        	error.setErrorDescription(MessageText._("Emoney - Non Kyc Not Available."));
         	return error;
         }
         
-        Pocket nonKycPocket = getNonKycPocket(subscriberMDN, eMoneyNonKycTemplateList);
+        Pocket nonKycPocket = getNonKycPocket(subscriberMDN, eMoneyNonKycTemplate);
 		if (nonKycPocket == null){
-			error.setErrorDescription(MessageText._("Subscriber Not Have Emoney-UnBanked Pocket."));
+			error.setErrorDescription(MessageText._("Subscriber Not Have Emoney-Non KYC Pocket."));
         	return error;
 		}
 
@@ -154,7 +169,8 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
     		realMsg.settotal(0);
         	if(subscriberUpgradeData != null){
         		realMsg.allocateEntries(1);
-        		String idTypeValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_IDTypeForKycUpgrade, null, subscriberUpgradeData.getIdType());
+        		String idTypeValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_IDTypeForKycUpgrade, null, 
+        				subscriberUpgradeData.getIdType());
         		
         		CMJSSubscriberUpgradeKyc.CGEntries entry = new CMJSSubscriberUpgradeKyc.CGEntries();
         		entry.setBirthPlace(subscriberUpgradeData.getBirthPlace());
@@ -181,8 +197,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         	return realMsg;
         } 
         
-        
-		if(subscriberMDN.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeStatus_Initialized){
+		if(subscriberMDN.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeStatus_Initialized) {
 			
 			String makerUsername = subscriberMDN.getUpgradeacctrequestby();
 			MfinoUser makerUser = userService.getByUserName(makerUsername);
@@ -193,23 +208,23 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 			if((makerUser != null && makerUser.getBranchcodeid() == checkerUserBranchId) || 
 					(branchCodes != null && StringUtils.equals(branchCodes.getBranchcode(), DEFAULT_BRANCH))){
 				
-				pocketTemplateQuery.setDescriptionSearch("Emoney-SemiBanked");
-            	List<PocketTemplate> eMoneyKycTemplateList = pocketTemplateDAO.get(pocketTemplateQuery);
-            	
-            	if (eMoneyKycTemplateList == null || eMoneyKycTemplateList.size() == 0){
-    				error.setErrorDescription(MessageText._("Emoney-SemiBanked Not Available."));
+				 KycLevel unBankedLevel = kycLevelDao.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_UnBanked.longValue());
+			     PocketTemplate eMoneyUnBankedTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(unBankedLevel.getKyclevel(), 
+			    		 true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+				
+            	if (eMoneyUnBankedTemplate == null){
+    				error.setErrorDescription(MessageText._("Emoney - UnBanked Not Available."));
                 	return error;
     			}
     			
-    			Integer notificationCode = updateStatus(realMsg, error,
-						subscriberMDN, subscriber, eMoneyKycTemplateList,
-						nonKycPocket);
+    			Integer notificationCode = updateStatus(realMsg, error, subscriberMDN, subscriber, 
+    					eMoneyUnBankedTemplate, nonKycPocket, unBankedLevel);
         		
         		error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
         		sendSMS(subscriberMDN,notificationCode);
         		
 			} else{
-				error.setErrorDescription(MessageText._("Admin Branch is not available or different"));
+				error.setErrorDescription(MessageText._("Admin's Branch is not available or different"));
             	return error;
 			}
 			
@@ -257,8 +272,8 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 
 	private Integer updateStatus(CMJSSubscriberUpgradeKyc realMsg,
 			CMJSError error, SubscriberMdn subscriberMDN,
-			Subscriber subscriber, List<PocketTemplate> eMoneyKycTemplateList,
-			Pocket nonKycPocket) {
+			Subscriber subscriber, PocketTemplate eMoneyUnBankedTemplate,
+			Pocket nonKycPocket, KycLevel unBankedLevel) {
 		
 		Integer upgradeStatus = realMsg.getSubscriberUpgradeStatus();
 		subscriberMDN.setUpgradeacctstatus(upgradeStatus);
@@ -269,8 +284,11 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getByMdnId(subscriberMDN.getId());
 		Integer notificationCode = null;
 		if(upgradeData != null){
-			if (upgradeStatus == CmFinoFIX.SubscriberUpgradeStatus_Approve){			
-				nonKycPocket.setPocketTemplateByPockettemplateid(eMoneyKycTemplateList.get(0));
+			if (upgradeStatus == CmFinoFIX.SubscriberUpgradeStatus_Approve){
+				nonKycPocket.setPocketTemplateByOldpockettemplateid(nonKycPocket.getPocketTemplateByPockettemplateid());			
+				nonKycPocket.setPocketTemplateByPockettemplateid(eMoneyUnBankedTemplate);
+				nonKycPocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
+				nonKycPocket.setPockettemplatechangetime(new Timestamp());
 				pocketDAO.save(nonKycPocket);
 				
 				subscriber.setAddressBySubscriberaddressid(upgradeData.getAddress());
@@ -279,6 +297,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				subscriber.setDateofbirth(upgradeData.getBirthDate());
 				subscriber.setFirstname(upgradeData.getFullName());
 				subscriber.setMothersmaidenname(upgradeData.getMotherMaidenName());
+				subscriber.setKycLevel(unBankedLevel);
 				subscriberDao.save(subscriber);
 				
 				subscriberMDN.setIdtype(upgradeData.getIdType());
@@ -308,9 +327,9 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	}
 
 	private Pocket getNonKycPocket(SubscriberMdn subscriberMDN,
-			List<PocketTemplate> eMoneyNonKycTemplateList) {
+			PocketTemplate eMoneyNonKycTemplate) {
 		PocketQuery pocketQuery= new PocketQuery();
-		pocketQuery.setPocketTemplateID(eMoneyNonKycTemplateList.get(0).getId());
+		pocketQuery.setPocketTemplateID(eMoneyNonKycTemplate.getId());
 		pocketQuery.setMdnIDSearch(subscriberMDN.getId());
 		List<Pocket> pocketList = pocketDAO.get(pocketQuery);
 		if(pocketList != null && pocketList.size() > 0)

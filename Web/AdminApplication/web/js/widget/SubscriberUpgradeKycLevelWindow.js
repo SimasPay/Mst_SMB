@@ -264,6 +264,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                       buttons: Ext.MessageBox.OK,
                       multiline: false
      			   });
+     	     	   this.fireEvent("refresh", null); 
      		   },
      		   failure : function(fp, action){
      			   formWindow.hide();
@@ -278,7 +279,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
      		   params: {
      		   }
      	   	});
-     	   
      	   	formWindow.hide();
         }     
         else{
@@ -320,7 +320,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     	this.form.items.get("subupgradekyc.form.displayfield.idpath").hide();
     	this.form.items.get("subupgradekyc.form.mdnid").setValue(mdnid);
     	if(response.m_ptotal > 0){
-    		console.log(response.m_pEntries[0]);
     		var d = response.m_pEntries[0].m_pDateOfBirth.m_Date;
     		var month = '' + (d.getMonth() + 1);
             var day = '' + d.getDate();

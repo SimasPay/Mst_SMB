@@ -516,12 +516,13 @@ mFino.page.subscriber = function(config){
                 iconCls: 'mfino-button-upgrade',
                 tooltip : _('Upgrade to Kyc'),
                 itemId : 'sub.details.upgrade.kyc',
+                id : 'sub.details.upgrade.kyc', 
                 handler : function(){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
                     } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
                     	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
-                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.UnBanked){
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.NoKyc){
                     	Ext.MessageBox.alert(_("Info"), _("Subscriber's level is not Non-Kyc."));
                     } else{
                     	var amsg = new CmFinoFIX.message.JSSubscriberUpgradeKyc();
@@ -573,6 +574,7 @@ mFino.page.subscriber = function(config){
                 iconCls : "mfino-button-upgrade-approve",
                 tooltip : _('Response Subscriber Upgrade Kyc'),
                 itemId: 'sub.details.upgrade.kyc.checker',
+                id: 'sub.details.upgrade.kyc.checker',
                 handler : function(){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No subscriber selected!"));
@@ -700,6 +702,15 @@ mFino.page.subscriber = function(config){
         searchBox.searchHandler();
     });
     
+    subscriberUpgradeKycLevelWindow.form.on("refresh", function() {
+    	if(detailsForm.record)
+        {
+            listBox.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+            listBox.store.lastOptions.params[CmFinoFIX.message.JSBase.mfinoaction._name] = CmFinoFIX.JSmFinoAction.Update;
+            listBox.store.load(listBox.store.lastOptions);
+        }
+    });
+    
     listBox.on("clearSelected", function() {
     	 detailsForm.getForm().reset();
          detailsForm.record = null;
@@ -714,6 +725,54 @@ mFino.page.subscriber = function(config){
 		var scaar = mainItem.getTopToolbar().getComponent('sub.settle.closed.account.approve.reject');
 		var ars = mainItem.getTopToolbar().getComponent('sub.approve');
 		var resendOtpComponent = mainItem.getTopToolbar().getComponent('sub.reset.otp');
+		var subscriberUpgradeKyc = mainItem.getTopToolbar().getComponent('sub.details.upgrade.kyc');
+		var subscriberUpgradeKycChecker = mainItem.getTopToolbar().getComponent('sub.details.upgrade.kyc.checker');
+		var subscriberUpgrade = mainItem.getTopToolbar().getComponent('sub.details.upgrade');
+		var subscriberUpgradeChecker = mainItem.getTopToolbar().getComponent('sub.approveUpgrade');
+		
+		var amsg = new CmFinoFIX.message.JSPocket();
+        amsg.m_pMDNIDSearch = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+        amsg.m_paction = "read";
+        amsg.m_plimit = CmFinoFIX.PageSize.Default;
+        var params = mFino.util.showResponse.getDisplayParam();
+        mFino.util.fix.send(amsg, params);
+        Ext.apply(params, {
+			success :  function(response){
+				if(response.m_psuccess == true){
+					for(var i=0; i< response.m_pEntriesCount; i++){
+						if(response.m_pEntries[i].m_pPocketType == CmFinoFIX.PocketType.SVA){
+							if(subscriberUpgradeKyc){
+								subscriberUpgradeKyc.show();
+							}
+							if(subscriberUpgradeKycChecker){
+								subscriberUpgradeKycChecker.show();
+							}
+							if(subscriberUpgrade){
+								subscriberUpgrade.hide();
+							}
+							if(subscriberUpgradeChecker){
+								subscriberUpgradeChecker.hide();
+							}
+						}else if(response.m_pEntries[i].m_pPocketType == CmFinoFIX.PocketType.LakuPandai){
+							if(subscriberUpgradeKyc){
+								subscriberUpgradeKyc.hide();
+							}
+							if(subscriberUpgradeKycChecker){
+								subscriberUpgradeKycChecker.hide();
+							}
+							if(subscriberUpgrade){
+								subscriberUpgrade.show();
+							}
+							if(subscriberUpgradeChecker){
+								subscriberUpgradeChecker.show();
+							}
+						}
+					}
+			    }
+			}
+		});
+		
+		
 		if(mFino.resendOtpCheck){
 			mFino.resendOtpCheck(record,resendOtpComponent);
 		}
