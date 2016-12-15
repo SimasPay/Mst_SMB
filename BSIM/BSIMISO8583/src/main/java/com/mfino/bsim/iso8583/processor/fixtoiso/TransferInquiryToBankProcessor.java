@@ -77,7 +77,7 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(42, StringUtilities.rightPadWithCharacter(request.getSourceMDN(), 15, " "));
 			isoMsg.set(43, StringUtilities.rightPadWithCharacter("SMS MFINO", 40, " "));
 			isoMsg.set(47, request.getTransactionID().toString());
-			
+			isoMsg.set(49,constantFieldsMap.get("49"));
 			isoMsg.set(100, request.getBankCode().toString());
 			isoMsg.set(102,request.getSourceCardPAN());
 			isoMsg.set(103, request.getDestCardPAN());

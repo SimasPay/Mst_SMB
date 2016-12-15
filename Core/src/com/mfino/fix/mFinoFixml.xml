@@ -183,6 +183,9 @@
 			<field name="POSDataCode" required="N" />
 			<field name="Language" required="N" />
 			<field name="ProcessingCode" required="N" />
+			<field name="TaxAmount" required="N"/>
+			<field name="ServiceChargeDE63" required="N"/>
+			<field name="ServiceChargeAmount" required="N"/>			
 		</message>
 		<message name="BillPaymentBankRequest" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="BankAccountPin" id="Pin" required="Y" isSecure="Y"/>
@@ -266,11 +269,10 @@
 			<field name="SourcePocketType" required="Y"/>
 			<field name="DestPocketID" required="Y"/>
 			<field name="DestPocketType" required="Y"/>
-			<!-- The below two fields are applicable only to Zenith Bank -->
 			<field name="SourceBankAccountType" required="N" />
 			<field name="DestinationBankAccountType" required="N" />
 			<field name="DestinationBankAccountNo" required="N"/>
-			<field name="SourceBankAccountNo" required="N"/>
+			<field name="SourceBankAccountNo" required="N"/>			
 		</message>
 		<message name="TransferInquiryFromBank" msgtype="1021" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankResponse">
 			<field name="BankAccountName" required="N" />
@@ -3862,9 +3864,6 @@
 			<field name="DestBankCode" required="Y"/>
 			<field name="MPan" required="N"/>
 			<field name="BankName" required="N"/>
-			<field name="ServiceChargeAmount" required="N"/>
-			<field name="TaxAmount" required="N"/>
-			<field name="ServiceChargeDE63" required="N"/>
 		</message>
 		<message name="InterBankTransferInquiryFromBank" msgtype="1342" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="TransferInquiryFromBank">
 			<field name="DestBankCode" required="Y"/>
@@ -3890,9 +3889,6 @@
 			<field name="NIBResponseCode" required="N"/>
 		<field name="ProcessingCode" required="N"/>
 			<field name="MPan" required="N"/>
-			<field name="ServiceChargeAmount" required="N"/>
-			<field name="TaxAmount" required="N"/>
-			<field name="ServiceChargeDE63" required="N"/>
 		</message>
 		<message name="InterBankMoneyTransferFromBank" msgtype="1344" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">
 			<field name="DestBankCode" required="Y"/>
@@ -23905,6 +23901,7 @@ ERROR:Mismatch of  mdn type and app type
 		<field number="5182" name="BankTransactionCode" type="STRING" />
 		<field number="5183" name="BankTransactionReferenceNumber" type="STRING" />
 		<field number="5184" name="BankAccountType" type="INT32">
+			<value enum="00" description="UnSpecified" />
 			<value enum="10" description="Saving" />
 			<value enum="20" description="Checking" />
 			<value enum="30" description="CreditCard" />
@@ -23945,6 +23942,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="0" description="DebitCard" comment="Debit Card Account" />
 			<value enum="1" description="CreditCard" comment="Credit Card Account" />
 			<value enum="2" description="DirectBankAccount" comment="Direct Bank Account" />
+			<value enum="00" description="UnSpecified" />
 			<value enum="10" description="SavingsAccount" />
 			<value enum="20" description="CheckingAccount" />
 			<value enum="30" description="CreditCardAccount" />
@@ -25262,6 +25260,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="60" description="Donation"/>
 			<value enum="63" description="Cashin_At_Agent"/>
 			<value enum="64" description="Transfer_To_Uangku"/>
+			<value enum="65" description="Emoney_To_Bank"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />

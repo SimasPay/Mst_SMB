@@ -88,11 +88,7 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 		bankAccountToBankAccount.setChannelCode(channelCode.getChannelcode());
 		bankAccountToBankAccount.setServiceName(transactionDetails.getServiceName());
 	
-		if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
-			bankAccountToBankAccount.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-			transactionDetails.setSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-			bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Cash_In_To_Agent);
-		}
+
 		result.setDestinationMDN(transactionDetails.getDestMDN());
 		result.setSourceMessage(bankAccountToBankAccount);
 		

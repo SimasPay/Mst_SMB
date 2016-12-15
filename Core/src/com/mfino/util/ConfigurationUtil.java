@@ -321,6 +321,7 @@ public class ConfigurationUtil {
 		MailAwsFrom("mfino.mail.aws.from", "noreply@dimo.co.id"),
 		MailUseSmtp("mfino.mail.use.smtp", "true"),
 		SubscriberProfileImageFilePath("mfino.subscriber.profile.image.filepath","images/profile"),
+		CodeForTransferUsingEMoney("code.for.transfer.using.emoney", "8222"),
 		KTPImagePath("ktp.image.path", "/images/id/");
 		
 		private final String key;
@@ -1295,5 +1296,9 @@ public class ConfigurationUtil {
 	}
 	public static String getSubscriberProfileImageFilePath() {
 		return get(ConfigurationKey.SubscriberProfileImageFilePath);
-	}	
+	}
+	
+	public static String getCodeForTransferUsingEMoney() {
+		return get(ConfigurationKey.CodeForTransferUsingEMoney);
+	}
 }

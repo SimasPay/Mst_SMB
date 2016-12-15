@@ -212,8 +212,12 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 		/*
 		 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
 		 */
-		
-		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)){
+			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER;
+			}
+		}
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
 			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER;
 			}
