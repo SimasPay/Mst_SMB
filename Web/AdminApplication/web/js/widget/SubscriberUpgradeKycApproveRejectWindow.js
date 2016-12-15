@@ -14,7 +14,8 @@ mFino.widget.SubscriberUpgradeKycApproveRejectWindow = function (config){
         frame : true,
         labelWidth: 5,
         plain:true,
-        layout: 'fit'
+        layout: 'fit',
+        closable:false
     });
     mFino.widget.SubscriberUpgradeKycApproveRejectWindow.superclass.constructor.call(this, localConfig);
 };
@@ -304,7 +305,12 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 			            var aparams = mFino.util.showResponse.getDisplayParam();
 			            mFino.util.fix.send(amsg, aparams);
 			            this.hide();
-			            
+			            Ext.apply(aparams, {
+                			success :  function(response){
+                				this.scope.fireEvent("refresh");
+                			},
+                			scope: this
+                		});
 			        }, this
 			   );
         	}     

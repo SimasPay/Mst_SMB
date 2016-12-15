@@ -256,6 +256,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
      		   waitMsg: _('Processing Upgrade Subscriber ...'),
      		   reset: false,
      		   success : function(fp, action){
+     			   formWindow.fireEvent("refresh");
      			   formWindow.hide();
      			   Ext.Msg.show({
                       title: _('Success'),
@@ -264,7 +265,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                       buttons: Ext.MessageBox.OK,
                       multiline: false
      			   });
-     	     	   this.fireEvent("refresh", null); 
      		   },
      		   failure : function(fp, action){
      			   formWindow.hide();

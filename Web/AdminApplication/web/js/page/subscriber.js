@@ -702,10 +702,19 @@ mFino.page.subscriber = function(config){
         searchBox.searchHandler();
     });
     
-    subscriberUpgradeKycLevelWindow.form.on("refresh", function() {
+    subscriberUpgradeKycLevelWindow.on("refresh", function() {
     	if(detailsForm.record)
         {
             listBox.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+            listBox.store.lastOptions.params[CmFinoFIX.message.JSBase.mfinoaction._name] = CmFinoFIX.JSmFinoAction.Update;
+            listBox.store.load(listBox.store.lastOptions);
+        }
+    });
+    
+    subscriberUpgradeKycApproveRejectWindow.on("refresh", function() {
+    	if(detailsForm.record)
+        {
+    		listBox.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
             listBox.store.lastOptions.params[CmFinoFIX.message.JSBase.mfinoaction._name] = CmFinoFIX.JSmFinoAction.Update;
             listBox.store.load(listBox.store.lastOptions);
         }
