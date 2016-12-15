@@ -765,6 +765,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								inquiryToBank.copy(requestFix);
                                 inquiryToBank.setSourceMDN(requestFix.getSourceMDN());
 								inquiryToBank.setAmount(totalTransactionAmount);
+								inquiryToBank.setServiceChargeAmount(charges);
 								inquiryToBank.setBankCode(pct.getBankcode().intValue());
 								inquiryToBank.setDestMDN(pct.getDestmdn());
 								inquiryToBank.setLanguage((int)objSourceSubscriber.getLanguage());
@@ -1808,8 +1809,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											moneyTransferToBank
 													.setSourceMDNToUseForBank(coreDataWrapper
 															.getPlatformMdn());
-											moneyTransferToBank.setAmount(pct
-													.getAmount());
+											moneyTransferToBank.setAmount(pct.getAmount());
+											moneyTransferToBank.setServiceChargeAmount(pct.getCharges());
 											moneyTransferToBank.setBankCode(pct
 													.getBankcode().intValue());
 											moneyTransferToBank

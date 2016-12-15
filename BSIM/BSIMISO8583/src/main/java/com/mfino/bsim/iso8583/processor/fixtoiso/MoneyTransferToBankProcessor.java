@@ -91,6 +91,7 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(47, request.getTransactionID().toString());
 			isoMsg.set(48, request.getAdditionalInfo());
 			isoMsg.set(49,constantFieldsMap.get("49"));
+			isoMsg.set(63,getDE63(request));
 			isoMsg.set(100, request.getBankCode().toString());
 			isoMsg.set(102,request.getSourceCardPAN());
 			isoMsg.set(103, request.getDestCardPAN());
@@ -110,34 +111,4 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 		return isoMsg;
 	}
 
-	private String getProcessingCode(CMMoneyTransferToBank msg) {
-		String processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut;
-/*		if (TPM_UseBankNewCodes != 0)
-			processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other1;
-		else
-			 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-
-		if (msg.getUICategory().equals(TransactionUICategory_EMoney_CashIn) || 
-				msg.getUICategory().equals(TransactionUICategory_Dompet_EMoney_Trf)) {
-			if (TPM_UseBankNewCodes != 0)
-				 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_CashIn1;
-			else
-				 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_CashIn;
-		}
-		else if (msg.getUICategory().equals(TransactionUICategory_EMoney_Purchase) || 
-				msg.getUICategory().equals(TransactionUICategory_EMoney_CashOut)
-		        || msg.getUICategory().equals(TransactionUICategory_EMoney_Dompet_Trf)) {
-			if (TPM_UseBankNewCodes != 0)
-				 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut1;
-			else
-				 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut;
-		}
-		else {
-			if (TPM_UseBankNewCodes != 0)
-				 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other1;
-			else
-				 processingCode = ISO8583_ProcessingCode_Sinarmas_Transfer_To_Other;
-		}*/
-		return processingCode;
-	}
 }

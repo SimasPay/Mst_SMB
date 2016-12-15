@@ -78,6 +78,7 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			isoMsg.set(43, StringUtilities.rightPadWithCharacter("SMS MFINO", 40, " "));
 			isoMsg.set(47, request.getTransactionID().toString());
 			isoMsg.set(49,constantFieldsMap.get("49"));
+			isoMsg.set(63,getDE63(request));
 			isoMsg.set(100, request.getBankCode().toString());
 			isoMsg.set(102,request.getSourceCardPAN());
 			isoMsg.set(103, request.getDestCardPAN());
@@ -93,40 +94,5 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			log.error("TransferInquiryToBankProcessor :: process ", ex);
 		}
 		return isoMsg;
-	}
-	
-	public String getProcessingCode(CMTransferInquiryToBank msg){
-		String processingCode = CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut_Inquiry;
-		/*
-		 * if source if omnibus, then use Sinarmas_Transfer_CashIn_Inquiry 
-		 */
-/*		if (TPM_UseBankNewCodes != 0)
-			processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry1;
-		else
-			processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry;
-
-		if (msg.getUICategory().equals(TransactionUICategory_EMoney_CashIn)
-				|| msg.getUICategory().equals(TransactionUICategory_Dompet_EMoney_Trf)) {
-			if (TPM_UseBankNewCodes != 0)
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashIn_Inquiry1;
-			else
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashIn_Inquiry;
-		}
-		else if (msg.getUICategory().equals(TransactionUICategory_EMoney_Purchase) 
-				|| msg.getUICategory().equals(TransactionUICategory_EMoney_CashOut)
-		        || msg.getUICategory().equals(TransactionUICategory_EMoney_Dompet_Trf)) {
-			if (TPM_UseBankNewCodes != 0)
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut_Inquiry1;
-			else
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_CashOut_Inquiry;
-		}
-		else {
-			if (TPM_UseBankNewCodes != 0)
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry1;
-			else
-				processingCode =  ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry;
-		}*/
-		return processingCode;
-
 	}
 }
