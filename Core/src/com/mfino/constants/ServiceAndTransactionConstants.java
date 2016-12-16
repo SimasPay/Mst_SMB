@@ -279,7 +279,10 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_RESEND_MFAOTP = "ResendMFAOTP";
 	
 	public static final String TRANSACTION_MDN_VALIDATION_FOR_FORGOTPIN = "MDNvalidationforForgotPIN";
-
+    
+	public static final String TRANSACTION_SUB_REGULAR_WITH_EMONEY_INQUIRY= "SubRegularWithEMoneyInquiry";
+	
+	public static final String TRANSACTION_SUB_REGULAR_WITH_EMONEY= "SubRegularWithEMoney";
 	// Messages
 	
 	public static final String	MESSAGE_MOBILE_TRANSFER	            = "Mobile Transfer";

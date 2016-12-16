@@ -63,6 +63,8 @@ import com.mfino.transactionapi.handlers.subscriber.SubscriberChangeSettingsHand
 import com.mfino.transactionapi.handlers.subscriber.SubscriberDetailsHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationThroughWebHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberRegistrationWithActivationHandler;
+import com.mfino.transactionapi.handlers.subscriber.SubscriberRegularWithEmoneyHandler;
+import com.mfino.transactionapi.handlers.subscriber.SubscriberRegularWithEmoneyInquiryHandler;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberStatusHandler;
 import com.mfino.transactionapi.handlers.subscriber.UpdateProfileHandler;
 import com.mfino.transactionapi.handlers.subscriber.ValidateOTPHandler;
@@ -257,6 +259,14 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("MdnValidationForForgotPINHandlerImpl")
 	private MdnValidationForForgotPINHandler mdnValidationForForgotPINHandler;
+	
+	@Autowired
+	@Qualifier("SubscriberRegularWithEmoneyInquiryHandlerImpl")
+	private SubscriberRegularWithEmoneyInquiryHandler subscriberRegularWithEmoneyInquiryHandler;
+	
+	@Autowired
+	@Qualifier("SubscriberRegularWithEmoneyHandlerImpl")
+	private SubscriberRegularWithEmoneyHandler subscriberRegularWithEmoneyHandler;
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		
@@ -495,6 +505,12 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			
 		}else if(ServiceAndTransactionConstants.TRANSACTION_MDN_VALIDATION_FOR_FORGOTPIN.equals(transactionName)){
 			xmlResult = (XMLResult) mdnValidationForForgotPINHandler.handle(transactionDetails);
+			
+		}else if(ServiceAndTransactionConstants.TRANSACTION_SUB_REGULAR_WITH_EMONEY_INQUIRY.equals(transactionName)){
+			xmlResult = (XMLResult) subscriberRegularWithEmoneyInquiryHandler.handle(transactionDetails);
+			
+		}else if(ServiceAndTransactionConstants.TRANSACTION_SUB_REGULAR_WITH_EMONEY.equals(transactionName)){
+			xmlResult = (XMLResult) subscriberRegularWithEmoneyHandler.handle(transactionDetails);
 		
 		}else if (ServiceAndTransactionConstants.SUBSCRIBER_CLOSING_INQUIRY.equals(transactionName)) {
 			

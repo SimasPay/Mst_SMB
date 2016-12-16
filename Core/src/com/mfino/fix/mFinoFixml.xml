@@ -5773,9 +5773,10 @@
 		</message>
 		<message name="SubRegularWithEMoneyInquiry" msgtype="1786" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
 	</message>
-	<message name="SubRegularWithEMoney" msgtype="1787" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
+	<message name="SubRegularWithEMoney" msgtype="1787" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+	<field name="OTP" required="Y" isSecure="Y"/>		
 	</message>
-	<message name="Forgotpin" msgtype="1788" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
+	<message name="Forgotpin" msgtype="1788" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 	</message>
 	</messages>
 	<records>
@@ -23499,6 +23500,24 @@ ERROR:Mismatch of  mdn type and app type
 					<English>
 						<SMS>
 							<Text>Subscriber does not have Bank pocket</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="EmoneyPocketAddingInquiry" enum="2304">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Emoney Pocket adding inquiry completed successfully</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="EmoneyPocketAdded" enum="2306">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Emoney Pocket added successfully</Text>
 						</SMS>
 					</English>
 				</C1>

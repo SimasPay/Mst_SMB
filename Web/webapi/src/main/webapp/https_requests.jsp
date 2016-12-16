@@ -442,7 +442,16 @@
 			<a href="jsp/s_settings_forgotpin_confirm.jsp">Forgot Pin confirm</a>
 		</td>
 	</tr>
-	
+	<tr>
+		<td>
+			<a href="jsp/s_settings_SubRegularWithEMoney_inquiry.jsp">Regular Subscriber Upgrade to Emoney Inquiry</a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_settings_SubRegularWithEMoney_confirm.jsp">Regular Subscriber Upgrade to Emoney Confirm</a>
+		</td>
+	</tr>
 	</table></td></tr>
 
 	</center>		
