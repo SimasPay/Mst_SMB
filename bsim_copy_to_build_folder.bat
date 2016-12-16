@@ -80,14 +80,14 @@ copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_billpay_confi
 copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_billpay_configuration.xml %1\servicemix\
 copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_iso_configuration.xml %1\servicemix\
 rem copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_sms_configuration.xml %1\servicemix\
-copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_new_bsim_sms_configuration.xml %1\servicemix\
+rem copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_new_bsim_sms_configuration.xml %1\servicemix\
 copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_bsim_interbanktransfer_configuration.xml %1\servicemix\
 copy BSIM\BSIMConfiguration\src\main\resources\META-INF\spring\mce_simaspay_sms_configuration.xml %1\servicemix\
 copy BSIM\BSIMBillPayment\target\BSIMBillPayment-0.1-SNAPSHOT.jar %1\servicemix\
 copy BSIM\BSIMInterBankTransfer\target\BSIMInterBankTransfer-0.1-SNAPSHOT.jar %1\servicemix\
 copy BSIM\BSIMISO8583\target\BSIMISO8583-0.1-SNAPSHOT.jar %1\servicemix\
 rem copy BSIM\BSIMSMS\target\BSIMSMS-0.1-SNAPSHOT.jar %1\servicemix\
-copy BSIM\NewBSIMSMS\target\NewBSIMSMS-0.1-SNAPSHOT.jar %1\servicemix\
+rem copy BSIM\NewBSIMSMS\target\NewBSIMSMS-0.1-SNAPSHOT.jar %1\servicemix\
 copy Hub\SimaspaySMS\target\SimaspaySMS-0.1-SNAPSHOT.jar %1\servicemix\
 
 copy BSIM\FlashizISO8583\target\BSIMFlashizISO8583-0.1-SNAPSHOT.jar %1\servicemix\

@@ -160,60 +160,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			//ATMregistration change
 			//srcSubscriberMDN.setAuthorizationToken(password);
 		}
-		try {
-//			String userPwd;
-//			if (!isHttps) {
-//				log.info("Not a https webapi request");
-////				byte[] salt = CryptographyService.hexToBin(request.getWebApiSalt().toCharArray());
-////				byte[] encryptedBytes = CryptographyService.hexToBin(request.getAuthMAC().toCharArray());
-////				try {
-////					byte[] decryptedBytes = CryptographyService.decryptWithPBE(encryptedBytes, password.toCharArray(), salt, GeneralConstants.PBE_ITERATION_COUNT);
-////					String receivedZeroesString = new String(decryptedBytes, GeneralConstants.UTF_8);
-////					log.info("comparing the decrypted ZEROES_STRING");
-////					if (!GeneralConstants.ZEROES_STRING.equals(receivedZeroesString)) {
-////						log.info("comparision of zeroes string failed. recalculating resitrictions, wrong pin counts");
-////						recalculateWrongPinCounts(srcSubscriberMDN, result);
-////						log.info("saving subscriber mdn after reseting wrong pin counts and restrictions");
-////						subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
-////						log.info("returning NotificationCode_WrongPINSpecified");
-////						result.setNotificationCode(CmFinoFIX.NotificationCode_WrongPINSpecified);
-////						return result;
-////					}
-////				}
-////				catch (InvalidCipherTextException ex) {
-////					log.info("INvalidCipherTextException thrown, decryption of ZEROES_STRING failed.recalculating resitrictions, wrong pin counts");
-////					recalculateWrongPinCounts(srcSubscriberMDN, result);
-////					log.info("saving subscriber mdn after reseting wrong pin counts and restrictions");
-////					subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
-////					log.info("returning NotificationCode_WrongPINSpecified");
-////					result.setNotificationCode(CmFinoFIX.NotificationCode_WrongPINSpecified);
-////					return result;
-////				}
-//				
-//				/** 
-//				 * Pin that is received is hashed so need to convert it to hashed pin 
-//				 *with length same as pin lengh allowed on the system
-//				*/
-//				//String userPwd = MfinoUtil.convertPinForValidation(request.getAuthMAC(),SystemParametersUtil.getPinLength());
-//				userPwd = CryptographyService.decryptWithPrivateKey(request.getAuthMAC());
-//				//userPwd = new String(CryptographyService.generateSHA256Hash(subscriberMDN.getMDN(), userPwd));
-//				//if (!password.equals(userPwd)) {
-//				//done this change for introducing HSM for validation
-//				log.info("validating pin");
-//				if(!mfinoUtilService.validatePin(srcSubscriberMDN.getMDN(), userPwd, password))
-//				{
-//					log.info("invalid pin received in login request");
-//					recalculateWrongPinCounts(srcSubscriberMDN, result);
-//					log.info("saving subscriber mdn after reseting wrong pin counts and restrictions");
-//					subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
-//					log.info("returning NotificationCode_WrongPINSpecified");
-//					result.setNotificationCode(CmFinoFIX.NotificationCode_WrongPINSpecified);
-//					return result;
-//				}
-//			}
-//			else {
-//				log.info("https login webapi request received");
-				
+		try {				
 				/** 
 				 * Pin that is received is hashed so need to convert it to hashed pin 
 				 *with length same as pin lengh allowed on the system
@@ -235,14 +182,16 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					log.info("returning NotificationCode_WrongPINSpecified");
 					result.setNotificationCode(CmFinoFIX.NotificationCode_WrongPINSpecified);
 					return result;
-				}else if(GeneralConstants.LOGIN_RESPONSE_INTERNAL_ERROR.equals(pinValidationResponse))
-				{
+					
+				}else if(GeneralConstants.LOGIN_RESPONSE_INTERNAL_ERROR.equals(pinValidationResponse)) {
+					
 					log.info("Pin validation failed due to internal error");
 					log.info("DONOT update wrong pin counts as the error is due to internal failure");
 					result.setNotificationCode(CmFinoFIX.NotificationCode_InternalLoginError);
 					return result;
+					
 				}
-//			}
+
 			if (StringUtils.isNotBlank(Apptype)) {
 				if(request.getIsAppTypeCheckEnabled() == null || (request.getIsAppTypeCheckEnabled()!=null && request.getIsAppTypeCheckEnabled().booleanValue())) {
 					App_Type = AppTypeCheckService.appTypeCheck(srcSubscriberMDN,Apptype);
@@ -273,6 +222,44 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			csm.setSessionkey(hexEncodedKey);
 			channelSessionManagementService.saveCSM(csm);
 			log.info("channelsessionmanagement data saved");
+			
+			log.info("checking for pin strength with Subscriber MDN "+srcSubscriberMDN.getMdn() );
+			if(!MfinoUtil.isPinStrongEnough(userPwd)){
+				log.info("Subscriber is Registered with weak mPIN and forced to change the Pin");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+				result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+				return result;
+			}
+			
+			String configuredStrDate = systemParametersService.getString(SystemParameterKeys.DATE_TO_EXPIRE_MOBILE_APP_PIN);
+			
+			if(StringUtils.isNotBlank(configuredStrDate)) {
+			
+				Date configureDate = DateUtil.getDate(configuredStrDate);
+				Date currentDate = new Date();
+				
+				if(configureDate.before(currentDate)) {
+					
+					Timestamp lastAppPinChange = srcSubscriberMDN.getLastapppinchange();
+					if(null != lastAppPinChange) {
+						
+						if(lastAppPinChange.before(configureDate)) {
+							
+							log.info("Subscriber is forced to change the Pin");
+							result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+							result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+							return result;
+						}
+						
+					} else {
+						
+						log.info("Subscriber is forced to change the Pin");
+						result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+						result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
+						return result;
+					}
+				}
+			}
 			
 			log.info("setting login response data to LoginXMLResult");
 			authToken =srcSubscriberMDN.getAuthorizationtoken();

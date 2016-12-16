@@ -6,6 +6,7 @@ package com.mfino.service.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -127,9 +128,11 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 	public String getUpdatedValue(String property){
 		SystemParametersDao systemParameterDao = DAOFactory.getInstance().getSystemParameterDao();
 		SystemParameters parameter=systemParameterDao.getSystemParameterByName(property) ;
-		if(parameter!=null){
+		if(StringUtils.isNotEmpty(parameter.getParametervalue())){
+			
 			return parameter.getParametervalue().trim();
 		}
+		
 		return null;
 	}
 	

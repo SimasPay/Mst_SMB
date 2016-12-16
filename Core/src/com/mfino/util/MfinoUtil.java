@@ -8,7 +8,6 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.sql.Clob;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -228,20 +227,93 @@ public class MfinoUtil {
 
 
 
-	public static boolean isPinStrongEnough(String pin) {
+public static boolean isPinStrongEnough(String pin) {
+		
 		if (StringUtils.isBlank(pin))
 			return false;
-		char[] arr = pin.toCharArray();
+		
+		/*char[] arr = pin.toCharArray();
 		if ((arr[0] + arr[2] == (arr[1] * 2)) && Math.abs(arr[0] - arr[1]) == 1)
 			return false;
 		if ((arr[1] + arr[3] == (arr[2] * 2)) && Math.abs(arr[2] - arr[3]) == 1)
 			return false;
+		
+		if(pin.length() > 4) {
+		
+			if ((arr[2] + arr[4] == (arr[3] * 2)) && Math.abs(arr[3] - arr[4]) == 1)
+				return false;
+		}
 
 		Arrays.sort(arr);
 		if (arr[0] == arr[2] || arr[1] == arr[3])
 			return false;
+		
+		if(pin.length() > 4) {
+			
+			if (arr[2] == arr[4])
+				return false;
+		}
 
+		return true;*/
+		
+		boolean isPinStrongEnough = false;
+		
+		if(!containsRepetitiveDigits(pin)) {
+			
+			isPinStrongEnough = true;
+			
+			if(!containsSequenceOfDigits(pin)) {
+			
+				isPinStrongEnough = true;
+				
+			} else {
+				
+				isPinStrongEnough = false;
+			}
+		}
+		
+		return isPinStrongEnough;
+	}
+	
+	public static boolean containsRepetitiveDigits(String tpin) {
+		
+	    char firstChar = tpin.charAt(0);
+	    for (int i = 1; i < tpin.length(); i++) {
+	        char nextChar = tpin.charAt(i);
+	        if ((Character.valueOf(nextChar)).compareTo(Character.valueOf(firstChar)) != 0) {
+	            return false;
+	        }
+	    }
+	    log.info("Error:TPIN contains repetitive digits");
+	    return true;
+	}
+	
+	public static boolean containsSequenceOfDigits(String tpin) {
+		
+	    String firstChar = String.valueOf(tpin.charAt(0));
+	    StringBuffer sb = new StringBuffer();
+	    
+	    for (int i = 0; i < tpin.length(); i++) {
+	    	
+	        sb.append(Integer.parseInt(firstChar));
+	        firstChar = String.valueOf(Integer.parseInt(firstChar) + 1);
+	    }
+	    
+	    if(tpin.equals(sb.toString())) {
+	    
+	    	log.info("Error:TPIN contains sequence digits");
+		    return true;
+		    
+	    } else {
+	    	
+	    	return false;
+	    }
+	}
+	
+	public static boolean containsDateOfBirthAsPin(String tpin) {
+		
 		return true;
+		
 	}
 	
 	public static String leftPadWithCharacter(String str, int totalLength, String padCharacter){

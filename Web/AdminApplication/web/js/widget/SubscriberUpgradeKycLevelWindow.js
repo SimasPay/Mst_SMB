@@ -256,6 +256,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
      		   waitMsg: _('Processing Upgrade Subscriber ...'),
      		   reset: false,
      		   success : function(fp, action){
+     			   formWindow.fireEvent("refresh");
      			   formWindow.hide();
      			   Ext.Msg.show({
                       title: _('Success'),
@@ -278,7 +279,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
      		   params: {
      		   }
      	   	});
-     	   
      	   	formWindow.hide();
         }     
         else{
@@ -320,7 +320,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     	this.form.items.get("subupgradekyc.form.displayfield.idpath").hide();
     	this.form.items.get("subupgradekyc.form.mdnid").setValue(mdnid);
     	if(response.m_ptotal > 0){
-    		console.log(response.m_pEntries[0]);
     		var d = response.m_pEntries[0].m_pDateOfBirth.m_Date;
     		var month = '' + (d.getMonth() + 1);
             var day = '' + d.getDate();

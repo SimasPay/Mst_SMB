@@ -96,9 +96,6 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		bankAccountToBankAccount.setPin(transactionDetails.getSourcePIN());
 		bankAccountToBankAccount.setRemarks(transactionDetails.getDescription());
 		bankAccountToBankAccount.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
-		if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
-			bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Cash_In_To_Agent);
-		}
 
 		XMLResult result = new TransferInquiryXMLResult();
 		ChannelCode cc = transactionDetails.getCc();
@@ -139,20 +136,21 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		if(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER_INQUIRY.equals(transactionDetails.getTransactionName())) {
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER);
 		} 
-		else if(ServiceAndTransactionConstants.TRANSACTION_TELLER_EMONEY_CLEARANCE_INQUIRY.equals(transactionDetails.getTransactionName())) {
-			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TELLER_EMONEY_CLEARANCE);
-			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_TELLER);
-		}
-		else if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
-			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT);
-		}
 		else {
 			
 			/*
 			 * If the Destination Pocket Type is of type SVA or LakuPandai then it is E2ETransfer type; else it is E2BTransfer type.
 			 */
+			if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)) {
+				if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER);
+					transactionName = ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER;
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+					bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Emoney_To_Bank);
+				}
+			}			
 			
-			if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA) || srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
+			if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
 				
 				if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_L2BTRANSFER);
@@ -213,11 +211,11 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 		Subscriber sourceSubscriber = (sourceSubscriberMdn != null) ? sourceSubscriberMdn.getSubscriber() : null;
 		Subscriber destSubscriber = (destSubscriberMdn != null) ? destSubscriberMdn.getSubscriber() : null;
 	
-		Integer validationResult = hierarchyService.validate(sourceSubscriber, destSubscriber, sc.getServiceName(), sc.getTransactionTypeName());
-		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
-			result.setNotificationCode(validationResult);
-			return result;
-		}
+//		Integer validationResult = hierarchyService.validate(sourceSubscriber, destSubscriber, sc.getServiceName(), sc.getTransactionTypeName());
+//		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
+//			result.setNotificationCode(validationResult);
+//			return result;
+//		}
 		
 		try{
 			transaction =transactionChargingService.getCharge(sc);
@@ -225,7 +223,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			bankAccountToBankAccount.setCharges(transaction.getAmountTowardsCharges());
 		} catch (InvalidServiceException ise) {
 			log.error("Exception occured in getting charges",ise);
-			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);//change to service not found
+			result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
 			return result;
 		} catch (InvalidChargeDefinitionException e) {
 			log.error(e.getMessage());

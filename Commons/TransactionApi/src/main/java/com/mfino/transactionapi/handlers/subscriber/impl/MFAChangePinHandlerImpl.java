@@ -142,10 +142,24 @@ public class MFAChangePinHandlerImpl extends FIXMessageHandler implements MFACha
 		}
 		
 		log.info("checking for new pin strength for subscribermdn "+changePin.getSourceMDN() );
-		if(!MfinoUtil.isPinStrongEnough(changePin.getNewPin())){
+		/*if(!MfinoUtil.isPinStrongEnough(changePin.getNewPin())){
 		   log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() );
 		   result.setNotificationCode(CmFinoFIX.NotificationCode_PinNotStrongEnough);
 			return result;
+		}*/
+		
+		if(MfinoUtil.containsSequenceOfDigits(changePin.getNewPin())){
+			
+			log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for sequence of digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+			return result;
+			
+		} else if(MfinoUtil.containsRepetitiveDigits(changePin.getNewPin())){
+			
+			log.info("The pin is not strong enough for subscribermdn "+changePin.getSourceMDN() + " for repetitive digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+			return result;
+			
 		}
 		log.info("Pin passed strength conditions");
 		}

@@ -25,13 +25,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
 import com.mfino.dao.query.PocketQuery;
-import com.mfino.dao.query.PocketTemplateQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.BranchCodes;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.fix.CmFinoFIX;
@@ -40,8 +41,10 @@ import com.mfino.i18n.MessageText;
 import com.mfino.service.AddressService;
 import com.mfino.service.BranchCodeService;
 import com.mfino.service.EnumTextService;
+import com.mfino.service.KYCLevelService;
 import com.mfino.service.PocketService;
 import com.mfino.service.PocketTemplateService;
+import com.mfino.service.SubscriberGroupService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberUpgradeDataService;
@@ -53,7 +56,6 @@ import com.mfino.util.DateUtil;
 @Controller
 public class SubscriberUpgradeKycController {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
-	
 	private static final String DEFAULT_BRANCH = "000";
 	
 	@Autowired
@@ -71,6 +73,10 @@ public class SubscriberUpgradeKycController {
 	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
+
+	@Autowired
+	@Qualifier("SubscriberGroupServiceImpl")
+	private SubscriberGroupService subscriberGroupService;
 	
 	@Autowired
 	@Qualifier("PocketTemplateServiceImpl")
@@ -91,6 +97,10 @@ public class SubscriberUpgradeKycController {
 	@Autowired
 	@Qualifier("SubscriberUpgradeDataServiceImpl")
 	private SubscriberUpgradeDataService subscriberUpgradeDataService;
+
+	@Autowired
+	@Qualifier("KYCLevelServiceImpl")
+	private KYCLevelService kycLevelService;
 	
 	@RequestMapping("/upgradesubscriberkyc.htm")
     protected View handleUpload(HttpServletRequest request, HttpServletResponse response) {
@@ -138,7 +148,7 @@ public class SubscriberUpgradeKycController {
 	        
 	        if(!(subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active)
 	        		|| subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active))){
-	        	responseMap.put("Error", MessageText._("Subscriber Should be Active! "));
+	        	responseMap.put("Error", MessageText._("Subscriber Should be Active!"));
 	        	return new JSONView(responseMap);
 	        }
 	        
@@ -152,17 +162,21 @@ public class SubscriberUpgradeKycController {
 					idCardpath = path;
 			}
 	        
-	        PocketTemplateQuery pocketTemplateQuery = new PocketTemplateQuery();
-	        pocketTemplateQuery.setPocketType(CmFinoFIX.PocketType_SVA);
-	        pocketTemplateQuery.setDescriptionSearch("Emoney-UnBanked");
+	        Long groupID = null;
+			SubscriberGroups subscriberGroup = subscriberGroupService.getBySubscriberID(subscriber.getId());
+			if(subscriberGroup != null){
+				groupID = subscriberGroup.getGroupid();
+			}
 	        
-	        List<PocketTemplate> eMoneyNonKycTemplateList = pocketTemplateService.findByCriteria(pocketTemplateQuery);
+	        KycLevel nonKycLevel = kycLevelService.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_NoKyc.longValue());
+	        PocketTemplate eMoneyNonKycTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(
+	        		nonKycLevel.getKyclevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
 	        
-	        if (eMoneyNonKycTemplateList != null && eMoneyNonKycTemplateList.size() > 0) {
+	        if (eMoneyNonKycTemplate != null) {
 				
-				Pocket nonKycPocket = getNonKycPocket(subscriberMdn, eMoneyNonKycTemplateList);	
+				Pocket nonKycPocket = getNonKycPocket(subscriberMdn, eMoneyNonKycTemplate);	
             	if (nonKycPocket == null) {
-                	responseMap.put("Error", MessageText._("Subscriber Not Have Emoney-UnBanked Pocket."));
+                	responseMap.put("Error", MessageText._("Subscriber Not Have Emoney-Non KYC Pocket."));
     	        	return new JSONView(responseMap);
             	}
             	
@@ -261,9 +275,9 @@ public class SubscriberUpgradeKycController {
 	}
 	
 	private Pocket getNonKycPocket(SubscriberMdn subscriberMDN,
-			List<PocketTemplate> eMoneyNonKycTemplateList) {
+			PocketTemplate eMoneyNonKycTemplate) {
 		PocketQuery pocketQuery= new PocketQuery();
-		pocketQuery.setPocketTemplateID(eMoneyNonKycTemplateList.get(0).getId());
+		pocketQuery.setPocketTemplateID(eMoneyNonKycTemplate.getId());
 		pocketQuery.setMdnIDSearch(subscriberMDN.getId());
 		List<Pocket> pocketList = pocketService.get(pocketQuery);
 		if(pocketList != null && pocketList.size() > 0)

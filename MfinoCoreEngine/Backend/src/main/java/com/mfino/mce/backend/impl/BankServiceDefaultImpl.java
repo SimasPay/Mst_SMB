@@ -765,6 +765,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								inquiryToBank.copy(requestFix);
                                 inquiryToBank.setSourceMDN(requestFix.getSourceMDN());
 								inquiryToBank.setAmount(totalTransactionAmount);
+								inquiryToBank.setServiceChargeAmount(charges);
 								inquiryToBank.setBankCode(pct.getBankcode().intValue());
 								inquiryToBank.setDestMDN(pct.getDestmdn());
 								inquiryToBank.setLanguage((int)objSourceSubscriber.getLanguage());
@@ -795,37 +796,35 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										.getTransactionLog()
 										.getId().longValue());
 
-								if (CmFinoFIX.BankAccountCardType_SavingsAccount
-										.equals(objSrcPocket
-												.getPocketTemplateByPockettemplateid()
-												.getBankaccountcardtype())) {
-									inquiryToBank.setSourceBankAccountType(""
-											+ CmFinoFIX.BankAccountType_Saving);
-								} else {
-									inquiryToBank
-											.setSourceBankAccountType(""
-													+ CmFinoFIX.BankAccountType_Checking);
+								if (CmFinoFIX.BankAccountCardType_SavingsAccount.equals(
+										objSrcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+									inquiryToBank.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 								}
-
-								if (CmFinoFIX.BankAccountCardType_SavingsAccount
-										.equals(objDestPocket
-												.getPocketTemplateByPockettemplateid()
-												.getBankaccountcardtype())) {
-									inquiryToBank
-											.setDestinationBankAccountType(""
-													+ CmFinoFIX.BankAccountType_Saving);
-								} else {
-									inquiryToBank
-											.setDestinationBankAccountType(""
-													+ CmFinoFIX.BankAccountType_Checking);
+								else if (CmFinoFIX.BankAccountCardType_CheckingAccount.equals(
+										objSrcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+									inquiryToBank.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Checking);
+								}
+								else {
+									inquiryToBank.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_UnSpecified);
+								}
+								
+								if (CmFinoFIX.BankAccountCardType_SavingsAccount.equals(
+										objDestPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+									inquiryToBank.setDestinationBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
+								}
+								else if (CmFinoFIX.BankAccountCardType_CheckingAccount.equals(
+										objDestPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+									inquiryToBank.setDestinationBankAccountType(""+ CmFinoFIX.BankAccountType_Checking);
+								}
+								else {
+									inquiryToBank.setDestinationBankAccountType(""+ CmFinoFIX.BankAccountType_UnSpecified);
 								}
 
 								if (CmFinoFIX.PocketType_SVA
 										.equals(objSrcPocket
 												.getPocketTemplateByPockettemplateid().getType()) || isLakupandaiPocketType(objSrcPocket)) {
 									inquiryToBank
-											.setSourceCardPAN(coreDataWrapper
-													.getGlobalAccountNumber());
+											.setSourceCardPAN(ConfigurationUtil.getCodeForTransferUsingEMoney()+requestFix.getSourceMDN());
 									inquiryToBank
 											.setSourceBankAccountType(""
 													+ CmFinoFIX.BankAccountType_Lakupandai);
@@ -1810,8 +1809,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 											moneyTransferToBank
 													.setSourceMDNToUseForBank(coreDataWrapper
 															.getPlatformMdn());
-											moneyTransferToBank.setAmount(pct
-													.getAmount());
+											moneyTransferToBank.setAmount(pct.getAmount());
+											moneyTransferToBank.setServiceChargeAmount(pct.getCharges());
 											moneyTransferToBank.setBankCode(pct
 													.getBankcode().intValue());
 											moneyTransferToBank
@@ -1847,8 +1846,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 															+ CmFinoFIX.BankAccountType_Lakupandai);
 											moneyTransferToBank.setLanguage((int)objSourceSubscriber.getLanguage());
 											moneyTransferToBank
-													.setSourceCardPAN(coreDataWrapper
-															.getGlobalAccountNumber());
+													.setSourceCardPAN(ConfigurationUtil.getCodeForTransferUsingEMoney() + 
+															confirmationToBank.getSourceMDN());
 											moneyTransferToBank
 													.setOriginalReferenceID(confirmationToBank
 															.getOriginalReferenceID());
@@ -1868,17 +1867,16 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //																+ CmFinoFIX.BankAccountType_Checking);
 //											}
 
-											if (CmFinoFIX.BankAccountCardType_SavingsAccount
-													.equals(objDestPocket
-															.getPocketTemplateByPockettemplateid()
-															.getBankaccountcardtype())) {
-												moneyTransferToBank
-														.setDestinationBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Saving);
-											} else {
-												moneyTransferToBank
-														.setDestinationBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Checking);
+											if (CmFinoFIX.BankAccountCardType_SavingsAccount.equals(
+													objDestPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+												moneyTransferToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_Saving);
+											}
+											else if (CmFinoFIX.BankAccountCardType_CheckingAccount.equals(
+													objDestPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+												moneyTransferToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_Checking);
+											}
+											else {
+												moneyTransferToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_UnSpecified);
 											}
 
 											isoFix = moneyTransferToBank;
@@ -3815,9 +3813,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		}
 
 		returnFix.setResult(CmFinoFIX.ResponseCode_Revert_Success);
-		returnFix.setInternalErrorCode(NotificationCodes
-				.getInternalErrorCodeFromNotificationCode(pendingTransfer
-						.getNotificationcode().intValue()));
+//		returnFix.setInternalErrorCode(NotificationCodes
+//				.getInternalErrorCodeFromNotificationCode(pendingTransfer
+//						.getNotificationcode().intValue()));
 
 		ActivitiesLog activitiesLog = new ActivitiesLog();
 		activitiesLog

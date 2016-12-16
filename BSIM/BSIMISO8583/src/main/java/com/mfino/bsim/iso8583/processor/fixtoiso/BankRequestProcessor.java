@@ -4,6 +4,7 @@ import static com.mfino.bsim.iso8583.utils.DateTimeFormatter.getHHMMSS;
 import static com.mfino.bsim.iso8583.utils.DateTimeFormatter.getMMDD;
 import static com.mfino.bsim.iso8583.utils.DateTimeFormatter.getMMDDHHMMSS;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -11,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 
+import com.mfino.bsim.iso8583.utils.StringUtilities;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMBankRequest;
@@ -83,6 +85,26 @@ public abstract class BankRequestProcessor implements IFixToIsoProcessor {
 		                - (request.getSourceCardPAN() == null ? 0 : request.getSourceCardPAN().length())) + "NG";
 
 	}
+	
+	public String getDE63(CMBankRequest request) {
+		BigDecimal serviceCharge = request.getServiceChargeAmount();
+		BigDecimal tax = request.getTaxAmount();
+		if(serviceCharge == null) {
+			serviceCharge = new BigDecimal(0);
+		}
+		if(tax == null) {
+			tax = new BigDecimal(0);
+		}
+		String de63 = constantFieldsMap.get("63");
+		String strServiceCharge, strTax;
+		
+		strServiceCharge = "C" + StringUtilities.leftPadWithCharacter(serviceCharge.toBigInteger().toString(),8,"0");
+		strTax = "C" + StringUtilities.leftPadWithCharacter(tax.toBigInteger().toString(),8,"0");
+		de63 = StringUtilities.replaceNthBlock(de63, 'C', 12,strServiceCharge,9);
+		de63 = StringUtilities.replaceNthBlock(de63, 'C', 13,strTax,9);
+		return de63;
+	}
+
 
 	public static void main(String[] args) throws Exception {
 		CMBankRequest request = new CMBankRequest();
