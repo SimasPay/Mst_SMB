@@ -81,7 +81,7 @@ BEGIN
    :new.ID := v_newVal;
   END IF;
 END;
-
+/
 update POCKET_TEMPLATE_CONFIG set ISDEFAULT=1 where KYCLEVEL=1 and POCKETTYPE=1;
 
 commit;
