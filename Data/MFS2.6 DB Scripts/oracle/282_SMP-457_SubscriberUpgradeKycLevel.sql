@@ -5,19 +5,19 @@ DELETE FROM PERMISSION_ITEM WHERE PERMISSION = 10249;
 Insert into PERMISSION_ITEM (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PERMISSION, ITEMTYPE, ITEMID, FIELDID, ACTION, PERMISSIONGROUPID, DESCRIPTION) values ('1', sysdate, 'system', sysdate, 'system', '10248', '1', 'sub.details.upgrade.kyc', 'default', 'default', '1', 'Upgrade eMoney Kyc');
 Insert into PERMISSION_ITEM (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PERMISSION, ITEMTYPE, ITEMID, FIELDID, ACTION, PERMISSIONGROUPID, DESCRIPTION) values ('1', sysdate, 'system', sysdate, 'system', '10249', '1', 'sub.details.upgrade.kyc.checker', 'default', 'default', '1', 'Upgrade eMoney Kyc For Checker');
 
-DELETE FROM notification WHERE ENUMCODE = 8460;
+DELETE FROM ENUM_TEXT WHERE ENUMCODE = 8460;
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'UpgradeKycStatusSearch', '8460', '0', 'All', 'All');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'UpgradeKycStatusSearch', '8460', '0', 'Initialized', 'Initialized');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'UpgradeKycStatusSearch', '8460', '1', 'Approved', 'Approved');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'UpgradeKycStatusSearch', '8460', '2', 'Rejected', 'Rejected');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'UpgradeKycStatusSearch', '8460', '3', 'Revision', 'Revision');
 
-DELETE FROM notification WHERE ENUMCODE = 8459;
+DELETE FROM ENUM_TEXT WHERE ENUMCODE = 8459;
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'IDTypeForKycUpgrade', '8459', '1', 'Passport', 'Passport');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'IDTypeForKycUpgrade', '8459', '2', 'KTP', 'KTP');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'IDTypeForKycUpgrade', '8459', '3', 'SIM', 'SIM');
 
-DELETE FROM notification WHERE ENUMCODE = 8461;
+DELETE FROM ENUM_TEXT WHERE ENUMCODE = 8461;
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'SubscriberUpgradeKycStatus', '8461', '0', 'Initialized', 'Initialized');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'SubscriberUpgradeKycStatus', '8461', '1', 'Approved', 'Approved');
 INSERT INTO ENUM_TEXT (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, LANGUAGE, TAGNAME, TAGID, ENUMCODE, ENUMVALUE, DISPLAYTEXT) VALUES ('1', sysdate, 'system', sysdate, 'system', '0', 'SubscriberUpgradeKycStatus', '8461', '2', 'Rejected', 'Rejected');
@@ -36,7 +36,7 @@ INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, Create
 INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '2183', 'SubscriberUpgradeRequestRevision', '16', 'Your Subscriber Upgrade Request Need Revision.', '1', '0', sysdate, '1', '1');
 
 
-DROP TABLE SUBSCRIBER_UPGRADE_DATA;
+-- DROP TABLE SUBSCRIBER_UPGRADE_DATA;
 
 CREATE TABLE "SUBSCRIBER_UPGRADE_DATA" (   
 	"ID" NUMBER(19,0) NOT NULL, 
