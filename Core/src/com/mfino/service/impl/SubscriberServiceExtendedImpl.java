@@ -555,10 +555,21 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				
 				log.info("Checking for the strength of pin XXXX for subscribermdn" + subscriberRegistration.getMDN());
 				
-				if (!MfinoUtil.isPinStrongEnough(newpin)) {
+				/*if (!MfinoUtil.isPinStrongEnough(newpin)) {
+				log.info("The pin is not strong enough for subscriber " + mdn);
+				return CmFinoFIX.NotificationCode_PinNotStrongEnough;
+				}*/
+				
+				if(MfinoUtil.containsSequenceOfDigits(newpin)){
 					
-					log.info("The pin is not strong enough for subscriber " + subscriberRegistration.getMDN());
-					return CmFinoFIX.NotificationCode_PinNotStrongEnough;
+					log.info("The pin is not strong enough for subscribermdn "+ subscriberRegistration.getMDN() + " for sequence of digits");
+					return CmFinoFIX.NotificationCode_SequenceNumberAsPin;
+					
+				} else if(MfinoUtil.containsRepetitiveDigits(newpin)){
+					
+					log.info("The pin is not strong enough for subscribermdn "+ subscriberRegistration.getMDN() + " for repetitive digits");
+					return CmFinoFIX.NotificationCode_SameNumbersAsPin;
+					
 				}
 				
 				log.info("Pin passed strength conditions for subscribermdn" + subscriberRegistration.getMDN());
@@ -736,7 +747,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				
 				try {
 					
-					cardPan = pocketService.generateLakupandia16DigitCardPAN(subscriberMDN.getMdn());
+					cardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
 					
 				} catch (Exception e) {
 					
@@ -1306,9 +1317,22 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			log.info("Checking for the strength of pin XXXX for subscribermdn"
 					+ mdn);
-			if (!MfinoUtil.isPinStrongEnough(newpin)) {
-				log.info("The pin is not strong enough for subscriber " + mdn);
-				return CmFinoFIX.NotificationCode_PinNotStrongEnough;
+			
+			/*if (!MfinoUtil.isPinStrongEnough(newpin)) {
+			log.info("The pin is not strong enough for subscriber " + mdn);
+			return CmFinoFIX.NotificationCode_PinNotStrongEnough;
+			}*/
+			
+			if(MfinoUtil.containsSequenceOfDigits(newpin)){
+				
+				log.info("The pin is not strong enough for subscribermdn "+ mdn + " for sequence of digits");
+				return CmFinoFIX.NotificationCode_SequenceNumberAsPin;
+				
+			} else if(MfinoUtil.containsRepetitiveDigits(newpin)){
+				
+				log.info("The pin is not strong enough for subscribermdn "+ mdn + " for repetitive digits");
+				return CmFinoFIX.NotificationCode_SameNumbersAsPin;
+				
 			}
 			log.info("Pin passed strength conditions for subscribermdn" + mdn);
 			}
@@ -1462,6 +1486,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		subscriberMDN.setStatustime(new Timestamp());
 		subscriberMDN.setActivationtime(new Timestamp());
 		subscriberMDN.setUpdatedby(subscriberName);
+		subscriberMDN.setLastapppinchange(new Timestamp());
 		subscriber.setActivationtime(new Timestamp());
 		subscriber.setUpdatedby(subscriberName);
 		subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);

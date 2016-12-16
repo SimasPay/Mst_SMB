@@ -147,10 +147,20 @@ public class ResetPinByOTPHandlerImpl extends FIXMessageHandler implements Reset
 			}
 			log.info("Pin passed strength conditions");
 		}
-		else
-		{
-			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
+
+		log.info("checking for new pin strength for subscribermdn "+resetPin.getSourceMDN() );
+		
+		if(MfinoUtil.containsSequenceOfDigits(resetPin.getNewPin())){
+			log.info("The pin is not strong enough for subscribermdn "+resetPin.getSourceMDN() + " for sequence of digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+			return result;
+		} else if(MfinoUtil.containsRepetitiveDigits(resetPin.getNewPin())){
+			log.info("The pin is not strong enough for subscribermdn "+resetPin.getSourceMDN() + " for repetitive digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+			return result;
 		}
+		
+		log.info("Pin passed strength conditions");
 		
 		//Validate OTP 
 		
