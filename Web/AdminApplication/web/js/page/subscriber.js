@@ -711,7 +711,7 @@ mFino.page.subscriber = function(config){
         }
     });
     
-    subscriberUpgradeKycApproveRejectWindow.on("refresh", function() {
+    subscriberUpgradeKycApproveRejectWindow.on("refresh", function(mdnid) {
     	if(detailsForm.record)
         {
     		listBox.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);

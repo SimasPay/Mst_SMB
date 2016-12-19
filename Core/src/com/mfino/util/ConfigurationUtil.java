@@ -322,7 +322,9 @@ public class ConfigurationUtil {
 		MailUseSmtp("mfino.mail.use.smtp", "true"),
 		SubscriberProfileImageFilePath("mfino.subscriber.profile.image.filepath","images/profile"),
 		CodeForTransferUsingEMoney("code.for.transfer.using.emoney", "8222"),
-		KTPImagePath("ktp.image.path", "/images/id/");
+		KTPImagePath("ktp.image.path", "/Users/dimo/Simaspay/images/id/"),
+		KTPImageUrl("ktp.image.url", "/images/ktp/"),
+		CodeForTransferRecipientUsingEMoney("code.for.transfer.recipient.using.emoney", "85");
 		
 		private final String key;
 		private final String defaultValue;
@@ -1300,5 +1302,12 @@ public class ConfigurationUtil {
 	
 	public static String getCodeForTransferUsingEMoney() {
 		return get(ConfigurationKey.CodeForTransferUsingEMoney);
+	}
+	
+	public static String getCodeForTransferRecipientUsingEMoney() {
+		return get(ConfigurationKey.CodeForTransferRecipientUsingEMoney);
+	}
+	public static String getKTPImageUrl(){
+		return get(ConfigurationKey.KTPImageUrl);
 	}
 }

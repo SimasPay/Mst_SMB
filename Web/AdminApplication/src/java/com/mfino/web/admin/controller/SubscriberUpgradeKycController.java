@@ -254,11 +254,14 @@ public class SubscriberUpgradeKycController {
 					String extension = FilenameUtils.getExtension(fileName);
 					String[] completeFileName = {imagePath, idType, "_", mdnId, FilenameUtils.EXTENSION_SEPARATOR_STR, extension};
 					String newFileName = StringUtils.join(completeFileName);
+					log.info("KTP Scan uploaded to: "+newFileName);
 					
-					File catalinaBase = new File( System.getProperty( "catalina.base" ) ).getAbsoluteFile();
-					File destFile = new File( catalinaBase, "webapps/" + newFileName);
+					File destFile = new File(newFileName);
 					file.transferTo(destFile);
-					return newFileName;
+
+					String url = ConfigurationUtil.getKTPImageUrl();
+					String[] urlImage = {url, idType, "_", mdnId, FilenameUtils.EXTENSION_SEPARATOR_STR, extension};
+					return StringUtils.join(urlImage);
 				}
 			}
 		}

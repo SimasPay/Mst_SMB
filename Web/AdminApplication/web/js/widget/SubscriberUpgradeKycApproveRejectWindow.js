@@ -284,7 +284,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 			            
 			            var amsg = new CmFinoFIX.message.JSSubscriberUpgradeKyc();
 			            var values = this.form.getForm().getValues();
-			            console.log(values);
 			            amsg.m_pID = values[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
 			            amsg.m_pUpgradeAcctComments = values[CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name];
 			            amsg.m_paction="update";
@@ -307,7 +306,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 			            this.hide();
 			            Ext.apply(aparams, {
                 			success :  function(response){
-                				this.scope.fireEvent("refresh");
+                				this.scope.fireEvent("refresh", amsg.m_pID );
                 			},
                 			scope: this
                 		});

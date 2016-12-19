@@ -4153,6 +4153,7 @@
 			</group>
 		</message>
 		<message name="CashOutAtATMInquiry" msgtype="1372" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
+			<field name="OnBehalfMDN" required="N" />
 		</message> 
 		<message name="CashOutAtATM" msgtype="1373" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
 		</message>
@@ -23515,6 +23516,15 @@ ERROR:Mismatch of  mdn type and app type
 					<English>
 						<SMS>
 							<Text>Emoney Pocket added successfully</Text>
+							</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="AtmCashWithdrawalOnlyForKYC" enum="2305">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Sorry, cash withdrawal from ATM only applicable for KYC User</Text>
 						</SMS>
 					</English>
 				</C1>
@@ -27338,6 +27348,7 @@ ERROR:Mismatch of  mdn type and app type
 	</field>
 	<field number="8462" name="UpgradeAcctRequestBy" type="STRING" />
 	<field number="8463" name="IDTypeText" type="STRING" />
+	<field number="8464" name="OnBehalfMDN" type="STRING" />
     </fields>
     <primitives>
 		<dbtype name="mysql">
