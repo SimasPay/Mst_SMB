@@ -1,6 +1,8 @@
 package com.mfino.bsim.iso8583.processor.fixtoiso;
 
 
+import java.math.BigDecimal;
+
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 
@@ -11,6 +13,8 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMTransferInquiryToBank;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
+import com.mfino.service.CoreServiceFactory;
+import com.mfino.service.MoneyService;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -57,7 +61,9 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 			
 			isoMsg.set(3, processingCode + sourceAccountType + destAcccountType);
 			//isoMsg.set(3,CmFinoFIX.ISO8583_ProcessingCode_Sinarmas_Transfer_Inquiry);
-			long amount = request.getAmount().longValue()*(100);
+			MoneyService ms = CoreServiceFactory.getInstance().getMoneyService();
+			BigDecimal amountWithoutCharge = ms.subtract(request.getAmount(), request.getServiceChargeAmount());
+			long amount = amountWithoutCharge.longValue()*(100);
 			isoMsg.set(4,StringUtilities.leftPadWithCharacter(amount + "", 18, "0"));
 			isoMsg.set(7,DateTimeFormatter.getMMDDHHMMSS(ts));
 			isoMsg.set(11,StringUtilities.leftPadWithCharacter(transactionID.toString(), 6, "0"));
