@@ -537,7 +537,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
                 if(realMsg.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(subscriber, realMsg.getAuthorizedEmail());
 				}
-                List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+                List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 				if(subscriberGroups != null && subscriberGroups.size() > 0){
 					for(SubscriberGroups sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
@@ -1029,7 +1029,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         			List<SubscriberGroups> subscriberGroups = null;
         			if(subscriber != null && subscriber.getId() != null) {
         				
-        				subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+        				subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
         				
         				if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
 	        				SubscriberGroups sg = subscriberGroups.iterator().next();
@@ -1210,7 +1210,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
             	
         		if((null != entry.getGroupID()) && !("".equals(entry.getGroupID()))){
         			
-        			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+        			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
         			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroups sg = subscriberGroups.iterator().next();
         				if(sg.getGroupid() != Long.valueOf(entry.getGroupID()).longValue()){
@@ -1497,7 +1497,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if(subscriber.getDateofbirth()!=null){
 	        	entry.setDateofBirth(String.valueOf(subscriber.getDateofbirth()));
 	        }
-	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			
 			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
 				SubscriberGroups sg = subscriberGroups.iterator().next();
@@ -1761,7 +1761,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
 	        if(subscriber.getDateofbirth()!=null){
 	        	entry.setDateofBirth(String.valueOf(subscriber.getDateofbirth()));
 	        }
-	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if((subscriberGroups != null) && (subscriberGroups.size() > 0) && StringUtils.isNotBlank(entry.getGroupID())) {
 				Groups group = groupDao.getById(Long.valueOf(entry.getGroupID()));
 				SubscriberGroups sg = subscriberGroups.iterator().next();

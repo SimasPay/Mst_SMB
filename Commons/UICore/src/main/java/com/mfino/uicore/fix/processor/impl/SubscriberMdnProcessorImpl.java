@@ -509,7 +509,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			List<SubscriberGroups> subscriberGroups = null;
 					
 				if (s.getSubscriber() != null && s.getSubscriber().getId()!=null) {	
-					subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getSubscriber().getId()));
+					subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
 			
 				if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
 					SubscriberGroups sg = subscriberGroups.iterator().next();
@@ -1020,7 +1020,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					entry.setIsDomesticAddrIdentity(false);
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getSubscriber().getId()));
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getSubscriber().getId());
 				if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
 					SubscriberGroups sg = subscriberGroups.iterator().next();
 					GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
@@ -1712,7 +1712,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					mailService.generateEmailVerificationMail(s, e.getEmail());
 				}
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getId()));
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
 				if(subscriberGroups!=null && subscriberGroups.size() > 0){
 					for(SubscriberGroups sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
@@ -1896,7 +1896,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(s.getId()));
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(s.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

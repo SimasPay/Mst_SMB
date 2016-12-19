@@ -3,8 +3,6 @@
  */
 package com.mfino.transactionapi.handlers.wallet.impl;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +30,7 @@ import com.mfino.fix.CmFinoFIX.CMTransferInquiryToNonRegistered;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MFAService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
@@ -71,7 +70,10 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
 
-
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	@Autowired
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
@@ -102,6 +104,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		transferInquiry.setSourcePocketID(transactionDetails.getSrcPocketId());
 		transferInquiry.setRemarks(transactionDetails.getDescription());
 		transferInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
+		transferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_EMoney_Trf_To_UnRegistered);
 		
 		XMLResult result = new TransferInquiryXMLResult();
 		
@@ -113,16 +116,9 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);
 			return result;
 		}
-		
-		
-		if(ServiceAndTransactionConstants.TRANSACTION_CASH_IN_TO_AGENT_INQUIRY.equals(transactionDetails.getTransactionName())){
-			transferInquiry.setIsSystemIntiatedTransaction(CmFinoFIX.Boolean_True);
-			transferInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Cash_In_To_Agent);
-		}
+
 		log.info("Handling NonRegisteredTransferInquiry WebAPI request::From " + transactionDetails.getSourceMDN() + " To " + 
 				transactionDetails.getDestMDN() + " For Amount = " + transactionDetails.getAmount());
-
-		
 		
 		//Create new subscriber with NonRegistered Status
 		boolean requiresName = ConfigurationUtil.getRequiresNameWhenMoneyTransferedToUnregisterd();
@@ -210,6 +206,8 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 	{
 		XMLResult result = new TransferInquiryXMLResult();
 		Transaction transaction = null;
+		String transactionName = ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER_INQUIRY.equals(transactionDetails.getTransactionName()) ?
+				ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER : ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED;
 
 		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_TransferInquiryToNonRegistered, transferInquiry.DumpFields());
 		transferInquiry.setTransactionID(transactionsLog.getId().longValue());
@@ -228,12 +226,7 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		sc.setDestMDN(transferInquiry.getDestMDN());
 		sc.setChannelCodeId(transactionDetails.getCc().getId().longValue());
 		sc.setServiceName(transferInquiry.getServiceName());
-		if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER_INQUIRY.equals(transactionDetails.getTransactionName())) {
-			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER);
-		} 
-		else {
-			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED);
-		}
+		sc.setTransactionTypeName(transactionName);
 		sc.setTransactionAmount(transferInquiry.getAmount());
 		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transferInquiry.getTransactionIdentifier());
@@ -280,8 +273,17 @@ public class NonRegisteredTransferInquiryHandlerImpl extends FIXMessageHandler i
 		result.setTransferID(transactionResponse.getTransferId());
 		result.setCode(transactionResponse.getCode());
 		result.setMessage(transactionResponse.getMessage());
-		result.setSctlID(sctl.getId().longValue());
+		result.setSctlID(sctl.getId());
 		result.setUnRegistered(true);
+		result.setMfaMode("None");
+		
+		//For 2 factor authentication
+		if(transactionResponse.isResult() == true){
+			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, transactionDetails.getCc().getId()) == true){
+				result.setMfaMode("OTP");
+			}
+		}		
+		
 		return result;
 	}
 }

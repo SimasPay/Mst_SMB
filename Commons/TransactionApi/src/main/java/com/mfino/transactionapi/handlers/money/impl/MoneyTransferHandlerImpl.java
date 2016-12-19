@@ -234,9 +234,9 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			}
 		}		
 		
-		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getId().longValue())){
+		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getId())){
 			
-			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getId().longValue(), sourceMDN.getMdn()))){
+			if(mfaOneTimeOTP == null || !(mfaService.isValidOTP(mfaOneTimeOTP,sctl.getId(), sourceMDN.getMdn()))){
 				
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;

@@ -169,7 +169,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		
 		Long groupID = null;
 		SubscriberGroupDao sgDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = sgDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+		List<SubscriberGroups> subscriberGroups = sgDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty()) {
 			
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

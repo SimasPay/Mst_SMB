@@ -140,8 +140,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         }
         
         Long groupID = null;
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(
-				BigDecimal.valueOf(subscriber.getId()));
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty()){
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
 			groupID = subscriberGroup.getGroupid();

@@ -154,7 +154,7 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
 		Pocket emoneyPocket = null;
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

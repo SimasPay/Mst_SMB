@@ -1,6 +1,5 @@
 package com.mfino.dao;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -24,9 +23,9 @@ public class SubscriberGroupDao extends BaseDAO<SubscriberGroups>{
 		return lst.get(0);
     }
 	
-	public List<SubscriberGroups> getAllBySubscriberID(BigDecimal subscriberID) {
+	public List<SubscriberGroups> getAllBySubscriberID(Long subscriberID) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(SubscriberGroups.FieldName_Subscriber, subscriberID.longValue()));
+        criteria.add(Restrictions.eq(SubscriberGroups.FieldName_Subscriber, subscriberID));
         @SuppressWarnings("unchecked")
 		List<SubscriberGroups> lst = criteria.list();
 		if(criteria.list()==null||criteria.list().isEmpty())

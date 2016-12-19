@@ -454,7 +454,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 if(e.getAuthorizedEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
                 	mailService.generateEmailVerificationMail(subscriber, e.getAuthorizedEmail());
 				}
-                List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+                List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 				if(subscriberGroups != null && subscriberGroups.size() > 0){
 					SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 					for(SubscriberGroups sg: subscriberGroups){
@@ -856,7 +856,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         			List<SubscriberGroups> subscriberGroups = null;
         			
         			if (subscriber!=null && subscriber.getId()!=null) {
-        				subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+        				subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
         				
         			if((subscriberGroups != null) && (subscriberGroups.size() > 0)){
         				SubscriberGroups sg = subscriberGroups.iterator().next();
@@ -1061,7 +1061,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        if(subscriber.getApproveorrejectcomment()!=null){
 	        	entry.setApproveOrRejectComment(subscriber.getApproveorrejectcomment());
 	        }
-	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+	        List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if((subscriberGroups != null) && (subscriberGroups.size() > 0)) {
 				SubscriberGroups sg = subscriberGroups.iterator().next();
 				Groups groups = groupDao.getById(sg.getGroupid());

@@ -166,7 +166,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 						.getSubscriberStatus());
 			}
 			subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
-			subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
+			subscriber.setTimezone(CmFinoFIX.Timezone_West_Indonesia_Time);
 			subscriber.setStatustime(new Timestamp());
 			subscriber.setCreatedby(createdByName);
 			subscriber.setUpdatedby(createdByName);
@@ -179,11 +179,19 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
-			if(subscriberGroups != null && !subscriberGroups.isEmpty())
-			{
-				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
-				groupID = subscriberGroup.getGroupid();
+			if (subscriber.getId() != null) {
+				List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+				if(subscriberGroups != null && !subscriberGroups.isEmpty())
+				{
+					SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
+					groupID = subscriberGroup.getGroupid();
+				}
+			}
+			else {
+				// load the default group id
+				GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+				Groups defaultGroup = groupDao.getSystemGroup();
+				groupID = defaultGroup.getId();
 			}
 			Long kycLevelNo = null;
 			if(null != subscriber.getUpgradablekyclevel())
@@ -251,17 +259,13 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriberMDN.setUpdatedby(createdByName);
 			setOTPToSubscriber(subscriberMDN, oneTimePin);
 			subscriberMdnDao.save(subscriberMDN);
-			//handling adding default group if the group doesnot exist here
-			if(groupID==null){
-			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
-			Groups defaultGroup =groupDao.getSystemGroup();
+
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroups sg = new SubscriberGroups();
-			sg.setSubscriberid(subscriber.getId().longValue());
-			sg.setGroupid(defaultGroup.getId().longValue());
+			sg.setSubscriberid(subscriber.getId());
+			sg.setGroupid(groupID);
 			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
-			}
 			}
 			if (isUnRegistered) {
 				Set<Pocket> pockets = subscriberMDN.getPockets();
@@ -289,7 +293,8 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				return CmFinoFIX.NotificationCode_MoneySVAPocketNotFound;
 			}
 			boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
-			if(isEMoneyPocketRequired == true){
+			if(isEMoneyPocketRequired == true || CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration
+					.getSubscriberStatus()){
 			String cardPan = null;
 			try {
 				cardPan = pocketService
@@ -984,7 +989,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -1349,7 +1354,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		boolean emoneyPocketFound = false;
 		boolean lakupandaiPocketFound = false;
 		Long groupID = null;
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();
@@ -1787,7 +1792,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		Pocket bankPocket = null;
 		boolean bankPocketFound = false;
 		Long groupID = null;
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

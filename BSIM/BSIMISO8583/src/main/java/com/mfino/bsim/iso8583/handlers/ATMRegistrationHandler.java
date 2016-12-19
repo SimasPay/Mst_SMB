@@ -269,7 +269,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(BigDecimal.valueOf(subscriber.getId()));
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
 				SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

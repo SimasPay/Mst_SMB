@@ -381,7 +381,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			//the default group will be used in calculating of pocket templates.
 			Long groupID = defaultGroup.getId().longValue(); 
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+			List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 			
 			if(subscriberGroups != null && !subscriberGroups.isEmpty())
 			{
@@ -614,7 +614,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 		}
 		Long groupID = null;
 		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
-		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(new BigDecimal(subscriber.getId()));
+		List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
 		if(subscriberGroups != null && !subscriberGroups.isEmpty())
 		{
 			SubscriberGroups subscriberGroup = subscriberGroups.iterator().next();

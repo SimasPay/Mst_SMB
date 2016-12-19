@@ -291,7 +291,7 @@ public class ServiceAndTransactionConstants {
 
 	public static final String	MESSAGE_CASH_IN	                    = "Cash In";
 
-	public static final String	MESSAGE_TRANSFER_UNREGISTERED       = "UnRegistered Transfer";
+	public static final String  MESSAGE_TRANSFER_UNREGISTERED       = "Transfer To UnRegistered";
 
 	public static final String	MESSAGE_CASH_OUT_UNREGISTERED       = "Cash Out Unregistered";
 	
