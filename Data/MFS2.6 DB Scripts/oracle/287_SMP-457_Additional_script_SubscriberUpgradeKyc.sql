@@ -1,0 +1,3 @@
+INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval, 1, sysdate, 'System', sysdate, 'System', 1, 'SubscriberUpgradeKyc', 'SubscriberUpgradeKyc');
+INSERT INTO SERVICE_TRANSACTION(VERSION,LASTUPDATETIME,UPDATEDBY,CREATETIME,CREATEDBY,MSPID,SERVICEID,TRANSACTIONTYPEID)  VALUES (1, SYSDATE, 'System', SYSDATE, 'System', 1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Account'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'SubscriberUpgradeKyc'));
+commit;
