@@ -1632,7 +1632,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(StringUtils.isNotBlank(cardPan)) {
 					validateAccountNumber(cardPan);
 				}
-				
+				mdn.setLastapppinchange(new Timestamp());
 				mdn.setSubscriber(s);
 				e.setStatus(CmFinoFIX.MDNStatus_Initialized);
 				e.setSubscriberType(CmFinoFIX.SubscriberType_Subscriber);
