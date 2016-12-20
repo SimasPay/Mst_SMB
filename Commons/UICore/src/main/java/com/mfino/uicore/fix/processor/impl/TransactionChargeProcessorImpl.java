@@ -216,7 +216,7 @@ public class TransactionChargeProcessorImpl extends BaseFixProcessor implements 
 		ChargeDefinition cd = cdDAO.getById(chargeDefinitionId);
 		TransactionCharge tc = null;
 		if (cd != null) {
-			if (cd.getChargeTypeByChargetypeid() != null) {
+			if (cd.getChargeTypeByDependantchargetypeid() != null) {
 				tc = dao.getTransactionCharge(transactionRuleId, cd.getChargeTypeByChargetypeid().getId().longValue());
 				exists = (tc != null && !(tc.getId().equals(transactionChargeId))) ? true : false;
 			} else {
