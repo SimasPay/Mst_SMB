@@ -148,6 +148,13 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 					bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Emoney_To_Bank);
 				}
+				
+				if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)) {
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER);
+					transactionName = ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER;
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+					bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_EMoney_EMoney_Trf);
+				}
 			}			
 			
 			if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
