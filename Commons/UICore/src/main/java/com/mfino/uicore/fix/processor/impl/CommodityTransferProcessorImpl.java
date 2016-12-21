@@ -223,7 +223,6 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
             // If not we will be doing a normal processing for earch record returned
             if (query.getSubTotalBy() == null) {
                 if (results != null || pendingResults != null) {
-
                     int size = 0;
                     int pendingSize = 0;
                     if (results != null) {
@@ -234,23 +233,23 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                     }
                     if (size > 0) {
                         for (int i = 0; i < size; i++) {
-                            CommodityTransfer c = results.get(i);
+                        	CommodityTransfer   ct = results.get(i);
                             CMJSCommodityTransfer.CGEntries entry =
                                     new CMJSCommodityTransfer.CGEntries();
                             entry.setTransferStateText(state);
                             //i-1 to handel when i=0 and all generated refereces should be negative
-                            commodityTransferUpdateMessage.updateMessage(c, null, entry,realMsg);
+                            commodityTransferUpdateMessage.updateMessage(ct,entry,realMsg);
                             realMsg.getEntries()[i] = entry;
                         }
                     }
                     if (pendingSize > 0) {
 
                         for (int i = size; i < (pendingSize + size); i++) {
-                            PendingCommodityTransfer c = pendingResults.get(i);
+                            PendingCommodityTransfer pct = pendingResults.get(i);
                             CMJSCommodityTransfer.CGEntries entry =
                                     new CMJSCommodityTransfer.CGEntries();
                             entry.setTransferStateText(state);
-                            commodityTransferUpdateMessage.updateMessage(new CommodityTransfer(), c, entry, realMsg);
+                            commodityTransferUpdateMessage.updateMessage(pct, entry, realMsg);
                             realMsg.getEntries()[i] = entry;
                         }
                     }

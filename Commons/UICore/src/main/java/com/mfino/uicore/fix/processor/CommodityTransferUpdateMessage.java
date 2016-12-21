@@ -5,7 +5,9 @@ import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.fix.CmFinoFIX.CMJSCommodityTransfer;
 
 public interface CommodityTransferUpdateMessage {
-	 public void updateMessage(CommodityTransfer c,
-	            PendingCommodityTransfer c2,
+	 public void updateMessage(CommodityTransfer ct,
 	            CMJSCommodityTransfer.CGEntries entry, CMJSCommodityTransfer realMsg) ;
+	 public void updateMessage(PendingCommodityTransfer pct,
+	            CMJSCommodityTransfer.CGEntries entry, CMJSCommodityTransfer realMsg) ;
+	 
 }

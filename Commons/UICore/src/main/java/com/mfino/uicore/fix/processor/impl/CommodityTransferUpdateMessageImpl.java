@@ -49,7 +49,6 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
     
 	@Transactional(readOnly=true, propagation = Propagation.REQUIRED)
     public void updateMessage(CommodityTransfer c,
-            PendingCommodityTransfer pct,
             CMJSCommodityTransfer.CGEntries entry, CMJSCommodityTransfer realMsg) {
 
         entry.setID(c.getId().longValue());
@@ -338,17 +337,7 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
                 entry.setLOPID(c.getLetterOfPurchase().getId().longValue());
             }
         }
-        if (pct != null) {
-            if (pct.getOperatoractionrequired() != null) {
-                entry.setOperatorActionRequired(pct.getOperatoractionrequired());
-            }
-            if (pct.getLocalrevertrequired() != null) {
-                entry.setLocalRevertRequired(pct.getLocalrevertrequired());
-            }
-            if (pct.getBankreversalrequired() != null) {
-                entry.setBankReversalRequired(pct.getBankreversalrequired());
-            }
-        }
+        
         if (c.getBulkuploadlinenumber() != null) {
             entry.setBulkUploadLineNumber(c.getBulkuploadlinenumber().intValue());
         }
@@ -421,7 +410,356 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
 //        entry.setBankCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankCodeForRouting, null, c.getBankCode()));
         entry.setRecordVersion(c.getVersion());
     }
-	
+	@Override
+	public void updateMessage(PendingCommodityTransfer pct, CGEntries entry,
+			CMJSCommodityTransfer realMsg) {
+
+        entry.setID(pct.getId().longValue());
+        entry.setTransactionID(pct.getTransactionLog().getId().longValue());
+        //      entry.setJSMsgType(c.getMsgType());
+        entry.setMSPID(pct.getMfinoServiceProvider().getId().longValue());
+        entry.setTransferStatus(pct.getTransferstatus());
+        if (pct.getTransferfailurereason() != null) {
+            entry.setTransferFailureReason(pct.getTransferfailurereason().intValue());
+        }
+        if (pct.getNotificationcode() != null) {
+            entry.setNotificationCode(pct.getNotificationcode().intValue());
+            String codeText = enumTextService.getEnumTextValue(CmFinoFIX.TagID_NotificationCode, null, pct.getNotificationcode());
+            entry.setNotificationCodeName(pct.getNotificationcode() + GeneralConstants.SINGLE_SPACE +(codeText!=null?codeText:""));
+        }
+        if (pct.getUicategory() != null) {
+            int type = pct.getUicategory().intValue();
+            entry.setTransactionUICategory(pct.getUicategory().intValue());
+           
+            ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
+    		Long sctlId = ctMapDao.getSCTLIdByCommodityTransferId(pct.getId().longValue());
+    		ServiceChargeTxnLog sctl = null;
+    		if (sctlId != null) {
+    			sctl = sctlDAO.getById(sctlId);
+    		}
+       		if(sctl != null){
+       			TransactionTypeDAO ttDAO = DAOFactory.getInstance().getTransactionTypeDAO();
+       			TransactionType tt = ttDAO.getById(sctl.getTransactiontypeid().longValue());
+       			entry.setTransactionTypeText(tt.getDisplayname());
+       		}else{
+       			entry.setTransactionTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, pct.getUicategory()));
+       		}
+       		// Added as part of GT Request to identify the internal transaction type like E-B, E-E, B-E, B-B
+       		entry.setInternalTxnType(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransactionUICategory, null, pct.getUicategory()));
+    		
+            if (type == CmFinoFIX.TransactionUICategory_Empty_SVA || type == CmFinoFIX.TransactionUICategory_MA_Transfer || type == CmFinoFIX.TransactionUICategory_MA_Topup || type == CmFinoFIX.TransactionUICategory_BulkTransfer || type == CmFinoFIX.TransactionUICategory_BulkTopup) {
+                if (pct.getSubscriber() != null && pct.getSubscriber().getMfinoUserBySubscriberuserid() != null) {
+                    entry.setSourceUserName(pct.getSubscriber().getMfinoUserBySubscriberuserid().getUsername());
+                }
+            }
+            if (type == CmFinoFIX.TransactionUICategory_Empty_SVA || type == CmFinoFIX.TransactionUICategory_Distribute_LOP || type == CmFinoFIX.TransactionUICategory_MA_Transfer || type == CmFinoFIX.TransactionUICategory_BulkTransfer) {
+                Long sId = pct.getDestsubscriberid().longValue();
+                SubscriberDAO subdao = DAOFactory.getInstance().getSubscriberDAO();
+                Subscriber sub = subdao.getById(sId);
+                if (sub != null) {
+                    if (sub.getMfinoUserBySubscriberuserid() != null) {
+                        entry.setDestinationUserName(sub.getMfinoUserBySubscriberuserid().getUsername());
+                    }
+                }
+            }
+        }
+        if (pct.getStarttime() != null) {
+            entry.setStartTime(pct.getStarttime());
+        }
+        if (pct.getEndtime() != null) {
+            entry.setEndTime(pct.getEndtime());
+        }
+        if (pct.getSourcereferenceid() != null) {
+            entry.setSourceReferenceID(pct.getSourcereferenceid());
+        }
+        if (pct.getDestmdn() != null) {
+            entry.setSourceMDN(pct.getDestmdn());
+        }
+        entry.setSourceMDNID(pct.getSubscriberMdn().getId().longValue());
+        entry.setSourceSubscriberID(pct.getSubscriber().getId().longValue());
+        if (pct.getSourcesubscribername() != null) {
+            entry.setSourceSubscriberName(pct.getSourcesubscribername());
+        }
+        entry.setSourcePocketType((pct.getSourcepockettype()).intValue());
+        entry.setSourcePocketID(pct.getPocket().getId().longValue());
+        if (pct.getSourcepocketbalance() != null) {
+            entry.setSourcePocketBalance(pct.getSourcepocketbalance());
+        }
+        if (pct.getPocket() != null && pct.getPocket().getPocketTemplateByPockettemplateid() != null) {
+            entry.setSourcePocketTemplateDescription(pct.getPocket().getPocketTemplateByPockettemplateid().getDescription());
+            if (pct.getSourcecardpan() != null) {
+//              entry.setSourceCardPAN(c.getSourceCardPAN());
+          	 entry.setSourceCardPAN(pct.getPocket().getCardpan()!=null?pct.getPocket().getCardpan():"");
+          }
+        }
+       
+        if (pct.getDestmdn() != null) {
+            entry.setDestMDN(pct.getDestmdn());
+        }
+        if (pct.getDestmdnid() != null) {
+            entry.setDestMDNID(pct.getDestmdnid().longValue());
+        }
+        if (pct.getDestsubscriberid() != null) {
+            entry.setDestSubscriberID(pct.getDestsubscriberid().longValue());
+        }
+        if (pct.getDestsubscribername() != null) {
+            entry.setDestSubscriberName(pct.getDestsubscribername());
+        } else {
+            if (pct.getDestmdn() != null) {
+                String mdn = pct.getDestmdn();
+                SubscriberMdn submdn = subMdnDao.getByMDN(mdn);
+                if (submdn != null) {
+                    entry.setDestSubscriberName(submdn.getSubscriber().getFirstname() + " " + submdn.getSubscriber().getLastname());
+                }
+            }
+        }
+        if (pct.getDestpockettype() != null) {
+            entry.setDestPocketType(pct.getDestpockettype().intValue());
+        }
+        if (pct.getDestpocketid() != null) {
+            entry.setDestPocketID(pct.getDestpocketid().longValue());
+        }
+        if (pct.getDestpocketbalance() != null) {
+            entry.setDestPocketBalance(pct.getDestpocketbalance());
+        }
+        if (pct.getDestpocketid() != null) {
+            Pocket destPocket = this.pocketDao.getById(pct.getDestpocketid().longValue());
+            if (destPocket != null && destPocket.getPocketTemplateByPockettemplateid() != null) {
+                entry.setDestPocketTemplateDescription(destPocket.getPocketTemplateByPockettemplateid().getDescription());
+            }
+            if (pct.getDestcardpan() != null) {
+//              entry.setDestCardPAN(c.getDestCardPAN());
+            	entry.setDestCardPAN(destPocket.getCardpan()!=null?destPocket.getCardpan():"");
+          }
+        }
+     
+        if (pct.getBillingtype() != null) {
+            entry.setBillingType(pct.getBillingtype().intValue());
+            entry.setBillingTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BillingType, null, pct.getBillingtype()));
+        }
+        if(realMsg.getIsMiniStatementRequest()!=null&&realMsg.getIsMiniStatementRequest()){
+        	entry.setServiceChargeTransactionLogID(ctMapDao.getSCTLIdByCommodityTransferId(pct.getId().longValue()));
+        	processCreditDebits(realMsg,pct,entry);
+        }
+        entry.setAmount(pct.getAmount());
+        entry.setCharges(pct.getCharges());
+        entry.setTaxAmount(pct.getTaxamount());
+        entry.setCommodity((pct.getCommodity()).intValue());
+        if (pct.getBuckettype() != null) {
+            entry.setBucketType(pct.getBuckettype());
+            entry.setBucketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BucketType, null, pct.getBuckettype()));
+        }
+        entry.setSourceApplication((pct.getSourceapplication()).intValue());
+        if (pct.getCurrency() != null) {
+            entry.setCurrency(pct.getCurrency());
+        }
+        if (pct.getBankcode() != null) {
+            entry.setBankCode(pct.getBankcode().intValue());
+        }
+        if (pct.getOperatorcode() != null) {
+            entry.setOperatorCode(pct.getOperatorcode().intValue());
+        }
+        if (pct.getOperatorresponsetime() != null) {
+            entry.setOperatorResponseTime(pct.getOperatorresponsetime());
+        }
+        if (pct.getOperatorresponsecode() != null) {
+            entry.setOperatorResponseCode(pct.getOperatorresponsecode().intValue());
+        }
+        if (pct.getBankrejectreason() != null) {
+            entry.setOperatorRejectReason(pct.getBankrejectreason());
+        }
+        if (pct.getOperatorerrortext() != null) {
+            entry.setOperatorErrorText(pct.getOperatorerrortext());
+        }
+        if (pct.getOperatorauthorizationcode() != null) {
+            entry.setOperatorAuthorizationCode(pct.getOperatorauthorizationcode());
+        }
+        if (pct.getBankretrievalreferencenumber() != null) {
+            entry.setBankRetrievalReferenceNumber(pct.getBankretrievalreferencenumber());
+        }
+        if (pct.getBanksystemtraceauditnumber() != null) {
+            entry.setBankSystemTraceAuditNumber(pct.getBanksystemtraceauditnumber());
+        }
+        if (pct.getBankresponsetime() != null) {
+            entry.setBankResponseTime(pct.getBankresponsetime());
+        }
+        if (pct.getBankresponsecode() != null) {
+            entry.setBankResponseCode(pct.getBankresponsecode().intValue());
+            entry.setBankResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankResponseCode, null, pct.getBankresponsecode()));
+        }
+        if (pct.getBankrejectreason() != null) {
+            entry.setBankRejectReason(pct.getBankrejectreason());
+        }
+        if (pct.getBankerrortext() != null) {
+            entry.setBankErrorText(pct.getBankerrortext());
+        }
+        if (pct.getBankauthorizationcode() != null) {
+            entry.setBankAuthorizationCode(pct.getBankauthorizationcode());
+        }
+        if (pct.getLastupdatetime() != null) {
+            entry.setLastUpdateTime(pct.getLastupdatetime());
+        }
+        if (pct.getUpdatedby() != null) {
+            entry.setUpdatedBy(pct.getUpdatedby());
+        }
+        if (pct.getReversalcount() != null) {
+            entry.setReversalCount(pct.getReversalcount().intValue());
+        }
+        if (pct.getDistributionChainLvl() != null) {
+            entry.setDistributionLevel(((Long)pct.getDistributionChainLvl().getDistributionlevel()).intValue());
+        }
+        if (pct.getSourcemessage() != null) {
+            entry.setSourceMessage(pct.getSourcemessage());
+        }
+        if (pct.getSourceip() != null) {
+            entry.setSourceIP(pct.getSourceip());
+        }
+        if (pct.getSourceterminalid() != null) {
+            entry.setSourceTerminalID(pct.getSourceterminalid());
+        }
+        if (pct.getServletpath() != null) {
+            entry.setServletPath(pct.getServletpath());
+        }
+        if (pct.getLevelpermissions() != null) {
+            entry.setLevelPermissions(pct.getLevelpermissions().intValue());
+            entry.setLevelPermissionsText(enumTextService.getLevelPermissionsText(pct.getLevelpermissions().intValue()));
+        }
+        if (pct.getTopupperiod() != null) {
+            entry.setTopupPeriod(pct.getTopupperiod().longValue());
+        }
+        if (pct.getBankreversalresponsetime() != null) {
+            entry.setBankReversalResponseTime(pct.getBankreversalresponsetime());
+        }
+        if (pct.getBankreversalresponsecode() != null) {
+            entry.setBankReversalResponseCode(pct.getBankreversalresponsecode().intValue());
+            entry.setBankReversalResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankReversalResponseCode, null, pct.getBankreversalresponsecode()));
+        }
+        if (pct.getBankreversalrejectreason() != null) {
+            entry.setBankReversalRejectReason(pct.getBankreversalrejectreason());
+            entry.setBankReversalRejectReasonText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BankReversalRejectReason, null, pct.getBankreversalrejectreason()));
+        }
+        if (pct.getBankreversalerrortext() != null) {
+            entry.setBankReversalErrorText(pct.getBankreversalerrortext());
+        }
+        if (pct.getBankreversalauthorizationcode() != null) {
+            entry.setBankReversalAuthorizationCode(pct.getBankreversalauthorizationcode());
+        }
+        if (pct.getCsraction() != null) {
+            entry.setCSRAction(pct.getCsraction().intValue());
+            entry.setCSRActionText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_CSRAction, null, pct.getCsraction()));
+        }
+        if (pct.getCsractiontime() != null) {
+            entry.setCSRActionTime(pct.getCsractiontime());
+        }
+        if (pct.getCsruserid() != null) {
+            entry.setCSRUserID(pct.getCsruserid().longValue());
+        }
+        if (pct.getCsrusername() != null) {
+            entry.setCSRUserName(pct.getCsrusername());
+        }
+        if (pct.getCsrcomment() != null) {
+            entry.setCSRComment(pct.getCsrcomment());
+        }
+        if (pct.getIso8583Processingcode() != null) {
+            entry.setISO8583_ProcessingCode(pct.getIso8583Processingcode());
+            entry.setISO8583_ProcessingCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ISO8583_ProcessingCode, null, pct.getIso8583Processingcode()));
+        }
+        if (pct.getIso8583Systemtraceauditnumber() != null) {
+            entry.setISO8583_SystemTraceAuditNumber(pct.getIso8583Systemtraceauditnumber());
+        }
+        if (null != pct.getIso8583Retrievalreferencenum()) {
+            entry.setISO8583_RetrievalReferenceNum(pct.getIso8583Retrievalreferencenum());
+        }
+        if (pct.getIso8583Localtxntimehhmmss() != null) {
+            entry.setISO8583_LocalTxnTimeHhmmss(pct.getIso8583Localtxntimehhmmss());
+        }
+        if (pct.getIso8583Merchanttype() != null) {
+            entry.setISO8583_MerchantType(pct.getIso8583Merchanttype());
+            entry.setISO8583_MerchantTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ISO8583_MerchantType, null, pct.getIso8583Merchanttype()));
+        }
+        if (pct.getIso8583Acquiringinstidcode() != null) {
+            entry.setISO8583_AcquiringInstIdCode(pct.getIso8583Acquiringinstidcode().intValue());
+            entry.setISO8583_AcquiringInstitutionIdentificationCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ISO8583_AcquiringInstIdCode, null, pct.getIso8583Acquiringinstidcode()));
+        }
+        if (pct.getIso8583Cardacceptoridcode() != null) {
+            entry.setISO8583_CardAcceptorIdCode(pct.getIso8583Cardacceptoridcode());
+        }
+        if (pct.getIso8583Variant() != null) {
+            entry.setISO8583_Variant(pct.getIso8583Variant());
+            entry.setISO8583_VariantText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ISO8583_Variant, null, pct.getIso8583Variant()));
+        }
+        if (pct.getIso8583Responsecode() != null) {
+            entry.setISO8583_ResponseCode(pct.getIso8583Responsecode());
+            entry.setISO8583_ResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_ISO8583_ResponseCode, null, pct.getIso8583Responsecode()));
+        }
+        if (pct.getLetterOfPurchase() != null) {
+            if (pct.getLetterOfPurchase().getActualamountpaid() != null) {
+                entry.setPaidAmount(pct.getLetterOfPurchase().getActualamountpaid());
+            }
+            if (pct.getLetterOfPurchase().getId() != null) {
+                entry.setLOPID(pct.getLetterOfPurchase().getId().longValue());
+            }
+        }
+        if (pct.getOperatoractionrequired() != null) {
+            entry.setOperatorActionRequired(pct.getOperatoractionrequired());
+        }
+        if (pct.getLocalrevertrequired() != null) {
+            entry.setLocalRevertRequired(pct.getLocalrevertrequired());
+        }
+        if (pct.getBankreversalrequired() != null) {
+            entry.setBankReversalRequired(pct.getBankreversalrequired());
+        }
+        if (pct.getBulkuploadlinenumber() != null) {
+            entry.setBulkUploadLineNumber(pct.getBulkuploadlinenumber().intValue());
+        }
+        if (pct.getBulkuploadid() != null) {
+            entry.setBulkUploadID(pct.getBulkuploadid().longValue());
+        }
+        if (pct.getOperatorreversalcount() != null) {
+            entry.setOperatorReversalCount(pct.getOperatorreversalcount().intValue());
+        }
+        if (pct.getOperatorreversalerrortext() != null) {
+            entry.setOperatorReversalErrorText(pct.getOperatorreversalerrortext());
+        }
+        if (pct.getOperatorreversalrejectreason() != null) {
+            entry.setOperatorReversalRejectReason(pct.getOperatorreversalrejectreason());
+        }
+        if (pct.getOperatorreversalresponsecode() != null) {
+            entry.setOperatorReversalResponseCode(pct.getOperatorreversalresponsecode().intValue());
+            entry.setOperatorReversalResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorReversalResponseCode, null, pct.getOperatorreversalresponsecode()));
+        }
+        if (pct.getOperatorreversalresponsetime() != null) {
+            entry.setOperatorReversalResponseTime(pct.getOperatorreversalresponsetime());
+        }
+
+        if (pct.getOperatorrrn() != null) {
+            entry.setOperatorRRN(pct.getOperatorrrn());
+        }
+        if (pct.getOperatorstan() != null) {
+            entry.setOperatorSTAN(pct.getOperatorstan());
+        }
+        if (pct.getCreditCardTransaction() != null && pct.getCreditCardTransaction().getId() != null) {
+            entry.setCreditCardTransactionID(pct.getCreditCardTransaction().getId().longValue());
+        }
+        if (pct.getProductindicatorcode() != null) {
+            entry.setProductIndicatorCode(pct.getProductindicatorcode());
+        }
+        entry.setCreateTime(pct.getCreatetime());
+        entry.setCreatedBy(pct.getCreatedby());
+
+        entry.setAmountText(pct.getAmount() + GeneralConstants.SINGLE_SPACE + pct.getCurrency());
+        entry.setTransferStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferStatus, null, pct.getTransferstatus()));
+        entry.setCommodityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Commodity, null, pct.getCommodity()));
+        entry.setAccessMethodText(channelCodeService.getChannelNameBySourceApplication((pct.getSourceapplication()).intValue()));
+        entry.setTransferFailureReasonText(CmFinoFIX.TransferStatus_Completed.equals(pct.getTransferstatus())?"":enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, pct.getTransferfailurereason()));
+        entry.setSourcePocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SourcePocketType, null, pct.getSourcepockettype()));
+        entry.setDestPocketTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_DestPocketType, null, pct.getDestpockettype()));
+        entry.setOperatorResponseCodeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorResponseCode, null, pct.getOperatorresponsecode()));
+        entry.setOperatorCodeForRoutingText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_OperatorCodeForRouting, null, pct.getOperatorcode()));
+        entry.setRecordVersion(pct.getVersion());
+    
+		
+	}
 	private void processCreditDebits(CMJSCommodityTransfer realMsg, CommodityTransfer c, CGEntries entry) {
     	entry.setTransactionID(c.getId().longValue());
     	if(realMsg.getSourceDestnPocketID()!=null){
@@ -480,4 +818,65 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
            }
         }
 	}
+	
+	private void processCreditDebits(CMJSCommodityTransfer realMsg, PendingCommodityTransfer c, CGEntries entry) {
+    	entry.setTransactionID(c.getId().longValue());
+    	if(realMsg.getSourceDestnPocketID()!=null){
+    		if(c.getPocket() != null
+    				&&c.getPocket().getId().equals(realMsg.getSourceDestnPocketID())){
+    			entry.setDebitAmount(c.getAmount().add(c.getCharges()));
+    			entry.setCreditAmount(null);
+    			if(c.getSourcepocketbalance()!=null){
+    			if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+    			entry.setSourcePocketClosingBalance(c.getSourcepocketbalance().subtract(entry.getDebitAmount()));
+    			}else{
+    				entry.setSourcePocketClosingBalance(c.getSourcepocketbalance());
+    			}
+    			}
+    		}else if(realMsg.getSourceDestnPocketID().equals(c.getDestpocketid())){
+    			entry.setCreditAmount(c.getAmount());
+    			entry.setDebitAmount(null);
+    			if(c.getDestpocketbalance()!=null){
+    			if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+        			entry.setDestPocketClosingBalance(c.getDestpocketbalance().add(entry.getCreditAmount()));
+        			}else{
+        				entry.setDestPocketClosingBalance(c.getDestpocketbalance());
+        			}
+    			}
+    		}
+    	}else  if (realMsg.getSourceDestMDNAndID() != null) {
+            String[] mdnAndID = realMsg.getSourceDestMDNAndID().split(",");
+            Long mdnID = null;
+            String mdn = null;
+            if (mdnAndID.length == 2 && StringUtils.isNumeric(mdnAndID[1])) {
+               mdnID = NumberUtils.toLong(mdnAndID[1]);
+               mdn = mdnAndID[0];
+            }
+           if(c.getSubscriberMdn().getId().equals(mdnID)
+        		   ||(c.getSourcemdn()!=null&&c.getSourcemdn().equals(mdn))){
+        	   entry.setDebitAmount(c.getAmount().add(c.getCharges()));
+        	   entry.setCreditAmount(null);
+        	   if(c.getSourcepocketbalance()!=null){
+        		if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+        			entry.setSourcePocketClosingBalance(c.getSourcepocketbalance().subtract(entry.getDebitAmount()));
+        			}else{
+        				entry.setSourcePocketClosingBalance(c.getSourcepocketbalance());
+        			}
+        	   }
+           }else if((c.getDestmdnid()!=null&&c.getDestmdnid().equals(mdnID))
+        		   ||(c.getDestmdn()!=null&&c.getDestmdn().equals(mdn))){
+        	   entry.setCreditAmount(c.getAmount());
+        	   entry.setDebitAmount(null);
+        	   if(c.getDestpocketbalance()!=null){
+        	   if((c.getTransferstatus()).equals(CmFinoFIX.TransactionsTransferStatus_Completed)){
+       			entry.setDestPocketClosingBalance(c.getDestpocketbalance().add(entry.getCreditAmount()));
+       			}else{
+       				entry.setDestPocketClosingBalance(c.getDestpocketbalance());
+       			}
+        	   }
+           }
+        }
+	}
+
+	
 }

@@ -147,7 +147,7 @@ public class BankTellerCashOutInquiryProcessorImpl extends
 			}
 			realMsg.allocateEntries(1);			
 			CMJSCommodityTransfer.CGEntries entry = new CMJSCommodityTransfer.CGEntries();
-			commodityTransferUpdateMessage.updateMessage(ct, null, entry, realMsg);
+			commodityTransferUpdateMessage.updateMessage(ct, entry, realMsg);
 			entry.setTransferStateText(CmFinoFIX.TransferStateValue_Complete);
 			realMsg.getEntries()[0] = entry;
 		}else{
