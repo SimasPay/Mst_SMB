@@ -49,13 +49,13 @@ public class ChargeTransactionsViewProcessorImpl extends BaseFixProcessor implem
 						 Long id = ctxn.getCommoditytransferid().longValue();
 						 CommodityTransfer ct = ctDao.getById(id);
 						 if(ct!=null){
-							 commodityTransferUpdateMessage.updateMessage(ct, null, entry, realMsg);
+							 commodityTransferUpdateMessage.updateMessage(ct, entry, realMsg);
 							realMsg.getEntries()[i]=entry;
 							i++;
 						 }else{
 							 PendingCommodityTransfer pct = pctDao.getById(id);
 							 if(pct!=null){
-								 commodityTransferUpdateMessage.updateMessage(new CommodityTransfer(), pct, entry, realMsg);
+								 commodityTransferUpdateMessage.updateMessage(pct, entry, realMsg);
 								 entry.setTransferStatusText("Pending -"+entry.getTransferStatusText());
 								realMsg.getEntries()[i]=entry;
 								i++;

@@ -24,7 +24,7 @@ public class NlogDetails extends Base implements java.io.Serializable {
 	public static final String FieldName_NotificationLog = "notificationLog";
 	public static final String FieldName_SendNotificationStatus = "status";
 	private NotificationLog notificationLog;
-	private long status;
+	private Integer status;
 	private Long id;
 
 	public NlogDetails() {
@@ -54,11 +54,11 @@ public class NlogDetails extends Base implements java.io.Serializable {
 
 	
 	@Column(name = "STATUS", nullable = false, precision = 10, scale = 0)
-	public long getStatus() {
+	public Integer getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
