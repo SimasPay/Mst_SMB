@@ -281,7 +281,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			query2.setCommodityTransferID(ctId);
 			List<ChargetxnTransferMap> ctxnMap = cTxnCommodityTransferMapDAO.get(query2);
 			if(ctxnMap!=null&&!ctxnMap.isEmpty()){
-				return ctxnMap.get(0).getId().longValue();
+				return ctxnMap.get(0).getSctlid();
 			}
 		}
 		return null;
