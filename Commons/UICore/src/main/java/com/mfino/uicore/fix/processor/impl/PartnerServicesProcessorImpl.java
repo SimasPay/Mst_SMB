@@ -68,7 +68,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
  		}
 		
 		if (e.getPartnerID() != null) {
-			if(ps.getPartnerByParentid()==null || !e.getPartnerID().equals(ps.getPartnerByParentid().getId())){
+			if(ps.getPartnerByPartnerid()==null || !e.getPartnerID().equals(ps.getPartnerByPartnerid().getId())){
 				log.info("Partner Services ID: " + ps.getId() + " Partner ID updated to "+ e.getPartnerID() +" by user:"+getLoggedUserNameWithIP());
         	}
 			ps.setPartnerByPartnerid(pDAO.getById(e.getPartnerID()));
@@ -201,8 +201,8 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			}
 		}
 		
-		if (ps.getPartnerByParentid() != null) {
-			e.setPartnerID(ps.getPartnerByParentid().getId().longValue());
+		if (ps.getPartnerByPartnerid() != null) {
+			e.setPartnerID(ps.getPartnerByPartnerid().getId());
 		}
 		
 		if (ps.getPartnerByParentid() != null) {
@@ -317,11 +317,11 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 				}
 				
 				if (e.getPartnerID() == null) {
-					e.setPartnerID(ps.getPartnerByParentid().getId().longValue());
+					e.setPartnerID(ps.getPartnerByPartnerid().getId());
 				}
 				
 				if (e.getPartnerServiceStatus() == CmFinoFIX.PartnerServiceStatus_Active) {
-					if(!CmFinoFIX.SubscriberStatus_Active.equals(ps.getPartnerByParentid().getPartnerstatus())){
+					if(!CmFinoFIX.SubscriberStatus_Active.equals(ps.getPartnerByPartnerid().getPartnerstatus())){
 						return generateError(3, null);
 					}
 					if (!validatePockets(ps)) {
