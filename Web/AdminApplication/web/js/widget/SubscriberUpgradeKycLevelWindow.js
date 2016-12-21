@@ -315,10 +315,13 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     setStore : function(store){
         this.store = store;
     },
-    setDetails : function(response, mdnid){
+    setDetails : function(response, mdnid, existingEmail, existingfullName){
         this.form.reset();
     	this.form.items.get("subupgradekyc.form.displayfield.idpath").hide();
     	this.form.items.get("subupgradekyc.form.mdnid").setValue(mdnid);
+    	this.form.items.get("subupgradekyc.form.fullname").setValue(existingfullName);
+    	this.form.items.get("subupgradekyc.form.email").setValue(existingEmail);
+    	
     	if(response.m_ptotal > 0){
     		var d = response.m_pEntries[0].m_pDateOfBirth.m_Date;
     		var month = '' + (d.getMonth() + 1);

@@ -529,12 +529,14 @@ mFino.page.subscriber = function(config){
                         amsg.m_pID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
                         amsg.m_paction = "default";
                         var params = mFino.util.showResponse.getDisplayParam();
+                        var existingEmail =  detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Email._name);
+                        var existingfullName =  detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name);
                         mFino.util.fix.send(amsg, params);
                         Ext.apply(params, {
                 			success :  function(response){
                 				if(response.m_psuccess == true){
                 					subscriberUpgradeKycLevelWindow.show();
-                					subscriberUpgradeKycLevelWindow.form.setDetails(response, amsg.m_pID); 
+                					subscriberUpgradeKycLevelWindow.form.setDetails(response, amsg.m_pID, existingEmail, existingfullName); 
                 			   }else{
                 				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
                 			   }
