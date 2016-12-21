@@ -40,6 +40,7 @@ import com.mfino.transactionapi.handlers.money.TransferToUangkuInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 
 
 /**
@@ -168,7 +169,7 @@ public class TransferToUangkuInquiryHandlerImpl extends FIXMessageHandler implem
 		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		
-		String uangkuPrefix = systemParametersService.getString(SystemParameterKeys.TRANSFER_TO_UANGKU_PREFIX_NUMBER);
+		String uangkuPrefix = ConfigurationUtil.getTransferToUangkuPrefixNumber();
 
 		if(transactionDetails.getDestinationBankAccountNo() != null){
 			sc.setOnBeHalfOfMDN(uangkuPrefix + transactionDetails.getDestinationBankAccountNo());

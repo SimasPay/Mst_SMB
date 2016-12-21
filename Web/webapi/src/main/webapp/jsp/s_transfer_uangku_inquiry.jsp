@@ -51,10 +51,6 @@
 		<td><input type="text" name="channelID" value="" /></td>
 	</tr>
 	<tr>
-		
-		<td><input type="hidden" name="bankID" value="" /></td>
-	</tr>
-	<tr>
 		<td>SourcePocketCode</td>
 		<td>
 			<select name="sourcePocketCode">

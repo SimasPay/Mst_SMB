@@ -3,20 +3,16 @@
  */
 package com.mfino.transactionapi.service.impl;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
-import com.mfino.domain.ChannelCode;
 import com.mfino.exceptions.InvalidDataException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
-import com.mfino.service.MFAService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.handlers.money.InterBankTransferHandler;
@@ -60,7 +56,6 @@ import com.mfino.transactionapi.vo.TransactionDetails;
  */
 @Service("WalletAPIServiceImpl")
 public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPIService{
-	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	@Qualifier("CheckBalanceHandlerImpl")
@@ -166,10 +161,6 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Qualifier("ResendMFAOTPHandlerImpl")
 	private ResendMFAOTPHandler resendMFAOTPHandler;
 	
-	@Autowired
-	@Qualifier("MFAServiceImpl")
-	private MFAService mfaService;
-	
 	private static final String MAX_NO_OF_RECORDS = "15000";
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
@@ -179,7 +170,6 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 		String destMDN = transactionDetails.getDestMDN();
 		transactionDetails.setDestMDN( subscriberService.normalizeMDN(destMDN));
 		String sourceMessage = transactionDetails.getSourceMessage();
-		ChannelCode channelCode = transactionDetails.getCc();
 
 		if (ServiceAndTransactionConstants.TRANSACTION_CHECKBALANCE.equals(transactionName)) {
 		
@@ -362,6 +352,20 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			
 			xmlResult = (XMLResult) resendMFAOTPHandler.handle(transactionDetails);
 		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU_INQUIRY.equalsIgnoreCase(transactionName)){
+			transactionRequestValidationService.validateTransferToUangkuInquiryDetails(transactionDetails);
+			if (StringUtils.isBlank(sourceMessage)) {
+				sourceMessage = ServiceAndTransactionConstants.MESSAGE_TRANSFER_TO_UANGKU;
+				transactionDetails.setSourceMessage(sourceMessage);
+			}
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
+			xmlResult = (XMLResult) transferToUangkuInquiryHandler.handle(transactionDetails);
+		} 
+		else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU.equalsIgnoreCase(transactionName)){
+			transactionRequestValidationService.validateTransferToUangkuConfirmDetails(transactionDetails);
+			transactionDetails.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU);
+			xmlResult = (XMLResult) transferToUangkuHandler.handle(transactionDetails);
+		}		
 		else
 		{
 			xmlResult = new XMLResult();
