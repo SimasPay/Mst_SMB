@@ -177,7 +177,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		}
 		
 		boolean isEMoneyPocketRequired = ConfigurationUtil.getIsEMoneyPocketRequired();
-		
+		boolean islakuPocketRequired =false;
 		PocketTemplate emoneyPocketTemplate = null;
 		PocketTemplate lakuPocketTemplate = null;
 		
@@ -197,7 +197,12 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 		}
 		
         bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+    
         
+        if((partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_DirectAgent))||
+    		 (partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_SuperAgent))||
+    		 (partner.getBusinesspartnertype().equals(CmFinoFIX.BusinessPartnerType_SubRetailAgent)))
+     {
         lakuPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(subscriber.getKycLevel().getKyclevel().longValue(), true, 
         		CmFinoFIX.PocketType_LakuPandai, subscriber.getType(), partner.getBusinesspartnertype().intValue(), groupID);
 		
@@ -207,7 +212,8 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
             errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
             return errorMsg;
          }
-       
+		islakuPocketRequired=true;
+     }
         log.info("Admin action -- " + realMsg.getAdminAction()+" for PartnerID"+realMsg.getPartnerID());
         
         lakuPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_LakuPandai, CmFinoFIX.Commodity_Money);
@@ -225,7 +231,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
 	                 return errorMsg;
 	             }
     		}
-    		
+    		if(islakuPocketRequired==true){
     		if(lakuPocket == null||
         			!((lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
         			(lakuPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))){
@@ -234,7 +240,7 @@ public class ApproveRejectPartnerProcessorImpl extends BaseFixProcessor implemen
                  errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
                  return errorMsg;
              }
-    		
+    		}
             if(bankPocket== null||
          			!((bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Initialized)||
          					(bankPocket.getStatus()).equals(CmFinoFIX.PocketStatus_Active))
