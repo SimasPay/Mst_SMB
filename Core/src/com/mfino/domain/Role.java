@@ -27,7 +27,7 @@ public class Role extends Base implements java.io.Serializable {
 	private String enumvalue;
 	private String displaytext;
 	private Boolean issystemuser;
-	private Short prioritylevel;
+	private Integer prioritylevel;
 	private Long id;
 
 	public Role() {
@@ -82,11 +82,11 @@ public class Role extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "PRIORITYLEVEL", precision = 3, scale = 0)
-	public Short getPrioritylevel() {
+	public Integer getPrioritylevel() {
 		return this.prioritylevel;
 	}
 
-	public void setPrioritylevel(Short prioritylevel) {
+	public void setPrioritylevel(Integer prioritylevel) {
 		this.prioritylevel = prioritylevel;
 	}
 

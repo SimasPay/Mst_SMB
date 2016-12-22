@@ -113,12 +113,12 @@ public class RoleProcessorImpl extends BaseFixProcessor implements RoleProcessor
 	
 	private void updateEntity(Role role, CMJSRole.CGEntries e) {		
 		if(e.getPriorityLevel() != null) {
-			role.setPrioritylevel(e.getPriorityLevel().shortValue());
+			role.setPrioritylevel(e.getPriorityLevel());
 		}
 		if(e.getDisplayText() != null) {
 			role.setDisplaytext(e.getDisplayText());
 		}
-		role.setIssystemuser(e.getIsSystemUser());		
+		role.setIssystemuser((e.getIsSystemUser() == null) ? true : e.getIsSystemUser());		
 	}
 
 	private void updateMessage(Role r, CMJSRole.CGEntries e) {
