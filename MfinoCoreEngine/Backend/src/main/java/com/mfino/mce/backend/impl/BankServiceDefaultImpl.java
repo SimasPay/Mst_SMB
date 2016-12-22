@@ -835,8 +835,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 										.equals(objDestPocket
 												.getPocketTemplateByPockettemplateid().getType()) || isLakupandaiPocketType(objDestPocket)) {
 									inquiryToBank
-											.setDestCardPAN(coreDataWrapper
-													.getGlobalAccountNumber());
+											.setDestCardPAN(ConfigurationUtil.getCodeForTransferUsingEMoney()+requestFix.getDestMDN());
 									inquiryToBank
 											.setDestinationBankAccountType(""
 													+ CmFinoFIX.BankAccountType_Lakupandai);
@@ -1933,8 +1932,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 													.copy(confirmationToBank);
 											moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
                                             moneyTransferToBank.setLanguage((int)objSourceSubscriber.getLanguage());
-											moneyTransferToBank
-													.setAmount(transferAmountWithCharges);
+											moneyTransferToBank.setAmount(pct.getAmount());
+											moneyTransferToBank.setServiceChargeAmount(pct.getCharges());
 											moneyTransferToBank.setBankCode(pct
 													.getBankcode().intValue());
 											moneyTransferToBank
@@ -1965,11 +1964,9 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 													.setTransferTime(ts);
 
 											moneyTransferToBank
-													.setDestCardPAN(coreDataWrapper
-															.getGlobalAccountNumber());
+													.setDestCardPAN(ConfigurationUtil.getCodeForTransferUsingEMoney()+confirmationToBank.getDestMDN());
 											moneyTransferToBank
-													.setDestinationBankAccountType(""
-															+ CmFinoFIX.BankAccountType_Lakupandai);
+													.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_Lakupandai);
 											moneyTransferToBank
 													.setOriginalReferenceID(confirmationToBank
 															.getOriginalReferenceID());
@@ -1977,16 +1974,15 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												moneyTransferToBank.setINTxnId(confirmationToBank.getINTxnId());
 											}
 											if (CmFinoFIX.BankAccountCardType_SavingsAccount
-													.equals(objSrcPocket
-															.getPocketTemplateByPockettemplateid()
-															.getBankaccountcardtype())) {
-												moneyTransferToBank
-														.setSourceBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Saving);
-											} else {
-												moneyTransferToBank
-														.setSourceBankAccountType(""
-																+ CmFinoFIX.BankAccountType_Checking);
+													.equals(objSrcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+												moneyTransferToBank.setSourceBankAccountType("" + CmFinoFIX.BankAccountType_Saving);
+											}
+                                            else if (CmFinoFIX.BankAccountCardType_CheckingAccount
+                                                    .equals(objSrcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
+                                                moneyTransferToBank.setSourceBankAccountType("" + CmFinoFIX.BankAccountType_Checking);
+                                            }											
+											else {
+												moneyTransferToBank.setSourceBankAccountType(""	+ CmFinoFIX.BankAccountType_UnSpecified);
 											}
 
 //											if (CmFinoFIX.BankAccountCardType_SavingsAccount

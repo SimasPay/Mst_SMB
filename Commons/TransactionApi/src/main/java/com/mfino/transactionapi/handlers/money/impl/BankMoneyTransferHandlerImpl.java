@@ -26,7 +26,6 @@ import com.mfino.result.XMLResult;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.MFAService;
 import com.mfino.service.PocketService;
-import com.mfino.service.SCTLService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.TransactionChargingService;
@@ -48,6 +47,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 	private MFAService mfaService;
 	
 	private static Logger log = LoggerFactory.getLogger(BankMoneyTransferHandlerImpl.class);
+	private String transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
 	
 	@Autowired
 	@Qualifier("CommodityTransferServiceImpl")
@@ -56,10 +56,6 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
 	private TransactionApiValidationService transactionApiValidationService;
-	
-	@Autowired
-	@Qualifier("SCTLServiceImpl")
-	private SCTLService sctlService;
 	
 	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
@@ -107,15 +103,6 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		log.info("Handling Bank Account transfer confirmation WebAPI request");
 		
 		XMLResult result = new MoneyTransferXMLResult();
-		
-		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(transferConfirmation.getParentTransactionID());
-
-		if(mfaService.isMFATransaction(serviceName, ServiceAndTransactionConstants.TRANSACTION_TRANSFER, channelCodeId)){
-			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp, sctlForMFA.getId().longValue(), transferConfirmation.getSourceMDN()))){
-				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
-				return result;
-			}
-		}
 
 		TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_BankAccountToBankAccountConfirmation,transferConfirmation.DumpFields(), transferConfirmation.getParentTransactionID());
 		transferConfirmation.setTransactionID(transactionsLog.getId().longValue());
@@ -195,7 +182,7 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 			}
 		}
 		
-		validationResult = transactionApiValidationService.validateSourcePocket(destPocket);
+		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Destination pocket with id "+(destPocket!=null? destPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
@@ -221,6 +208,24 @@ public class BankMoneyTransferHandlerImpl extends FIXMessageHandler implements B
 		}		
 		
 		transferConfirmation.setServiceChargeTransactionLogID(sctl.getId().longValue());
+		
+		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
+			if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
+			}
+			else if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER;
+			}
+			else if (destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER;
+			}
+		}
+		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionName, cc.getId())){
+			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctl.getId(), sourceMDN.getMdn()))){
+				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
+				return result;
+			}
+		}		
 		
 		CFIXMsg response = super.process(transferConfirmation);
 		
