@@ -41,6 +41,8 @@
 	<osgi:reference id="subGroupService" bean-name="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService" />
 	<osgi:reference id="mFinoServiceProviderService" bean-name="MfinoServiceProviderServiceImpl" interface="com.mfino.service.MfinoServiceProviderService" />
 	<osgi:reference id="notificationMessageParserService" bean-name="NotificationMessageParserServiceImpl" interface="com.mfino.service.NotificationMessageParserService" />
+	<osgi:reference id="bankService" interface="com.mfino.mce.backend.BankService"/>
+	<osgi:reference id="sctlService" interface="com.mfino.service.SCTLService"/>
 		
 	<bean id="atmRequestHandler" class="com.mfino.bsim.iso8583.handlers.ATMRequestHandler" factory-method="createInstance">
 		<property name="htm" ref="txManager" />
@@ -77,6 +79,23 @@
 		<property name="systemParametersService" ref="systemParametersService" />
 		<property name="notificationService" ref="notificationService" />
 		<property name="pocketService" ref="pocketService" />
+	</bean>
+	<bean id="cashInInquiryHandler" class="com.mfino.bsim.iso8583.handlers.CashinInquiryHandler" factory-method="createInstance">
+		<property name="htm" ref="txManager" />
+		<property name="subscriberService" ref="subscriberService" />
+		<property name="transactionLogService" ref="transactionLogService" />
+		<property name="subscriberMdnService" ref="subscriberMdnService" />
+	</bean>
+	<bean id="cashInHandler" class="com.mfino.bsim.iso8583.handlers.CashinHandler" factory-method="createInstance">
+		<property name="htm" ref="txManager" />
+		<property name="subscriberService" ref="subscriberService" />
+		<property name="transactionLogService" ref="transactionLogService" />
+		<property name="subscriberMdnService" ref="subscriberMdnService" />
+		<property name="transactionChargingService" ref="transactionChargingService" />
+		<property name="pocketService" ref="pocketService" />
+		<property name="notificationService" ref="notificationService" />
+		<property name="bankService" ref="bankService" />
+		<property name="sctlService" ref="sctlService" />
 	</bean>
 	<!-- bean id="keyExchangeHandler" class="com.mfino.bsim.iso8583.nm.KeyExchangeHandler" factory-method="createInstance">
 	<property name="htm" ref="txManager" />

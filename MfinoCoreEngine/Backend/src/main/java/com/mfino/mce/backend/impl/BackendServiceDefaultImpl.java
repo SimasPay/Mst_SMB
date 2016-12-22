@@ -33,6 +33,7 @@ import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
 import com.mfino.fix.CmFinoFIX.CMBase;
 import com.mfino.fix.CmFinoFIX.CMBulkDistribution;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
+import com.mfino.fix.CmFinoFIX.CMCashInFromATM;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
 import com.mfino.fix.CmFinoFIX.CMCashOutAtATM;
@@ -382,6 +383,10 @@ public class BackendServiceDefaultImpl extends BaseServiceImpl implements Backen
 				else if(baseMessage instanceof CMGetSubscriberDetailsFromBank)
 				{
 					returnFix = bankService.onGetSubscriberDetailsFromBank((CMGetSubscriberDetailsToBank)requestFix, (CMGetSubscriberDetailsFromBank)responseFix);
+					
+				} else if(baseMessage instanceof CMCashInFromATM){
+					
+					returnFix = bankService.onCashInFromATM((CMCashInFromATM)baseMessage);
 				}
 				else
 				{

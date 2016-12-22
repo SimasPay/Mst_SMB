@@ -49,6 +49,7 @@ import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
 import com.mfino.fix.CmFinoFIX.CMBulkDistribution;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
+import com.mfino.fix.CmFinoFIX.CMCashInFromATM;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
 import com.mfino.fix.CmFinoFIX.CMCashOutAtATM;
@@ -2984,6 +2985,202 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 			return isoFix;
 		}
 
+		return returnFix;
+	}
+	
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW)
+	public CFIXMsg onCashInFromATM(CMCashInFromATM cashinfromAtm) {
+
+		log.info("BankServiceDefaultImpl :: onCashInFromATM BEGIN");
+
+		BackendResponse returnFix = createResponseObject();
+
+		BigDecimal amount = cashinfromAtm.getAmount();
+		SubscriberMdn sourceSubcriberMdn;
+		Subscriber sourceSubscriber;
+		Subscriber destinationSubscriber;
+		SubscriberMdn destinationSubcriberMdn;
+		Pocket destinationPocket;
+		
+		PendingCommodityTransfer pct = null;		
+		Pocket sourcePocket = coreDataWrapper.getGlobalSVAPocket();
+		
+		if(sourcePocket == null) {
+			
+			returnFix.setInternalErrorCode(NotificationCodes.DefaultBankAccountPocketNotFound.getInternalErrorCode());
+		}
+		
+		if (isNullorZero(returnFix.getInternalErrorCode())) {
+		
+			sourceSubcriberMdn = sourcePocket.getSubscriberMdn();
+			sourceSubscriber = sourceSubcriberMdn.getSubscriber();
+		
+			destinationSubcriberMdn = coreDataWrapper.getSubscriberMdn(cashinfromAtm.getDestMDN());
+			destinationSubscriber = destinationSubcriberMdn.getSubscriber();		
+			destinationPocket = coreDataWrapper.getPocketById(cashinfromAtm.getDestPocketID(), LockMode.UPGRADE);
+
+			log.info("BankServiceDefaultImpl :: onCashInFromATM sourceSubscriber="
+					+ sourceSubscriber
+					+ ", destinationSubscriber="
+					+ destinationSubscriber
+					+ ", sourceSubcriberMdn="
+					+ sourceSubcriberMdn
+					+ ", destinationSubcriberMdn="
+					+ destinationSubcriberMdn
+					+ ", sourcePocket="
+					+ sourcePocket
+					+ ", destinationPocket=" + destinationPocket);
+
+			if (CmFinoFIX.PocketType_SVA.intValue() != sourcePocket.getPocketTemplateByPockettemplateid().getType()) {
+				
+				returnFix.setInternalErrorCode(NotificationCodes.DefaultBankAccountPocketNotFound.getInternalErrorCode());
+			}
+
+			if (isNullorZero(returnFix.getInternalErrorCode())) {
+				returnFix = validationService.validateBankAccountSubscriber(sourceSubscriber, sourceSubcriberMdn, sourcePocket,
+						"mFino260", true, false, false, false);
+	
+				log.info("BankServiceDefaultImpl:onCashInFromATM: Source subcriber validated ErrorCode=" + returnFix.getInternalErrorCode());
+	
+				if (isNullorZero(returnFix.getInternalErrorCode())) {
+					
+					returnFix = validationService.validateBankAccountSubscriber(destinationSubscriber, destinationSubcriberMdn,
+							destinationPocket, "", false, false, false, false);
+	
+					log.info("BankServiceDefaultImpl:onCashInFromATM: Dest subcriber validated ErrorCode=" + returnFix.getInternalErrorCode());
+	
+					if (isNullorZero(returnFix.getInternalErrorCode())) {
+						
+						if (!(sourcePocket.getId().equals(destinationPocket.getId()))) {
+
+							pct = commodityTransferService.createPCT(cashinfromAtm, sourceSubscriber, destinationSubscriber, sourcePocket,
+											destinationPocket,sourceSubcriberMdn,destinationSubcriberMdn,
+											ServiceAndTransactionConstants.MESSAGE_CASH_IN,
+											amount,	null,CmFinoFIX.BucketType_Special_Bank_Account,
+											CmFinoFIX.BillingType_None, CmFinoFIX.TransferStatus_Initialized);
+	
+							returnFix = validationService.validateRisksAndLimits(sourcePocket,
+											destinationPocket, amount, amount, sourceSubcriberMdn, destinationSubcriberMdn);
+	
+							log.info("After ValidateRisksAndLimits returnFix.getInternalErrorCode()=" + returnFix.getInternalErrorCode());
+	
+							if (isNullorZero(returnFix.getInternalErrorCode())) {
+								
+								setPocketLimits(sourcePocket, amount);
+								setPocketLimits(destinationPocket, amount);
+	
+								if (cashinfromAtm.getChannelCode() != null) {
+									
+									pct.setIso8583Merchanttype(cashinfromAtm.getChannelCode());
+									
+								} else if (pct.getIso8583Merchanttype() == null) {
+									
+									pct.setIso8583Merchanttype(CmFinoFIX.ISO8583_Mobile_Operator_Merchant_Type_Other);
+								}
+	
+								if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+									
+									coreDataWrapper.save(sourcePocket);
+								}
+								
+								if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+									
+									coreDataWrapper.save(destinationPocket);
+								}							
+								pct.setBankauthorizationcode(String.valueOf(cashinfromAtm.getOriginalReferenceID()));
+								pct.setBankretrievalreferencenumber(String.valueOf(cashinfromAtm.getOriginalReferenceID()));
+								
+								coreDataWrapper.save(pct);
+	
+								if (isNullorZero(returnFix.getInternalErrorCode())) {
+									
+									if ((sourcePocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA.intValue())
+											&& (destinationPocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_SVA.intValue())) {
+										
+										pct.setSourcepocketbalance(sourcePocket.getCurrentbalance());
+										pct.setDestpocketbalance(destinationPocket.getCurrentbalance());
+										
+										List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(true,cashinfromAtm.getServiceChargeTransactionLogID(), 
+												pct.getId().longValue(), sourcePocket, destinationPocket, null, amount, BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
+										
+										coreDataWrapper.save(lstMfsLedgers);
+											
+										pct.setNotificationcode(NotificationCodes.EMoneytoEMoneyCompleteToSender.getNotificationCode());
+	
+										coreDataWrapper.save(pct);
+										if(ledgerService.isImmediateUpdateRequiredForPocket(sourcePocket)){
+												
+											coreDataWrapper.save(sourcePocket);
+										}
+										
+										if(ledgerService.isImmediateUpdateRequiredForPocket(destinationPocket)){
+											coreDataWrapper.save(destinationPocket);
+										}										
+	
+										returnFix.setResult(CmFinoFIX.ResponseCode_Success);
+	
+										handlePCTonSuccess(pct);
+										
+										returnFix.setTransferID(pct.getId().longValue());
+										returnFix.setSourceMDNBalance(moneyService.round(sourcePocket.getCurrentbalance()));
+										returnFix.setDestinationMDNBalance(moneyService.round(destinationPocket.getCurrentbalance()));
+										returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyCompleteToSender.getInternalErrorCode());
+	
+									} else {
+										// Revert Pocket Limits
+										BackendUtil.revertPocketLimits(sourcePocket, amount, pct);
+										BackendUtil.revertPocketLimits(destinationPocket, amount, pct);
+	
+										coreDataWrapper.save(destinationPocket);
+										coreDataWrapper.save(sourcePocket);
+	
+										pct.setNotificationcode(NotificationCodes.getNotificationCodeFromInternalCode(returnFix.getInternalErrorCode()));
+										pct.setEndtime(pct.getStarttime());
+										pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
+	
+										handlePCTonFailure(pct);
+									}
+								} else {
+									// Revert Pocket Limits
+									BackendUtil.revertPocketLimits(sourcePocket,amount, pct);
+									BackendUtil.revertPocketLimits(destinationPocket, amount, pct);
+	
+									coreDataWrapper.save(destinationPocket);
+									coreDataWrapper.save(sourcePocket);
+	
+									pct.setNotificationcode(NotificationCodes.getNotificationCodeFromInternalCode(returnFix.getInternalErrorCode()));
+									pct.setEndtime(pct.getStarttime());
+									pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
+	
+									handlePCTonFailure(pct);
+								}
+							} else {
+								
+								pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_BankAccountToBankAccountSourcePocketLimits);
+								pct.setNotificationcode(NotificationCodes.getNotificationCodeFromInternalCode(returnFix.getInternalErrorCode()));
+								pct.setEndtime(pct.getStarttime());
+								pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
+	
+								handlePCTonFailure(pct);
+							}
+						} else {
+						
+							returnFix.setInternalErrorCode(NotificationCodes.EMoneytoEMoneyFailed_SelfTransfer.getInternalErrorCode());
+						}
+					}
+				}
+			}
+
+			returnFix.setSourceMDN(cashinfromAtm.getSourceMDN());
+			returnFix.setLanguage((int)sourceSubscriber.getLanguage());
+			returnFix.setReceiveTime(cashinfromAtm.getReceiveTime());
+			returnFix.setAmount(amount);
+			returnFix.setSenderMDN(cashinfromAtm.getSourceMDN());
+			returnFix.setReceiverMDN(cashinfromAtm.getSourceMDN());
+			returnFix.setServiceChargeTransactionLogID(cashinfromAtm.getServiceChargeTransactionLogID());
+
+		}
+		
 		return returnFix;
 	}
 	

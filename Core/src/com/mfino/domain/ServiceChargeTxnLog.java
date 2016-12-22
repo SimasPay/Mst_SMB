@@ -72,6 +72,9 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 	private String integrationcode;
 	private Long integrationtransactionid;
 	private String info1;
+	private String info2;
+	private String info3;
+	private String info4;
 	private Integer chargemode;
 	private String description;
 	private Long parentintegrationtransid;
@@ -372,6 +375,33 @@ public class ServiceChargeTxnLog extends Base implements java.io.Serializable {
 
 	public void setInfo1(String info1) {
 		this.info1 = info1;
+	}
+	
+	@Column(name = "INFO2")
+	public String getInfo2() {
+		return this.info2;
+	}
+
+	public void setInfo2(String info2) {
+		this.info2 = info2;
+	}
+	
+	@Column(name = "INFO3")
+	public String getInfo3() {
+		return this.info3;
+	}
+
+	public void setInfo3(String info3) {
+		this.info3 = info3;
+	}
+	
+	@Column(name = "INFO4")
+	public String getInfo4() {
+		return this.info4;
+	}
+
+	public void setInfo4(String info4) {
+		this.info4 = info4;
 	}
 
 	@Column(name = "CHARGEMODE", precision = 10, scale = 0)

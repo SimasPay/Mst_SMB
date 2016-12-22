@@ -12,6 +12,7 @@ import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccount;
 import com.mfino.fix.CmFinoFIX.CMBankAccountToBankAccountConfirmation;
 import com.mfino.fix.CmFinoFIX.CMBulkDistribution;
 import com.mfino.fix.CmFinoFIX.CMCashIn;
+import com.mfino.fix.CmFinoFIX.CMCashInFromATM;
 import com.mfino.fix.CmFinoFIX.CMCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMCashOut;
 import com.mfino.fix.CmFinoFIX.CMCashOutAtATM;
@@ -267,4 +268,6 @@ public interface BankService {
 	public CFIXMsg onExistingSubscriberReactivationFromBank(CMExistingSubscriberReactivationToBank toBank,CMExistingSubscriberReactivationFromBank fromBank);
 	
 	public CFIXMsg onGetSubscriberDetailsFromBank(CMGetSubscriberDetailsToBank toBank, CMGetSubscriberDetailsFromBank fromBank);
+	
+	public CFIXMsg onCashInFromATM(CMCashInFromATM cashinfromAtm);
 }

@@ -5776,6 +5776,13 @@
 	</message>
 	<message name="Forgotpin" msgtype="1788" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 	</message>
+	<message name="CashInFromATM" msgtype="1789" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="Amount" required="Y"/>
+		<field name="DestMDN" required="Y" />
+		<field name="DestPocketID" required="Y"/>
+		<field name="OriginalReferenceID" required="N"/> 
+		<field name="Description" required="N"/>
+	</message>
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -25290,6 +25297,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="63" description="Cashin_At_Agent"/>
 			<value enum="64" description="Transfer_To_Uangku"/>
 			<value enum="65" description="Emoney_To_Bank"/>
+			<value enum="66" description="Cashin_From_ATM"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />

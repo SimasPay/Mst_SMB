@@ -421,6 +421,10 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 			sctl.setIntegrationtransactionid(null!=sc.getIntegrationTxnID()?sc.getIntegrationTxnID():null);
 			sctl.setChargemode((tr != null) ? tr.getChargemode() : null);
 			sctl.setDescription(sc.getDescription());
+			sctl.setInfo1(sc.getInfo1());
+			sctl.setInfo2(sc.getInfo2());
+			sctl.setInfo3(sc.getInfo3());
+			sctl.setInfo4(sc.getInfo4());
 			
 			sctlId = saveServiceTransactionLog(sctl);
 			log.info("Service Charge Transaction Log created with Id --> " + sctlId);

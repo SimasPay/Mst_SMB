@@ -3,12 +3,9 @@ package com.mfino.bsim.iso8583;
 import com.mfino.bsim.iso8583.utils.DateTimeFormatter;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryToBank;
-import com.mfino.fix.CmFinoFIX.CMBankTellerMoneyTransferToBank;
-import com.mfino.fix.CmFinoFIX.CMBankTellerTransferInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBillPaymentInquiryToBank;
 import com.mfino.fix.CmFinoFIX.CMBillPaymentReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMBillPaymentToBank;
-import com.mfino.fix.CmFinoFIX.CMDSTVMoneyTransferToBank;
 import com.mfino.fix.CmFinoFIX.CMGetLastTransactionsToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferReversalToBank;
 import com.mfino.fix.CmFinoFIX.CMMoneyTransferToBank;
@@ -23,6 +20,12 @@ public class GetConstantCodes {
 	public static final String FAILURE = "06";
 	
 	public static final String REJECT = "99";
+	
+	public static final String CUSTOMER_ACCOUNT_BLOCKED = "80";
+	
+	public static final String DUPLICATE_TRANSMISSION = "94";
+	
+	public static final String SYSTEM_ERROR = "96";
 	
 	public static final String ATMCode_NewRegistrationSuccess = "9000";
 	
