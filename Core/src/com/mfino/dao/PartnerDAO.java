@@ -187,7 +187,12 @@ public class PartnerDAO extends BaseDAO<Partner> {
         if(null != query.getPartnerId()){
         	criteria.add(Restrictions.eq(Partner.FieldName_RecordID, query.getPartnerId()));
         }
-		
+        if (query.getStartRegistrationDate() != null) {
+            criteria.add(Restrictions.gt(Partner.FieldName_CreateTime, query.getStartRegistrationDate()));
+        }
+        if (query.getEndRegistrationDate() != null) {
+            criteria.add(Restrictions.lt(Partner.FieldName_CreateTime, query.getEndRegistrationDate()));
+        }
 		processBaseQuery(query, criteria);
 
 		// Paging

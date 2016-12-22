@@ -89,7 +89,7 @@ public class BranchCodeProcessorImpl extends BaseFixProcessor implements BranchC
 	
 	private void updateEntity(Role role, CMJSRole.CGEntries e) {		
 		if(e.getPriorityLevel() != null) {
-			role.setPrioritylevel(e.getPriorityLevel().shortValue());
+			role.setPrioritylevel(e.getPriorityLevel());
 		}
 		if(e.getDisplayText() != null) {
 			role.setDisplaytext(e.getDisplayText());

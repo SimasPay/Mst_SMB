@@ -36,6 +36,12 @@ public class MFSBillerDAO extends BaseDAO<MfsBiller> {
 		if (StringUtils.isNotBlank(query.getBillerType())) {
 			criteria.add(Restrictions.eq(MfsBiller.FieldName_MFSBillerType, query.getBillerType()).ignoreCase());
 		}
+		if (query.getStartRegistrationDate() != null) {
+            criteria.add(Restrictions.gt(MfsBiller.FieldName_CreateTime, query.getStartRegistrationDate()));
+         }
+       if (query.getEndRegistrationDate() != null) {
+            criteria.add(Restrictions.lt(MfsBiller.FieldName_CreateTime, query.getEndRegistrationDate()));
+      }
 		// Paging
 		processPaging(query, criteria);
 

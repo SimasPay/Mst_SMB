@@ -1,5 +1,7 @@
 package com.mfino.dao.query;
 
+import java.util.Date;
+
 /**
  * @author sasidhar
  * 
@@ -26,6 +28,9 @@ public class PartnerQuery extends BaseQuery {
     private String branchCode;
     private Integer branchSequence;
     private Integer businessPartnerType;
+    
+    private Date startRegistrationDate;
+	private Date endRegistrationDate;
 
     
 
@@ -188,5 +193,20 @@ public class PartnerQuery extends BaseQuery {
 
 	public void setPartnerCodeLike(boolean partnerCodeLike) {
 		this.partnerCodeLike = partnerCodeLike;
+	}
+	public Date getStartRegistrationDate() {
+		return startRegistrationDate;
+	}
+
+	public void setStartRegistrationDate(Date startRegistrationDate) {
+		this.startRegistrationDate = startRegistrationDate;
+	}
+
+	public Date getEndRegistrationDate() {
+		return endRegistrationDate;
+	}
+
+	public void setEndRegistrationDate(Date endRegistrationDate) {
+		this.endRegistrationDate = endRegistrationDate;
 	}
 }

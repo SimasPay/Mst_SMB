@@ -83,7 +83,8 @@ public class MFSBillerProcessorImpl extends BaseFixProcessor implements MFSBille
 			query.setBillerName(realMsg.getBillerNameSearch());
 			query.setBillerCode(realMsg.getBillerCodeSearch());
 			query.setBillerType(realMsg.getBillerTypeSearch());
-			
+			query.setStartRegistrationDate(realMsg.getStartDateSearch());
+			query.setEndRegistrationDate(realMsg.getEndDateSearch());
 			query.setStart(realMsg.getstart());
 			query.setLimit(realMsg.getlimit());
         	

@@ -3,6 +3,8 @@
  */
 package com.mfino.dao.query;
 
+import java.util.Date;
+
 /**
  * @author Bala Sunku
  *
@@ -13,6 +15,9 @@ public class MFSBillerQuery extends BaseQuery {
 	private String exactBillerName;
 	private String billerCode;
 	private String billerType;
+	
+	private Date   startRegistrationDate;	
+	private Date   endRegistrationDate;  
 	
 	public String getBillerName() {
 		return billerName;
@@ -37,5 +42,18 @@ public class MFSBillerQuery extends BaseQuery {
 	}
 	public void setBillerType(String billerType) {
 		this.billerType = billerType;
+	}
+	public Date getStartRegistrationDate() {
+		return startRegistrationDate;
+	}
+	public void setStartRegistrationDate(Date startRegistrationDate) {
+		this.startRegistrationDate = startRegistrationDate;
+	}
+	
+	public Date getEndRegistrationDate() {
+		return endRegistrationDate;
+	}
+	public void setEndRegistrationDate(Date endRegistrationDate) {
+		this.endRegistrationDate = endRegistrationDate;
 	}
 }

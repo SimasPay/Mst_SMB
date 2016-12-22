@@ -607,6 +607,12 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 			if (realMsg.getUpgradeStateSearch()!=null&&!realMsg.getUpgradeStateSearch().equals(CmFinoFIX.UpgradeStateSearch_All)) {
 				partnerQuery.setUpgradeStateSearch(realMsg.getUpgradeStateSearch());
 			}
+			if((null != realMsg.getStartDateSearch()) && !("".equals(realMsg.getStartDateSearch()))){
+				partnerQuery.setStartRegistrationDate(realMsg.getStartDateSearch());
+			}
+			if((null != realMsg.getEndDateSearch()) && !("".equals(realMsg.getEndDateSearch()))){
+				partnerQuery.setEndRegistrationDate(realMsg.getEndDateSearch());
+			}
 			 if (!CmFinoFIX.JSmFinoAction_Update.equals(realMsg.getmfinoaction())) {
 				 partnerQuery.setStart(realMsg.getstart());
 				 partnerQuery.setLimit(realMsg.getlimit());
