@@ -98,6 +98,8 @@ public class CashinHandler extends FIXMessageHandler {
 			String dateTime = msg.getString("7");
 			String de100 = msg.getString("100");
 			String de102 = msg.getString("102");
+			String amount = msg.getString("4");
+			BigDecimal actualAmount = new BigDecimal(amount).divide(new BigDecimal("100"));
 			
 			if(StringUtils.isNotBlank(accnumber) && !accnumber.startsWith(ConfigurationUtil.getCodeForTransferUsingEMoney())) {
 				
@@ -150,7 +152,7 @@ public class CashinHandler extends FIXMessageHandler {
 			sc.setChannelCodeId(CmFinoFIX.SourceApplication_ATM);
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHIN);
-			sc.setTransactionAmount(BigDecimal.ZERO);
+			sc.setTransactionAmount(actualAmount);
 			sc.setTransactionLogId(transactionLog.getId());
 			sc.setIntegrationTxnID(intTxnId);
 			sc.setInfo1(dateTime);
@@ -189,7 +191,7 @@ public class CashinHandler extends FIXMessageHandler {
 			CMCashInFromATM cashin = new CMCashInFromATM();
 			cashin.setSourceMDN(sourceMDN);
 			cashin.setDestMDN(sourceMDN);
-			cashin.setAmount(new BigDecimal(msg.getString("4")));
+			cashin.setAmount(actualAmount);
 			cashin.setDestPocketID(destPocket.getId());
 			cashin.setSourceApplication(CmFinoFIX.SourceApplication_ATM);
 			cashin.setServiceChargeTransactionLogID(sctl.getId());
@@ -219,14 +221,17 @@ public class CashinHandler extends FIXMessageHandler {
 				if (fixError.getResult() == 0) {
 					
 					msg.set(39,GetConstantCodes.SUCCESS);
+					transactionChargingService.confirmTheTransaction(sctl, fixError.getTransferID());
 					
 				} else {
 					
 					msg.set(39,GetConstantCodes.FAILURE);
+					transactionChargingService.failTheTransaction(sctl, "Tansaction Failed");
 				}
 			} else {
 				
 				msg.set(39,GetConstantCodes.FAILURE);
+				transactionChargingService.failTheTransaction(sctl, "Tansaction Failed");
 			}
 			
 			return;

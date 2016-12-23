@@ -78,7 +78,7 @@ public class TransactionHandler implements Runnable {
 							element39 = msg.getString(39);*/
 							
 							if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-								ATMRequestHandler.getInstance().handle(msg);
+								CashinHandler.getInstance().handle(msg);
 								element39 = msg.getString(39);
 							}else{
 								log.error("TransactionHandler :: key exchange failure. Rejected the txn");
