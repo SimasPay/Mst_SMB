@@ -3,6 +3,7 @@ package com.mfino.mce.backend;
 import com.mfino.domain.NoISOResponseMsg;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.fix.CFIXMsg;
+import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMAgentToAgentTransfer;
 import com.mfino.fix.CmFinoFIX.CMAgentToAgentTransferInquiry;
 import com.mfino.fix.CmFinoFIX.CMBalanceInquiryFromBank;
@@ -270,4 +271,8 @@ public interface BankService {
 	public CFIXMsg onGetSubscriberDetailsFromBank(CMGetSubscriberDetailsToBank toBank, CMGetSubscriberDetailsFromBank fromBank);
 	
 	public CFIXMsg onCashInFromATM(CMCashInFromATM cashinfromAtm);
+	
+	public CFIXMsg onCashOutInquiryToBank(CmFinoFIX.CMCashOutAtATMInquiry requestFix);
+	
+	public CFIXMsg onCashOutAtATMConfirmationToBank(CmFinoFIX.CMCashOutAtATM confirmationToBank);
 }

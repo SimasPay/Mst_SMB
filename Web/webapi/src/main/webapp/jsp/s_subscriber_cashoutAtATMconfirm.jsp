@@ -7,47 +7,52 @@
 <title>subscriber cashout At ATM confirm</title>
 </head>
 <body>
-<center>
-<h1>subscriber cashOut At ATM confirm</h1>
-<form action="../sdynamic" method="POST">
-<input type="hidden" value="Wallet" name="service" /> 
-<input type="hidden" value="CashOutAtATM" name="txnName" />
-<table>
-	<tr>
-		<td>Institution ID*</td>
-		<td><input type="text" name="institutionID" value="" /><em>Required if the request is from an Integration</em></td>
-	</tr>
-	<tr>
-		<td>Integration Authentication Key*</td>
-		<td><input type="text" name="authenticationKey" value="" /></td>
-	</tr>
-	<tr>
-		<td>SourcePhoneNumber</td>
-		<td><input type="text" name="sourceMDN" value="" /></td>
-	</tr>
-	<tr>
-		<td>ParentTransferId</td>
-		<td><input type="text" name="parentTxnID" value="" /></td>
-	</tr>
-	<tr>
-		<td>TransferId</td>
-		<td><input type="text" name="transferID" value="" /></td>
-	</tr>
-	<tr>
-		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
-	</tr>
-	
-	<tr>
-		<td>Confirmation (true/false)</td>
-		<td><input type="text" name="confirmed" value="true" /></td>
-	</tr>
-	
-	<tr>
-		<td colspan="2"><input type="submit" value="submit" /></td>
-	</tr>
-</table>
-</form>
-</center>
+	<center>
+		<h1>subscriber cashOut At ATM confirm</h1>
+		<form action="../sdynamic" method="POST">
+			<input type="hidden" value="Wallet" name="service" /> <input
+				type="hidden" value="CashOutAtATM" name="txnName" />
+			<table>
+				<tr>
+					<td>Institution ID*</td>
+					<td><input type="text" name="institutionID" value="" /><em>Required
+							if the request is from an Integration</em></td>
+				</tr>
+				<tr>
+					<td>Integration Authentication Key*</td>
+					<td><input type="text" name="authenticationKey" value="" /></td>
+				</tr>
+				<tr>
+					<td>SourcePhoneNumber</td>
+					<td><input type="text" name="sourceMDN" value="" /></td>
+				</tr>
+				<tr>
+					<td>ParentTransferId</td>
+					<td><input type="text" name="parentTxnID" value="" /></td>
+				</tr>
+				<tr>
+					<td>TransferId</td>
+					<td><input type="text" name="transferID" value="" /></td>
+				</tr>
+				<tr>
+					<td>channelId</td>
+					<td><input type="text" name="channelID" value="" /></td>
+				</tr>
+
+				<tr>
+					<td>Confirmation (true/false)</td>
+					<td><input type="text" name="confirmed" value="true" /></td>
+				</tr>
+				<tr>
+					<td>MFAOneTimePin</td>
+					<td><input type="text" name="mfaOtp" value="" /><em>Required
+							if the transaction is in mfa mode</em></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" value="submit" /></td>
+				</tr>
+			</table>
+		</form>
+	</center>
 </body>
 </html>

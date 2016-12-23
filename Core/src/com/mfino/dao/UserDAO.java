@@ -119,7 +119,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
 		if(query.getPriorityLevel() != null){ //fetch users whose priority level is greater than given level(ie., current user level)
 			DetachedCriteria roles = DetachedCriteria.forClass(Role.class)
 					.setProjection(Property.forName(Role.FieldName_RecordID))
-					.add(Restrictions.ge(Role.FieldName_PriorityLevel, query.getPriorityLevel().shortValue()));
+					.add(Restrictions.ge(Role.FieldName_PriorityLevel, query.getPriorityLevel()));
 			criteria.add(Property.forName(MfinoUser.FieldName_Role).in(roles));
 		}
 		
