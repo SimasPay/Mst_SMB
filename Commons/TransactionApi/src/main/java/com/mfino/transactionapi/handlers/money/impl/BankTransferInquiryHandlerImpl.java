@@ -186,7 +186,7 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 					transactionName = ServiceAndTransactionConstants.TRANSACTION_TRANSFER;
 				}
 				
-				if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai) || destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)){
+				if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
 					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER);
 					//sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
 					if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
@@ -197,6 +197,17 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 					
 					transactionName = ServiceAndTransactionConstants.TRANSACTION_B2LTRANSFER;
 				}
+				
+				if(destPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)) {
+					sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER);
+					transactionName = ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER;
+					if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
+						sc.setServiceName(ServiceAndTransactionConstants.SERVICE_AGENT);
+					}else{
+						sc.setServiceName(ServiceAndTransactionConstants.SERVICE_BANK);
+					}
+					bankAccountToBankAccount.setUICategory(CmFinoFIX.TransactionUICategory_Bank_To_Emoney);
+				}				
 			}
 						
 			//sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
