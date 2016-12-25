@@ -27,6 +27,7 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MFAService;
 import com.mfino.service.PartnerService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
@@ -74,7 +75,11 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 	@Autowired
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
-  
+
+	@Autowired
+	@Qualifier("MFAServiceImpl")
+	private MFAService mfaService;
+	
 	public Result handle(TransactionDetails transactionDetails) {
 	    log.info("Extracting data from transactionDetails in SubscriberCashOutAtATMInquiryHandlerImpl from sourceMDN: " 
 	    		+ transactionDetails.getSourceMDN() + "to" + transactionDetails.getDestMDN());
@@ -206,6 +211,15 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 	    result.setTransferID(transactionResponse.getTransferId());
 	    result.setCode(transactionResponse.getCode());
 	    result.setMessage(transactionResponse.getMessage());
+	    result.setMfaMode("None");
+	    
+	    //For 2 factor authentication
+  		if(transactionResponse.isResult() == true){
+  			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), cc.getId().longValue()) == true){
+  				result.setMfaMode("OTP");
+  				mfaService.handleMFATransaction(sctl.getId(), srcSubscriberMDN.getMdn());
+  			}
+  		}
 	    return result;
 	}
 }
