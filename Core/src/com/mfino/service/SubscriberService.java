@@ -225,4 +225,6 @@ public interface SubscriberService {
 	public List<Object[]> getNewSubscribersCount(Date startDate, Date endDate);
 
 	public void save(Subscriber subscriber);
+	
+	public Long getSubscriberGroupId(Subscriber subscriber);
 }

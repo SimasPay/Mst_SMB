@@ -16,6 +16,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
@@ -24,6 +25,7 @@ import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.money.BankTransferInquiryHandler;
@@ -63,6 +65,10 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
+	
+	@Autowired
+	@Qualifier("SubscriberServiceImpl")
+	private SubscriberService subscriberService;
 	
 	@Autowired
 	@Qualifier("PocketServiceImpl")
@@ -196,6 +202,26 @@ public class TransferInquiryHandlerImpl extends FIXMessageHandler implements Tra
 				transactionDetails.setDestPocketCode(String.valueOf(CmFinoFIX.PocketType_LakuPandai));
 			}
 		}
+		
+		
+		// Need to add the emoney pocket for the destination bank customer.
+		if ((ApiConstants.POCKET_CODE_SVA.equals(transactionDetails.getSourcePocketCode()) &&
+			 transactionDetails.getSourcePocketCode().equals(transactionDetails.getDestPocketCode())) && (destPocket == null) && 
+			 CmFinoFIX.SubscriberKYCLevel_FullyBanked.intValue() == destinationMDN.getSubscriber().getKycLevel().getKyclevel().intValue()) {
+			
+			long destKycLevel = destinationMDN.getSubscriber().getKycLevel().getKyclevel();
+			long destGroupId = subscriberService.getSubscriberGroupId(destinationMDN.getSubscriber());
+			PocketTemplate emoneyTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(destKycLevel, true, CmFinoFIX.PocketType_SVA, 
+					CmFinoFIX.SubscriberType_Subscriber, null, destGroupId);
+			
+			String cardPan = null;
+			try {
+				cardPan = pocketService.generateSVAEMoney16DigitCardPAN(destinationMDN.getMdn());
+			} catch (Exception e) {
+				log.error("Cardpan creation failed", e);
+			}
+			destPocket = pocketService.createPocket(emoneyTemplate, destinationMDN, CmFinoFIX.PocketStatus_Active, true, cardPan);
+		}	
 		
 		validationResult = transactionApiValidationService.validateDestinationPocket(destPocket);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {

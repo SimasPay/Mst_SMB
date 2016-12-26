@@ -29,18 +29,21 @@ import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.PocketTemplateDAO;
 import com.mfino.dao.SubscriberDAO;
+import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.SubscriberQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.Brand;
 import com.mfino.domain.Company;
+import com.mfino.domain.Groups;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberSyncRecord;
-import com.mfino.domain.MfinoUser;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.NoSubscriberFoundException;
 import com.mfino.fix.CmFinoFIX;
@@ -870,5 +873,11 @@ public class SubscriberServiceImpl implements SubscriberService{
 	public void save(Subscriber subscriber) {
 		SubscriberDAO sDao = daoFactory.getSubscriberDAO();
 		sDao.save(subscriber);
+	}
+	
+	public Long getSubscriberGroupId(Subscriber subscriber) {
+		SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+		SubscriberGroups sg = subscriberGroupDao.getBySubscriberID(subscriber.getId());
+		return sg.getGroupid();
 	}
 }
