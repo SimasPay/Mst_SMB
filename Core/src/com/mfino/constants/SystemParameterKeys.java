@@ -130,4 +130,6 @@ public class SystemParameterKeys {
 	public static final String TRANSFER_TO_UANGKU_PREFIX_NUMBER = "transfer.to.uangku.prefix.number";
 	public static final String DAYS_TO_EXPIRY_OF_MPIN_DAYS = "days.to.expiry.of.mpin.days";
 	public static final String DATE_TO_EXPIRE_MOBILE_APP_PIN = "date.to.expire.mobile.app.pin";
+	public static final String MIN_VALUE_OF_CASHOUT_AT_ATM = "minimum.value.of.cashout.at.atm";
+	public static final String MULTIPLES_VALUE_OF_CASHOUT_AT_ATM = "multiply.value.of.cashout.at.atm";
 }

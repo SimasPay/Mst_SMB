@@ -196,8 +196,8 @@ public class ATMRequestHandler extends FIXMessageHandler {
 			toBank.setApplicationID(msg.getString("48").substring(3,23));
 			toBank.setSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
 			SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
-			Subscriber subscriber = subMDNByMDN.getSubscriber();
-			if("Simobicustomer".equalsIgnoreCase(subscriber.getFirstname()))
+			Subscriber subscriber = subMDNByMDN != null ? subMDNByMDN.getSubscriber() : null;
+			if(subscriber != null && "Simobicustomer".equalsIgnoreCase(subscriber.getFirstname()))
 			{
 				CFIXMsg responseMessage = super.process(toBank);
 				if(null!=responseMessage && responseMessage instanceof CMGetSubscriberDetailsFromBank){

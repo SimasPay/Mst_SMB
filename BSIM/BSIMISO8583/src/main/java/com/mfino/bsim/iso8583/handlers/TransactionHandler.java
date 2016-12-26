@@ -60,6 +60,31 @@ public class TransactionHandler implements Runnable {
 								element39=GetConstantCodes.FAILURE;
 							}
 							
+						}else if(processingCode.startsWith("37") ){
+							
+							/*CashinInquiryHandler.getInstance().handle(msg);
+							element39 = msg.getString(39);*/
+							
+							if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
+								CashinInquiryHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);
+							}else{
+								log.error("TransactionHandler :: key exchange failure. Rejected the txn");
+								element39=GetConstantCodes.FAILURE;
+							}
+						}else if(processingCode.startsWith("47") || processingCode.startsWith("49")){
+							
+							/*CashinHandler.getInstance().handle(msg);
+							element39 = msg.getString(39);*/
+							
+							if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
+								CashinHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);
+							}else{
+								log.error("TransactionHandler :: key exchange failure. Rejected the txn");
+								element39=GetConstantCodes.FAILURE;
+							}
+							
 						}else{
 							log.error("TransactionHandler :: handle Unsupported transaction receive. Rejected");
 							element39=GetConstantCodes.FAILURE;

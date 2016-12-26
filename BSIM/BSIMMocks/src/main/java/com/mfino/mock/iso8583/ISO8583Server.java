@@ -166,6 +166,64 @@ public class ISO8583Server implements Runnable {
 			changePinRequest.write(sock.getOutputStream(), 4, false);
 		}
 		
+		private void sendCashinInquiryRequest() throws IOException {
+			
+			String mdn=Property.getProperty("mdn");
+			String amount=Property.getProperty("amount");
+			String rrn = Property.getProperty("rrn");
+			
+			IsoMessage cashinInquiryRequest = mfact.newMessage(0x200);
+			cashinInquiryRequest.setValue(2, "4847779905000046", IsoType.LLVAR, 19);
+			cashinInquiryRequest.setValue(3,"370000", IsoType.NUMERIC, 6);
+			cashinInquiryRequest.setValue(4, amount, IsoType.NUMERIC, 18);
+			cashinInquiryRequest.setValue(7, "0729110250", IsoType.DATE10, 10); // 7
+			cashinInquiryRequest.setValue(11, rrn, IsoType.NUMERIC, 6);// 11
+			cashinInquiryRequest.setValue(12, "132720", IsoType.TIME, 6); // 12
+			cashinInquiryRequest.setValue(13, "0707", IsoType.DATE4, 4); // 13
+			cashinInquiryRequest.setValue(18, "6011", IsoType.NUMERIC, 4); // 18
+			cashinInquiryRequest.setValue(24, "213",IsoType.NUMERIC, 3);
+			cashinInquiryRequest.setValue(27,"2",IsoType.NUMERIC,1); // 27
+			cashinInquiryRequest.setValue(32,CmFinoFIX.ISO8583_AcquiringInstIdCode_Smart_To_Sinarmas.toString(),IsoType.LLVAR,11);// 32
+			cashinInquiryRequest.setValue(33,CmFinoFIX.ISO8583_ForwardingInstitutionIdentificationCode_Smart_To_Sinarmas.toString(),IsoType.LLVAR,11);// 33
+			cashinInquiryRequest.setValue(37,rrn, IsoType.ALPHA, 12);
+			cashinInquiryRequest.setValue(42, "2349553319690",IsoType.ALPHA,15);
+			cashinInquiryRequest.setValue(43, "SMS SMART                               ",IsoType.ALPHA, 40);
+			cashinInquiryRequest.setValue(48, "00356568475776         8745745642                              ",IsoType.LLLVAR,63);
+			cashinInquiryRequest.setValue(103, mdn,IsoType.LLVAR,28);
+			cashinInquiryRequest.setValue(121,"A",IsoType.LLLVAR,1);
+			cashinInquiryRequest.write(sock.getOutputStream(), 4, false);
+		}
+		
+		private void sendCashinRequest() throws IOException {
+			
+			String mdn=Property.getProperty("mdn");
+			String amount=Property.getProperty("amount");
+			String rrn = Property.getProperty("rrn");
+			
+			IsoMessage cashinRequest = mfact.newMessage(0x200);
+			cashinRequest.setValue(2, "4847779905000046", IsoType.LLVAR, 19);
+			cashinRequest.setValue(3,"470000", IsoType.NUMERIC, 6);
+			cashinRequest.setValue(4, amount, IsoType.NUMERIC, 18);
+			cashinRequest.setValue(7, "0729110250", IsoType.DATE10, 10); // 7
+			cashinRequest.setValue(11, rrn, IsoType.NUMERIC, 6);// 11
+			cashinRequest.setValue(12, "132720", IsoType.TIME, 6); // 12
+			cashinRequest.setValue(13, "0707", IsoType.DATE4, 4); // 13
+			cashinRequest.setValue(18, "6011", IsoType.NUMERIC, 4); // 18
+			cashinRequest.setValue(24, "213",IsoType.NUMERIC, 3);
+			cashinRequest.setValue(27,"2",IsoType.NUMERIC,1); // 27
+			cashinRequest.setValue(32,CmFinoFIX.ISO8583_AcquiringInstIdCode_Smart_To_Sinarmas.toString(),IsoType.LLVAR,11);// 32
+			cashinRequest.setValue(33,CmFinoFIX.ISO8583_ForwardingInstitutionIdentificationCode_Smart_To_Sinarmas.toString(),IsoType.LLVAR,11);// 33
+			cashinRequest.setValue(37,rrn, IsoType.ALPHA, 12);
+			cashinRequest.setValue(42, "2349553319690",IsoType.ALPHA,15);
+			cashinRequest.setValue(43, "SMS SMART                               ",IsoType.ALPHA, 40);
+			cashinRequest.setValue(48, "00356568475776         8745745642                              ",IsoType.LLLVAR,63);
+			cashinRequest.setValue(100, 153,IsoType.LLVAR,28);
+			cashinRequest.setValue(102, 153,IsoType.LLVAR,28);
+			cashinRequest.setValue(103, mdn,IsoType.LLVAR,28);
+			cashinRequest.setValue(121,"A",IsoType.LLLVAR,1);
+			cashinRequest.write(sock.getOutputStream(), 4, false);
+		}
+		
 		public void run() {
 			try {
 				log.info(String.format("Parsing incoming: '%s'", new String(msg)));
@@ -802,8 +860,10 @@ public class ISO8583Server implements Runnable {
 					keyExchangeMsg.write(sock.getOutputStream(), 4, false);
 				}
 				if(sentInitialNTMRequest && Property!=null) {
-					sendRegistrationRequest();
+					//sendRegistrationRequest();
 					//sendChangePinRequest();
+					//sendCashinInquiryRequest();
+					sendCashinRequest();
 					sentInitialNTMRequest = false;
 				}
 			} catch (ParseException ex) {

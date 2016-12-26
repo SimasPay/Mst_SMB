@@ -4156,6 +4156,7 @@
 			<field name="OnBehalfMDN" required="N" />
 		</message> 
 		<message name="CashOutAtATM" msgtype="1373" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
+			<field name="OnBehalfMDN" required="N" />
 		</message>
 		<message name="ThirdPartyCashOut" msgtype="1374" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="MessageTypeIndicator" required="N"/>
@@ -5775,6 +5776,13 @@
 	<field name="OTP" required="Y" isSecure="Y"/>		
 	</message>
 	<message name="Forgotpin" msgtype="1788" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+	</message>
+	<message name="CashInFromATM" msgtype="1789" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="Amount" required="Y"/>
+		<field name="DestMDN" required="Y" />
+		<field name="DestPocketID" required="Y"/>
+		<field name="OriginalReferenceID" required="N"/> 
+		<field name="Description" required="N"/>
 	</message>
 	</messages>
 	<records>
@@ -23511,6 +23519,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="AtmCashWithdrawalOnlyForKYC" enum="2305">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Sorry, cash withdrawal from ATM only applicable for KYC User</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 			<value description="EmoneyPocketAdded" enum="2306">
 				<C1>
 					<English>
@@ -23520,11 +23537,20 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
-			<value description="AtmCashWithdrawalOnlyForKYC" enum="2305">
+			<value description="MinValueOfCashOutAtATM" enum="2307">
 				<C1>
 					<English>
 						<SMS>
-							<Text>Sorry, cash withdrawal from ATM only applicable for KYC User</Text>
+							<Text>Sorry, The Transaction Amount is Below than Min amount allowed for Cash out at ATM</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="MultiplyValueOfCashOutAtATM" enum="2308">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Sorry, The Transaction Amount is not multiples of value allowed for Cash out at ATM</Text>
 						</SMS>
 					</English>
 				</C1>
@@ -25290,6 +25316,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="63" description="Cashin_At_Agent"/>
 			<value enum="64" description="Transfer_To_Uangku"/>
 			<value enum="65" description="Emoney_To_Bank"/>
+			<value enum="66" description="Cashin_From_ATM"/>
+			<value enum="67" description="Bank_To_Emoney"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />
