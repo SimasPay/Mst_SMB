@@ -374,7 +374,7 @@ public class NFCTransactionsHistoryHandlerImpl extends FIXMessageHandler impleme
 		String headerRow = "Tanggal | Transaksi | Jumlah";
 		pdfDocument.addLogo();
 		pdfDocument.addSubscriberDetailsTable(transactionDetails, subscriberMDN, pocket);
-		pdfDocument.addHeaderRow(headerRow);
+		pdfDocument.addsingleHeaderRow(headerRow);
 		
 		SimpleDateFormat printDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat parsedateFormat = new SimpleDateFormat("dd/MM/yy hh:mm");

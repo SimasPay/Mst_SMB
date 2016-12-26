@@ -306,8 +306,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			String dateString = sdf.format(new Date());
 			
 			String fileName =  srcSubscriberMDN.getMdn() + "_" + dateString + ".pdf";
-			String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
-			
+		    String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
 			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
 				
 				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getId().longValue());
@@ -407,10 +406,12 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		PDFDocument pdfDocument = new PDFDocument(file, txnDetails.getSourcePIN());
 		
 		//String headerRow = "Tanggal | Transaksi | Jumlah";
-		String headerRow = LanguageTranslator.translate(language, "Date") + " | " + LanguageTranslator.translate(language, "Transaction Type") + " | " + LanguageTranslator.translate(language, "Amount") + "(dalam Rp)";
+		String headerRow = "Tanggal" + " | " + "Tipe Transaksi"+ " | " +  "Jumlah"+ "(Rp)";
+		String headerRow_two = "Date" + " | " + "Transaction Type" + " | " + "Amount" + "(Rp)";
+		
 		pdfDocument.addLogo();
 		
-		pdfDocument.addHeaderRow(headerRow);
+		pdfDocument.addHeaderRow(headerRow,headerRow_two);
 		
 		Iterator<CommodityTransfer> it = transactionHistoryList.iterator();
 		BigDecimal totalCreditAmount=new BigDecimal(0);

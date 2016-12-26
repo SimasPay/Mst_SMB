@@ -2,7 +2,6 @@ package com.mfino.transactionapi.util;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +12,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.IOUtils;
-import org.apache.poi.xwpf.usermodel.TOC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +27,6 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.html.WebColors;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
@@ -42,7 +38,6 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.transactionapi.vo.TransactionDetails;
-import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
 /**
@@ -106,8 +101,11 @@ public class PDFDocument {
 	public void addLogo() {
 		try{
 			
-			PdfPTable logoTable = new PdfPTable(2);			
-			PdfPCell cell1 = new PdfPCell(new Phrase("MUTASI REKENING",FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0))));
+			PdfPTable logoTable = new PdfPTable(2);
+			Phrase phrase = new Phrase();
+			phrase.add(new Chunk("MUTASI REKENING", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0))));
+			phrase.add(new Chunk("\nAccount Statement",  FontFactory.getFont(FontFactory.HELVETICA, 10, Font.ITALIC, new Color(0, 0, 0))));
+			PdfPCell cell1 = new PdfPCell(phrase);
 			cell1.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell1.setBorder(0);
@@ -118,14 +116,12 @@ public class PDFDocument {
 			Image image = Image.getInstance(bytes);
 			image.scaleAbsolute(100, 0);
 			image.scalePercent(5);
-//			image.setWidthPercentage(50);
 			image.setBorder(0);
 			PdfPCell cell = new PdfPCell(image);
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setBorder(0);
 			
-//			cell.setBorder(PdfPCell.LEFT);
 			logoTable.addCell(cell);
 			logoTable.setLockedWidth(true);
 			logoTable.setTotalWidth(this.document.getPageSize().getWidth()-PADDING_LENGTH);
@@ -290,12 +286,18 @@ public class PDFDocument {
 	
 	private void addSubscriberDetailsSpecificToEmoneyTxnHistory(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket, BigDecimal openingBalance,BigDecimal endingBalance)
 	{
-		String currentBalance = "Ending Balance";
-		String 	name = "Full Name";
-		String mdn = "No. Account";
-		String beginingBalance="Begining Balance";
-		
-		
+		String currentBalance = "Saldo Akhir",currentBalance_english="Ending Balance";
+		String 	name = "Nama Lengkap",name_english="Full Name";
+		String mdn = "No Rekening",mdn_english="Account No";
+		String accountType="Tipe Akun";
+		String beginingBalance="Saldo Awal",beginingBalance_english="Begining Balance";
+		String accountType_english="Account Type";
+		String account_Type="";
+		if(txnDetails.getSourcePocketCode()!=null){
+			
+				account_Type=txnDetails.getSourcePocketCode().equals("1")?"e-Money":txnDetails.getSourcePocketCode().equals("2")?"Bank":"LakuPandia";
+			
+		}
 		Subscriber subscriber = subscriberMDN.getSubscriber();
 		String nameVal = StringUtils.EMPTY;
 		if (subscriber.getKycLevel().getKyclevel() != null && 
@@ -307,16 +309,17 @@ public class PDFDocument {
 			String lastName = subscriber.getLastname();
 			nameVal = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
 		}
+		
 
 		String currentBalanceVal = "Rp. ";
 		currentBalanceVal += MfinoUtil.getNumberFormat().format(pocket.getCurrentbalance());
 					
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, name), nameVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, beginingBalance), "Rp "+MfinoUtil.getNumberFormat().format(openingBalance));
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, mdn), txnDetails.getSourceMDN());
-//		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, currentBalance), currentBalanceVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, currentBalance), "Rp "+MfinoUtil.getNumberFormat().format(endingBalance));
 		
+		addEmptyValueCellToSubscriberDetailsTable(this.table, name,name_english, nameVal);
+		addEmptyValueCellToSubscriberDetailsTable(this.table, beginingBalance,beginingBalance_english, "Rp "+MfinoUtil.getNumberFormat().format(openingBalance));
+		addEmptyValueCellToSubscriberDetailsTable(this.table,mdn, mdn_english, txnDetails.getSourceMDN());
+		addEmptyValueCellToSubscriberDetailsTable(this.table,currentBalance, currentBalance_english, "Rp "+MfinoUtil.getNumberFormat().format(endingBalance));
+		addEmptyValueCellToSubscriberDetailsTable(this.table,accountType, accountType_english, account_Type);
 		
 	}
 	private void addOtherSubscriberDetails(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket,BigDecimal totalCrediAmount, BigDecimal totalDebitAmount,BigDecimal openingBalance,BigDecimal endingBalance)throws IOException, DocumentException
@@ -336,14 +339,17 @@ public class PDFDocument {
 		int[] widths = {1,2,1,1};
      	this.table.setWidths(widths);
 
-		String date,period,transactionDetails;
+		String date,periode,transactionDetails,period_english,date_english;
 
-		date = "Date Print";
-		period = "Period";
+		date = "Tanggal Cetak";
+		date_english="Printed Date";
+		periode = "Periode";
+		period_english="Period";
 		transactionDetails = "Transaction Details" ;
 
-		String totalCredit="Total Credit";
-		String totalDetbilt="Total Debit";
+		String totalCredit="Total Kredit",totalCredit_english="Total Credit";
+		String totalDetbilt="Total Debet",totalDetbilt_english="Total Debit";
+		
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM ''yy");
 		
@@ -358,22 +364,14 @@ public class PDFDocument {
 		{
 			addSubscriberDetailsSpecificToEmoneyTxnHistory(txnDetails, subscriberMDN, pocket,openingBalance,endingBalance);	
 		}
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, period), periodVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, totalCredit),"Rp " + MfinoUtil.getNumberFormat().format(totalCrediAmount));
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, date), dateVal);
-		addCellToSubscriberDetailsTable(this.table, LanguageTranslator.translate(language, totalDetbilt), "Rp " + MfinoUtil.getNumberFormat().format(totalDebitAmount));
-		
+	
+		addEmptyValueCellToSubscriberDetailsTable(this.table, totalCredit,totalCredit_english, "Rp " + MfinoUtil.getNumberFormat().format(totalCrediAmount));
+		addEmptyValueCellToSubscriberDetailsTable(this.table,periode,period_english, periodVal);
+		addEmptyValueCellToSubscriberDetailsTable(this.table,totalDetbilt, totalDetbilt_english, "Rp " + MfinoUtil.getNumberFormat().format(totalDebitAmount));
+		addEmptyValueCellToSubscriberDetailsTable(this.table,date, date_english, dateVal);
 		addEmptyCellToSubscriberDetailsTable(this.table, 2, 10.0f);
 		addEmptyCellToSubscriberDetailsTable(this.table, 4, 10.0f);
 		
-//		PdfPCell transactionDetailsCell = new PdfPCell(new Phrase(LanguageTranslator.translate(language, transactionDetails)));
-//		transactionDetailsCell.setBorder(0);
-//		transactionDetailsCell.setPaddingTop(10.0f);
-//		transactionDetailsCell.setPaddingBottom(5.0f);
-//		transactionDetailsCell.setColspan(4);
-//		transactionDetailsCell.setPaddingLeft(20.0f);
-//		this.table.addCell(transactionDetailsCell);
-		//nested table
 		PdfPTable outerTable = new PdfPTable(1);
 		outerTable.setLockedWidth(true);
 		outerTable.setTotalWidth(this.document.getPageSize().getWidth()-PADDING_LENGTH);
@@ -391,15 +389,6 @@ public class PDFDocument {
 		emptyCell.setBorder(0);
 		emptyTable.addCell(emptyCell);
 		this.document.add(emptyTable);
-//		 PdfPTable table = new PdfPTable(3);
-//	        PdfPCell cell2 = getCell("These cells have rounded borders at the top.");
-//	        table.addCell(cell2);
-//	        cell2 = getCell("These cells aren't rounded at the bottom.");
-//	        table.addCell(cell2);
-//	        cell2 = getCell("A custom cell event was used to achieve this.");
-//	        table.addCell(cell2);
-//	        this.document.add(table);
-//		this.document.add(this.table);
 	}
 	
 	private String getTitle(TransactionDetails txnDetails)
@@ -419,7 +408,6 @@ public class PDFDocument {
 	public void addSubscriberDetailsTable(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket pocket)throws IOException, DocumentException 
 	{
 		
-//		addSubscriberDetailsHeader(txnDetails, subscriberMDN, pocket);
 		addOtherSubscriberDetails(txnDetails, subscriberMDN, pocket,new BigDecimal(0),new BigDecimal(0),new BigDecimal(0),new BigDecimal(0));
 
 	}
@@ -427,13 +415,12 @@ public class PDFDocument {
 	{
 		language = (int)subscriberMDN.getSubscriber().getLanguage();
 		
-//		addSubscriberDetailsHeader(txnDetails, subscriberMDN, pocket);
 		addOtherSubscriberDetails(txnDetails, subscriberMDN, pocket,totalCreditAmount,totalDebitAmount,openingBalance,endingBalance);
 
 	}
 	
 	public void addCellToSubscriberDetailsTable(PdfPTable subTable, String colName, String colValue){
-		PdfPCell nameCell = new PdfPCell(new Phrase(colName,FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0))));
+		PdfPCell nameCell = new PdfPCell(new Phrase(colName,FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
 		nameCell.setPaddingTop(5.0f);
 		nameCell.setPaddingBottom(5.0f);
 		nameCell.setBorder(0);
@@ -441,7 +428,7 @@ public class PDFDocument {
 		nameCell.setPaddingLeft(20.0f);
 		subTable.addCell(nameCell);
 		
-		PdfPCell valueCell = new PdfPCell(new Phrase(": "+colValue,FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0))));
+		PdfPCell valueCell = new PdfPCell(new Phrase(": "+colValue,FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
 		valueCell.setPaddingTop(5.0f);
 		valueCell.setPaddingBottom(5.0f);
 		valueCell.setBorder(0);
@@ -458,9 +445,94 @@ public class PDFDocument {
 		emptyCell.setFixedHeight(fixedHeight);
 		subTable.addCell(emptyCell);
 	}
+	public void addEmptyValueCellToSubscriberDetailsTable(PdfPTable subTable, String colName,String colName1, String colValue){
+		Phrase phrase = new Phrase();
+		phrase.add(new Chunk(colName, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
+		phrase.add(new Chunk("\n"+colName1,  FontFactory.getFont(FontFactory.HELVETICA, 9, Font.ITALIC, new Color(0, 0, 0))));
+		PdfPCell nameCell = new PdfPCell(phrase);
+		nameCell.setPaddingTop(5.0f);
+		nameCell.setPaddingBottom(5.0f);
+		nameCell.setBorder(0);
+		nameCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		nameCell.setPaddingLeft(20.0f);
+		subTable.addCell(nameCell);
+		
+		PdfPCell valueCell = new PdfPCell(new Phrase(": "+colValue,FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
+		valueCell.setPaddingTop(5.0f);
+		valueCell.setPaddingBottom(5.0f);
+		valueCell.setBorder(0);
+		valueCell.setPaddingLeft(20.0f);
+		valueCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		
+		subTable.addCell(valueCell);
+		
+	}
 	
-	public void addHeaderRow(String headerRow) throws IOException, DocumentException {
+	public void addHeaderRow(String headerRow,String headerRow_two) throws IOException, DocumentException {
 		String[] headerRowArray = headerRow.split("\\|");
+		String[] headerRow_twoArray = headerRow_two.split("\\|");
+		
+		this.numColumns = headerRowArray.length;
+		if (this.numColumns != 0) {
+			this.transactionTable = new PdfPTable(this.numColumns);
+			this.transactionTable.setLockedWidth(true);
+			this.transactionTable.setTotalWidth(this.document.getPageSize().getWidth()-PADDING_LENGTH-20);
+			this.transactionTable.setHeaderRows(2);
+			int[] widths = {1,2,1};
+			this.transactionTable.setWidths(widths);
+			
+		}
+		
+		for(int i=0; i<headerRowArray.length-1; i++){
+			this.cell = new PdfPCell( new Phrase(18, new Chunk(headerRowArray[i], FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0)))));
+			this.cell.setBorderWidth(0.0f);
+			this.cell.setPaddingLeft(20.0f);
+			this.cell.setPaddingTop(10.0f);
+			this.cell.setPaddingBottom(10.0f);
+			this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
+			this.cell.setBorderColor(Color.WHITE);
+			this.cell.setBorderWidthBottom(2);
+			this.transactionTable.addCell(this.cell);
+		}
+		this.cell = new PdfPCell( new Phrase(18, new Chunk(headerRowArray[headerRowArray.length-1], FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0)))));
+		this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
+		this.cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		this.cell.setBorderWidth(0.0f);
+		this.cell.setPaddingTop(10.0f);
+		this.cell.setPaddingBottom(10.0f);
+		this.cell.setPaddingRight(20.0f);
+		this.cell.setBorderColor(Color.WHITE);
+		this.cell.setBorderWidthBottom(2);
+		this.transactionTable.addCell(this.cell);
+		for(int i=0; i<headerRow_twoArray.length-1; i++){
+			this.cell = new PdfPCell( new Phrase(18, new Chunk(headerRow_twoArray[i], FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLDITALIC, new Color(0, 0, 0)))));
+			this.cell.setBorderWidth(0.0f);
+			this.cell.setPaddingLeft(20.0f);
+			this.cell.setPaddingTop(-10.0f);
+			this.cell.setPaddingBottom(10.0f);
+			this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
+			this.cell.setBorderColor(Color.WHITE);
+			this.cell.setBorderColorBottom(WebColors.getRGBColor("#ff0066"));
+			this.cell.setBorderWidthBottom(2);
+			this.transactionTable.addCell(this.cell);
+		}
+		this.cell = new PdfPCell( new Phrase(18, new Chunk(headerRow_twoArray[headerRow_twoArray.length-1], FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLDITALIC, new Color(0, 0, 0)))));
+		this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
+		this.cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		this.cell.setBorderWidth(0.0f);
+		this.cell.setPaddingTop(-10.0f);
+		this.cell.setPaddingBottom(10.0f);
+		this.cell.setPaddingRight(20.0f);
+		this.cell.setBorderColor(Color.WHITE);
+		this.cell.setBorderColorBottom(WebColors.getRGBColor("#ff0066"));
+		this.cell.setBorderWidthBottom(2);
+		this.transactionTable.addCell(this.cell);
+
+	}
+	public void addsingleHeaderRow(String headerRow) throws IOException, DocumentException {
+		String[] headerRowArray = headerRow.split("\\|");
+		
+		
 		this.numColumns = headerRowArray.length;
 		if (this.numColumns != 0) {
 			this.transactionTable = new PdfPTable(this.numColumns);
@@ -469,24 +541,21 @@ public class PDFDocument {
 			this.transactionTable.setHeaderRows(1);
 			int[] widths = {1,2,1};
 			this.transactionTable.setWidths(widths);
+			
 		}
+		
 		for(int i=0; i<headerRowArray.length-1; i++){
 			this.cell = new PdfPCell( new Phrase(18, new Chunk(headerRowArray[i], FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0)))));
-//			this.cell.setBackgroundColor(Color.LIGHT_GRAY);
-			//this.cell.setFixedHeight(25.0f);
 			this.cell.setBorderWidth(0.0f);
 			this.cell.setPaddingLeft(20.0f);
 			this.cell.setPaddingTop(10.0f);
 			this.cell.setPaddingBottom(10.0f);
 			this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
 			this.cell.setBorderColor(Color.WHITE);
-			this.cell.setBorderColorBottom(WebColors.getRGBColor("#ff0066"));
 			this.cell.setBorderWidthBottom(2);
 			this.transactionTable.addCell(this.cell);
 		}
 		this.cell = new PdfPCell( new Phrase(18, new Chunk(headerRowArray[headerRowArray.length-1], FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, new Color(0, 0, 0)))));
-//		this.cell.setBackgroundColor(Color.LIGHT_GRAY);
-		//this.cell.setFixedHeight(25.0f);
 		this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
 		this.cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		this.cell.setBorderWidth(0.0f);
@@ -494,28 +563,16 @@ public class PDFDocument {
 		this.cell.setPaddingBottom(10.0f);
 		this.cell.setPaddingRight(20.0f);
 		this.cell.setBorderColor(Color.WHITE);
-		this.cell.setBorderColorBottom(WebColors.getRGBColor("#ff0066"));
 		this.cell.setBorderWidthBottom(2);
 		this.transactionTable.addCell(this.cell);
-//		this.transactionTable.setSplitLate(false);
-//		this.transactionTable.setSplitRows(true);
-//		for (String element : headerRowArray) {
-//			this.cell = new PdfPCell( new Phrase(18, new Chunk(element, FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD, new Color(0, 0, 0)))));
-//			
-//			this.cell.setBackgroundColor(Color.LIGHT_GRAY);
-//			this.transactionTable.addCell(this.cell);
-//		}
+		
 
 	}
 
+	
 	public void addRowContent(String rowContent,boolean isLastRow) {
 		String[] rowcontentArray = rowContent.split("\\|");
 		for(int i=0; i<rowcontentArray.length; i++){
-//			if(localTxnNames != null && language.equals(CmFinoFIX.Language_Bahasa) && i == 1){
-//				this.cell = new PdfPCell(new Phrase(getLocalTxnName(rowcontentArray[i])));
-//			}else{
-//				this.cell = new PdfPCell(new Phrase(rowcontentArray[i]));
-//			}
 			this.cell = new PdfPCell(new Phrase(rowcontentArray[i],FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0))));
 			if(i == (rowcontentArray.length-1)){
 				this.cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -529,8 +586,6 @@ public class PDFDocument {
 			this.cell.setVerticalAlignment(Element.ALIGN_CENTER);
 			this.cell.setFixedHeight(20.0f);
 			this.cell.setBorderWidth(0.0f);
-//			this.cell.setPaddingTop(10.0f);
-//			this.cell.setPaddingBottom(10.0f);
 			this.cell.setBorderColor(Color.WHITE);
 			if(isLastRow){
 				this.cell.setBorderColorBottom(WebColors.getRGBColor("#ff0066"));
@@ -569,8 +624,6 @@ public class PDFDocument {
 			outerTable.addCell(cell);
 			outerTable.setSplitLate(false);
 			this.document.add(outerTable);
-			
-//			this.document.add(this.transactionTable);
 			this.document.close();
 		}catch(Exception e){
 			log.error("PDFReport: Failed to close pdf report",e);
