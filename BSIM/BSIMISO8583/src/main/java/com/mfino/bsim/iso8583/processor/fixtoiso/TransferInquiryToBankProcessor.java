@@ -15,6 +15,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.iso8583.definitions.exceptions.AllElementsNotAvailableException;
 import com.mfino.service.CoreServiceFactory;
 import com.mfino.service.MoneyService;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateTimeUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -37,7 +38,12 @@ public class TransferInquiryToBankProcessor extends BankRequestProcessor {
 		Timestamp localTS = DateTimeUtil.getLocalTime();
 		try {
 			
-			String mpan = MfinoUtil.CheckDigitCalculation(request.getSourceMDN());
+			String mpan = null;
+			if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType())){
+				mpan = MfinoUtil.CheckDigitCalculation(ConfigurationUtil.getCodeForTransferUsingEMoney()+request.getSourceMDN());
+			} else {
+				mpan = MfinoUtil.CheckDigitCalculation(request.getSourceMDN());
+			}
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,mpan);
