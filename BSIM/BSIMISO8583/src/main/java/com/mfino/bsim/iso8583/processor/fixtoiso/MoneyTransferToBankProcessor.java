@@ -43,12 +43,8 @@ public class MoneyTransferToBankProcessor extends BankRequestProcessor {
 		}
 
 		try {
-			String mpan = null;
-			if (CmFinoFIX.BankAccountType_Lakupandai.toString().equals(request.getSourceBankAccountType())){
-				mpan = MfinoUtil.CheckDigitCalculation(ConfigurationUtil.getCodeForTransferUsingEMoney()+request.getSourceMDN());
-			} else {
-				mpan = MfinoUtil.CheckDigitCalculation(request.getSourceMDN());
-			}
+			String mpan = MfinoUtil.CheckDigitCalculation(request.getSourceMDN());
+			
 			Long transactionID = request.getTransactionID();
 			transactionID = transactionID % 1000000;
 			isoMsg.set(2,mpan);
