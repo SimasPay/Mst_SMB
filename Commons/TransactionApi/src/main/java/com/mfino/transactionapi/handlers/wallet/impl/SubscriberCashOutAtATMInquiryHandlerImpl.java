@@ -215,9 +215,9 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 	    
 	    //For 2 factor authentication
   		if(transactionResponse.isResult() == true){
-  			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), cc.getId().longValue()) == true){
+  			if(mfaService.isMFATransaction(transactionDetails.getServiceName(), ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM, cc.getId().longValue()) == true){
   				result.setMfaMode("OTP");
-  				mfaService.handleMFATransaction(sctl.getId(), srcSubscriberMDN.getMdn());
+  				//mfaService.handleMFATransaction(sctl.getId(), srcSubscriberMDN.getMdn());
   			}
   		}
 	    return result;

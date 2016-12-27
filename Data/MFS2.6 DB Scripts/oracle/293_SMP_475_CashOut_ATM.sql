@@ -1,11 +1,7 @@
-INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval, 1, sysdate, 'System', sysdate, 'System', 1, 'CashOutAtATMInquiry', 'CashOutAtATMInquiry');
-INSERT INTO SERVICE_TRANSACTION (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, MSPID, SERVICEID, TRANSACTIONTYPEID)  VALUES (1, SYSDATE, 'System', SYSDATE, 'System', 1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Wallet'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'CashOutAtATMInquiry'));
-
 INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval, 1, sysdate, 'System', sysdate, 'System', 1, 'CashOutAtATM', 'CashOutAtATM');
 INSERT INTO SERVICE_TRANSACTION (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, MSPID, SERVICEID, TRANSACTIONTYPEID)  VALUES (1, SYSDATE, 'System', SYSDATE, 'System', 1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Wallet'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'CashOutAtATM'));
 
 INSERT INTO MFA_TRANSACTIONS_INFO(ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, MSPID, SERVICEID, TRANSACTIONTYPEID, CHANNELCODEID, MFAMODE) VALUES (MFA_TRANSACTIONS_INFO_ID_SEQ.nextVal, 1, sysdate, 'System', sysdate, 'System', 1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Wallet'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'CashOutAtATM'), 7, 1);
-INSERT INTO MFA_TRANSACTIONS_INFO(ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, MSPID, SERVICEID, TRANSACTIONTYPEID, CHANNELCODEID, MFAMODE) VALUES (MFA_TRANSACTIONS_INFO_ID_SEQ.nextVal, 1, sysdate, 'System', sysdate, 'System', 1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Wallet'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'CashOutAtATMInquiry'), 7, 1);
 
 DELETE FROM notification WHERE CodeName = 'CashOutAtATMConfirmationPrompt';
 INSERT INTO notification (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, MSPID, Code, CodeName, NotificationMethod, Text, Language, Status, StatusTime, CompanyID, IsActive) VALUES ('0', sysdate, 'System', sysdate, 'System', '1', '708', 'CashOutAtATMConfirmationPrompt', '1',  'You requested to cash out amount $(Currency) $(Amount) from ATM Machine for $(OnBehalfOfMDN) with Service Charge $(Currency) $(serviceCharge).', '0', '0', sysdate, '1', '1');
