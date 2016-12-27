@@ -1,6 +1,5 @@
 package com.mfino.service.impl;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -539,12 +538,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 		boolean isUnRegistered = isRegistrationForUnRegistered(existingSubscriberMDN);
 		if (existingSubscriberMDN == null || isUnRegistered) {
 			
-			if (isUnRegistered) {
+			if(isUnRegistered) {
 				
-				Long regPartnerID = subscriber.getRegisteringpartnerid().longValue();
 				subscriberMDN = existingSubscriberMDN;
 				subscriber = subscriberMDN.getSubscriber();
-				subscriber.setRegisteringpartnerid(regPartnerID);
 			}
 			
 			boolean isHashedPin = ConfigurationUtil.getuseHashedPIN();
@@ -586,12 +583,15 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 			fillSubscriberMandatoryFields(subscriber);
 			fillSubscriberMDNMandatoryFields(subscriberMDN);
+			
 			String createdByName = "system";
 			
 			subscriber.setFirstname(subscriberRegistration.getFirstName());
 			subscriber.setLastname(subscriberRegistration.getLastName());
 			subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());			
 			subscriber.setSecurityquestion(subscriberRegistration.getSecurityQuestion());
+			subscriber.setEmail(subscriberRegistration.getEmail());
+			subscriber.setIsemailverified(CmFinoFIX.Boolean_False);
 			
 			String answer = MfinoUtil.calculateDigestPin(subscriberRegistration.getMDN(), subscriberRegistration.getSecurityAnswer());
 			subscriber.setSecurityanswer(answer);
@@ -626,7 +626,6 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			
-			
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			Groups defaultGroup = groupDao.getSystemGroup();
 			groupID = defaultGroup.getId();
@@ -648,31 +647,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			}
 			
 			subscriber.setUpgradablekyclevel(Long.parseLong(CmFinoFIX.RecordType_SubscriberUnBanked.toString()));
-			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
-			
-			int pocketStatus = CmFinoFIX.PocketStatus_Active;
-			if (CmFinoFIX.SubscriberStatus_NotRegistered == subscriberRegistration.getSubscriberStatus()) {
-				
-				Long templateID = systemParametersService.getLong(SystemParameterKeys.POCKET_TEMPLATE_UNREGISTERED);
-				
-				if (templateID > 0) {
-					
-					PocketTemplateDAO templateDAO = DAOFactory.getInstance().getPocketTemplateDao();
-					PocketTemplate unRegisteredTemplate = templateDAO.getById(templateID);
-					
-					if (unRegisteredTemplate != null) {
-						
-						emoneyPocketTemplate = unRegisteredTemplate;
-						pocketStatus = CmFinoFIX.PocketStatus_OneTimeActive;
-						
-					} else {
-						
-						log.error("ERROR: Pocket Template for Emoney Unregistered system is not found");
-						return CmFinoFIX.NotificationCode_UnRegisteredPocketTemplateNotFound;
-					}
-				}
-			}
-			
+			subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);			
 			subscriber.setActivationtime(new Timestamp());
 			subscriber.setAppliedby(createdByName);
 			subscriber.setAppliedtime(new Timestamp());
@@ -732,35 +707,71 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			
 			//handling adding default group if the group doesnot exist here
 			if(groupID!=null){
+				
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				SubscriberGroups sg = new SubscriberGroups();
 				sg.setSubscriberid(subscriber.getId().longValue());
 				sg.setGroupid(defaultGroup.getId().longValue());
 				if(subscriber.getId() != null){
+					
 					subscriberGroupDao.save(sg);
 				}
 			}
 			
-			Pocket emoneyPocket = null;
-			emoneyPocket = pocketService.createPocket(emoneyPocketTemplate,subscriberMDN, pocketStatus, true, null);
+			int pocketStatus = CmFinoFIX.PocketStatus_Active;
 			
-			if(null != emoneyPocket) {
+			if(!isUnRegistered) {
 				
-				emoneyPocket.setId(emoneyPocket.getId());
+				Pocket emoneyPocket = null;
+				emoneyPocket = pocketService.createPocket(emoneyPocketTemplate,subscriberMDN, pocketStatus, true, null);
 				
-				String cardPan = null;
-				
-				try {
+				if(null != emoneyPocket) {
 					
-					cardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
+					emoneyPocket.setId(emoneyPocket.getId());
 					
-				} catch (Exception e) {
+					String cardPan = null;
 					
-					log.error("Cardpan creation failed", e);
+					try {
+						
+						cardPan = pocketService.generateSVAEMoney16DigitCardPAN(subscriberMDN.getMdn());
+						
+					} catch (Exception e) {
+						
+						log.error("Cardpan creation failed", e);
+					}
+					
+					emoneyPocket.setCardpan(cardPan);
+					pocketDao.save(emoneyPocket);
 				}
 				
-				emoneyPocket.setCardpan(cardPan);
-				pocketDao.save(emoneyPocket);
+			} else {
+				
+				Pocket defaultPocket = pocketService.getDefaultPocket(existingSubscriberMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+				
+				defaultPocket.setPocketTemplateByPockettemplateid(emoneyPocketTemplate);
+				defaultPocket.setStatus(pocketStatus);
+						
+				pocketDao.save(defaultPocket);
+						
+			}
+			
+			if(isUnRegistered) {
+				
+				UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
+				query.setSubscriberMDNID(subscriberMDN.getId());
+				
+				UnRegisteredTxnInfoDAO unregisteredDao = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
+				
+				List<UnregisteredTxnInfo> unregisteredSubscriber = unregisteredDao.get(query);
+				
+				if(unregisteredSubscriber != null && unregisteredSubscriber.size() > 0) {
+					
+					for (UnregisteredTxnInfo txnInfo : unregisteredSubscriber) {
+					
+						txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);					
+						unregisteredDao.save(txnInfo);
+					}
+				}
 			}
 			
 			return CmFinoFIX.ResponseCode_Success;

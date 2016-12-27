@@ -91,6 +91,7 @@ public class SelfRegistrationForNonKYCHandlerImpl extends FIXMessageHandler impl
 		subscriberRegistration.setTransactionIdentifier(transDetails.getTransactionIdentifier());
 		subscriberRegistration.setSecurityQuestion(transDetails.getSecurityQuestion());
 		subscriberRegistration.setSecurityAnswer(transDetails.getSecurityAnswer());
+		subscriberRegistration.setEmail(transDetails.getEmail());
 		email = transDetails.getEmail();
 		
 		TransactionLog transactionsLog = null;
@@ -143,9 +144,6 @@ public class SelfRegistrationForNonKYCHandlerImpl extends FIXMessageHandler impl
 			
 			Subscriber subscriber = new Subscriber();
 			SubscriberMdn subscriberMDN = new SubscriberMdn();
-			
-			subscriber.setEmail(email);
-			subscriber.setIsemailverified(CmFinoFIX.Boolean_False);
 			
 			Integer regResponse = subscriberServiceExtended.registerNonKycSubscriber(subscriber, subscriberMDN, subscriberRegistration);
 			

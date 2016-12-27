@@ -370,7 +370,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				
 				KycLevel subKycLevel = subscriber.getKycLevel();
 				
-				if(subKycLevel != null && subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) {
+				if(subKycLevel != null && (subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) || subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue()) {
 					
 					KycLevel kycLevel = kycLevelService.getByKycLevel(new Long(CmFinoFIX.SubscriberKYCLevel_FullyBanked));
 					
