@@ -6,5 +6,6 @@ BEGIN
   execute immediate command1;  
   
 END;
+/
 
 commit;
