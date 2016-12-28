@@ -52,6 +52,10 @@ public class TransactionHandler implements Runnable {
 					
 					try {
 						if(processingCode.startsWith("98") ){
+							
+							/*ATMRequestHandler.getInstance().handle(msg);
+							element39 = msg.getString(39);*/
+							
 							if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
 								ATMRequestHandler.getInstance().handle(msg);
 								element39 = msg.getString(39);

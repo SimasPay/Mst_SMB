@@ -17,7 +17,11 @@ import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
+import com.mfino.dao.GroupDao;
 import com.mfino.dao.SubscriberGroupDao;
+import com.mfino.dao.UnRegisteredTxnInfoDAO;
+import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
+import com.mfino.domain.Groups;
 import com.mfino.domain.KycLevel;
 import com.mfino.domain.Notification;
 import com.mfino.domain.Partner;
@@ -30,6 +34,7 @@ import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
@@ -364,16 +369,20 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		
 		} else {
 			
+			boolean isUnregistered = isRegistrationForUnRegistered(existingSubscriberMDN);
+			
 			subscriber = existingSubscriberMDN.getSubscriber();
 			
 			if(subscriber != null && null != subscriber.getKycLevel()) {
 				
 				KycLevel subKycLevel = subscriber.getKycLevel();
 				
-				if(subKycLevel != null && (subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) || subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue()) {
+				if(subKycLevel != null && 
+						(subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) || subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue() || isUnregistered) {
 					
 					KycLevel kycLevel = kycLevelService.getByKycLevel(new Long(CmFinoFIX.SubscriberKYCLevel_FullyBanked));
 					
+					subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
 					subscriber.setKycLevel(kycLevel);
 					subscriber.setUpgradablekyclevel(null);
 					subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
@@ -393,9 +402,30 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 						return CmFinoFIX.ResponseCode_Failure; 
 					} 
 					
-					subscriberMDN.setDigestedpin(calcPIN);
+					existingSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
+					existingSubscriberMDN.setDigestedpin(calcPIN);
 					
 					subscriberService.saveSubscriber(subscriber);
+					subscriberMdnService.saveSubscriberMDN(existingSubscriberMDN);
+					
+					GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+					Groups defaultGroup = groupDao.getSystemGroup();
+					Long groupID = defaultGroup.getId();
+					
+					PocketTemplate emoneyPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(kycLevel.getId(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+					
+					if (emoneyPocketTemplate == null) {
+						
+						msg.set(39, GetConstantCodes.FAILURE);
+						return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
+					}
+					
+					Pocket defaultPocket = pocketService.getDefaultPocket(existingSubscriberMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+					
+					defaultPocket.setPocketTemplateByPockettemplateid(emoneyPocketTemplate);
+					defaultPocket.setStatus(CmFinoFIX.PocketStatus_Active);
+							
+					pocketService.save(defaultPocket);
 					
 					PocketTemplate bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Subscriber, null, 1L);
 					
@@ -403,6 +433,25 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 						
 						msg.set(39, GetConstantCodes.FAILURE);
 						return CmFinoFIX.NotificationCode_DefaultPocketTemplateNotFound;
+					}
+					
+					if(isUnregistered) {
+						
+						UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
+						query.setSubscriberMDNID(subscriberMDN.getId());
+						
+						UnRegisteredTxnInfoDAO unregisteredDao = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
+						
+						List<UnregisteredTxnInfo> unregisteredSubscriber = unregisteredDao.get(query);
+						
+						if(unregisteredSubscriber != null && unregisteredSubscriber.size() > 0) {
+							
+							for (UnregisteredTxnInfo txnInfo : unregisteredSubscriber) {
+							
+								txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);					
+								unregisteredDao.save(txnInfo);
+							}
+						}
 					}
 					
 					pocketService.createPocket(bankPocketTemplate, existingSubscriberMDN, CmFinoFIX.PocketStatus_Active, true,accountNumber);
@@ -422,6 +471,19 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		}
 	}
 
+	private boolean isRegistrationForUnRegistered(SubscriberMdn subscriberMDN) {
+		boolean isUnRegistered = false;
+		if (subscriberMDN != null) {
+			
+			if (CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN.getSubscriber().getStatus())
+					&& CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN.getStatus())) {
+				
+				return true;
+			}
+		}
+		
+		return isUnRegistered;
+	}
 
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	private void fillSubscriberMandatoryFields(Subscriber subscriber) {
