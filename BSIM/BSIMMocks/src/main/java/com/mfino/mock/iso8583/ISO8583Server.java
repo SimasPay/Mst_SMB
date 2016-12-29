@@ -860,10 +860,10 @@ public class ISO8583Server implements Runnable {
 					keyExchangeMsg.write(sock.getOutputStream(), 4, false);
 				}
 				if(sentInitialNTMRequest && Property!=null) {
-					//sendRegistrationRequest();
+					sendRegistrationRequest();
 					//sendChangePinRequest();
 					//sendCashinInquiryRequest();
-					sendCashinRequest();
+					//sendCashinRequest();
 					sentInitialNTMRequest = false;
 				}
 			} catch (ParseException ex) {
