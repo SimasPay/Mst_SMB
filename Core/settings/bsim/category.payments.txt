@@ -1,353 +1,412 @@
 {
-  "totalCount":7,
+  "totalCount":10,
   "version":5.0,
   "success":true,
   "paymentData":[
-    {
-      "productCategory": "Mobile Phone",
-      "providers": [
-        {
-          "providerName": "Smartfren Telco",
-          "products": [
             {
-              "productName": "Smartfren",
-              "productCode": "019004",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName": "XL",
-          "products": [
-            {
-              "productName": "XL Xplor",
-              "productCode": "013001",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName": "Bakrie Telecom",
-          "products": [
-            {
-              "productName": "Esia",
-              "productCode": "018002",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName": "Hutch",
-          "products": [
-            {
-              "productName": "Three",
-              "productCode": "012101",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName": "AXIS",
-          "products": [
-            {
-              "productName": "Axis",
-              "productCode": "013102",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName": "Telkomsel",
-          "products": [
-            {
-              "productName": "Telkomsel(Halo)",
-              "productCode": "010001",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName": "Telkom Grup",
-          "products": [
-            {
-              "productName": "Flexy",
-              "productCode": "017002",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "productCategory":"Insurance",
-      "providers":[
-        {
-          "providerName":"Asuransi Jiwa Sinarmas",
-          "products":[
-            {
-              "productName":"Asuransi Jiwa Sinarmas",
-              "productCode":"090001",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Customer Number|No Nasabah"
-            }
-		  ]
-		},
-		{
-          "providerName":"Asuransi Sinarmas",
-          "products":[
-            {
-              "productName":"Asuransi Sinarmas",
-              "productCode":"040001",
-			  "paymentMode": "FullAmount",
-			  "invoiceType": "Subscriber number|Nomor Pelanggan"
-			}
-          ]
-        }
-	  ]
-	},
-	{
-      "productCategory":"Installment",
-      "providers":[
-        {
-          "providerName":"Simas Finance",
-          "products":[
-            {
-              "productName":"Simas Finance",
-              "productCode":"300001",
-			  "paymentMode": "FullAmount",
-			  "invoiceType": "Subscriber number|Nomor Pelanggan"
-            }
-          ]
-        }
-		]
-	},
-    {
-      "productCategory":"Other",
-      "providers":[
-        {
-          "providerName":"Telkom Grup",
-          "products":[
-            {
-              "productName":"Speedy",
-              "productCode":"017004",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Subscriber Number|Nomor Pelanggan"
-            }
-          ]
-        },
-        {
-          "providerName":"Indovision/Okevision/Top TV",
-          "products":[
-            {
-              "productName":"Indovision/Okevision/Top TV",
-              "productCode":"060401",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
-            }
-          ]
-        },
-		{
-	"providerName":"IPL_BSD",
-      	    "products":[
-		{
-              "productName":"IPL BSD",
-              "productCode":"710010",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Subscriber Number|Nomor Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName":"BSD JUNCTION",
-          "products":[
-            {
-              "productName":"BSD JUNCTION",
-              "productCode":"710111",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Customer Identitiy|ID Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName":"ITC BSD & Malibu",
-          "products":[
-            {
-              "productName":"ITC BSD & Malibu",
-              "productCode":"710112",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Customer Identitiy|ID Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName":"IPL GRAND WISATA",
-          "products":[
-            {
-              "productName":"IPL GRAND WISATA",
-              "productCode":"710519",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Customer Identitiy|ID Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName":"Nexmedia",
-          "products":[
-            {
-              "productName":"Nexmedia",
-              "productCode":"060801",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName":"Topas TV",
-          "products":[
-            {
-              "productName":"Topas TV",
-              "productCode":"060901",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName":"AORA TV",
-          "products":[
-            {
-              "productName":"AORA TV",
-              "productCode":"009917",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName": "Baznas",
-          "products": [
-            {
-              "productName": "Baznas Zakat",
-              "productCode": "009901",
-			  "paymentMode": "FullAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
+                "productCategory": "Asuransi",
+                "providers": [
+				{
+                    "providerName": "Asuransi",
+                    "products": [
+                        {
+                            "productName": "Jiwa Sinarmas",
+                            "productCode": "090001",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Insurance Number|Nomor Polis",
+			    "errormessage": "Harap masukkan nomor polis Anda.",
+		 	    "maxlength": 16,
+			    "errormessage1":"Nomor polis yang Anda masukkan harus 10-16 angka."		
+                        },
+                        {
+                            "productName": "Sinar Mas",
+                            "productCode": "040001",
+                            "paymentMode": "FullAmount",
+                            "invoiceType": "Insurance Number|Nomor Polis",
+			    "errormessage": "Harap masukkan nomor polis Anda.",
+		 	    "maxlenght": 16,
+			    "errormessage1":"Nomor polis yang Anda masukkan harus 10-16 angka."	
+                        }
+                    ]
+                }
+				]
             },
-			{
-              "productName": "Baznas Infaq",
-              "productCode": "009902",
-			  "paymentMode": "FullAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
-            }
-          ]
-        },
-		{
-          "providerName": "First Media",
-          "products": [
             {
-              "productName": "First Media",
-              "productCode": "060301",
-			  "paymentMode": "FullAmount",
-			  "invoiceType": "Subscriber number| Nomor Pelanggan"
-            }
-          ]
-        }
-      ]
-    },	
-    	{
-      "productCategory":"Public",
-      "providers":[
-        {
-          "providerName":"Telkom Grup",
-          "products":[
-            {
-              "productName":"PSTN",
-              "productCode":"017003",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-	{
-          "providerName":"MPN PAJAK",
-          "products":[
-            {
-              "productName":"MPN PAJAK",
-              "productCode":"009924",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Payment number|Nomor Bayar"
-            }
-          ]
-        },
-        {
-          "providerName": "PLN",
-          "products": [
-            {
-              "productName": "PLN",
-              "productCode": "009920",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Identity Number|ID Pelanggan"
+                "productCategory": "Bayar Lainnya",
+                "providers": [
+                    {
+                        "providerName": "Baznas",
+                        "products": [
+                            {
+                                "productName": "Baznas Infaq dan Shadaqah",
+                                "productCode": "009902",
+                                "paymentMode": "FullAmount",
+                                "invoiceType": "ID Member|Nomor Anggota",
+				"errormessage": "Harap masukkan nomor anggota Anda.",
+		 		"maxlength": 16,
+				"errormessage1":"Nomor anggota yang Anda masukkan harus 10-16 angka."	
+
+                            },
+                            {
+                                "productName": "Baznas Zakat",
+                                "productCode": "009901",
+                                "paymentMode": "FullAmount",
+                                "invoiceType": "ID Member|Nomor Anggota",
+				"errormessage": "Harap masukkan nomor anggota Anda.",
+		 	    	"maxlength": 16,
+				"errormessage1":"Nomor anggota yang Anda masukkan harus 10-16 angka."
+                            }
+                        ]
+                    },
+                    {
+                        "providerName": "Cicilan",
+                        "products": [
+						{
+                            "productName": "Simas Finance",
+                            "productCode": "300001",
+                            "paymentMode": "FullAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			    "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlength": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                        }
+						]
+                    },
+                    {
+                        "providerName": "IPL",
+                        "products": [
+                            {
+                                "productName": "IPL BSD City",
+                                "productCode": "710010",
+                                "paymentMode": "ZeroAmount",
+                                "invoiceType": "Subscriber Number|Nomor Pelanggan",
+				"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	        "maxlength": 16,
+				"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                            },
+                            {
+                                "productName": "IPL BSD Junction",
+                                "productCode": "710111",
+                                "paymentMode": "ZeroAmount",
+                                "invoiceType": "Subscriber Number|Nomor Pelanggan",
+				"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    	"maxlength": 16,
+				"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                            },
+                            {
+                                "productName": "IPL Grand Wisata",
+                                "productCode": "710519",
+                                "paymentMode": "ZeroAmount",
+                                "invoiceType": "Subscriber Number|Nomor Pelanggan",
+				"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    	"maxlenght": 16,
+				"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                            },
+                            {
+                                "productName": "IPL ITC BSD",
+                                "productCode": "710112",
+                                "paymentMode": "ZeroAmount",
+                                "invoiceType": "Subscriber Number|Nomor Pelanggan",
+				"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    	"maxlength": 16,
+				"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                            },
+                            {
+                                "productName": "ITC Surabaya",
+                                "productCode": "710615",
+                                "paymentMode": "ZeroAmount",
+                                "invoiceType": "Subscriber Number|Nomor Pelanggan",
+				"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    	"maxlength": 16,
+				"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+
+                            }
+                        ]
+                    },
+                    {
+                        "providerName": "PPL",
+                        "products": [
+						{
+                            "productName": "PPL Kota Wisata",
+                            "productCode": "710613",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			    "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlength": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                        }
+						]
+                    }
+                ]
             },
-			{
-              "productName": "PLN NonTaglis",
-              "productCode": "009922",
-			  "paymentMode": "ZeroAmount",
-			  "invoiceType": "Registration Number|Nomor Registrasi"
-            }
-          ]
-        }
-      ]
-    },
-	{
-      "productCategory":"Ticket",
-      "providers":[
-        {
-          "providerName":"Ticket",
-          "products":[
             {
-              "productName":"Lion Air",
-              "productCode":"710110",
-              "paymentMode": "ZeroAmount",
-			  "invoiceType": "Payment number|Nomor Bayar"
+                "productCategory": "Handphone",
+                "providers": [
+                    {
+                        "providerName": "Bakrie Telecom",
+                        "products": [
+						{
+                            "productName": "Esia Postpaid",
+                            "productCode": "018001",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+			    "errormessage": "Harap masukkan nomor handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+                        }
+						]
+                    },
+                    {
+                        "providerName": "Hutchison",
+                        "products": [
+						{
+                            "productName": "Three Postpaid",
+                            "productCode": "013101",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+			    "errormessage": "Harap masukkan nomor handphone Anda.",
+		 	    "maxlength" : 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+                        }
+						]
+                    },
+                    {
+                        "providerName": "Smartfren Telecom",
+                        "products": [
+						{
+                            "productName": "Smartfren Postpaid",
+                            "productCode": "019004",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+			    "errormessage": "Harap masukkan nomor handphone Anda.",
+		 	    "maxlength" : 14,
+			    "errormessage1": "Nomor handphone yang Anda masukkan harus 10-14 angka."
+                        }
+						]
+                    },
+                    {
+                        "providerName": "Telkomsel",
+                        "products": [
+						{
+                            "productName": "Telkomsel HALO",
+                            "productCode": "010001",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+			    "errormessage": "Harap masukkan nomor handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+                        }
+						]
+                    },
+                    {
+                        "providerName": "XL Axiata",
+                        "products": [
+						{
+                            "productName": "XL/Axis Postpaid",
+                            "productCode": "013001",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+			    "errormessage": "Harap masukkan nomor handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+                        }
+						]
+                    }
+                ]
             },
-			{
-              "productName":"Ocean Park",
-              "productCode":"810011",
-              "paymentMode": "ZeroAmount",
-			  "invoiceType": "Payment number|Nomor Bayar"
-			},
-			{
-              "productName":"KAI",
-              "productCode":"009914",
-              "paymentMode": "ZeroAmount",
-			  "invoiceType": "Payment number|Nomor Bayar"
-			}
-          ]
-        }
-      ]
-	},
-		{
-	"productCategory":"Kartu Kredit",
-      	"providers":[
-        {
-          "providerName":"Kartu Kredit",
-          "products":[
             {
-              "productName":"Bank Sinarmas",
-              "productCode":"070001",
-              "paymentMode": "FullAmount",
-			  "invoiceType": "Credit Card Number|Nomor Kartu Kredit"
+                "productCategory": "Hiburan",
+                "providers": [
+				{
+                    "providerName": "Hiburan",
+                    "products": [
+					{
+                        "productName": "Ocean Park",
+                        "productCode": "810011",
+                        "paymentMode": "ZeroAmount",
+                        "invoiceType": "Booking Number|Nomor Booking",
+			"errormessage": "Harap masukkan nomor booking Anda.",
+		 	"maxlength": 16,
+			"errormessage1": "Nomor booking yang Anda masukkan harus 10-16 angka."
+                    }
+					]
+                }
+				]
+            },
+            {
+                "productCategory": "Internet",
+                "providers": [
+				{
+                    "providerName": "Internet",
+                    "products": [
+					{
+                        "productName": "Telkom Speedy",
+                        "productCode": "017004",
+                        "paymentMode": "ZeroAmount",
+                        "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	"maxlength": 16,
+			"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+
+                    }
+					]
+                }
+				]
+            },
+            {
+                "productCategory": "Kartu Kredit",
+                "providers": [
+				{
+                    "providerName": "Kartu Kredit",
+                    "products": [
+					{
+                        "productName": "Bank Sinarmas",
+                        "productCode": "070001",
+                        "paymentMode": "FullAmount",
+                        "invoiceType": "Credit Card Number|Nomor Kartu Kredit",
+			"errormessage": "Harap masukkan nomor kartu kredit Anda.",
+		 	"maxlength": 16,
+			"errormessage1":"Nomor Kartu Kredit: Nomor kartu kredit yang Anda masukkan harus 10-16 angka."
+                    }
+					]
+                }
+				]
+            },
+            {
+                "productCategory": "Layanan Umum",
+                "providers": [
+				{
+                    "providerName": "PAM",
+                    "products": [
+					{
+                        "productName": "PAM Aetra Jakarta",
+                        "productCode": "009928",
+                        "paymentMode": "ZeroAmount",
+                        "invoiceType": "Meter Number|Nomor Meter",
+			"errormessage": "Harap masukkan nomor meter Anda.",
+		 	"maxlength": 16,
+			"errormessage1":"Nomor meter yang Anda masukkan harus 10-16 angka"
+                    }
+					]
+                }
+				]
+            },
+            {
+                "productCategory": "Telepon",
+                "providers": [
+				{
+                    "providerName": "Telkom",
+                    "products": [
+                        {
+                            "productName": "Telkom Flexy",
+                            "productCode": "017002",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Phone Number|Nomor Telepon",
+			    "errormessage": "Harap masukkan nomor telepon Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor telepon yang Anda masukkan harus 10-14 angka"
+
+
+                        },
+                        {
+                            "productName": "Telkom PSTN",
+                            "productCode": "017003",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Phone Number|Nomor Telepon",
+			    "errormessage": "Harap masukkan nomor telepon Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor telepon yang Anda masukkan harus 10-14 angka"
+
+                        }
+                    ]
+                }
+				]
+            },
+            {
+                "productCategory": "Tiket",
+                "providers": [
+				{
+                    "providerName": "Tiket",
+                    "products": [
+                        {
+                            "productName": "KAI (Kereta Api Indonesia)",
+                            "productCode": "009914",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Booking Number|Nomor Booking",
+			    "errormessage": "Harap masukkan nomor booking Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1" : "Nomor telepon yang Anda masukkan harus 10-14 angka."
+
+                        },
+                        {
+                            "productName": "Lion Air",
+                            "productCode": "710110",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Booking Number|Nomor Booking",
+			    "errormessage": "Harap masukkan nomor booking Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1" : "Nomor telepon yang Anda masukkan harus 10-14 angka."
+
+
+                        }
+                    ]
+                }
+				]
+            },
+            {
+                "productCategory": "TV Kabel",
+                "providers": [
+				{
+                    "providerName": "TV Kabel",
+                    "products": [
+                        {
+                            "productName": "Aora TV",
+                            "productCode": "009917",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			    "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlength": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                        },
+                        {
+                            "productName": "First Media",
+                            "productCode": "060301",
+                            "paymentMode": "FullAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			    "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlenght": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                        },
+                        {
+                            "productName": "Indovision/Okevision/Top TV",
+                            "productCode": "060401",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			    "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlenght": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka." 
+                        },
+                        {
+                            "productName": "Nexmedia",
+                            "productCode": "060801",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+                            "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlenght": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                        },
+                        {
+                            "productName": "Topaz TV",
+                            "productCode": "060901",
+                            "paymentMode": "ZeroAmount",
+                            "invoiceType": "Subscriber Number|Nomor Pelanggan",
+			    "errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	    "maxlenght": 16,
+			    "errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+                        }
+                    ]
+                }
+				]
             }
-          ]
-        }
-      ]
-	}
   ]	
 }
- 

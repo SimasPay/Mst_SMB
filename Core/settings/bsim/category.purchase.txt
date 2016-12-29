@@ -3,151 +3,186 @@
   "version":5.0,
   "success":true,
   "purchaseData":[
-    {
-      "productCategory":"Mobile Phone",
-      "providers":[
-		{
-          "providerName": "Telkomsel",
-          "products": [
             {
-              "productName": "Telkomsel",
-              "productCode": "010002",
-              "Denom": "20000|25000|50000|100000|150000|200000|300000|500000|1000000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName":"Smartfren Telco",
-          "products":[
-            {
-              "productName":"Smartfren",
-              "productCode":"019003",
-              "Denom":"10000|20000|50000|60000|100000|150000|200000|300000|500000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-		{
-          "providerName":"Indosat",
-          "products":[
-            {
-              "productName":"Mentari",
-              "productCode":"011002",
-              "Denom": "25000|50000|100000|150000|250000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
+                "productCategory": "Hiburan",
+                "providers": [
+				{
+                    "providerName": "Hiburan",
+                    "products": [
+					{
+                        "productName": "Blitz Megaplex",
+                        "productCode": "060201",
+                        "Denom": "50000|75000|100000|200000|300000|400000|600000|750000",
+                        "paymentMode": "Denom",
+                        "invoiceType": "Card Number|Nomor Kartu",
+                        "Nominaltype": "Nominal",
+			"errormessage": "Harap masukkan nomor kartu Anda.",
+		 	"maxlength": 16,
+			"errormessage1":"Nomor kartu yang Anda masukkan harus 10-16 angka."                    }
+					]
+                }
+				]
             },
-            {
-              "productName":"Kartu IM3",
-              "productCode":"011003",
-              "Denom": "25000|50000|100000|150000|250000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName":"XL/AXIS",
-          "products":[
-            {
-              "productName":"XL/AXIS Voucher",
-              "productCode":"013002",
-              "Denom": "25000|50000|100000|200000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            },
-            {
-              "productName":"XL Bebas Xtra",
-              "productCode":"013003",
-              "Denom": "50000|100000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            },
+            
+			
+			
 			{
-              "productName": "XL Packet Data",
-              "productCode": "013007",
-              "Denom": "[102] Hotrod 1,5GB, 30 hari - Rp 49.000|[103] Hotrod 3,6GB, 30 hari - Rp 99.000|[201] BB 3in1, 30 hari - Rp 125.000|[202] BB ONE, 30 hari - Rp 90.000",
-			  "paymentMode": "PackageType",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
+                "productCategory": "Isi Pulsa",
+                "providers": [
+                    {
+                        "providerName": "Bakrie Telecom",
+                        "products": [
+						{
+                            "productName": "Esia Prepaid",
+                            "productCode": "018002",
+                            "Denom": "25000|50000|100000|150000|250000",
+                            "paymentMode": "Denom",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                            "Nominaltype": "Nominal Pulsa",
+			    "errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+                        }
+						]
+                    },
+                    {
+                        "providerName": "Hutchison",
+                        "products": [
+						{
+                            "productName": "Three Prepaid",
+                            "productCode": "012102",
+                            "Denom": "30000|40000|50000|75000|100000|150000|300000|500000",
+                            "paymentMode": "Denom",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                            "Nominaltype": "Nominal Pulsa",
+			    "errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                        }
+						]
+                    },
+                    {
+                        "providerName": "Indosat Ooredoo",
+                        "products": [
+                            {
+                                "productName": "Indosat IM3",
+                                "productCode": "011003",
+                                "Denom": "25000|50000|100000|150000|250000",
+                                "paymentMode": "Denom",
+                                "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                                "Nominaltype": "Nominal Pulsa",
+				"errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	        "maxlength": 14,
+			        "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                            },
+                            {
+                                "productName": "Indosat Mentari",
+                                "productCode": "011002",
+                                "Denom": "25000|50000|100000|150000|250000",
+                                "paymentMode": "Denom",
+                                "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                                "Nominaltype": "Nominal Pulsa",
+				"errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    	"maxlength": 14,
+			    	"errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                            }
+                        ]
+                    },
+                    {
+                        "providerName": "Smartfren Telecom",
+                        "products": [
+						{
+                            "productName": "Smartfren Prepaid",
+                            "productCode": "019003",
+                            "Denom": "10000|20000|25000|50000|100000|150000|200000|300000|500000",
+                            "paymentMode": "Denom",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                            "Nominaltype": "Nominal Pulsa",
+			    "errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                        }
+						]
+                    },
+                    {
+                        "providerName": "Telkomsel",
+                        "products": [
+						{
+                            "productName": "Telkomsel Prepaid",
+                            "productCode": "010002",
+                            "Denom": "20000|25000|50000|100000|150000|300000|500000|1000000",
+                            "paymentMode": "Denom",
+                            "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                            "Nominaltype": "Nominal Pulsa",
+			    "errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    "maxlength": 14,
+			    "errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                        }
+						]
+                    },
+                    {
+                        "providerName": "XL Axiata",
+                        "products": [
+                            {
+                                "productName": "XL MDS Prepaid",
+                                "productCode": "013007",
+                                "Denom": "30000|50000|60000|120000",
+                                "paymentMode": "Denom",
+                                "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                                "Nominaltype": "Nominal Pulsa",
+				"errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    	"maxlength": 14,
+			    	"errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                            },
+                            {
+                                "productName": "XL/Axis Prepaid",
+                                "productCode": "013002",
+                                "Denom": "25000|50000|100000|200000",
+                                "paymentMode": "Denom",
+                                "invoiceType": "Mobile Phone Number|Nomor Handphone",
+                                "Nominaltype": "Nominal Pulsa",
+				"errormessage": "Harap masukkan nomor Handphone Anda.",
+		 	    	"maxlength": 14,
+			    	"errormessage1":"Nomor handphone yang Anda masukkan harus 10-14 angka."
+
+                            }
+                        ]
+                    }
+                ]
+            },
+            
+			
+			
+			{
+                "productCategory": "TV Kabel",
+                "providers": [
+				{
+                    "providerName": "TV Kabel",
+                    "products": [
+					{
+                        "productName": "Orange TV",
+                        "productCode": "060701",
+                        "Denom": "50000|80000|100000|199000|300000",
+                        "paymentMode": "Denom",
+                        "invoiceType": "Subscriber Number|Nomor Pelanggan",
+                        "Nominaltype": "Nominal",
+			"errormessage": "Harap masukkan nomor pelanggan Anda.",
+		 	"maxlength": 16,
+			"errormessage1":"Nomor pelanggan yang Anda masukkan harus 10-16 angka."
+
+                    }
+					]
+                }
+				]
             }
-          ]
-        },
-        {
-          "providerName":"Bakrie Telecom",
-          "products":[
-            {
-              "productName":"Esia",
-              "productCode":"018001",
-              "Denom": "25000|50000|100000|150000|250000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        },
-        {
-          "providerName":"Hutch",
-          "products":[
-            {
-              "productName":"Three",
-              "productCode":"012102",
-              "Denom": "30000|40000|50000|75000|100000|150000|300000|500000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Mobile Number|Nomor Ponsel"
-            }
-          ]
-        }
-      ]
-    },	
-	{
-      "productCategory": "Other purchase",
-      "providers": [
-        {
-          "providerName": "PLN",
-          "products": [
-            {
-              "productName": "PLN Voucher/Token",
-              "productCode": "009921",
-              "paymentMode": "ZeroAmount",
-			  "isPLNPrepaid": "true",
-			  "invoiceType": "Meter Number|Nomor Meter"
-            }
-	  ]
-        },
-	{
-          "providerName": "Entertainment",
-          "products": [
-            {
-              "productName": "Blitz Megaplex",
-              "productCode": "060201",
-              "Denom": "50000|75000|100000|200000|300000|400000|500000|600000|750000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Subscriber number|Nomor Pelanggan"
-            }
-          ]
-        }
-      ]
-    },
-	{
-      "productCategory": "TV cable voucher",
-      "providers": [
-		{
-          "providerName": "TV Kabel",
-          "products": [
-            {
-              "productName": "Orange TV",
-              "productCode": "060701",
-              "Denom": "50000|80000|100000|300000",
-			  "paymentMode": "Denom",
-			  "invoiceType": "Subscriber number|Nomor Pelanggan"
-            }
-          ]
-        }
-      ]
-    }
+  
+  
+  
   ]
 }
-
-
