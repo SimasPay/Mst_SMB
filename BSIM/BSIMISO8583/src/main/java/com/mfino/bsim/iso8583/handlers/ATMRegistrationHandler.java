@@ -436,7 +436,9 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 					}
 					
 					Pocket defaultPocket = pocketService.getDefaultPocket(existingSubscriberMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+					PocketTemplate existingPocketTemplate = defaultPocket.getPocketTemplateByPockettemplateid();
 					
+					defaultPocket.setPocketTemplateByOldpockettemplateid(existingPocketTemplate);
 					defaultPocket.setPocketTemplateByPockettemplateid(emoneyPocketTemplate);
 					defaultPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 							

@@ -747,7 +747,9 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			} else {
 				
 				Pocket defaultPocket = pocketService.getDefaultPocket(existingSubscriberMDN, String.valueOf(CmFinoFIX.PocketType_SVA));
+				PocketTemplate existingPocketTemplate = defaultPocket.getPocketTemplateByPockettemplateid();
 				
+				defaultPocket.setPocketTemplateByOldpockettemplateid(existingPocketTemplate);
 				defaultPocket.setPocketTemplateByPockettemplateid(emoneyPocketTemplate);
 				defaultPocket.setStatus(pocketStatus);
 						
