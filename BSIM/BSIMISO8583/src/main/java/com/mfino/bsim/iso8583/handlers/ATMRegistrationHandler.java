@@ -352,6 +352,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			subscriber.setFirstname("Simobicustomer");
 			subscriber.setLastname("Simobicustomer");
 			subscriberMDN.setActivationtime(timeStamp);
+			subscriberMDN.setLastapppinchange(new Timestamp());
 			log.info("ATMRegistrationHandler :: registerSubscriber saving subscriber record with MDN "+subscriberMDN.getMdn());
 			subscriber.setTimezone(CmFinoFIX.Timezone_West_Indonesia_Time);
 			subscriberService.saveSubscriber(subscriber);
@@ -382,6 +383,19 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 					
 					KycLevel kycLevel = kycLevelService.getByKycLevel(new Long(CmFinoFIX.SubscriberKYCLevel_FullyBanked));
 					
+					String mothersMaidenName = "MothersMaidenName";
+					subscriber.setSecurityquestion(mothersMaidenName);
+					
+					if (subscriberRegistration.getMothersMaidenName() != null) {
+						
+						subscriber.setSecurityanswer(subscriberRegistration.getMothersMaidenName());
+					}
+					
+					subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM);
+					subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
+					subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
+					subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
+					subscriber.setStatustime(new Timestamp());
 					subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
 					subscriber.setKycLevel(kycLevel);
 					subscriber.setUpgradablekyclevel(null);
@@ -404,6 +418,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 					
 					existingSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 					existingSubscriberMDN.setDigestedpin(calcPIN);
+					existingSubscriberMDN.setLastapppinchange(new Timestamp());
 					
 					subscriberService.saveSubscriber(subscriber);
 					subscriberMdnService.saveSubscriberMDN(existingSubscriberMDN);

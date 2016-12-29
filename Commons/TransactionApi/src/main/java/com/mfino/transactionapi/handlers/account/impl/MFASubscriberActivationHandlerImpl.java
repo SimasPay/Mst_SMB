@@ -155,18 +155,9 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 
 			String newpin = null;
 			
-	 		try{
-	 			
-	 			newpin = CryptographyService.decryptWithPrivateKey(subscriberActivation.getPin());
-	 		}
-	 		catch(Exception e){
-	 			
-	 			log.error("Exception occured while decrypting pin ", e);
-	 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing);
-	 			return result; 
-	 		}
-	 		
-			if(MfinoUtil.containsSequenceOfDigits(newpin)){
+	 		newpin = subscriberActivation.getPin();
+			
+	 		if(MfinoUtil.containsSequenceOfDigits(newpin)){
 				
 				log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for sequence of digits");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
