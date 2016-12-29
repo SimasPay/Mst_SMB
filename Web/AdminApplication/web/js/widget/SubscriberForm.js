@@ -277,48 +277,40 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     onLoad: function(){
         var record = this.subscribercombo.getAt(0);
         var srecord = this.record;
-      	   if(record!=null&&record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)==CmFinoFIX.SubscriberStatus.NotRegistered){
-      		  record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, CmFinoFIX.NotificationMethod.SMS+CmFinoFIX.NotificationMethod.Email);
-              record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name, CmFinoFIX.MDNStatus.Initialized);
-      		 this.setRecord(record);  
-//      		 this.removeRecord(record);
-//      		 this.store.insert(0,this.record);
-      		 this.unregisterRecord  = record;
-      		 this.store.modified =[this.record];
-      		 this.onStatusDropdown( CmFinoFIX.MDNStatus.Initialized);
-           	 this.find("itemId", "sub.form.mobileno")[0].disable(); 
-           	 this.find("itemId", "sub.form.status")[0].disable(); 
-      		 this.subscribercombo.remove(record);
-          }else if(record!=null){
-       	   Ext.MessageBox.alert(_("Alert"), _("MDN already Registered")); 
-       	   this.subscribercombo.remove(record);
-           }else{           	
-           	 this.onStatusDropdown( CmFinoFIX.MDNStatus.Initialized);
-           	 this.find("itemId", "sub.form.mobileno")[0].disable(); 
-           	 this.find("itemId", "sub.form.status")[0].disable(); 
-           	 
-//           	srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name,this.find("itemId", "sub.form.mobileno")[0].getValue());
-//   		    srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Language._name,CmFinoFIX.Language.English);
-//   		    srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Timezone._name,CmFinoFIX.Timezone.UTC);
-//   		    srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Currency._name,CmFinoFIX.Currency.NGN);
-           	 }
-//      	 srecord.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name, CmFinoFIX.MDNStatus.Initialized);
-//    	 this.subscribercombo.remove(record);
-//      	 srecord.data['ID'] = null;
-//    	 this.setRecord(srecord);
-       },
-       addRecord: function(record){
-    	   var i = 0;
-    	   var id = record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
-    	   for(;i<15;i++){
-    		   var storerecord = this.store.getAt(i);
-    		   if(id === storerecord.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name)){
-    			   i=15;
-    			   this.store.remove(storerecord);
-    		   }
-    	   }
-    	   this.store.insert(0,record);
-       },
+      	
+        if( record!=null && record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.SubscriberStatus.NotRegistered) {
+      		record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, CmFinoFIX.NotificationMethod.SMS+CmFinoFIX.NotificationMethod.Email);
+      		record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name, CmFinoFIX.MDNStatus.Initialized);
+      		this.setRecord(record);
+      		this.unregisterRecord = record;
+      		this.store.modified = [this.record];
+      		this.onStatusDropdown(CmFinoFIX.MDNStatus.Initialized);
+           	this.find("itemId", "sub.form.mobileno")[0].disable(); 
+           	this.find("itemId", "sub.form.status")[0].disable(); 
+      		this.subscribercombo.remove(record);
+      		
+      	} else if( record != null && record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) != CmFinoFIX.SubscriberStatus.NotRegistered){
+       	   	Ext.MessageBox.alert(_("Alert"), _("MDN already Registered")); 
+       	   	this.subscribercombo.remove(record);
+       	   	
+      	} else{           	
+      		this.onStatusDropdown( CmFinoFIX.MDNStatus.Initialized);
+           	this.find("itemId", "sub.form.mobileno")[0].disable(); 
+           	this.find("itemId", "sub.form.status")[0].disable(); 
+      	}
+    },
+    addRecord: function(record){
+    	var i = 0;
+    	var id = record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+    	for(;i<15;i++){
+    		var storerecord = this.store.getAt(i);
+    		if(id === storerecord.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name)){
+    			i=15;
+    			this.store.remove(storerecord);
+    		}
+    	}
+    	this.store.insert(0,record);
+    },
     onStatusDropdown : function(status){
     	 var items = ['sub.form.KYCLevel','sub.form.firstname','sub.form.lastname','sub.form.nickname','sub.form.dateofbirth','sub.form.city','sub.form.email','sub.form.applicationid','sub.form.plotno','sub.form.streetaddress','sub.form.regionname','sub.form.country','sub.form.idtype','sub.form.idnumber','sub.form.expirationtime','sub.form.proofofaddress','sub.form.typeofbankaccount','sub.form.bankaccid','SMS','Email1','Suspended','SecurityLocked','AbsoluteLocked','NoFundMovement','sub.form.securityquestion','sub.form.secretanswer','sub.form.birthplace','sub.form.nationality','sub.form.companyname','sub.form.subscribermobilecompany','sub.form.coi','sub.form.authofirstname','sub.form.authofirstname','sub.form.autholastname','sub.form.authorizingpersonid','sub.form.authodateofbirth','sub.form.authoiddescription','sub.form.status','sub.form.language','sub.form.currency','sub.form.timezone','sub.form.kinname','sub.form.kinmdn','sub.form.streetname','sub.form.group','sub.form.accountnumber','sub.form.bankPocketTemplate','sub.form.otherMDN'];
 
@@ -560,8 +552,8 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 	},
     onMDN : function(field){
     	if(this.getForm().isValid()){
-    	this.subscribercombo.baseParams[CmFinoFIX.message.JSSubscriberMDN.ExactMDNSearch._name] =field.getValue(); 
-    	this.subscribercombo.load();
+    		this.subscribercombo.baseParams[CmFinoFIX.message.JSSubscriberMDN.ExactMDNSearch._name] =field.getValue(); 
+    		this.subscribercombo.load();
     	}
     },
     setStore : function(store){

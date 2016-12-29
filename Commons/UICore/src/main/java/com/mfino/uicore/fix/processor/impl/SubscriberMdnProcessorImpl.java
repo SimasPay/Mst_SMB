@@ -36,27 +36,30 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscribersAdditionalFieldsDAO;
+import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.KtpDetailsQuery;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.dao.query.SubscriberMdnQuery;
+import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.AuthPersonDetails;
 import com.mfino.domain.BankAdmin;
 import com.mfino.domain.Company;
 import com.mfino.domain.Groups;
-import com.mfino.domain.KycLevel;
 import com.mfino.domain.KtpDetails;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Merchant;
+import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.PocketTemplateConfig;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.SubscriberAddiInfo;
-import com.mfino.domain.MfinoUser;
-import com.mfino.domain.MfinoServiceProvider;
+import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.InvalidMDNException;
 import com.mfino.exceptions.MerchantAlreadyExistsForMDNException;
@@ -647,7 +650,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		
 	}
 
-	private void updateMessage(SubscriberMdn s, CMJSSubscriberMDN.CGEntries entry, SubscriberAddiInfo saf, AuthPersonDetails ap, Address ads, Address adsktp, Boolean isExcelDownload,String str_tomcatPath,KtpDetails ktpDetails) {
+	private void updateMessage(SubscriberMdn s, CMJSSubscriberMDN.CGEntries entry, SubscriberAddiInfo saf, AuthPersonDetails ap, Address ads, Address adsktp, Boolean isExcelDownload,String str_tomcatPath,KtpDetails ktpDetails, Boolean isNonRegisterActivation) {
 		entry.setID(s.getId().longValue());
 		
 		if (s.getActivationtime() != null) {
@@ -827,7 +830,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		
 				}
 				
-				if(!isExcelDownload) {
+				if(!isExcelDownload && !isNonRegisterActivation) {
 					Pocket p = subscriberService.getDefaultPocket(s.getId().longValue(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
 					entry.setDompetMerchant(Boolean.FALSE);
 					if (p != null) {
@@ -1160,6 +1163,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
+		
 		CMJSSubscriberMDN realMsg = (CMJSSubscriberMDN) msg;
 		SubscriberMDNDAO mdnDao = DAOFactory.getInstance().getSubscriberMdnDAO();
 		SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
@@ -1177,27 +1181,24 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			boolean isResetPinSuccess = true;
 			CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 			errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+			
 			for (CMJSSubscriberMDN.CGEntries e : entries) {
 				Integer mdnRestrictions = e.getMDNRestrictions();
 				SubscriberMdn s = mdnDao.getById(e.getID());
-				Subscriber sub=s.getSubscriber();
+				Subscriber sub = s.getSubscriber();
 				log.info("SubscriberMDN:"+s.getId()+" details edit requested by user:"+getLoggedUserNameWithIP());
-				boolean isLakuapandiaSubscriber = false;
 				
+				boolean isLakuapandiaSubscriber = false;
 				Set<Pocket> subPockets = s.getPockets();
 				for (Iterator iterator = subPockets.iterator(); iterator.hasNext();) {
-					
 					Pocket pocket = (Pocket) iterator.next();
-					
-					if(Integer.valueOf(Long.valueOf(pocket.getPocketTemplateByPockettemplateid().getType()).intValue()).equals(CmFinoFIX.PocketType_LakuPandai)) {
-						
+					if(pocket.getPocketTemplateByPockettemplateid().getType().equals(CmFinoFIX.PocketType_LakuPandai)) {
 						isLakuapandiaSubscriber = true;
 					}
 				}
 
-				Integer oldRestrictions = Integer.valueOf(Long.valueOf(s.getRestrictions()).intValue());
-				
-				if (!e.getRecordVersion().equals(s.getVersion())){
+				Integer oldRestrictions = s.getRestrictions();
+				if (e.getRecordVersion() != null && !e.getRecordVersion().equals(s.getVersion())){
 					log.warn("SubscriberMDN:"+s.getId()+" Stale Data Exception for user:"+getLoggedUserNameWithIP());
 					handleStaleDataException();
 				}
@@ -1221,41 +1222,48 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					}
 				}
 
-				if(CmFinoFIX.SubscriberStatus_Active.equals(e.getStatus())&& !isActivationAllowed(sub,e)){
+				if(CmFinoFIX.SubscriberStatus_Active.equals(e.getStatus()) && !isActivationAllowed(sub,e)){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Subscriber Activation not allowed."));
 					log.warn("SubscriberMDN:"+s.getId() + "Subscriber Activation not allowed for user:"+ getLoggedUserNameWithIP());
 					return error;
 				}
+				
 				if(CmFinoFIX.SubscriberStatus_InActive.equals(e.getStatus())){
-          if(!CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(e.getMDNRestrictions())) 
-          {
+					if(!CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(e.getMDNRestrictions())){
 						CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 						error.setErrorDescription(MessageText._("Subscriber InActivation not allowed."));
 						log.warn("SubscriberMDN:"+s.getId() + "Subscriber InActivation not allowed for user:"+ getLoggedUserNameWithIP());
 						return error;
 					}
 				}
+				
 				if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(e.getStatus())){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Changing Subscriber status to 'Not Registered' is not allowed."));
 					log.warn("SubscriberMDN:"+s.getId() + "Changing Subscriber status to 'Not Registered' is not allowed for user:"+ getLoggedUserNameWithIP());
 					return error;
 				}
-				if(CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus()) && !(CmFinoFIX.SubscriberStatus_Initialized.equals(sub.getStatus()) ||
-						CmFinoFIX.SubscriberStatus_Suspend.equals(sub.getStatus()) || CmFinoFIX.SubscriberStatus_InActive.equals(sub.getStatus())
-						||CmFinoFIX.SubscriberStatus_NotRegistered.equals(sub.getStatus())) ){
+				
+				if(CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus()) && 
+						!( CmFinoFIX.SubscriberStatus_Initialized.equals(sub.getStatus()) 
+								|| CmFinoFIX.SubscriberStatus_Suspend.equals(sub.getStatus()) 
+								|| CmFinoFIX.SubscriberStatus_InActive.equals(sub.getStatus())
+								||CmFinoFIX.SubscriberStatus_NotRegistered.equals(sub.getStatus())) 
+								){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Intializing subscriber not allowed."));
 					log.warn("SubscriberMDN:"+s.getId() + "Initializing subscriber not allowed for "+ getLoggedUserNameWithIP());
 					return error;
 				}
-				if(CmFinoFIX.SubscriberStatus_Suspend.equals(e.getStatus())&&!CmFinoFIX.SubscriberStatus_Suspend.equals(sub.getStatus())){
+				
+				if(CmFinoFIX.SubscriberStatus_Suspend.equals(e.getStatus()) && !CmFinoFIX.SubscriberStatus_Suspend.equals(sub.getStatus())){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
 					error.setErrorDescription(MessageText._("Suspending of subscriber not allowed."));
 					log.warn("SubscriberMDN:"+s.getId() + "Suspending of subscriber not allowed for "+ getLoggedUserNameWithIP());
 					return error;
 				}
+				
 				if(e.getStatus() != null && !CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus()) &&
 						CmFinoFIX.SubscriberStatus_Suspend.equals(sub.getStatus())){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
@@ -1263,6 +1271,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					log.warn("SubscriberMDN:"+s.getId() + "Suspended subscriber can be moved to Intialized status only for "+ getLoggedUserNameWithIP());
 					return error;
 				}
+				
 				if(e.getStatus() != null && !CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus()) &&
 						CmFinoFIX.SubscriberStatus_InActive.equals(sub.getStatus()) && !isActivationAllowed(sub,e)){
 					CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
@@ -1270,10 +1279,11 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					log.warn("SubscriberMDN:"+s.getId() + "Suspended subscriber can be moved to Intialized status only for "+ getLoggedUserNameWithIP());
 					return error;
 				}
+				
 				// Dont allow to change status when subscriber is PendingRetired or
 				// Retired.
 				if (e.getStatus() != null) {
-					if (Integer.valueOf(Long.valueOf(s.getStatus()).intValue()).equals(CmFinoFIX.SubscriberStatus_Retired) || Integer.valueOf(Long.valueOf(s.getStatus()).intValue()).equals(CmFinoFIX.SubscriberStatus_PendingRetirement)) {
+					if (s.getStatus().equals(CmFinoFIX.SubscriberStatus_Retired) || s.getStatus().equals(CmFinoFIX.SubscriberStatus_PendingRetirement)) {
 						if (e.getStatus() != CmFinoFIX.SubscriberStatus_Retired && e.getStatus() != CmFinoFIX.SubscriberStatus_PendingRetirement) {
 							handleRetiredSubscriber();
 						}
@@ -1299,7 +1309,6 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						return error;
 					}
 				}
-
 
 				if (e.getMDN() != null) {
 					//Need to take care of MDNs which are tagged with R
@@ -1328,13 +1337,14 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
-				if(CmFinoFIX.UpgradeState_Upgradable.equals(sub.getUpgradestate())
-						&&e.getKYCLevel()!=null
-						&&(!e.getKYCLevel().equals(sub.getUpgradablekyclevel()))){
+				
+				if (CmFinoFIX.UpgradeState_Upgradable.equals(sub.getUpgradestate())
+						&& e.getKYCLevel() != null && (!e.getKYCLevel().equals(sub.getUpgradablekyclevel()))){
 					errorMsg.setErrorDescription(MessageText._("Subscriber approval pending so kyclevel edit not allowed"));
 					log.info("Subscriber " + sub.getId() +" approval is pending so kyc level edit not allowed");
 					return errorMsg;
-				}else if(e.getKYCLevel()!=null && sub.getKycLevel().getKyclevel().longValue()>e.getKYCLevel().longValue()){
+					
+				} else if(e.getKYCLevel() != null && sub.getKycLevel().getKyclevel().longValue() > e.getKYCLevel().longValue()){
 					errorMsg.setErrorDescription(MessageText._("Degrade of kyclevel not allowed"));
 					log.warn("kyc level can not be degraded for " + sub.getId());
 					return errorMsg;
@@ -1342,21 +1352,21 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 							
 				Set<SubscriberAddiInfo> saf2 = sub.getSubscriberAddiInfos();
 				SubscriberAddiInfo saf;
-				if(saf2.isEmpty()){
-					if(checkAdditionalFields(e)){
-						saf= new SubscriberAddiInfo();
-					}else{
-						saf=null;
+				if (saf2.isEmpty()) {
+					if (checkAdditionalFields(e)){
+						saf = new SubscriberAddiInfo();
+					} else{
+						saf = null;
 					}
-				}else{
-					saf=saf2.iterator().next();
+				} else {
+					saf = saf2.iterator().next();
 				}
 
 				Address ads = sub.getAddressBySubscriberaddressid();
 				if (ads == null && checkAddress(e)){
 					ads = new Address();
 				}
-				if(e.getIsDomesticAddrIdentity()!=null ){
+				if(e.getIsDomesticAddrIdentity() != null ){
 					if(e.getIsDomesticAddrIdentity()){
 						s.setDomaddridentity(Integer.toString(1));
 					}else{
@@ -1367,11 +1377,13 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				ktpDetailsQuery.setMdn(s.getMdn());
 				ktpDetailsQuery.setOrder("desc");
 				
-				List<KtpDetails> ktpDetailsList=ktpDetailsDAO.getByMDN(ktpDetailsQuery);
-				KtpDetails ktpDetails=null;
-				if(ktpDetailsList!=null && ktpDetailsList.size()>0){
+				List<KtpDetails> ktpDetailsList = ktpDetailsDAO.getByMDN(ktpDetailsQuery);
+				KtpDetails ktpDetails = null;
+				
+				if(ktpDetailsList != null && ktpDetailsList.size() > 0){
 					 ktpDetails=ktpDetailsList.get(0);
 				}
+				
 				if(e.getKTPDateOfBirth()!=null){
 					ktpDetails.setDateofbirth(e.getKTPDateOfBirth());
 				}
@@ -1384,14 +1396,35 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if (ap == null && checkAuthorizingPersonDetails(e)){
 					ap = new AuthPersonDetails();
 				}
+				
 				//check on kyc level need to be added on edit to lower kycleve
-				if(sub.getDetailsrequired()!=null && sub.getDetailsrequired()){
+				if(sub.getDetailsrequired() != null && sub.getDetailsrequired()){
 					sub.setDetailsrequired(CmFinoFIX.Boolean_True);
 				}
-				if(sub.getStatus().equals(CmFinoFIX.SubscriberStatus_NotRegistered)){
-					updatePocket(s);
-//					SubscriberServiceExtended.updateUnRegisteredTxnInfoToActivated(s);
+				
+				boolean isNonRegisterActivation = false;
+				if(sub.getStatus().equals(CmFinoFIX.SubscriberStatus_NotRegistered) 
+						&& e.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized)){
+					
+					updateUnregisteredSubsPocket(s);
+					
+					KycLevel fullyBankedLevel = kyclevelDao.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_FullyBanked.longValue());
+					sub.setKycLevel(fullyBankedLevel);
+					
+					UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
+					query.setSubscriberMDNID(sub.getId());
+					UnRegisteredTxnInfoDAO unregisteredDao = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
+					List<UnregisteredTxnInfo> unregisteredSubscriber = unregisteredDao.get(query);
+					if(unregisteredSubscriber != null && unregisteredSubscriber.size() > 0) {
+						for (UnregisteredTxnInfo txnInfo : unregisteredSubscriber) {
+							txnInfo.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_SUBSCRIBER_ACTIVE);					
+							unregisteredDao.save(txnInfo);
+						}
+					}
+					isNonRegisterActivation = true;
+					sub.setUpgradestate(CmFinoFIX.UpgradeState_Upgradable);
 				}
+				
 				updateEntity(s, e);
 
 				if(ap!=null){
@@ -1400,6 +1433,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					log.info("authorizing person updated for " + e.getID());
 					sub.setAuthPersonDetails(ap);
 				}
+				
 				if(ads!=null){
 					updateAddress(ads, e);
 					addressDAO.save(ads);
@@ -1414,8 +1448,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
+				
 				//Generate OTP for the subscriber if the status is changed from Suspend to Initialise or Inactive to Initialise.
-				if(e.getStatus() != null && CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus())){
+				if(e.getStatus() != null && CmFinoFIX.SubscriberStatus_Initialized.equals(e.getStatus()) && !isNonRegisterActivation){
 					sendOTPOnIntialized = ConfigurationUtil.getSendOTPOnIntialized();
 					if(sendOTPOnIntialized){
 						generateAndSendOTP(mdnDao, s, CmFinoFIX.NotificationCode_New_OTP_Success);
@@ -1450,7 +1485,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					ktpDetailsDAO.save(ktpDetails);
 				}
 				
-				updateMessage(s, e, saf, ap, sub.getAddressBySubscriberaddressid(),sub.getAddressBySubscriberaddressktpid(),false,str_tomcatPath,ktpDetails);
+				updateMessage(s, e, saf, ap, sub.getAddressBySubscriberaddressid(),sub.getAddressBySubscriberaddressktpid(),false,str_tomcatPath,ktpDetails, isNonRegisterActivation);
 
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
@@ -1596,7 +1631,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				if(ktpDetailsList!=null && ktpDetailsList.size()>0){
 					 ktpDetails=ktpDetailsList.get(0);
 				}
-				updateMessage(s, entry, saf, ap, ads,adsktp,realMsg.getIsExcelDownload(),str_tomcatPath,ktpDetails);
+				updateMessage(s, entry, saf, ap, ads,adsktp,realMsg.getIsExcelDownload(),str_tomcatPath,ktpDetails, false);
 				realMsg.getEntries()[i] = entry;
 				log.info("Subscriber:"+s.getId()+" details viewed completed by user:"+getLoggedUserNameWithIP());
 			}
@@ -1836,7 +1871,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						}
 					}
 				}
-				updateMessage(mdn, e,saf,ap,ads,null, false,str_tomcatPath,null);
+				updateMessage(mdn, e,saf,ap,ads,null, false,str_tomcatPath,null, false);
 			}
 
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);
@@ -1845,6 +1880,19 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		}
 
 		return realMsg;
+	}
+
+	private void updateUnregisteredSubsPocket(SubscriberMdn subscriberMDN) {
+		Pocket unregisteredPocket = subscriberMDN.getPockets().iterator().next();
+		
+		KycLevel unBankedLevel = kyclevelDao.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_UnBanked.longValue());
+	    PocketTemplate eMoneyUnBankedTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(unBankedLevel.getKyclevel(), 
+	    		 true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, null);
+	    
+	    unregisteredPocket.setPocketTemplateByOldpockettemplateid(unregisteredPocket.getPocketTemplateByPockettemplateid());
+		unregisteredPocket.setPocketTemplateByPockettemplateid(eMoneyUnBankedTemplate);
+		unregisteredPocket.setStatus(CmFinoFIX.PocketStatus_Active);
+		pocketService.save(unregisteredPocket);
 	}
 
 	/**
