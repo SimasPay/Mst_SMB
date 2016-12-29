@@ -1,24 +1,26 @@
 --ADD Columns Favorite_Category
  
  ALTER TABLE Favorite_Category  ADD SOURCEPOCKETTYPE VARCHAR2(255)  NOT NULL;
- ALTER TABLE Favorite_Category  ADD DESTINATIONPOCKETTYPE VARCHAR2(255)  NOT NULL; 
+ ALTER TABLE Favorite_Category  ADD DESTINATIONPOCKETTYPE VARCHAR2(255); 
  ALTER TABLE Favorite_Category  ADD TRANSACTIONTYPE VARCHAR2(255)  NOT NULL; 
  
   --ADD Records Favorite_Category
  
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','Transfer B2B','Transfer B2B','Bank','Bank','Transfers');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','Purchase Using Bank','Purchase Using Bank','Bank','Bank','Purchase');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','BillPayments Using Bank','BillPayments Using Bank','Bank','Bank','BillPayments');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','IBT Using B2B','IBT Using B2B','Bank','Bank','IBT');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','Transfer B2E','Transfer B2E','Bank','Emoney','Transfers');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','Transfer E2E','Transfer E2E','Emoney','Emoney','Transfers');
- INSERT INTO favorite_category  VALUES 
-                               (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','Purchase Using Emoney','Purchase Using Emoney','Emoney','Emoney','Purchase');
- INSERT INTO favorite_category  VALUES 
-                               (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','BillPayments  Using Emoney','BillPayments  Using Emoney','Emoney','Emoney','BillPayments');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','IBT Using E2E','IBT Using E2E','Emoney','Emoney','IBT');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','Transfers E2B','Transfers E2B','Emoney','Bank','Transfers');
- INSERT INTO favorite_category  VALUES (favorite_category_ID_SEQ.nextval,0,sysdate,'System',sysdate,'System','CashWithdrawls','CashWithdrawls','Emoney','Emoney','CashWithdrawls');
+ Delete from favorite_category;
+ 
+ INSERT INTO favorite_category  VALUES (1,0,sysdate,'System',sysdate,'System','Transfer B2B','Transfer B2B','Bank','Bank','Transfers');
+ INSERT INTO favorite_category  VALUES (2,0,sysdate,'System',sysdate,'System','Purchase Using Bank','Purchase Using Bank','Bank',null,'Purchase');
+ INSERT INTO favorite_category  VALUES (3,0,sysdate,'System',sysdate,'System','BillPayments Using Bank','BillPayments Using Bank','Bank',null,'BillPayments');
+ INSERT INTO favorite_category  VALUES (4,0,sysdate,'System',sysdate,'System','IBT Using Bank','IBT Using Bank','Bank','Bank','InterBankTransfer');
+ INSERT INTO favorite_category  VALUES (5,0,sysdate,'System',sysdate,'System','Transfer B2E','Transfer B2E','Bank','Emoney','Transfers');
+ INSERT INTO favorite_category  VALUES (6,0,sysdate,'System',sysdate,'System','Transfer to Uangku using Bank','Transfer B2Uangku','Bank','Bank','TransferToUangku');
+ INSERT INTO favorite_category  VALUES (7,0,sysdate,'System',sysdate,'System','Transfer E2E','Transfer E2E','Emoney','Emoney','Transfers');
+ INSERT INTO favorite_category  VALUES (8,0,sysdate,'System',sysdate,'System','Purchase Using Emoney','Purchase Using Emoney','Emoney',null,'Purchase');
+ INSERT INTO favorite_category  VALUES (9,0,sysdate,'System',sysdate,'System','BillPayments  Using Emoney','BillPayments  Using Emoney','Emoney',null,'BillPayments');
+ INSERT INTO favorite_category  VALUES (10,0,sysdate,'System',sysdate,'System','IBT Using Emoney','IBT Using Emoney','Emoney','Bank','InterBankTransfer');
+ INSERT INTO favorite_category  VALUES (11,0,sysdate,'System',sysdate,'System','Transfers E2B','Transfers E2B','Emoney','Bank','Transfers');
+ INSERT INTO favorite_category  VALUES (12,0,sysdate,'System',sysdate,'System','Transfer to Uangku using Emoney','Transfer to Uangku using Emoney','Emoney','Bank','TransferToUangku');
+ INSERT INTO favorite_category  VALUES (13,0,sysdate,'System',sysdate,'System','CashWithdrawls','CashWithdrawls','Emoney','Bank','CashWithdrawls');
  
 -- Add new notifications for AddFavoriteSuccess
 Delete from notification where code = 2087;
