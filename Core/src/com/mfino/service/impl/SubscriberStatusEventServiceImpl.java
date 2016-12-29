@@ -58,7 +58,7 @@ public class SubscriberStatusEventServiceImpl implements
 		}
 		 
 		if (subscriberExistingEvent != null) {
-			if (Boolean.valueOf(subscriberExistingEvent.getProcessingstatus().toString())) {
+			if (subscriberExistingEvent.getProcessingstatus()) {
 				SubscriberStatusEvent statusNextEvent = new SubscriberStatusEvent();
 				statusNextEvent.setSubscriberid(BigDecimal.valueOf(subscriber.getId()));
 				Long temp = subscriber.getStatus().longValue();
@@ -67,7 +67,7 @@ public class SubscriberStatusEventServiceImpl implements
 						subscriber.getStatustime().getTime()
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(tempI));
-				if (subMDN!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString())!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString()) &&
+				if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
 						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
 				statusNextEvent.setPickupdatetime(nextTimeStamp);
@@ -82,7 +82,7 @@ public class SubscriberStatusEventServiceImpl implements
 						subscriber.getStatustime().getTime()
 								+ subscriberStatusTimeService
 										.getTimeToNextStatus(tempI));
-				if (subMDN!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString())!=null && Boolean.valueOf(subMDN.getIsforcecloserequested().toString()) &&
+				if (subMDN!=null && subMDN.getIsforcecloserequested()!=null && subMDN.getIsforcecloserequested() &&
 						subscriber.getStatus() == CmFinoFIX.SubscriberStatus_PendingRetirement.intValue())
 					nextTimeStamp = new Timestamp();
 				subscriberExistingEvent.setPickupdatetime(nextTimeStamp);
