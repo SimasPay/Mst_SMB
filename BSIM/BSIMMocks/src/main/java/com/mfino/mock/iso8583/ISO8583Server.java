@@ -168,7 +168,7 @@ public class ISO8583Server implements Runnable {
 		
 		private void sendCashinInquiryRequest() throws IOException {
 			
-			String mdn=Property.getProperty("mdn");
+			String mdn=Property.getProperty("cashinmdn");
 			String amount=Property.getProperty("amount");
 			String rrn = Property.getProperty("rrn");
 			
@@ -196,7 +196,7 @@ public class ISO8583Server implements Runnable {
 		
 		private void sendCashinRequest() throws IOException {
 			
-			String mdn=Property.getProperty("mdn");
+			String mdn=Property.getProperty("cashinmdn");
 			String amount=Property.getProperty("amount");
 			String rrn = Property.getProperty("rrn");
 			
