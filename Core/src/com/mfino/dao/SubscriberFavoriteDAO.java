@@ -49,7 +49,7 @@ public class SubscriberFavoriteDAO extends BaseDAO<SubscriberFavorite> {
 		criteria.add(Restrictions.eq("sub." + Subscriber.FieldName_RecordID, subscriberID));
 		criteria.createAlias(SubscriberFavorite.FieldName_FavoriteCategory, "fc");
 		criteria.add(Restrictions.eq("fc." + FavoriteCategory.FieldName_RecordID, favoriteCategoryID));
-		criteria.setProjection(Projections.rowCount());		
-		return (Integer) criteria.uniqueResult();
+		criteria.setProjection(Projections.rowCount());	
+		return ((Long) criteria.uniqueResult()).intValue();
 	}
 }

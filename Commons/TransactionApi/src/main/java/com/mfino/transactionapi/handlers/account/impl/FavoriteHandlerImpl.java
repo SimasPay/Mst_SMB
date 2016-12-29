@@ -134,9 +134,10 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
  	 			return result;
  	 		}
  		}
+ 		
  		SubscriberFavorite existingFavorite = null;
  		if(transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE)) {
- 			result = checkDuplicateFavoriteWithValue(result, subscriberID, transactionDetails);
+ 			result = validateAddFavorite(result, subscriberID, transactionDetails);
  			if(result.getNotificationCode() != null) {
  				return result;
  			}

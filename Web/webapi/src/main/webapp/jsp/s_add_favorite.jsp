@@ -22,7 +22,12 @@
 		<td><input type="text" name="authenticationKey" value="" /></td>
 	</tr>
 	<tr>
-		<td>PhoneNumber</td>
+	<tr>
+		<td>channelId</td>
+		<td><input type="text" name="channelID" value="" /></td>
+	</tr>
+	<tr>
+		<td>SourceMDN</td>
 		<td><input type="text" name="sourceMDN" value="" /></td>
 	</tr>
 	<tr>
@@ -34,21 +39,18 @@
 		<td><input type="text" name="favoriteCategoryID" value="" /></td>
 	</tr>
 	<tr>
-		<td>Code</td>
-		<td><input type="text" name="favoriteCode" value="" /></td>
+		<td>(Biller)Code</td>
+		<td><input type="text" name="favoriteCode" value="" />*if purchase or payment</td>
 	</tr>	
 	<tr>
-		<td>Label</td>
+		<td>(BenificiaryName)Label</td>
 		<td><input type="text" name="favoriteLabel" value="" /></td>
 	</tr>
 	<tr>
-		<td>Value</td>
-		<td><input type="text" name="favoriteValue" value="" /></td>
+		<td>(DestinationID)Value</td>
+		<td><input type="text" name="favoriteValue" value="" />account number, MDN, telephone number, customer ID</td>
 	</tr>
-	<tr>
-		<td>channelId</td>
-		<td><input type="text" name="channelID" value="" /></td>
-	</tr>
+	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>

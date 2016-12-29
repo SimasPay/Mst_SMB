@@ -148,7 +148,11 @@
 			<a href="jsp/s_subscriber_mdn_validation_for_forgotpin.jsp">MDN Validation For ForgotPIN</a>
 		</td>
 	</tr>
-	
+	<tr>
+		<td>
+			<a href="jsp/s_add_favorite.jsp">Add Favorites</a>
+		</td>
+	</tr>
 	</table></td>
 	
 	</tr>
