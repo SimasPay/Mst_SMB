@@ -575,9 +575,9 @@ public class AutoReversalServiceImpl extends BaseServiceImpl implements AutoReve
 		AutoReversalsDao autoReversalsDao = DAOFactory.getInstance().getAutoReversalsDao();
 		
 		AutoReversals autoReversal = new AutoReversals();
-		autoReversal.setSourcepocketid(new BigDecimal(autoReversalRequest.getSourcePocketID()));
-		autoReversal.setDestpocketid(new BigDecimal(autoReversalRequest.getDestPocketID()));
-		autoReversal.setSctlid(new BigDecimal(autoReversalRequest.getServiceChargeTransactionLogID()));
+		autoReversal.setSourcepocketid(autoReversalRequest.getSourcePocketID());
+		autoReversal.setDestpocketid(autoReversalRequest.getDestPocketID());
+		autoReversal.setSctlid(autoReversalRequest.getServiceChargeTransactionLogID());
 		autoReversal.setAmount(autoReversalRequest.getAmount());
 		autoReversal.setCharges(autoReversalRequest.getCharges());
 		autoReversal.setAutorevstatus(CmFinoFIX.AutoRevStatus_INITIALIZED);

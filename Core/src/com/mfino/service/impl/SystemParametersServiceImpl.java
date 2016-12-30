@@ -17,12 +17,9 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SystemParametersDao;
 import com.mfino.domain.SystemParameters;
-import com.mfino.handlers.hsm.HSMHandler;
 import com.mfino.service.SystemParametersService;
-import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
-import com.mfino.util.SystemParametersUtil;
 
 /**
  * This a service class for the system parameters
@@ -58,7 +55,13 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public int getInteger(String property) {
 		try {
-			return Integer.parseInt(getUpdatedValue(property));
+			String paramValue = getUpdatedValue(property);
+			if (StringUtils.isNumeric(paramValue)) {
+				return Integer.parseInt(paramValue);
+			}
+			else {
+				return -1;
+			}
 		} catch (NumberFormatException ex) {
 			log.error("failed get property :"+property, ex);
 			return -1;
@@ -68,7 +71,13 @@ public class SystemParametersServiceImpl implements SystemParametersService{
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public long getLong(String property) {
 		try {
-			return Long.parseLong(getUpdatedValue(property));
+			String paramValue = getUpdatedValue(property);
+			if (StringUtils.isNumeric(paramValue)) {
+				return Long.parseLong(paramValue);
+			}
+			else {
+				return -1;
+			}
 		} catch (NumberFormatException ex) {
 			log.error("failed get property :"+property, ex);
 			return -1;
