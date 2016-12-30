@@ -59,9 +59,9 @@ public class AutoReverseHandlerImpl extends FIXMessageHandler implements AutoRev
 		
 		if (CmFinoFIX.TransactionsTransferStatus_Completed.equals(ct.getTransferstatus())) {
 			autoReversal = new CMAutoReversal();
-			autoReversal.setSourcePocketID(ct.getPocket().getId().longValue());
-			autoReversal.setDestPocketID(ct.getDestpocketid().longValue());
-			autoReversal.setServiceChargeTransactionLogID(sctl.getId().longValue());
+			autoReversal.setSourcePocketID(ct.getPocket().getId());
+			autoReversal.setDestPocketID(ct.getDestpocketid());
+			autoReversal.setServiceChargeTransactionLogID(sctl.getId());
 			autoReversal.setAmount(ct.getAmount());
 			
 			if (isChargeReverseAlso && (ct.getCharges().compareTo(ZERO) > 0) ) {

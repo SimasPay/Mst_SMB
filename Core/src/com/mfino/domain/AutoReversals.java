@@ -21,9 +21,9 @@ public class AutoReversals  extends Base implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_SctlId = "sctlid";
 	public static final String FieldName_AutoRevStatus = "autorevstatus";
-	private BigDecimal sctlid;
-	private BigDecimal sourcepocketid;
-	private BigDecimal destpocketid;
+	private Long sctlid;
+	private Long sourcepocketid;
+	private Long destpocketid;
 	private Integer autorevstatus;
 	private BigDecimal amount;
 	private BigDecimal charges;
@@ -46,29 +46,29 @@ public class AutoReversals  extends Base implements java.io.Serializable {
 	
 
 	@Column(name = "SCTLID", nullable = false, precision = 20, scale = 0)
-	public BigDecimal getSctlid() {
+	public Long getSctlid() {
 		return this.sctlid;
 	}
 
-	public void setSctlid(BigDecimal sctlid) {
+	public void setSctlid(Long sctlid) {
 		this.sctlid = sctlid;
 	}
 
 	@Column(name = "SOURCEPOCKETID", nullable = false, precision = 20, scale = 0)
-	public BigDecimal getSourcepocketid() {
+	public Long getSourcepocketid() {
 		return this.sourcepocketid;
 	}
 
-	public void setSourcepocketid(BigDecimal sourcepocketid) {
+	public void setSourcepocketid(Long sourcepocketid) {
 		this.sourcepocketid = sourcepocketid;
 	}
 
 	@Column(name = "DESTPOCKETID", nullable = false, precision = 20, scale = 0)
-	public BigDecimal getDestpocketid() {
+	public Long getDestpocketid() {
 		return this.destpocketid;
 	}
 
-	public void setDestpocketid(BigDecimal destpocketid) {
+	public void setDestpocketid(Long destpocketid) {
 		this.destpocketid = destpocketid;
 	}
 

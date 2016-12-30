@@ -82,6 +82,14 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 		}
 		long expiryTime = expiryHours * 60 * 60 *1000;
 		Timestamp cuurentTime = new Timestamp();
+		
+		String reverseCharge = systemParametersService.getString(SystemParameterKeys.REVERSE_CHARGE_FOR_EXPIRED_TRANSFER_TO_UNREGISTERED);
+		boolean isChargeRevese = false;
+		if ("true".equalsIgnoreCase(reverseCharge)) {
+			isChargeRevese = true;
+		}
+		
+		Long chargeRevFundPocket = systemParametersService.getLong(SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET);
 				
 		UnRegisteredTxnInfoQuery urtiQuery = new UnRegisteredTxnInfoQuery();
 		Integer[] status = new Integer[2];
@@ -96,7 +104,7 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 				if ( !(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(urti.getTransactionname())) ) {
 					long diffTime = cuurentTime.getTime() - urti.getCreatetime().getTime();
 					if (diffTime > expiryTime) {
-						revertTransfer(urti);
+						revertTransfer(urti, isChargeRevese, chargeRevFundPocket);
 					}
 				}
 			}
@@ -105,26 +113,17 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 	}
 	
 	
-	private void revertTransfer(UnregisteredTxnInfo urti) {
+	private void revertTransfer(UnregisteredTxnInfo urti, boolean isChargeRevese, Long chargeRevFundPocket) {
 		log.info("Reverting the Transfer to UnRegistered with ReferenceId: " + urti.getTransferctid());
 		
-		String reverseCharge = systemParametersService.getString(SystemParameterKeys.REVERSE_CHARGE_FOR_EXPIRED_TRANSFER_TO_UNREGISTERED);
-		boolean isChargeRevese = false;
-		if ("true".equalsIgnoreCase(reverseCharge)) {
-			isChargeRevese = true;
-		}
-		
-		long sctlId = urti.getTransferctid().longValue();
-		ServiceChargeTxnLog sctl = serviceChargeTransactionLogService.getById(sctlId);
-		Long chargeRevFundPocket = systemParametersService.getLong(SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET);
+		ServiceChargeTxnLog sctl = urti.getServiceChargeTxnLog(); 
 		
 		log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctl.getId() + " is initialized");
 		urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_REVERSAL_INITIALIZED);
 		unRegisteredTxnInfoService.save(urti);
-		
 
 		TransactionDetails transactionDetails = new TransactionDetails();
-		transactionDetails.setSctlId(sctl.getId().longValue());
+		transactionDetails.setSctlId(sctl.getId());
 		transactionDetails.setChargeReverseAlso(isChargeRevese);
 		transactionDetails.setChargeRevFundPocket(chargeRevFundPocket);
 		
@@ -143,21 +142,21 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 			long transactionTypeId = sctl.getTransactiontypeid().longValue();
 			TransactionType transactionType = transactionTypeService.getTransactionTypeById(transactionTypeId);
 			if (ServiceAndTransactionConstants.TRANSACTION_SUB_BULK_TRANSFER.equals(transactionType.getTransactionname())) {
-				BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(sctlId);
+				BulkUploadEntry bue = bulkUploadEntryService.getBulkUploadEntryBySctlID(sctl.getId());
 				bue.setStatus(CmFinoFIX.TransactionsTransferStatus_Expired);
 				bue.setFailurereason(MessageText._("Transfer to UnRegistered Expired and Money reverted to source Account"));
 				bulkUploadEntryService.saveBulkUploadEntry(bue);
 			}
-			log.info("Successfully reverted the Transaction with Reference ID : " + sctlId);
+			log.info("Successfully reverted the Transaction with Reference ID : " + sctl.getId());
 		}
 		else if (CmFinoFIX.NotificationCode_AutoReverseFailed.equals(result.getNotificationCode())) {
-			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctlId + " is failed");
+			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctl.getId() + " is failed");
 			urti.setUnregisteredtxnstatus(CmFinoFIX.UnRegisteredTxnStatus_CASHOUT_FAILED);
 			urti.setFailurereason(MessageText._("Reversal of 'Transfer to UnRegistered' is failed and will try in next trigger fire event"));
 			unRegisteredTxnInfoService.save(urti);
 		}
 		else {
-			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctlId + " is Pending");
+			log.info("Reversal of Transfer to UnRegistered with ReferenceId: " + sctl.getId() + " is Pending");
 		}
 	}
 }
