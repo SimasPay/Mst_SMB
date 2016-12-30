@@ -24,7 +24,7 @@ import com.mfino.domain.PtcGroupMapping;
 public class PocketTemplateConfigDAO extends BaseDAO<PocketTemplateConfig> {
 
 	public static final String ID_COLNAME = "id";
-	public static final String POCKETTEMPLATETABLE = "PocketTemplate";
+	public static final String POCKETTEMPLATETABLE = "pocketTemplate";
     public static final String POCKETTEMPLATE_ALIAS = "PocketTemplateAlias";
     public static final String KYCLEVELTABLE = "KYCLevel";
     public static final String KYCLEVEL_ALIAS = "KYCLevelAlias";
