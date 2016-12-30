@@ -98,7 +98,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
                 criteria.add(Restrictions.sqlRestriction("(restrictions & ?) > 0", query.getRestrictions(), StandardBasicTypes.INTEGER));
             } else {
                 //When user restrictions equal
-                criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None.longValue()));
+                criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None));
             }
         }        
         if(query.getRole() != null) {
