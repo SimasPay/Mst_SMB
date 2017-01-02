@@ -82,32 +82,19 @@ mFino.widget.SubscriberSearchForm = function (config) {
 	        	}
 	        },
 	        {
-	            xtype : "combo",
-	            anchor : '98%',
+	    		xtype : "remotedropdown",
+	    		fieldLabel: _('KYC'),
 	            labelSeparator : '',
-	            fieldLabel :_('KYC'),
+	            anchor : '98%',
+	            itemId : 'sub.KYCLevel',
+	            id : 'sub.KYCLevel',
 	            emptyText : _('<select one..>'),
-	            addEmpty : false,
-	            store : new FIX.FIXStore("fix.htm",CmFinoFIX.message.JSKYCCheck),
+	            RPCObject : CmFinoFIX.message.JSKYCCheck,
 	            displayField: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
-	            valueField : CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name,
-	            name: CmFinoFIX.message.JSKYCCheck.Entries.KYCLevelName._name,
-	            triggerAction: 'all',
-	            listeners: {
-	                select: function(field,record) {
-	                	var KYCLevel = record.get(CmFinoFIX.message.JSKYCCheck.Entries.KYCLevel._name);
-	                	/*var kyc= field.getValue();
-	                	if(kyc === 0) {
-	                		Ext.MessageBox.alert(_("Alert"), _("Subscriber with NoKyc is not allowed to create"));
-	                		field.clearValue();
-	                		return;
-	                	}*/
-	                	
-	                	var kf_combo = Ext.getCmp("sub.form.kycfield.search");
-	                	kf_combo.setValue(KYCLevel)
-	                }
-	            }
-	        },
+	            valueField : CmFinoFIX.message.JSKYCCheck.Entries.ID._name,
+	    		hiddenName : CmFinoFIX.message.JSSubscriberMDN.KYCFieldsLevelID._name,
+	            name: CmFinoFIX.message.JSSubscriberMDN.KYCFieldsLevelID._name
+	            },
 	        {
 	            xtype : "enumdropdown",
 	            fieldLabel: _('Status'),
@@ -133,12 +120,6 @@ mFino.widget.SubscriberSearchForm = function (config) {
 	            listeners   : {
 	                specialkey: this.enterKeyHandler.createDelegate(this)
 	            }
-	        },
-	        {
-	            	xtype : "hidden",
-	                itemId : 'sub.form.kycfield.search',
-	                id : 'sub.form.kycfield.search',
-	                name: CmFinoFIX.message.JSKYCCheckFields.Entries.KYCFieldsLevelID._name
 	        }
         ]
     });
@@ -161,6 +142,17 @@ Ext.extend(mFino.widget.SubscriberSearchForm, Ext.FormPanel, {
         ];
         mFino.widget.SubscriberSearchForm.superclass.initComponent.call(this);
         this.addEvents("search");
+        this.on("render", function(){
+        	this.reloadRemoteDropDown();
+        });
+    },
+    
+    reloadRemoteDropDown : function(){
+    	this.getForm().items.each(function(item) {
+	    	if(item.getXType() == 'remotedropdown') {
+	    		item.reload();
+	    	}
+    	});
     },
 
     enterKeyHandler : function (f, e) {
@@ -196,4 +188,3 @@ Ext.extend(mFino.widget.SubscriberSearchForm, Ext.FormPanel, {
         this.getForm().reset();
     }
 });
-Ext.reg("subscribersearchform", mFino.widget.SubscriberSearchForm);
