@@ -669,7 +669,7 @@ public class SubscriberBulkUploadServiceImpl  implements SubscriberBulkUploadSer
 			// Adding Group to new subscriber
 			if(syncRecord.getId() == null) {
 				sg = new SubscriberGroups();
-				sg.setSubscriberid(subscriber.getId().longValue());
+				sg.setSubscriber(subscriber);
 				sg.setGroupid((mapGroup.get(syncRecord.getGroupName().toLowerCase()) != null) ?
 						mapGroup.get(syncRecord.getGroupName().toLowerCase()).getId().longValue() : defaultGroup.getId().longValue());
 				subscriberGroupService.save(sg);

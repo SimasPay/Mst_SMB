@@ -1044,8 +1044,8 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         				Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         				SubscriberGroups sg = new SubscriberGroups();
         				sg.setGroupid(group.getId());
-        				if(subscriber.getId() != null){
-        					sg.setSubscriberid(subscriber.getId());
+        				if(subscriber!= null){
+        					sg.setSubscriber(subscriber);
         					subscriberGroupDao.save(sg);
         				}
         			}
@@ -1222,7 +1222,7 @@ public class ServicePartnerProcessorspImpl extends BaseFixProcessor implements S
         			else{
         				Groups group = (Groups)groupDao.getById(Long.valueOf(entry.getGroupID()));
         				SubscriberGroups sg = new SubscriberGroups();
-        				sg.setSubscriberid(subscriber.getId().longValue());
+        				sg.setSubscriber(subscriber);
         				sg.setGroupid(group.getId().longValue());
         				
         				if(subscriber.getId() != null){

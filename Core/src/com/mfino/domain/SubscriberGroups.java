@@ -4,9 +4,12 @@ package com.mfino.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -18,8 +21,9 @@ import javax.persistence.Table;
 public class SubscriberGroups extends Base implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final String FieldName_Subscriber = "subscriberid";
-	private Long subscriberid;
+public static final String FieldName_Subscriber = "subscriber";	
+	
+	private Subscriber subscriber;
 	private Long groupid;
 
 	private Long id;
@@ -40,13 +44,14 @@ public class SubscriberGroups extends Base implements java.io.Serializable {
 	}
 
 
-	@Column(name = "SUBSCRIBERID", precision = 10, scale = 0)
-	public Long getSubscriberid() {
-		return this.subscriberid;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBSCRIBERID")
+	public Subscriber getSubscriber() {
+		return this.subscriber;
 	}
 
-	public void setSubscriberid(Long subscriberid) {
-		this.subscriberid = subscriberid;
+	public void setSubscriber(Subscriber subscriber) {
+		this.subscriber = subscriber;
 	}
 
 	@Column(name = "GROUPID", precision = 10, scale = 0)

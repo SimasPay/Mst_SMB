@@ -261,7 +261,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroups sg = new SubscriberGroups();
-			sg.setSubscriberid(subscriber.getId());
+			sg.setSubscriber(subscriber);
 			sg.setGroupid(groupID);
 			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
@@ -496,11 +496,10 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			if(groupID!=null){
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				SubscriberGroups sg = new SubscriberGroups();
-				sg.setSubscriberid(subscriber.getId().longValue());
+				sg.setSubscriber(subscriber);
 				sg.setGroupid(defaultGroup.getId().longValue());
-				if(subscriber.getId() != null){
-					subscriberGroupDao.save(sg);
-				}
+				subscriberGroupDao.save(sg);
+				
 			}
 			
 			Pocket lakuPocket = null;
@@ -710,7 +709,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 				
 				SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				SubscriberGroups sg = new SubscriberGroups();
-				sg.setSubscriberid(subscriber.getId().longValue());
+				sg.setSubscriber(subscriber);
 				sg.setGroupid(defaultGroup.getId().longValue());
 				if(subscriber.getId() != null){
 					
@@ -895,7 +894,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
 			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroups sg = new SubscriberGroups();
-			sg.setSubscriberid(subscriber.getId().longValue());
+			sg.setSubscriber(subscriber);
 			sg.setGroupid(defaultGroup.getId().longValue());
 			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);
@@ -1105,7 +1104,7 @@ public class SubscriberServiceExtendedImpl implements SubscriberServiceExtended{
 			Groups defaultGroup =groupDao.getSystemGroup();
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 			SubscriberGroups sg = new SubscriberGroups();
-			sg.setSubscriberid(subscriber.getId().longValue());
+			sg.setSubscriber(subscriber);
 			sg.setGroupid(defaultGroup.getId().longValue());
 			if(subscriber.getId() != null){
 				subscriberGroupDao.save(sg);

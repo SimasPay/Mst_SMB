@@ -878,7 +878,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
         				
         				if(subscriber!=null && subscriber.getId() != null){
         					SubscriberGroups sg = new SubscriberGroups();
-        					sg.setSubscriberid(subscriber.getId().longValue());
+        					sg.setSubscriber(subscriber);
         					sg.setGroupid(group.getId().longValue());
         					subscriberGroupDao.save(sg);
         				}

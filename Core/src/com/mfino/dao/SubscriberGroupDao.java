@@ -15,7 +15,8 @@ import com.mfino.domain.SubscriberGroups;
 public class SubscriberGroupDao extends BaseDAO<SubscriberGroups>{
 	public SubscriberGroups getBySubscriberID(Long subscriberID) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(SubscriberGroups.FieldName_Subscriber, subscriberID));
+        criteria.createAlias(SubscriberGroups.FieldName_Subscriber, "sub");
+        criteria.add(Restrictions.eq("sub."+SubscriberGroups.FieldName_RecordID, subscriberID));
         @SuppressWarnings("unchecked")
 		List<SubscriberGroups> lst = criteria.list();
 		if(criteria.list()==null||criteria.list().isEmpty())
@@ -25,7 +26,8 @@ public class SubscriberGroupDao extends BaseDAO<SubscriberGroups>{
 	
 	public List<SubscriberGroups> getAllBySubscriberID(Long subscriberID) {
         Criteria criteria = createCriteria();
-        criteria.add(Restrictions.eq(SubscriberGroups.FieldName_Subscriber, subscriberID));
+        criteria.createAlias(SubscriberGroups.FieldName_Subscriber, "sub");
+        criteria.add(Restrictions.eq("sub."+SubscriberGroups.FieldName_RecordID, subscriberID));
         @SuppressWarnings("unchecked")
 		List<SubscriberGroups> lst = criteria.list();
 		if(criteria.list()==null||criteria.list().isEmpty())

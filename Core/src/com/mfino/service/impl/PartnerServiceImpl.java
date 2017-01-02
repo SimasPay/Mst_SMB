@@ -868,7 +868,8 @@ public class PartnerServiceImpl implements PartnerService {
 			subscriber.setEmail(partnerRegistration.getAuthorizedEmail());
         	subscriber.setIsemailverified(true);
         	
-        	if(StringUtils.isNotBlank(partnerRegistration.getGroupID())){    			
+        	if(StringUtils.isNotBlank(partnerRegistration.getGroupID())){  
+        		
     			GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
     			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 
@@ -883,11 +884,10 @@ public class PartnerServiceImpl implements PartnerService {
     			else{
     				Groups group = (Groups)groupDao.getById(Long.valueOf(partnerRegistration.getGroupID()));
     				SubscriberGroups sg = new SubscriberGroups();
-    				sg.setSubscriberid(subscriber.getId().longValue());
+    				sg.setSubscriber(subscriber);
     				sg.setGroupid(group.getId().longValue());
-    				if(subscriber.getId() != null){
-    					subscriberGroupDao.save(sg);
-    				}
+    			    subscriberGroupDao.save(sg);
+    				
     			}
     		}            
          

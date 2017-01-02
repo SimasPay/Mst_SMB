@@ -119,6 +119,9 @@ public class Subscriber extends Base implements java.io.Serializable {
 	private Set<CreditCardTransaction> creditCardTransactions = new HashSet<CreditCardTransaction>(
 			0);
 	private Set<Partner> partners = new HashSet<Partner>(0);
+	
+	private Set<SubscriberGroups> subscriberGroups = new HashSet<SubscriberGroups>(0);
+	
 
 	private Long id;
 	
@@ -712,6 +715,14 @@ public class Subscriber extends Base implements java.io.Serializable {
 
 	public void setPartners(Set<Partner> partners) {
 		this.partners = partners;
+	}
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "subscriber")
+	public Set<SubscriberGroups> getSubscriberGroupFromSubscriberID() {
+		return this.subscriberGroups;
+	}
+
+	public void setSubscriberGroupFromSubscriberID(Set<SubscriberGroups> subscriberGroups) {
+		this.subscriberGroups = subscriberGroups;
 	}
 
 }
