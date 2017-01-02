@@ -5,18 +5,26 @@
 package com.mfino.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -139,6 +147,9 @@ public class MailServiceImpl implements MailService {
 			String subject, String message, String filePath)
 			throws EmailException {
 
+		if(!ConfigurationUtil.isUseSmtp()){
+			sendMailWithSES(toAddress, toName, subject, message, filePath);
+		}
 		// Create the attachment
 		EmailAttachment attachment = new EmailAttachment();
 		attachment.setPath(filePath);
@@ -176,45 +187,49 @@ public class MailServiceImpl implements MailService {
 			String message, List<File> attachments) {
 		log.info("Sending Reports Mail to " + toAddress);
 		try {
-			MultiPartEmail email = new MultiPartEmail();
-			email.setHostName(ConfigurationUtil.getMailServer());
-			email.setSmtpPort(ConfigurationUtil.getMailServerPort());
-			if (ConfigurationUtil.getMailServerRequireAuth()) {
-				email.setAuthenticator(new DefaultAuthenticator(
-						ConfigurationUtil.getMailServerAuthName(),
-						ConfigurationUtil.getMailServerAuthPassword()));
-			}
-			email.setFrom(ConfigurationUtil.getMailServerAuthName(),
-					ConfigurationUtil.getMailServerFromName());
-			if (ConfigurationUtil.getMailServerRequireSSL()) {
-				email.setTLS(true);
-				email.getMailSession()
-						.getProperties()
-						.put("mail.smtp.socketFactory.class",
-								MAIL_SMTP_SOCKET_FACTORY_CLASS);
-			}
-			email.addTo(toAddress, toName);
-			if (StringUtils.isNotBlank(subject)) {
-				email.setSubject(subject);
-			}
-			if (StringUtils.isNotBlank(message)) {
-				email.setMsg(message);
-			}
-			Iterator<File> it = attachments.iterator();
-			while (it.hasNext()) {
-				File attachmentFile = it.next();
-				if (attachmentFile.exists()) {
-					log.info("Attaching file " + attachmentFile.getName());
-					EmailAttachment attachment = new EmailAttachment();
-					attachment.setPath(attachmentFile.getAbsolutePath());
-					attachment.setDisposition(EmailAttachment.ATTACHMENT);
-					attachment.setDescription(attachmentFile.getName());
-					attachment.setName(attachmentFile.getName());
-					email.attach(attachment);
+			if (!ConfigurationUtil.isUseSmtp()) {
+				sendMailWithSES(toAddress, toName, subject, message, attachments);
+			} else{
+				MultiPartEmail email = new MultiPartEmail();
+				email.setHostName(ConfigurationUtil.getMailServer());
+				email.setSmtpPort(ConfigurationUtil.getMailServerPort());
+				if (ConfigurationUtil.getMailServerRequireAuth()) {
+					email.setAuthenticator(new DefaultAuthenticator(
+							ConfigurationUtil.getMailServerAuthName(),
+							ConfigurationUtil.getMailServerAuthPassword()));
 				}
+				email.setFrom(ConfigurationUtil.getMailServerAuthName(),
+						ConfigurationUtil.getMailServerFromName());
+				if (ConfigurationUtil.getMailServerRequireSSL()) {
+					email.setTLS(true);
+					email.getMailSession()
+							.getProperties()
+							.put("mail.smtp.socketFactory.class",
+									MAIL_SMTP_SOCKET_FACTORY_CLASS);
+				}
+				email.addTo(toAddress, toName);
+				if (StringUtils.isNotBlank(subject)) {
+					email.setSubject(subject);
+				}
+				if (StringUtils.isNotBlank(message)) {
+					email.setMsg(message);
+				}
+				Iterator<File> it = attachments.iterator();
+				while (it.hasNext()) {
+					File attachmentFile = it.next();
+					if (attachmentFile.exists()) {
+						log.info("Attaching file " + attachmentFile.getName());
+						EmailAttachment attachment = new EmailAttachment();
+						attachment.setPath(attachmentFile.getAbsolutePath());
+						attachment.setDisposition(EmailAttachment.ATTACHMENT);
+						attachment.setDescription(attachmentFile.getName());
+						attachment.setName(attachmentFile.getName());
+						email.attach(attachment);
+					}
+				}
+				email.send();
+				log.info("Successfully Sent Mail to " + toAddress);
 			}
-			email.send();
-			log.info("Successfully Sent Mail to " + toAddress);
 		} catch (Exception e) {
 			log.error("Error while sending mail to " + toAddress, e);
 		}
@@ -234,6 +249,13 @@ public class MailServiceImpl implements MailService {
 
 	public void sendMail(String toAddress, String toName, String subject,
 			String message, File attachmentFile) throws EmailException {
+		
+		if(!ConfigurationUtil.isUseSmtp()){
+	  		List<File> attchments = new ArrayList<File>();
+	  		attchments.add(attachmentFile);
+  			sendMailWithSES(toAddress, toName, subject, message, attchments);
+  		}
+		
 		MultiPartEmail email = new MultiPartEmail();
 		email.setHostName(ConfigurationUtil.getMailServer());
 		email.setSmtpPort(ConfigurationUtil.getMailServerPort());
@@ -413,5 +435,103 @@ public class MailServiceImpl implements MailService {
 		asyncSendEmail(email,
 				subscriber.getFirstname() + " " + subscriber.getLastname(),
 				ConfigurationUtil.getEmailVerificationSubject(), mailBody);
+	}
+	
+	public void sendMailWithSES(String toAddress, String toName, String subject,
+			String message, List<File> attachments) throws EmailException {
+		Properties props = new Properties();
+		props.setProperty("mail.transport.protocol", ConfigurationUtil.getMailSesTransport());
+		props.setProperty("mail.aws.user", ConfigurationUtil.getMailAwsUser());
+		props.setProperty("mail.aws.password", ConfigurationUtil.getMailAwsPassword());
+		Session session = Session.getInstance(props);
+		
+		Transport t = new AWSJavaMailTransport(session, null);
+		try {
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(ConfigurationUtil.getMailAwsFrom()));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+			msg.setSubject(subject);
+			
+		    if (attachments != null && attachments.size() > 0){
+				BodyPart part = new MimeBodyPart();
+			    part.setContent(message, "text/plain");
+			    
+				Multipart multipart = new MimeMultipart();
+				multipart.addBodyPart(part);
+				
+				for (File file : attachments) {
+					if (file.exists()) {
+						BodyPart messageBodyPart = new MimeBodyPart();
+						DataSource source = new FileDataSource(file.getAbsolutePath());
+						messageBodyPart.setDataHandler(new DataHandler(source));
+						messageBodyPart.setFileName(source.getName());
+					    multipart.addBodyPart(messageBodyPart);
+					}
+				}
+				msg.setContent(multipart);
+				
+		    } else{
+		    	msg.setText(message);
+		    }
+		    
+			msg.saveChanges();
+			t.connect();
+			t.sendMessage(msg, null);
+		} catch (Exception e) {
+			throw new EmailException(e.getMessage(), e.getCause());
+		} finally{
+			try {
+				t.close();
+			} catch (MessagingException e) {
+				throw new EmailException(e.getMessage(), e.getCause());
+			}
+		}
+	}
+	
+	public void sendMailWithSES(String toAddress, String toName, String subject,
+			String message, String attachmentPath) throws EmailException {
+		Properties props = new Properties();
+		props.setProperty("mail.transport.protocol", ConfigurationUtil.getMailSesTransport());
+		props.setProperty("mail.aws.user", ConfigurationUtil.getMailAwsUser());
+		props.setProperty("mail.aws.password", ConfigurationUtil.getMailAwsPassword());
+		Session session = Session.getInstance(props);
+		
+		Transport t = new AWSJavaMailTransport(session, null);
+		try {
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(ConfigurationUtil.getMailAwsFrom()));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+			msg.setSubject(subject);
+			
+		    if (StringUtils.isNotBlank(attachmentPath)){
+				BodyPart part = new MimeBodyPart();
+			    part.setContent(message, "text/plain");
+			    
+				Multipart multipart = new MimeMultipart();
+				multipart.addBodyPart(part);
+				BodyPart messageBodyPart = new MimeBodyPart();
+				DataSource source = new FileDataSource(attachmentPath);
+				messageBodyPart.setDataHandler(new DataHandler(source));
+				messageBodyPart.setFileName(source.getName());
+			    multipart.addBodyPart(messageBodyPart);
+			    
+				msg.setContent(multipart);
+				
+		    } else{
+		    	msg.setText(message);
+		    }
+		    
+			msg.saveChanges();
+			t.connect();
+			t.sendMessage(msg, null);
+		} catch (Exception e) {
+			throw new EmailException(e.getMessage(), e.getCause());
+		} finally{
+			try {
+				t.close();
+			} catch (MessagingException e) {
+				throw new EmailException(e.getMessage(), e.getCause());
+			}
+		}
 	}
 }
