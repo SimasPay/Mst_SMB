@@ -95,7 +95,7 @@ public class UserDAO extends BaseDAO<MfinoUser> {
         if (query.getRestrictions() != null) {
             int rest = query.getRestrictions();
             if (rest > 0) {
-                criteria.add(Restrictions.sqlRestriction("(restrictions & ?) > 0", query.getRestrictions(), StandardBasicTypes.INTEGER));
+                criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, query.getRestrictions()));
             } else {
                 //When user restrictions equal
                 criteria.add(Restrictions.eq(MfinoUser.FieldName_UserRestrictions, CmFinoFIX.SubscriberRestrictions_None));
