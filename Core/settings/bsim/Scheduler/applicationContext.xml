@@ -457,11 +457,8 @@
         	    <ref bean="retryCollectorPocketsTrigger"/>
             	<ref bean="retryFailedCollectorPocketsTrigger"/>
             	<ref bean="updatePocketBalancesFromLedgerTrigger"/>
-            	<ref bean="AvgMonthlyBalanceTrigger"/>
-            	<ref bean="AccountOpeningFeeTrigger"/>
-            	<ref bean="processBulkTransferTrigger"/>
             	<ref bean="checkExpirationOfTransferToUnRegisteredTrigger"/>
-
+            	
             <!-- <ref bean="settlementConfigUpdateTrigger"/>
             	 <ref bean="partnerServiceSettlementTrigger"/> 
              	 <ref bean="fundReimburseTrigger"/>
@@ -469,7 +466,11 @@
              	 
              	 <ref bean="reverseFundsTrigger"/>
                  <ref bean="bulkPendingResolveToolTrigger"/>		
-            -->		
+            -->
+ <!-- These triggers are related to lakupandai  -->
+            	<!-- ref bean="AvgMonthlyBalanceTrigger"/>
+            	<ref bean="AccountOpeningFeeTrigger"/>
+            	<ref bean="processBulkTransferTrigger"/-->
              	 
             </list>
         </property>
