@@ -148,28 +148,30 @@ public class ForgotPinHandlerImpl extends FIXMessageHandler implements ForgotPin
 		 * no need of these validations when using HSM hashed pin since pin would be 
 		 * generated from the hash and it bound be correct length
 		 */ 
-		if(!ConfigurationUtil.getuseHashedPIN())
-		{
+		if(!ConfigurationUtil.getuseHashedPIN()){
+			
 			if (resetPin.getNewPin().length() != systemParametersService.getPinLength()) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ChangeEPINFailedInvalidPINLength);
 				return result;
 			}
+			
 			if (!StringUtils.isNumeric(resetPin.getNewPin())) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_OnlyNumericPinAllowed);
 				return result;
 			}
 			
+		} else {
+			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
+			
 			log.info("checking for new pin strength for subscribermdn "+resetPin.getSourceMDN() );
+			
 			if(!MfinoUtil.isPinStrongEnough(resetPin.getNewPin())){
 			   log.info("The pin is not strong enough for subscribermdn "+resetPin.getSourceMDN() );
 			   result.setNotificationCode(CmFinoFIX.NotificationCode_PinNotStrongEnough);
 				return result;
 			}
+			
 			log.info("Pin passed strength conditions");
-		}
-		else
-		{
-			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
 		}
 
 		ServiceChargeTxnLog sctl = sctlService.getBySCTLID(transDetails.getSctlId());
