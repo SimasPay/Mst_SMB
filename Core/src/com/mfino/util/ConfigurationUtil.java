@@ -323,7 +323,7 @@ public class ConfigurationUtil {
 		SubscriberProfileImageFilePath("mfino.subscriber.profile.image.filepath","images/profile"),
 		CodeForTransferUsingEMoney("code.for.transfer.using.emoney", "8222"),
 		TransferToUangkuPrefixNumber("transfer.to.uangku.prefix.number", "8881"),
-		KTPImagePath("ktp.image.path", "/Users/dimo/Simaspay/images/id/"),
+		KTPImagePath("ktp.image.path", "/opt/images/"),
 		KTPImageUrl("ktp.image.url", "/images/ktp/"),
 		CodeForTransferRecipientUsingEMoney("code.for.transfer.recipient.using.emoney", "85");
 		
