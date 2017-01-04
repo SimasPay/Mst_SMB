@@ -5784,6 +5784,8 @@
 		<field name="OriginalReferenceID" required="N"/> 
 		<field name="Description" required="N"/>
 	</message>
+	<message name="CashWithdrawalRefundInquiry" msgtype="1790" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount"/>
+	<message name="CashWithdrawalRefund" msgtype="1791" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="CashInFromATM"/>
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -25318,6 +25320,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="65" description="Emoney_To_Bank"/>
 			<value enum="66" description="Cashin_From_ATM"/>
 			<value enum="67" description="Bank_To_Emoney"/>
+			<value enum="68" description="Cashwithdrawal_Refund"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />

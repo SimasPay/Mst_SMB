@@ -83,6 +83,8 @@ public class ServiceAndTransactionConstants {
 
 	public static final String TRANSACTION_CASHIN = "CashIn";
 	
+	public static final String TRANSACTION_CASHWITHDRAWAL_REFUND = "CashWithdrawalRefund";
+	
 	public static final String TRANSACTION_PURCHASE = "Purchase";
 	
 	public static final String TRANSACTION_FUNDREIMBURSE = "FundReimburse";

@@ -4,15 +4,18 @@ import java.io.IOException;
 
 import javax.jms.JMSException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOSource;
 import org.jpos.iso.packager.XMLPackager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.mce.iso.jpos.nm.NMStatus;
 import com.mfino.mce.iso.jpos.nm.StatusRegistrar;
+import com.mfino.util.ConfigurationUtil;
 
 
 public class TransactionHandler implements Runnable {
@@ -32,7 +35,8 @@ public class TransactionHandler implements Runnable {
 	@Override
 	public void run() {
 		String element39 = GetConstantCodes.FAILURE;
-
+		boolean isATMRegistration = false;
+		
 			try {
 				log.info("isomsg received in transactionhandler" + msg);
 				XMLPackager packager = new XMLPackager();
@@ -51,6 +55,15 @@ public class TransactionHandler implements Runnable {
 					log.info("mti=" + mti + " processingCode=" + processingCode);
 					
 					try {
+						
+						String refundMdn = msg.getString(102);
+						boolean isCashWithdrawalRefund = false;
+						
+						if(StringUtils.isNotBlank(refundMdn) && refundMdn.startsWith(ConfigurationUtil.getCodeForTransferRecipientUsingEMoney())) {
+							
+							isCashWithdrawalRefund = true;
+						}
+						
 						if(processingCode.startsWith("98") ){
 							
 							/*ATMRequestHandler.getInstance().handle(msg);
@@ -64,31 +77,75 @@ public class TransactionHandler implements Runnable {
 								element39=GetConstantCodes.FAILURE;
 							}
 							
+							isATMRegistration = true;
+							
 						}else if(processingCode.startsWith("37") ){
 							
-							/*CashinInquiryHandler.getInstance().handle(msg);
-							element39 = msg.getString(39);*/
-							
-							if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-								CashinInquiryHandler.getInstance().handle(msg);
-								element39 = msg.getString(39);
-							}else{
-								log.error("TransactionHandler :: key exchange failure. Rejected the txn");
-								element39=GetConstantCodes.FAILURE;
+							if(isCashWithdrawalRefund) {
+								
+								/*CashWithdrawalRefundInquiryHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);*/
+								
+								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
+									
+									CashWithdrawalRefundInquiryHandler.getInstance().handle(msg);
+									element39 = msg.getString(39);
+									
+								}else{
+									
+									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
+									element39=GetConstantCodes.FAILURE;
+								}
+							}else {
+								
+								/*CashinInquiryHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);*/
+								
+								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
+									
+									CashinInquiryHandler.getInstance().handle(msg);
+									element39 = msg.getString(39);
+									
+								}else{
+									
+									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
+									element39=GetConstantCodes.FAILURE;
+								}
 							}
 						}else if(processingCode.startsWith("47") || processingCode.startsWith("49")){
 							
-							/*CashinHandler.getInstance().handle(msg);
-							element39 = msg.getString(39);*/
+							if(isCashWithdrawalRefund) {
+								
+								/*CashWithdrawalRefundHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);*/
+								
+								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
+									
+									CashWithdrawalRefundHandler.getInstance().handle(msg);
+									element39 = msg.getString(39);
+									
+								}else{
+									
+									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
+									element39=GetConstantCodes.FAILURE;
+								}
+								
+							} else {
 							
-							if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-								CashinHandler.getInstance().handle(msg);
-								element39 = msg.getString(39);
-							}else{
-								log.error("TransactionHandler :: key exchange failure. Rejected the txn");
-								element39=GetConstantCodes.FAILURE;
+								/*CashinHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);*/
+								
+								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
+									
+									CashinHandler.getInstance().handle(msg);
+									element39 = msg.getString(39);
+									
+								}else{
+									
+									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
+									element39=GetConstantCodes.FAILURE;
+								}
 							}
-							
 						}else{
 							log.error("TransactionHandler :: handle Unsupported transaction receive. Rejected");
 							element39=GetConstantCodes.FAILURE;
@@ -109,26 +166,32 @@ public class TransactionHandler implements Runnable {
 				e.printStackTrace();
 			}
 			finally {
+					
+				if(isATMRegistration) {
+					
 					try{
-					msg.set(39, element39);
-					msg.setResponseMTI();
-					XMLPackager packager = new XMLPackager();
-					log.info("response isomsg-->" + new String(packager.pack(msg)));
-					source.send(msg);
-					//try to get Subscriber Details by sending iso msg to cbs
-					if(GetConstantCodes.SUCCESS.equals(msg.getString(39)))
-					{
-						log.info("TransactionHandler :: run() ATM Transaction Successful Sending msg to CBS to get Subscriber Details");
-					ATMRequestHandler.getInstance().updateDetails(msg);
-					}
-					}catch(ISOException e){
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+						
+							msg.set(39, element39);
+							msg.setResponseMTI();
+							XMLPackager packager = new XMLPackager();
+							log.info("response isomsg-->" + new String(packager.pack(msg)));
+							source.send(msg);
+							//try to get Subscriber Details by sending iso msg to cbs
+							if(GetConstantCodes.SUCCESS.equals(msg.getString(39))){
+								
+								log.info("TransactionHandler :: run() ATM Transaction Successful Sending msg to CBS to get Subscriber Details");
+								ATMRequestHandler.getInstance().updateDetails(msg);
+							}
+							
+						}catch(ISOException e){
+							
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				}
 				
 			}
-
 	}
 }

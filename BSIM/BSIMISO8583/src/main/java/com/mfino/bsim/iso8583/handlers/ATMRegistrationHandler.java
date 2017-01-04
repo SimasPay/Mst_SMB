@@ -360,7 +360,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			if(subscriberGroups == null || subscriberGroups.isEmpty()){
 				SubscriberGroups subGroup = new SubscriberGroups(); 
 				if(null!=groupService.getById(1L)){
-					subGroup.setSubscriberid(subscriber.getId().longValue());
+					subGroup.setSubscriber(subscriber);
 					subGroup.setGroupid(1L); 
 					subGroupService.save(subGroup); 
 				}

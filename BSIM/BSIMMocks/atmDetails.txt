@@ -1,7 +1,21 @@
 mpan=4847779905000046
 pin=E31C262E8ADFBCC8
+
+//used in ATM Registration
 mdn=629848882365
-cashinmdn=8222629848882365
 accountno=9080706055
-amount=35000
-rrn=234574
+
+//used in case of cashin
+cashinmdn=8222629848882365
+
+//used in case of cashwithdrawal refund case
+refundmdn=85629848882365
+
+//Last 2 digits indicate decimals
+amount=1000000
+
+//unique number per transaction
+rrn=234576
+
+//1-ATM Registration, 2-Cashin Inquiry, 3-Cashin, 4-Cashwithdrawal Refund Inquiry, 5-Cashwithdrawal Refund
+servicetype=2
