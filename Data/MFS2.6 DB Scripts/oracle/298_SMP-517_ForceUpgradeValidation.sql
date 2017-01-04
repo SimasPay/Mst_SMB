@@ -3,9 +3,13 @@ INSERT INTO SYSTEM_PARAMETERS (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIM
 
 INSERT INTO SYSTEM_PARAMETERS (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (system_parameters_ID_SEQ.NEXTVAL, '1', sysdate, 'System', sysdate, 'System', 'minimum.android.app.version', '7.9.1', 'App Version Minimum for Android');
 
+SET DEFINE OFF;
+
 INSERT INTO SYSTEM_PARAMETERS (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (system_parameters_ID_SEQ.NEXTVAL, '1', sysdate, 'System', sysdate, 'System', 'ios.app.url', 'https://itunes.apple.com/id/app/simobi/id807937634?l=id&mt=8', 'App URL for Upgrade iOs');
 
-INSERT INTO SYSTEM_PARAMETERS (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (system_parameters_ID_SEQ.NEXTVAL, '1', sysdate, 'System', sysdate, 'System', 'android.app.url', 'https://play.google.com/store/apps/details?id=com.mfino.bsim&hl=in', 'App URL for Upgrade Android');
+INSERT INTO SYSTEM_PARAMETERS (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (SYSTEM_PARAMETERS_ID_SEQ.NEXTVAL, '1', SYSDATE, 'System', SYSDATE, 'System', 'android.app.url', 'https://play.google.com/store/apps/details?id=com.mfino.bsim&hl=in', 'App URL for Upgrade Android');
+
+SET DEFINE ON;
 
 DELETE FROM notification WHERE CODE = 2309;
 
