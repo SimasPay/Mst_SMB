@@ -181,7 +181,8 @@ mFino.page.subscriber = function(config){
             						gridEditForm.setTitle( _("Edit Subscriber"));
                                     gridEditForm.setMode("edit");
                                     gridEditForm.form.resetAll();
-                                    gridEditForm.show();                        
+                                    gridEditForm.show();  
+                                    detailsForm.record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.AuthenticationPhrase._name,"*********");
                                     gridEditForm.setRecord(detailsForm.record);
                                     gridEditForm.setStore(detailsForm.store);
                                     var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
@@ -189,6 +190,8 @@ mFino.page.subscriber = function(config){
                                     gridEditForm.form.onKYCDropdown(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name));
                                     gridEditForm.form.disableNotPermittedItems();
                                     gridEditForm.form.find('itemId','sub.form.mobileno')[0].disable();
+                                    gridEditForm.form.find('itemId','sub.form.secretanswer')[0].disable();
+                                    gridEditForm.form.find('itemId','sub.form.securityquestion')[0].disable();
                                     gridEditForm.form.setAccountAndTemplateDisplay(false);
             					}
             				}
