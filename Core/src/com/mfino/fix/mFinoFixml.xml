@@ -23557,6 +23557,24 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="NotRequiredForceUpgradeApp" enum="2309">
+				<C1>
+					<English>
+						<SMS>
+							<Text>The App version is updated</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="RequiredForceUpgradeApp" enum="2310">
+				<C1>
+					<English>
+						<SMS>
+							<Text>The App version is required to be upgrade</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

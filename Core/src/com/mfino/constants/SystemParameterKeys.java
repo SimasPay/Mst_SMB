@@ -132,4 +132,9 @@ public class SystemParameterKeys {
 	public static final String DATE_TO_EXPIRE_MOBILE_APP_PIN = "date.to.expire.mobile.app.pin";
 	public static final String MIN_VALUE_OF_CASHOUT_AT_ATM = "minimum.value.of.cashout.at.atm";
 	public static final String MULTIPLES_VALUE_OF_CASHOUT_AT_ATM = "multiply.value.of.cashout.at.atm";
+	public static final String APP_VERSION_MIN_IOS = "minimum.ios.app.version";
+	public static final String APP_VERSION_MIN_ANDROID = "minimum.android.app.version";
+	public static final String APP_URL_UPGRADE_IOS = "ios.app.url";
+	public static final String APP_URL_UPGRADE_ANDROID = "android.app.url";
+
 }

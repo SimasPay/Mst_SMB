@@ -37,6 +37,13 @@ public class PublicKeyXMLResult extends XMLResult {
 			getXmlWriter().writeCharacters("false", false);
 			getXmlWriter().writeEndElement();
 		}
+		
+		super.render();
+		
+		getXmlWriter().writeStartElement("AppURL");
+		getXmlWriter().writeCharacters(getAdditionalInfo(), false);
+		getXmlWriter().writeEndElement();
+		
 		writeEndOfDocument();
 
 	}

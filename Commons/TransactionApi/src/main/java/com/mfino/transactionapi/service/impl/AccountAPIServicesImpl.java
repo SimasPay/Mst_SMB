@@ -33,6 +33,7 @@ import com.mfino.transactionapi.handlers.account.ExistingSubscriberReactivationH
 import com.mfino.transactionapi.handlers.account.FavoriteHandler;
 import com.mfino.transactionapi.handlers.account.GenerateFavoriteJSONHandler;
 import com.mfino.transactionapi.handlers.account.GetPromoImageHandler;
+import com.mfino.transactionapi.handlers.account.GetPublicKeyHandler;
 import com.mfino.transactionapi.handlers.account.GetRegistrationMediumHandler;
 import com.mfino.transactionapi.handlers.account.GetUserAPIKeyHandler;
 import com.mfino.transactionapi.handlers.account.KYCUpgradeHandler;
@@ -268,6 +269,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Qualifier("SubscriberRegularWithEmoneyHandlerImpl")
 	private SubscriberRegularWithEmoneyHandler subscriberRegularWithEmoneyHandler;
 
+	@Autowired
+	@Qualifier("GetPublicKeyHandlerImpl")
+	private GetPublicKeyHandler getPublicKeyHandler;
+	
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		
 		XMLResult xmlResult = null;
@@ -480,18 +485,21 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			validationService.validatePartnerRegistrationDetails(transactionDetails);
 			xmlResult = (XMLResult) partnerRegistrationHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_PUBLIC_KEY.equals(transactionName)){
-			xmlResult= new PublicKeyXMLResult();
-		      // Encrypt the string using the public key
-			try{
-				log.info("Getting the public to send to the mobile app");
-				String[] publicKeyParams = CryptographyService.getPubKeyStrings();
-				log.info("Public key Modulus: "+publicKeyParams[0]+"\n Public key expo: "+publicKeyParams[1]);
-				xmlResult.setPublicKeyModulus(publicKeyParams[0]);
-				xmlResult.setPublicKeyExponent(publicKeyParams[1]);
-			}catch(Exception e){
-				log.error("Exception occured while sending the public key parameters");
-				e.printStackTrace();
-			}	
+//			xmlResult= new PublicKeyXMLResult();
+//		      // Encrypt the string using the public key
+//			try{
+//				log.info("Getting the public to send to the mobile app");
+//				String[] publicKeyParams = CryptographyService.getPubKeyStrings();
+//				log.info("Public key Modulus: "+publicKeyParams[0]+"\n Public key expo: "+publicKeyParams[1]);
+//				xmlResult.setPublicKeyModulus(publicKeyParams[0]);
+//				xmlResult.setPublicKeyExponent(publicKeyParams[1]);
+//			}catch(Exception e){
+//				log.error("Exception occured while sending the public key parameters");
+//				e.printStackTrace();
+//			}	
+			
+			validationService.validateAppOSAndVersion(transactionDetails);
+			xmlResult = (XMLResult) getPublicKeyHandler.handle(transactionDetails);
 		}
 		else if(ServiceAndTransactionConstants.TRANSACTION_KYC_UPGRADE_INQUIRY.equals(transactionName)){
 			xmlResult = (XMLResult)kycUpgradeInquiryHandler.handle(transactionDetails);

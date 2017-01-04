@@ -17,6 +17,19 @@
 		<td>channelId</td>
 		<td><input type="hidden" name="channelID" value="7" />7</td>
 	</tr>
+	<tr>
+		<td>AppOS</td>
+		<td>
+			<select name="appos">
+	  				<option value="1">iOs</option>
+	  				<option value="2">Android</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>appVersion</td>
+		<td><input type="text" name="appversion" value="" /></td>
+	</tr>
 	
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>

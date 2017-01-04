@@ -87,6 +87,8 @@ public interface TransactionRequestValidationService {
 	
 	public void validatechannelCode(TransactionDetails transactionDetails) throws InvalidDataException;
 	
+	public void validateAppOSAndVersion(TransactionDetails transactionDetails) throws InvalidDataException;
+	
 	public void validateSubscriberActivationDetails(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateResetPinByOTPDetails(TransactionDetails transactionDetails) throws InvalidDataException;
