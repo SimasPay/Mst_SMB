@@ -1,3 +1,4 @@
+
 INSERT INTO "SYSTEM_PARAMETERS" (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (system_parameters_ID_SEQ.NEXTVAL, '1', sysdate, 'System', sysdate, 'System', 'minimum.ios.app.version', '7.9.1', 'App Version Minimum for iOs')
 INSERT INTO "SYSTEM_PARAMETERS" (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (system_parameters_ID_SEQ.NEXTVAL, '1', sysdate, 'System', sysdate, 'System', 'minimum.android.app.version', '7.9.1', 'App Version Minimum for Android')
 INSERT INTO "SYSTEM_PARAMETERS" (ID, VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PARAMETERNAME, PARAMETERVALUE, DESCRIPTION) VALUES (system_parameters_ID_SEQ.NEXTVAL, '1', sysdate, 'System', sysdate, 'System', 'ios.app.url', 'https://itunes.apple.com/id/app/simobi/id807937634?l=id&mt=8', 'App URL for Upgrade iOs')
