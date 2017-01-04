@@ -38,7 +38,7 @@ import com.mfino.transactionapi.vo.TransactionDetails;
  */
 @Service("TransferToUnRegisteredClearanceServiceImpl")
 public class TransferToUnRegisteredClearanceServiceImpl  {
-	public static final int TRANSFER_TO_UNREGISTERED_EXPIRY_TIME = 48; // Default 48 hrs
+	public static final int TRANSFER_TO_UNREGISTERED_EXPIRY_TIME = 2; // Default 2 days
 	private static Logger log = LoggerFactory.getLogger(TransferToUnRegisteredClearanceServiceImpl.class);
 	@Autowired
 	@Qualifier("AutoReverseHandlerImpl")
@@ -76,11 +76,11 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 
 	public void checkExpirationOfTransferToUnRegistered() {
 		log.info("TransferToUnRegisteredClearanceServiceImpl :: checkExpirationOfTransferToUnRegistered :: BEGIN");
-		long expiryHours = systemParametersService.getLong(SystemParameterKeys.TRANSFER_TO_UNREGISTERED_EXPIRY_TIME);
-		if (expiryHours == -1) {
-			expiryHours = TRANSFER_TO_UNREGISTERED_EXPIRY_TIME;
+		long expiryDays = systemParametersService.getLong(SystemParameterKeys.TRANSFER_TO_UNREGISTERED_EXPIRY_TIME);
+		if (expiryDays == -1) {
+			expiryDays = TRANSFER_TO_UNREGISTERED_EXPIRY_TIME;
 		}
-		long expiryTime = expiryHours * 60 * 60 *1000;
+		long expiryTime = expiryDays * 24 * 60 * 60 *1000;
 		Timestamp cuurentTime = new Timestamp();
 		
 		String reverseCharge = systemParametersService.getString(SystemParameterKeys.REVERSE_CHARGE_FOR_EXPIRED_TRANSFER_TO_UNREGISTERED);
