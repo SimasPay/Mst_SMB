@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
+import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionLog;
 import com.mfino.domain.TransactionResponse;
@@ -135,6 +137,14 @@ public class InterBankTransferHandlerImpl extends FIXMessageHandler implements I
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
+			return result;
+		}
+		
+		Subscriber srcSub = sourceMDN.getSubscriber();
+		KycLevel srcKyc = srcSub.getKycLevel();
+		if(srcKyc.getKyclevel().equals(new Long(CmFinoFIX.SubscriberKYCLevel_NoKyc))){
+			log.info(String.format("MoneyTransfer is Failed as the the Source Subscriber(%s) KycLevel is NoKyc",transactionDetails.getSourceMDN()));
+			result.setNotificationCode(CmFinoFIX.NotificationCode_MoneyTransferFromNoKycSubscriberNotAllowed);
 			return result;
 		}
 		/*
