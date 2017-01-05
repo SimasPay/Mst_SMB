@@ -83,68 +83,26 @@ public class TransactionHandler implements Runnable {
 							
 							if(isCashWithdrawalRefund) {
 								
-								/*CashWithdrawalRefundInquiryHandler.getInstance().handle(msg);
-								element39 = msg.getString(39);*/
+								CashWithdrawalRefundInquiryHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);
 								
-								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-									
-									CashWithdrawalRefundInquiryHandler.getInstance().handle(msg);
-									element39 = msg.getString(39);
-									
-								}else{
-									
-									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
-									element39=GetConstantCodes.FAILURE;
-								}
 							}else {
 								
-								/*CashinInquiryHandler.getInstance().handle(msg);
-								element39 = msg.getString(39);*/
+								CashinInquiryHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);
 								
-								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-									
-									CashinInquiryHandler.getInstance().handle(msg);
-									element39 = msg.getString(39);
-									
-								}else{
-									
-									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
-									element39=GetConstantCodes.FAILURE;
-								}
 							}
 						}else if(processingCode.startsWith("47") || processingCode.startsWith("49")){
 							
 							if(isCashWithdrawalRefund) {
 								
-								/*CashWithdrawalRefundHandler.getInstance().handle(msg);
-								element39 = msg.getString(39);*/
-								
-								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-									
-									CashWithdrawalRefundHandler.getInstance().handle(msg);
-									element39 = msg.getString(39);
-									
-								}else{
-									
-									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
-									element39=GetConstantCodes.FAILURE;
-								}
+								CashWithdrawalRefundHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);
 								
 							} else {
 							
-								/*CashinHandler.getInstance().handle(msg);
-								element39 = msg.getString(39);*/
-								
-								if( StatusRegistrar.getKeyExchangeStatus(muxName).equals(NMStatus.Successful)){
-									
-									CashinHandler.getInstance().handle(msg);
-									element39 = msg.getString(39);
-									
-								}else{
-									
-									log.error("TransactionHandler :: key exchange failure. Rejected the txn");
-									element39=GetConstantCodes.FAILURE;
-								}
+								CashinHandler.getInstance().handle(msg);
+								element39 = msg.getString(39);								
 							}
 						}else{
 							log.error("TransactionHandler :: handle Unsupported transaction receive. Rejected");
