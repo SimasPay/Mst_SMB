@@ -164,8 +164,8 @@ public class ApproveRejectSubscriberProcessorImpl extends BaseFixProcessor imple
         bankPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
        
 		KycLevel kyclevel = null;
-		if (subscriber.getKycLevel() != null && subscriber.getKycLevel().getId() != null) {
-			kyclevel = kycLevelDao.getByKycLevel(subscriber.getKycLevel().getId().longValue());
+		if (subscriber.getUpgradablekyclevel() != null ) {
+			kyclevel = kycLevelDao.getByKycLevel(subscriber.getUpgradablekyclevel() );
 		}
 
 		if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
