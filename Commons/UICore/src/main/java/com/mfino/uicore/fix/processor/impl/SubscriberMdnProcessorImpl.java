@@ -827,9 +827,9 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 						if ((Long.valueOf(p.getPocketTemplateByPockettemplateid().getAllowance()).intValue() & CmFinoFIX.PocketAllowance_MerchantDompet.intValue()) > 0) {
 							entry.setDompetMerchant(Boolean.TRUE);
 						}
-						if( p.getCardpan() != null ) {
+						/*if( p.getCardpan() != null ) {
 							entry.setAccountNumber(p.getCardpan());
-						}
+						}*/
 					}
 				}
 				if(s.getIdtype()!=null){
