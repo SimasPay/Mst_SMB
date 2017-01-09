@@ -419,6 +419,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 					existingSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 					existingSubscriberMDN.setDigestedpin(calcPIN);
 					existingSubscriberMDN.setLastapppinchange(new Timestamp());
+					existingSubscriberMDN.setApplicationid(subscriberRegistration.getApplicationID());
 					
 					subscriberService.saveSubscriber(subscriber);
 					subscriberMdnService.saveSubscriberMDN(existingSubscriberMDN);
