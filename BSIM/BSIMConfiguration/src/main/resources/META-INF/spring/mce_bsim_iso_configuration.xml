@@ -33,7 +33,7 @@
 				<entry key="CHECKING_ACCOUNT" value="20" />
 				<entry key="CREDITCARD_ACCOUNT" value="30" />
 				<entry key="UNSPECIFIED_ACCOUNT" value="00" />
-				<entry key="LAKUPANDAI_ACCOUNT" value="98" />
+				<entry key="LAKUPANDAI_ACCOUNT" value="00" />
 				<entry key="TPM_UseBankNewCodes" value="000000000000000" />
 				<entry key="Sinarmas_Transfer" value="492000" />
 				<entry key="Sinarmas_Transfer_Reversal" value="492000" />
