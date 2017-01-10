@@ -199,10 +199,19 @@ public class ISO8583Server implements Runnable {
 			String mdn=Property.getProperty("cashinmdn");
 			String amount=Property.getProperty("amount");
 			String rrn = Property.getProperty("rrn");
+			String source = Property.getProperty("source");
 			
 			IsoMessage cashinRequest = mfact.newMessage(0x200);
 			cashinRequest.setValue(2, "4847779905000046", IsoType.LLVAR, 19);
-			cashinRequest.setValue(3,"470000", IsoType.NUMERIC, 6);
+			
+			if(source.equals("1")) {
+			
+				cashinRequest.setValue(3,"490000", IsoType.NUMERIC, 6);
+				
+			} else if(source.equals("2")) {
+				
+				cashinRequest.setValue(3,"470000", IsoType.NUMERIC, 6);
+			}
 			cashinRequest.setValue(4, amount, IsoType.NUMERIC, 18);
 			cashinRequest.setValue(7, "0729110250", IsoType.DATE10, 10); // 7
 			cashinRequest.setValue(11, rrn, IsoType.NUMERIC, 6);// 11
@@ -922,6 +931,9 @@ public class ISO8583Server implements Runnable {
 				}
 				if(sentInitialNTMRequest && Property!=null) {
 					String serviceType = Property.getProperty("servicetype");
+					
+					
+					//Thread.sleep(30000);
 					
 					if(serviceType.equals("1"))
 						sendRegistrationRequest();

@@ -2,8 +2,8 @@ mpan=4847779905000046
 pin=E31C262E8ADFBCC8
 
 //used in ATM Registration
-mdn=629848882365
-accountno=9080706055
+mdn=629848882372
+accountno=9080706056
 
 //used in case of cashin
 cashinmdn=8222629848882365
@@ -19,3 +19,6 @@ rrn=234576
 
 //1-ATM Registration, 2-Cashin Inquiry, 3-Cashin, 4-Cashwithdrawal Refund Inquiry, 5-Cashwithdrawal Refund
 servicetype=2
+
+//1-From BSIM, 2-From Other Banks
+source=1
