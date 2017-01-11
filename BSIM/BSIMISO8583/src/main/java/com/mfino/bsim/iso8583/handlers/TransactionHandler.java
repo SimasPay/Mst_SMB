@@ -125,31 +125,30 @@ public class TransactionHandler implements Runnable {
 			}
 			finally {
 					
-				if(isATMRegistration) {
-					
-					try{
+				try{
 						
-							msg.set(39, element39);
-							msg.setResponseMTI();
-							XMLPackager packager = new XMLPackager();
-							log.info("response isomsg-->" + new String(packager.pack(msg)));
-							source.send(msg);
+						msg.set(39, element39);
+						msg.setResponseMTI();
+						XMLPackager packager = new XMLPackager();
+						log.info("response isomsg-->" + new String(packager.pack(msg)));
+						source.send(msg);
+						
+						if(isATMRegistration) {
 							//try to get Subscriber Details by sending iso msg to cbs
 							if(GetConstantCodes.SUCCESS.equals(msg.getString(39))){
 								
 								log.info("TransactionHandler :: run() ATM Transaction Successful Sending msg to CBS to get Subscriber Details");
 								ATMRequestHandler.getInstance().updateDetails(msg);
 							}
-							
-						}catch(ISOException e){
-							
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
+							
+					}catch(ISOException e){
+						
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				
-			}
 	}
 }

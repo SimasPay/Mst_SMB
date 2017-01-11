@@ -291,6 +291,9 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_SUB_REGULAR_WITH_EMONEY_INQUIRY= "SubRegularWithEMoneyInquiry";
 	
 	public static final String TRANSACTION_SUB_REGULAR_WITH_EMONEY= "SubRegularWithEMoney";
+	
+	public static final String TRANSACTION_SUB_UPGEADE_TO_BANKING = "SubUpgradeToBanking";
+	
 	// Messages
 	
 	public static final String	MESSAGE_MOBILE_TRANSFER	            = "Mobile Transfer";

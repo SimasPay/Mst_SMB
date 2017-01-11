@@ -154,6 +154,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		msg.set(39, GetConstantCodes.FAILURE);
 		log.info("ATMRegistrationHandler :: handle encryptedPin = " + encryptedPin);
 		String clearPIN = decryptedPin.substring(0, systemParametersService.getPinLength());
+		//String clearPIN = "";
 		CMSubscriberRegistration subscriberRegistration = new CMSubscriberRegistration();
 		subscriberRegistration.setSourceMDN(sourceMDN);
 		subscriberRegistration.setMDN(sourceMDN);
@@ -168,14 +169,27 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 		log.info("Handling subscriberRegistration atm request");
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_SubscriberRegistration,subscriberRegistration.DumpFields());
 		subscriberRegistration.setTransactionID(transactionsLog.getId().longValue());
+		
+		SubscriberMdn existingSubscriberMDN = subscriberMdnService.getByMDN(subscriberRegistration.getMDN());
 		Transaction transactionDetails = null;
+		
 		ServiceCharge sc = new ServiceCharge();
 		sc.setSourceMDN(subscriberRegistration.getSourceMDN());
 		sc.setDestMDN(subscriberRegistration.getMDN());
+		
 		if(StringUtils.isNotBlank(cc))
 			sc.setChannelCodeId(Long.parseLong(cc));
+		
 		sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
-		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
+		
+		if (existingSubscriberMDN == null ) {
+			
+			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBERREGISTRATION);
+			
+		} else {
+		
+			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_SUB_UPGEADE_TO_BANKING);
+		}
 		sc.setTransactionAmount(BigDecimal.ZERO);
 		sc.setTransactionLogId(transactionsLog.getId().longValue());
 		sc.setTransactionIdentifier(subscriberRegistration.getTransactionIdentifier());
@@ -379,7 +393,8 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 				KycLevel subKycLevel = subscriber.getKycLevel();
 				
 				if(subKycLevel != null && 
-						(subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) || subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue() || isUnregistered) {
+						((subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue()) || subKycLevel.getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue() || isUnregistered)
+						&& subscriber.getStatus() == CmFinoFIX.SubscriberStatus_Active) {
 					
 					KycLevel kycLevel = kycLevelService.getByKycLevel(new Long(CmFinoFIX.SubscriberKYCLevel_FullyBanked));
 					
@@ -391,12 +406,12 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 						subscriber.setSecurityanswer(subscriberRegistration.getMothersMaidenName());
 					}
 					
-					subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM);
+					if(isUnregistered) {
+						
+						subscriber.setRegistrationmedium(CmFinoFIX.RegistrationMedium_ATM);
+					}
+					
 					subscriber.setDateofbirth(subscriberRegistration.getDateOfBirth());
-					subscriber.setNotificationmethod(CmFinoFIX.NotificationMethod_SMS);
-					subscriber.setTimezone(CmFinoFIX.Timezone_UTC);
-					subscriber.setStatustime(new Timestamp());
-					subscriber.setStatus(CmFinoFIX.SubscriberStatus_Active);
 					subscriber.setKycLevel(kycLevel);
 					subscriber.setUpgradablekyclevel(null);
 					subscriber.setUpgradestate(CmFinoFIX.UpgradeState_Approved);
@@ -416,7 +431,6 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 						return CmFinoFIX.ResponseCode_Failure; 
 					} 
 					
-					existingSubscriberMDN.setStatus(CmFinoFIX.SubscriberStatus_Active);
 					existingSubscriberMDN.setDigestedpin(calcPIN);
 					existingSubscriberMDN.setLastapppinchange(new Timestamp());
 					existingSubscriberMDN.setApplicationid(subscriberRegistration.getApplicationID());
