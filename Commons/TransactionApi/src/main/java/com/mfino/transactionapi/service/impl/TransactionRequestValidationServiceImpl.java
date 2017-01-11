@@ -1170,8 +1170,7 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 		} else if(!transactionDetails.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON)
 				&& StringUtils.isBlank(transactionDetails.getFavoriteValue())) {
 			invalidParam = ApiConstants.PARAMETER_FAVORITE_VALUE;
-		} else if((transactionDetails.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE) ||
-				transactionDetails.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_EDIT_FAVORITE)) &&
+		} else if(transactionDetails.getTransactionName().equals(ServiceAndTransactionConstants.TRANSACTION_EDIT_FAVORITE) &&
 					StringUtils.isBlank(transactionDetails.getFavoriteLabel())) {
 			invalidParam = ApiConstants.PARAMETER_FAVORITE_LABEL;
 		}

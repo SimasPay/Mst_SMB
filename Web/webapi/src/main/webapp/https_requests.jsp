@@ -153,6 +153,11 @@
 			<a href="jsp/s_add_favorite.jsp">Add Favorites</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_generate_favorite_json.jsp">View Favorite</a>
+		</td>
+	</tr>
 	</table></td>
 	
 	</tr>

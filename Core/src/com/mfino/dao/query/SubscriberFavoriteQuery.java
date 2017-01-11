@@ -9,6 +9,7 @@ public class SubscriberFavoriteQuery extends BaseQuery {
 	private Long favoriteCategoryID;
 	private String favoriteLabel;
 	private String favoriteValue;
+	private String favoriteCode;
 
 	public Long getSubscriberID() {
 		return subscriberID;
@@ -41,4 +42,13 @@ public class SubscriberFavoriteQuery extends BaseQuery {
 	public void setFavoriteValue(String favoriteValue) {
 		this.favoriteValue = favoriteValue;
 	}
+
+	public String getFavoriteCode() {
+		return favoriteCode;
+	}
+
+	public void setFavoriteCode(String favoriteCode) {
+		this.favoriteCode = favoriteCode;
+	}
+	
 }

@@ -325,7 +325,10 @@ public class ConfigurationUtil {
 		TransferToUangkuPrefixNumber("transfer.to.uangku.prefix.number", "8881"),
 		KTPImagePath("ktp.image.path", "/opt/images/"),
 		KTPImageUrl("ktp.image.url", "/images/ktp/"),
-		CodeForTransferRecipientUsingEMoney("code.for.transfer.recipient.using.emoney", "85");
+		CodeForTransferRecipientUsingEMoney("code.for.transfer.recipient.using.emoney", "85"),
+		MfinoSubFavCategoryIdName("mfino.sub.fav.category.id.name","1,4,5,6,7,10,11,12"),
+		MfinoSubFavCategoryIdBillerCode("mfino.sub.fav.category.id.billercode","2,3,8,9");
+		
 		
 		private final String key;
 		private final String defaultValue;
@@ -1315,4 +1318,11 @@ public class ConfigurationUtil {
 	public static String getTransferToUangkuPrefixNumber() {
 		return get(ConfigurationKey.TransferToUangkuPrefixNumber);
 	}
+	public static String getMfinoSubFavCategoryIdName(){
+		return get(ConfigurationKey.MfinoSubFavCategoryIdName);
+	}
+	public static String getMfinoSubFavCategoryIdBillerCode(){
+		return get(ConfigurationKey.MfinoSubFavCategoryIdBillerCode);
+	}
+	
 }

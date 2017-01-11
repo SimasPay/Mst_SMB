@@ -1,6 +1,8 @@
 package com.mfino.transactionapi.handlers.account.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +40,7 @@ import com.mfino.transactionapi.handlers.account.FavoriteHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ChangeEmailXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 
 /**
  * 
@@ -71,15 +74,23 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
 	private TransactionApiValidationService transactionApiValidationService;
-
-
+	static List<String> arrayListbyname=new ArrayList();
+	static  List<String>  arrayListbybiller=new ArrayList();
+	static{
+		arrayListbyname= Arrays.asList(ConfigurationUtil.getMfinoSubFavCategoryIdName().split(","));
+		
+		arrayListbybiller= Arrays.asList(ConfigurationUtil.getMfinoSubFavCategoryIdBillerCode().split(","));   
+		}
+	
 	public XMLResult handle(TransactionDetails transactionDetails) {
 		String transactionName = transactionDetails.getTransactionName();
 		log.info("Handling Favorite webapi request with transactionName " + transactionName);
 		ChannelCode cc = transactionDetails.getCc();
 		String favCategoryID = transactionDetails.getFavoriteCategoryID();
  		Long favoriteCategoryID = Long.valueOf(favCategoryID);
-		
+ 		
+ 		
+ 		
  		//Create message and dump fields in transaction log table
 		CMFavoriteMessage favoriteMessage = new CMFavoriteMessage();
 		favoriteMessage.setPin(transactionDetails.getSourcePIN());
@@ -118,12 +129,33 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
  		//Check if the favorite category exists
  		Long subscriberID = subscriberMDN.getSubscriber().getId().longValue();
  		FavoriteCategory favoriteCategory = favoriteCategoryService.getByID(favoriteCategoryID);
+ 		
  		if(favoriteCategory == null) {
  			log.error("Fav category with the ID: " + favoriteCategoryID + " not exists");
  			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing); 			
  			return result;
  		}
+ 		
+ 		boolean iscontainsfavbyname=arrayListbyname.contains(String.valueOf(favoriteCategory.getId()));
+ 		if(iscontainsfavbyname){
+ 			if(StringUtils.isBlank(transactionDetails.getFavoriteLabel())){
+ 				log.error("if transaction type is transfer then Benificiary Name(Favorite Label)  mandatory");
+	 			result.setNotificationCode(CmFinoFIX.NotificationCode_BenificiaryNameRequiredForAddFavorites);
+	 			return result;
+ 			}
+ 		}
+ 		
+ 		boolean iscontainsfavbyBiller=arrayListbybiller.contains(String.valueOf(favoriteCategory.getId()));
+ 		
+ 		if(iscontainsfavbyBiller){
+ 			if(StringUtils.isBlank(transactionDetails.getFavoriteCode())){
+ 				log.error("if transaction type is purchase or payment then Biller code(Favorite Code)  mandatory");
+	 			result.setNotificationCode(CmFinoFIX.NotificationCode_BillerCodeRequiredForAddFavorites);
+	 			return result;
+ 			}
+ 		}
  		//Check if max favorites per category count reached or not
+ 			
  		if(transactionName.equals(ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE)) {
  			int favoriteCount = subscriberFavoriteService.getFavoriteCountUnderCategory(subscriberID, Long.valueOf(favoriteCategoryID));
  	 		log.info("Number of favorites existing under category " + favoriteCategoryID + " is " + favoriteCount);
@@ -249,6 +281,7 @@ public class FavoriteHandlerImpl extends FIXMessageHandler implements FavoriteHa
  		return result;
 	}	
 	
+
 	/**
 	 * Check if the duplicate favorite exists with value/label while adding
 	 * 

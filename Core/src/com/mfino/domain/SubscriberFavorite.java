@@ -27,6 +27,7 @@ public class SubscriberFavorite extends Base implements java.io.Serializable {
 	public static final String FieldName_FavoriteCategory = "favoriteCategory";
 	public static final String FieldName_FavoriteLabel = "favoritelabel";
 	public static final String FieldName_FavoriteValue = "favoritevalue";
+	public static final String FieldName_FavoriteCode = "favoritecode";
 	private FavoriteCategory favoriteCategory;
 	private Subscriber subscriber;
 	private String favoritelabel;

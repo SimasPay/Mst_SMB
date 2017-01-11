@@ -23575,6 +23575,24 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="BenificiaryNameRequiredForAddFavorites" enum="2311">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Benificiary name required for Add favorites (If transaction type is transfer )</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="BillerCodeRequiredForAddFavorites" enum="2312">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Biller Code required for Add favorites (If transaction type is purchase or payment )</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

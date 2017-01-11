@@ -35,6 +35,9 @@ public class SubscriberFavoriteDAO extends BaseDAO<SubscriberFavorite> {
 		if(StringUtils.isNotBlank(query.getFavoriteValue())) {			
 			criteria.add(Restrictions.eq(SubscriberFavorite.FieldName_FavoriteValue, query.getFavoriteValue()));
 		}
+		if(StringUtils.isNotBlank(query.getFavoriteCode())) {			
+			criteria.add(Restrictions.eq(SubscriberFavorite.FieldName_FavoriteCode, query.getFavoriteCode()));
+		}
 		criteria.addOrder(Order.asc(SubscriberFavorite.FieldName_RecordID));
 		processPaging(query, criteria);
 		

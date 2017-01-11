@@ -56,6 +56,7 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 	public XMLResult handle(TransactionDetails transactionDetails) {		
 		log.info("Handling Generate Favorite JSON webapi request");		
 		String favCategoryID = transactionDetails.getFavoriteCategoryID();
+		String favoriteCode=transactionDetails.getFavoriteCode();
 		String[] favCategories = favCategoryID.split(",");
  				
 		XMLResult result = new ChangeEmailXMLResult();
@@ -89,16 +90,17 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 	 			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing); 			
 	 			return result;
 			}
- 	 		getSubFavByFavoriteCategory(fcId, subscriberID, totalJsonFavoriteArray);
+ 	 		getSubFavByFavoriteCategory(fcId, subscriberID,favoriteCode, totalJsonFavoriteArray);
  		}
  		result.setMessage(totalJsonFavoriteArray.toString());
  		return result;
 	}
 
-	private void getSubFavByFavoriteCategory(Long favoriteCategoryID, Long subscriberID, JSONArray jsonFavoriteArray) {
+	private void getSubFavByFavoriteCategory(Long favoriteCategoryID, Long subscriberID,String favoriteCode, JSONArray jsonFavoriteArray) {
 		SubscriberFavoriteQuery subscriberFavoriteQuery = new SubscriberFavoriteQuery();
  		subscriberFavoriteQuery.setFavoriteCategoryID(favoriteCategoryID);
  		subscriberFavoriteQuery.setSubscriberID(subscriberID);
+ 		subscriberFavoriteQuery.setFavoriteCode(favoriteCode);
  		List<SubscriberFavorite> list = subscriberFavoriteService.getSubscriberFavoriteByQuery(subscriberFavoriteQuery);
  		for(SubscriberFavorite favorite: list) {
  			JSONObject jsonFavoriteNode = toJson(favorite, favoriteCategoryID);
@@ -111,7 +113,7 @@ public class GenerateFavoriteJSONHandlerImpl extends FIXMessageHandler implement
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CATEGORY_ID,	favoriteCategoryID);
 		jsonObject.put(ApiConstants.PARAMETER_SUBSCRIBER_FAVORITE_ID, favorite.getId());
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_CODE, favorite.getFavoritecode());
-		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_LABEL, favorite.getFavoritecode());
+		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_LABEL, favorite.getFavoritelabel());
 		jsonObject.put(ApiConstants.PARAMETER_FAVORITE_VALUE, favorite.getFavoritevalue());
 		return jsonObject;
 	}

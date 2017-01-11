@@ -44,7 +44,7 @@
 	</tr>	
 	<tr>
 		<td>(BenificiaryName)Label</td>
-		<td><input type="text" name="favoriteLabel" value="" /></td>
+		<td><input type="text" name="favoriteLabel" value="" />*if transaction type is transfer</td>
 	</tr>
 	<tr>
 		<td>(DestinationID)Value</td>
