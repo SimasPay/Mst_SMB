@@ -310,7 +310,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //					coreDataWrapper.save(globalSVAPocket);
 					List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
 							coreDataWrapper.getSuspensePocket(), coreDataWrapper.getGlobalSVAPocket(), coreDataWrapper.getChargesPocket(), 
-							amount, charges, ConfigurationUtil.getMfinoNettingLedgerEntries());
+							amount.add(charges), BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
 					coreDataWrapper.save(lstMfsLedgers);
 
 					returnFix.setSourceMDNBalance(moneyService.round(objSrcPocket
@@ -331,7 +331,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //						coreDataWrapper.save(chargesPocket);
 //					}
 					List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
-							coreDataWrapper.getSuspensePocket(), objDestPocket, coreDataWrapper.getChargesPocket(), amount, charges, 
+							coreDataWrapper.getSuspensePocket(), objDestPocket, coreDataWrapper.getChargesPocket(), amount.add(charges), BigDecimal.ZERO, 
 							ConfigurationUtil.getMfinoNettingLedgerEntries());
 					coreDataWrapper.save(lstMfsLedgers);
 					if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
