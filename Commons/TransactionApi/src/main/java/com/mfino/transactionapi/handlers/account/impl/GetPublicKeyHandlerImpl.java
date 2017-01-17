@@ -40,38 +40,42 @@ public class GetPublicKeyHandlerImpl extends FIXMessageHandler implements GetPub
 			result.setPublicKeyModulus(publicKeyParams[0]);
 			result.setPublicKeyExponent(publicKeyParams[1]);
 			
-			String systemMinimumVersion = null;
-			String appMinimumVersion = transactionDetails.getAppVersion();
-			
-			String appUrl = null;
-			
-			if (transactionDetails.getAppOS().equals("1")) {
-				//for iOs
-				systemMinimumVersion = systemParametersService.getString(SystemParameterKeys.APP_VERSION_MIN_IOS);
-				appUrl = systemParametersService.getString(SystemParameterKeys.APP_URL_UPGRADE_IOS);
-			} else if (transactionDetails.getAppOS().equals("2")) {
-				//for Android
-				systemMinimumVersion = systemParametersService.getString(SystemParameterKeys.APP_VERSION_MIN_ANDROID);
-				appUrl = systemParametersService.getString(SystemParameterKeys.APP_URL_UPGRADE_ANDROID);
-			}
-			
-			if (systemMinimumVersion != null) {
-				if (systemMinimumVersion == appMinimumVersion) {
-					result.setNotificationCode(CmFinoFIX.NotificationCode_NotRequiredForceUpgradeApp);
-				} else {
-					//compare the version
-					int resultCompare = compareAppVersion(systemMinimumVersion, appMinimumVersion);
-					if (resultCompare==1) {
+			if (transactionDetails.isSimaspayActivity()) {
+				String systemMinimumVersion = null;
+				String appMinimumVersion = transactionDetails.getAppVersion();
+				
+				String appUrl = null;
+				
+				if (transactionDetails.getAppOS().equals("1")) {
+					//for iOs
+					systemMinimumVersion = systemParametersService.getString(SystemParameterKeys.APP_VERSION_MIN_IOS);
+					appUrl = systemParametersService.getString(SystemParameterKeys.APP_URL_UPGRADE_IOS);
+				} else if (transactionDetails.getAppOS().equals("2")) {
+					//for Android
+					systemMinimumVersion = systemParametersService.getString(SystemParameterKeys.APP_VERSION_MIN_ANDROID);
+					appUrl = systemParametersService.getString(SystemParameterKeys.APP_URL_UPGRADE_ANDROID);
+				}
+				
+				if (systemMinimumVersion != null) {
+					if (systemMinimumVersion == appMinimumVersion) {
 						result.setNotificationCode(CmFinoFIX.NotificationCode_NotRequiredForceUpgradeApp);
 					} else {
-						//failed, need upgrade
-						result.setNotificationCode(CmFinoFIX.NotificationCode_RequiredForceUpgradeApp);
-						result.setAdditionalInfo(appUrl);
+						//compare the version
+						int resultCompare = compareAppVersion(systemMinimumVersion, appMinimumVersion);
+						if (resultCompare==1) {
+							result.setNotificationCode(CmFinoFIX.NotificationCode_NotRequiredForceUpgradeApp);
+						} else {
+							//failed, need upgrade
+							result.setNotificationCode(CmFinoFIX.NotificationCode_RequiredForceUpgradeApp);
+							result.setAdditionalInfo(appUrl);
+						}
 					}
+				} else {
+					result.setNotificationCode(CmFinoFIX.NotificationCode_NotRequiredForceUpgradeApp);
 				}
-			} else {
-				result.setNotificationCode(CmFinoFIX.NotificationCode_NotRequiredForceUpgradeApp);
-			}
+			} 
+			
+			
 			
 		}catch(Exception e){
 			log.error("Exception occured while sending the public key parameters");
