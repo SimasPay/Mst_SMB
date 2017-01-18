@@ -535,12 +535,11 @@ public class ISO8583Server implements Runnable {
 					}
 					//BillPay
 					else if("380000".equals(incoming.getObjectValue(3))){
-						response.setValue(38, "654321", IsoType.ALPHA, 6);
 						response.setValue(39, "00", IsoType.ALPHA, 2);
-						response.setValue(48, "TABUNGANKU B",
-								IsoType.LLLVAR, 0);
 						response.setValue(61,"0001344568",
 								IsoType.LLLVAR, 0);
+						response.setValue(4, "000000000005148000", IsoType.NUMERIC, 18);
+						response.setValue(62, "08PAYMENT    : Telkom Fix Line (PSTN)   IDPEL      : 02188874874              NAME       :  WARINO                  BILLING AMT: RP. 51.480               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 51.480                                                                                           02188874874     020008          11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000701A            000000051480000000000000000000000000 WARINO                                         ", IsoType.LLLVAR, 0);
 					}
 					else if(incoming.getObjectValue(3).toString().startsWith("38")){
 //					    response.setValue(3, "381010", IsoType.NUMERIC, 6);
