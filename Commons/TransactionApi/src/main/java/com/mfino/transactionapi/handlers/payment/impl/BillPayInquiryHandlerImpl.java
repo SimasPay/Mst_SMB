@@ -67,6 +67,8 @@ import com.mfino.transactionapi.handlers.payment.BillPayInquiryHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.money.TransferInquiryXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.MfinoUtil;
 
 /**
  * Currently this handler handles bill pay for any bill pay
@@ -410,6 +412,8 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				sctl.setCommoditytransferid(transactionResponse.getTransferId());
 				billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 				result.setTransactionID(transactionResponse.getTransactionId());
+				additionalInfo = MfinoUtil.replaceFormatedAdminBankValue(additionalInfo, transactionResponse.getCharges(), 
+						ConfigurationUtil.getPrefixWordingForAdminBank());
 				result.setAdditionalInfo(additionalInfo);
 				transactionChargingService.saveServiceTransactionLog(sctl);
 			}
@@ -448,6 +452,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 						result.setBillDate(formatBillDate(billPayment.getInfo4().trim().substring(0, 6), "yyyyMM"));
 					else
 						result.setAdditionalInfo(additionalInfo);
+					
 				}
 				if(billPayRefID != null){
 					Clob clob;
@@ -516,16 +521,24 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 			
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Saving);
 			
-		} else {
+		} else if (CmFinoFIX.BankAccountCardType_CheckingAccount.equals(
+				srcPocket.getPocketTemplateByPockettemplateid().getBankaccountcardtype())) {
 			
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Checking);
+		} else{
+			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_UnSpecified);
 		}
 		
 		if (CmFinoFIX.PocketType_LakuPandai.equals(srcPocket.getPocketTemplateByPockettemplateid().getType())) {
 
 			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Lakupandai);
 		}
-			
+		
+		if (CmFinoFIX.PocketType_SVA.equals(srcPocket.getPocketTemplateByPockettemplateid().getType())) {
+			billInquiry.setSourceBankAccountType(""+ CmFinoFIX.BankAccountType_Lakupandai);
+			billInquiry.setSourceBankAccountNo(ConfigurationUtil.getCodeForTransferUsingEMoney()+billPayInquiry.getSourceMDN());
+		}
+		
 		//For Bayar.Net BillPayments
 		if(billPayInquiry.getDenominationCode()!=null)
 			billInquiry.setDenominationCode(billPayInquiry.getDenominationCode());

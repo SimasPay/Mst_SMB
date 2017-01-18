@@ -467,8 +467,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				if((fromBank.getDestinationUserName() != null)){
 					returnFix.setDestinationUserName(fromBank.getDestinationUserName().trim());
 				}
-			
-				integrationSummaryService.logIntegrationSummary(toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), "BANK", fromBank.getProcessingCode(), fromBank.getAdditionalInfo(), fromBank.getBankAccountName(), fromBank.getDestinationUserName(),toBank.getReceiveTime());
+				
+				String additionalInfo = MfinoUtil.replaceAdminBankValue(fromBank.getAdditionalInfo(), pct.getCharges(), ConfigurationUtil.getPrefixWordingForAdminBank());
+				integrationSummaryService.logIntegrationSummary(toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), "BANK", fromBank.getProcessingCode(), 
+						additionalInfo, fromBank.getBankAccountName(), fromBank.getDestinationUserName(),toBank.getReceiveTime());
 			}
 			if (CmFinoFIX.ISO8583_ResponseCode_Success.equals(fromBank.getResponseCode())) {
 				/* success response from bank */

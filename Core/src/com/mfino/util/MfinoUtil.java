@@ -5,6 +5,7 @@
 package com.mfino.util;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.sql.Clob;
 import java.text.NumberFormat;
@@ -23,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.domain.Pocket;
 import com.mfino.fix.CmFinoFIX;
@@ -144,7 +146,10 @@ public class MfinoUtil {
 	}
 
 	public static void main(String... args) {
-
+		String additionalInfo = "08PAYMENT    : Telkom Fix Line (PSTN)   IDPEL      : 02188874874              NAME       :  WARINO                  BILLING AMT: RP. 51.480               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 51.480                                                                                           02188874874     020008          11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000701A            000000051480000000000000000000000000 WARINO                                         ";
+		BigDecimal charges = new BigDecimal(2500);
+		String prefixWording = "ADMIN BANK : RP.";
+		System.out.println(replaceAdminBankValue(additionalInfo, charges, prefixWording));
 		//System.out.println(MfinoUtil.normalizeMDN("008811234567"));
 		//System.out.println(generateComplexPin());
 	/*	String username = "Approver";
@@ -380,4 +385,60 @@ public static boolean isPinStrongEnough(String pin) {
 			return handler.validatePIN(mdn, pin,offset);
 		}
 	}*/
+	
+	/**
+	 * this method is used for replacing ADMIN BANK value with configured charges.<br/>
+	 * 
+	 * @param additionalInfo <i>Ex: |PAYMENT : Telkom Fix Line (PSTN) |IDPEL : 02188874874 |NAME : WARINO |BILLING AMT: RP. 51.480 |ADMIN BANK : RP. 0 |PAYMENT AMT: RP. 51.480 | |</i>
+	 * @param charges
+	 * @param prefixWording <i>ADMIN BANK : RP.</i>
+	 * @return
+	 */
+	public static String replaceFormatedAdminBankValue(String additionalInfo, BigDecimal charges, String prefixWording){
+		if(charges == null) charges = BigDecimal.ZERO;
+		if(StringUtils.contains(additionalInfo, prefixWording)){
+			String[] splitedAdditionalInfo = StringUtils.split(additionalInfo, "|");
+			String oldAdminBankWording = "";
+			String newAdminBankWording = "";
+			
+			for (String addInfo : splitedAdditionalInfo) {
+				
+				if(StringUtils.startsWith(addInfo, prefixWording)){
+					oldAdminBankWording = addInfo;
+					String addInfoValue = StringUtils.substring(addInfo, StringUtils.length(prefixWording));
+					int length = StringUtils.length(getNumberFormat().format(charges));
+					String replacedValue = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
+							getNumberFormat().format(charges));
+					newAdminBankWording = prefixWording+replacedValue;
+				}
+			}
+			return StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+		}
+		return additionalInfo;
+	}
+	
+	public static String replaceAdminBankValue(String additionalInfo, BigDecimal charges, String prefixWording){
+		if(charges == null) charges = BigDecimal.ZERO;
+		
+		if(StringUtils.contains(additionalInfo, prefixWording)){
+			String dataElement62 = additionalInfo.substring(2);
+			
+			String oldAdminBankWording = "";
+			String newAdminBankWording = "";
+			Iterable<String> records = Splitter.fixedLength(38).split(dataElement62);
+			for (String addInfo : records) {
+				if (StringUtils.startsWith(addInfo, prefixWording)) {
+					oldAdminBankWording = addInfo;
+					String addInfoValue = StringUtils.substring(addInfo, prefixWording.length());
+					int length = StringUtils.length(getNumberFormat().format(charges));
+					String replacedValue = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
+							getNumberFormat().format(charges));
+					newAdminBankWording = prefixWording+replacedValue;
+				}
+			}
+			
+			return StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+		}
+		return additionalInfo;
+	}
 }

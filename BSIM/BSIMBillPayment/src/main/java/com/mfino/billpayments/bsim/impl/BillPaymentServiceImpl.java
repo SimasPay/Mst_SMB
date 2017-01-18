@@ -164,83 +164,83 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			((BackendResponse) bankInqres).setInternalErrorCode(NotificationCodes.DBCommitTransactionFailed.getInternalErrorCode());
 		}
 		if(bankInqres instanceof CMTransferInquiryToBank){
-		mceMessage.setRequest(billPayInquiry);
-		CMTransferInquiryToBank inquiryResponse = (CMTransferInquiryToBank)bankInqres;
-		mceMessage.setDestinationQueue(sourceToDestInquiryQueue);
-		CMBSIMBillPaymentInquiryToBank response = new CMBSIMBillPaymentInquiryToBank();
-		response.setAmount(inquiryResponse.getAmount());
-		String mdn = StringUtilities.leftPadWithCharacter(billPayInquiry.getSourceMDN(), 13, "0");
-		String mdngen = MfinoUtil.CheckDigitCalculation(mdn);
-		
-		Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
-		TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
-		BigDecimal serviceCharge = new BigDecimal(0);
-		BigDecimal tax = new BigDecimal(0);
-		
-		if(sctlID != null){
-			List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
-			if(CollectionUtils.isNotEmpty(tclList)){
-				for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
-					TransactionChargeLog tcl = it.next();
-					TransactionCharge txnCharge=tcl.getTransactionCharge();
-					ChargeType chargeType = txnCharge.getChargeType();
-					String chargeTypeName = chargeType.getName();
-					if(chargeTypeName.equalsIgnoreCase("charge")){
-						serviceCharge = tcl.getCalculatedcharge();
+			mceMessage.setRequest(billPayInquiry);
+			CMTransferInquiryToBank inquiryResponse = (CMTransferInquiryToBank)bankInqres;
+			mceMessage.setDestinationQueue(sourceToDestInquiryQueue);
+			CMBSIMBillPaymentInquiryToBank response = new CMBSIMBillPaymentInquiryToBank();
+			response.setAmount(inquiryResponse.getAmount());
+			String mdn = StringUtilities.leftPadWithCharacter(billPayInquiry.getSourceMDN(), 13, "0");
+			String mdngen = MfinoUtil.CheckDigitCalculation(mdn);
+			
+			Long sctlID = inquiryResponse.getServiceChargeTransactionLogID();
+			TransactionChargeLogDAO tclDAO = DAOFactory.getInstance().getTransactionChargeLogDAO();
+			BigDecimal serviceCharge = new BigDecimal(0);
+			BigDecimal tax = new BigDecimal(0);
+			
+			if(sctlID != null){
+				List <TransactionChargeLog> tclList = tclDAO.getBySCTLID(sctlID);
+				if(CollectionUtils.isNotEmpty(tclList)){
+					for(Iterator<TransactionChargeLog> it = tclList.iterator();it.hasNext();){
+						TransactionChargeLog tcl = it.next();
+						TransactionCharge txnCharge=tcl.getTransactionCharge();
+						ChargeType chargeType = txnCharge.getChargeType();
+						String chargeTypeName = chargeType.getName();
+						if(chargeTypeName.equalsIgnoreCase("charge")){
+							serviceCharge = tcl.getCalculatedcharge();
+						}
+						if(chargeTypeName.equalsIgnoreCase("tax")){
+							tax = tcl.getCalculatedcharge();
+						}				
 					}
-					if(chargeTypeName.equalsIgnoreCase("tax")){
-						tax = tcl.getCalculatedcharge();
-					}				
 				}
 			}
-		}
-		
-		
-		MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
-		MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
-		mbpquery.setBillerCode(billPayInquiry.getBillerCode());
-		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
-		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
-				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
-				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
-			}else {
+			
+			
+			MFSBillerPartnerDAO mfsbpDAO = DAOFactory.getInstance().getMFSBillerPartnerDAO();
+			MFSBillerPartnerQuery mbpquery = new MFSBillerPartnerQuery();
+			mbpquery.setBillerCode(billPayInquiry.getBillerCode());
+			List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
+			if(results.size() > 0){
+				if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
+					response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
+				}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
+					response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
+				}else {
+					response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
+				}
+				
+			}
+			else{
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
 			}
-			
-		}
-		else{
-			response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
-		}
-		//billerPartnertype = response.getBillerPartnerType();
-		response.setSourceMDN(billPayInquiry.getSourceMDN());
-		response.setBillPaymentReferenceID(billPayInquiry.getBillData()); // To handle - DE-62 from inquiry response should be DE-61 of confirmation request; Check next function
-		response.setInfo2(mdngen);
-		response.setBankCode(inquiryResponse.getBankCode());
-		response.setDestMDN(inquiryResponse.getDestMDN());
-		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
-		response.setUICategory(inquiryResponse.getUICategory());
-		response.setSourcePocketID(inquiryResponse.getSourcePocketID());
-		response.setDestPocketID(inquiryResponse.getDestPocketID());
-		response.setSourceCardPAN(inquiryResponse.getSourceCardPAN());
-		response.setDestCardPAN(inquiryResponse.getDestCardPAN());
-		response.setDestinationBankAccountNo(inquiryResponse.getDestinationBankAccountNo());
-		response.setTransferID(inquiryResponse.getTransferID());
-		response.setTransactionID(inquiryResponse.getTransactionID());
-		response.setParentTransactionID(inquiryResponse.getParentTransactionID());
-		response.setSourceBankAccountType(inquiryResponse.getSourceBankAccountType());
-		response.setDestinationBankAccountType(inquiryResponse.getDestinationBankAccountType());
-		response.setServiceChargeTransactionLogID(inquiryResponse.getServiceChargeTransactionLogID());
-		response.setPin(inquiryResponse.getPin());
-		response.setLanguage(inquiryResponse.getLanguage());
-		response.setTransferID(inquiryResponse.getTransferID());
-        response.setBillerCode(billPayInquiry.getBillerCode());
-        response.setInvoiceNo(billPayInquiry.getInvoiceNumber());
-        response.setPaymentMode(billPayInquiry.getPaymentMode());
-        response.setServiceChargeAmount(serviceCharge);
-        response.setTaxAmount(tax);
-		mceMessage.setResponse(response);
+			//billerPartnertype = response.getBillerPartnerType();
+			response.setSourceMDN(billPayInquiry.getSourceMDN());
+			response.setBillPaymentReferenceID(billPayInquiry.getBillData()); // To handle - DE-62 from inquiry response should be DE-61 of confirmation request; Check next function
+			response.setInfo2(mdngen);
+			response.setBankCode(inquiryResponse.getBankCode());
+			response.setDestMDN(inquiryResponse.getDestMDN());
+			response.setParentTransactionID(inquiryResponse.getParentTransactionID());
+			response.setUICategory(inquiryResponse.getUICategory());
+			response.setSourcePocketID(inquiryResponse.getSourcePocketID());
+			response.setDestPocketID(inquiryResponse.getDestPocketID());
+			response.setSourceCardPAN(inquiryResponse.getSourceCardPAN());
+			response.setDestCardPAN(inquiryResponse.getDestCardPAN());
+			response.setDestinationBankAccountNo(inquiryResponse.getDestinationBankAccountNo());
+			response.setTransferID(inquiryResponse.getTransferID());
+			response.setTransactionID(inquiryResponse.getTransactionID());
+			response.setParentTransactionID(inquiryResponse.getParentTransactionID());
+			response.setSourceBankAccountType(inquiryResponse.getSourceBankAccountType());
+			response.setDestinationBankAccountType(inquiryResponse.getDestinationBankAccountType());
+			response.setServiceChargeTransactionLogID(inquiryResponse.getServiceChargeTransactionLogID());
+			response.setPin(inquiryResponse.getPin());
+			response.setLanguage(inquiryResponse.getLanguage());
+			response.setTransferID(inquiryResponse.getTransferID());
+	        response.setBillerCode(billPayInquiry.getBillerCode());
+	        response.setInvoiceNo(billPayInquiry.getInvoiceNumber());
+	        response.setPaymentMode(billPayInquiry.getPaymentMode());
+	        response.setServiceChargeAmount(serviceCharge);
+	        response.setTaxAmount(tax);
+			mceMessage.setResponse(response);
 		}
 		else if(bankInqres instanceof BackendResponse){
 			mceMessage.setResponse(bankInqres);

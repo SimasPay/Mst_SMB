@@ -327,7 +327,8 @@ public class ConfigurationUtil {
 		KTPImageUrl("ktp.image.url", "/images/ktp/"),
 		CodeForTransferRecipientUsingEMoney("code.for.transfer.recipient.using.emoney", "85"),
 		MfinoSubFavCategoryIdName("mfino.sub.fav.category.id.name","1,4,5,6,7,10,11,12"),
-		MfinoSubFavCategoryIdBillerCode("mfino.sub.fav.category.id.billercode","2,3,8,9");
+		MfinoSubFavCategoryIdBillerCode("mfino.sub.fav.category.id.billercode","2,3,8,9"),
+		PrefixWordingForAdminBank("prefix.wording.for.admin.bank", "ADMIN BANK : RP.");
 		
 		
 		private final String key;
@@ -1323,6 +1324,9 @@ public class ConfigurationUtil {
 	}
 	public static String getMfinoSubFavCategoryIdBillerCode(){
 		return get(ConfigurationKey.MfinoSubFavCategoryIdBillerCode);
+	}
+	public static String getPrefixWordingForAdminBank(){
+		return get(ConfigurationKey.PrefixWordingForAdminBank);
 	}
 	
 }
