@@ -237,7 +237,8 @@ public class CashinHandler extends FIXMessageHandler {
 			return;
 			
 		} catch(Exception e){
-			
+		
+			msg.set(39,GetConstantCodes.FAILURE);
 			log.error(e.getMessage());
 			
 		} finally{

@@ -237,6 +237,7 @@ public class CashWithdrawalRefundHandler extends FIXMessageHandler {
 			
 		} catch(Exception e){
 			
+			msg.set(39,GetConstantCodes.FAILURE);
 			log.error(e.getMessage());
 			
 		} finally{
