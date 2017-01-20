@@ -20,6 +20,7 @@ import com.mfino.hibernate.Timestamp;
 public class SubscriberUpgradeData extends Base implements java.io.Serializable  {
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MdnId = "mdnId";
+	public static final String FieldName_SubsActivityStatus = "subsActivityStatus";
 	
 	private Long id;
 	private String fullName;
@@ -32,6 +33,11 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	private String idCardScanPath;
 	private Long mdnId;
 	private Address address;
+	private Integer subActivity;
+	private Integer subsActivityStatus;
+	private String  subsActivityApprovedBY;
+	private Timestamp subsActivityAprvTime;
+	private String  subsActivityComments;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -125,4 +131,46 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+	
+	@Column(name = "SUBSCRIBER_ACTIVITY")
+	public Integer getSubActivity() {
+		return subActivity;
+	}
+	public void setSubActivity(Integer subActivity) {
+		this.subActivity = subActivity;
+	}
+	
+	@Column(name = "SUBSCRIBER_ACTIVITY_STATUS")
+	public Integer getSubsActivityStatus() {
+		return subsActivityStatus;
+	}
+	public void setSubsActivityStatus(Integer subsActivityStatus) {
+		this.subsActivityStatus = subsActivityStatus;
+	}
+	
+	@Column(name = "SUBSCRIBER_ACTIVITY_APPROVEDBY")
+	public String getSubsActivityApprovedBY() {
+		return subsActivityApprovedBY;
+	}
+	public void setSubsActivityApprovedBY(String subsActivityApprovedBY) {
+		this.subsActivityApprovedBY = subsActivityApprovedBY;
+	}
+	
+	@Type(type = "userDefinedTimeStamp")
+	@Column(name = "SUBSCRIBER_ACTIVITY_APPROVTIME")
+	public Timestamp getSubsActivityAprvTime() {
+		return subsActivityAprvTime;
+	}
+	public void setSubsActivityAprvTime(Timestamp subsActivityAprvTime) {
+		this.subsActivityAprvTime = subsActivityAprvTime;
+	}
+	
+	@Column(name = "SUBSCRIBER_ACTIVITY_COMMENTS")
+	public String getSubsActivityComments() {
+		return subsActivityComments;
+	}
+	public void setSubsActivityComments(String subsActivityComments) {
+		this.subsActivityComments = subsActivityComments;
+	}
+	
 }
