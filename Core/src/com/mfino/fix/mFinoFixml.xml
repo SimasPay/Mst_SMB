@@ -5786,6 +5786,23 @@
 	</message>
 	<message name="CashWithdrawalRefundInquiry" msgtype="1790" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount"/>
 	<message name="CashWithdrawalRefund" msgtype="1791" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="CashInFromATM"/>
+	<message name="JSAddBankPocketToEmoneySubscriber" msgtype="1792" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+	            <field name="MDN"  required="Y" />
+				<field name="FirstName" required="Y" />
+				<field name="LastName" required="N" />
+				<field name="PocketTemplateConfigID" required="N" />
+				<field name="ApplicationID" required="N"  />
+				<field name="AccountNumber" required="N"/>
+				
+	<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
+				<field name="MDN"  required="Y" />
+				<field name="FirstName" required="Y" />
+				<field name="LastName" required="N" />
+				<field name="PocketTemplateConfigID" required="N" />
+				<field name="ApplicationID" required="N"  />
+				<field name="AccountNumber" required="N"/>
+			</group>
+			</message>
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
