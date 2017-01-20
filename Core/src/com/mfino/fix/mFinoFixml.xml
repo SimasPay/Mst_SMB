@@ -27230,9 +27230,9 @@ ERROR:Mismatch of  mdn type and app type
     	<value enum="1" description="Upgrade_From_NonKyc_To_KYC"/>
     	<value enum="2" description="Enable_MBanking_For_Emoney_Subscriber"/>
     	<value enum="3" description="Edit_Subscriber_Details"/>
-    	<value enum="4" descripption="Suspend_Emoney_Pocket"/>
-    	<value enum="5" descripption="Release_Suspend_For_Emoney_Pocket"/>
-    	<value enum="6" descripption="Reset_Pin"/>
+    	<value enum="4" description="Suspend_Emoney_Pocket"/>
+    	<value enum="5" description="Release_Suspend_For_Emoney_Pocket"/>
+    	<value enum="6" description="Reset_Pin"/>
     </field>
     <field number="8258" name="SubscriberActivityStatus" type="INT32">
     	<value enum="0" description="Initialized"/>
