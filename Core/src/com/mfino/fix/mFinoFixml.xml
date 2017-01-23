@@ -5805,6 +5805,11 @@
 				<field name="AccountNumber" required="N"/>
 			</group>
 			</message>
+			<message name="JSApproveRejectAddBankPocketToEmoneySubscriber" msgtype="1793" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+			<field name="SubscriberMDNID" required="Y" />
+			<field name="AdminAction" required="Y" />
+			<field name="AdminComment" required="Y" />
+		</message>
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
