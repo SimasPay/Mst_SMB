@@ -28,8 +28,8 @@ public class SharePartner extends Base implements java.io.Serializable {
 	private TransactionCharge transactionCharge;
 	private MfinoServiceProvider mfinoServiceProvider;
 	private BigDecimal sharepercentage;
-	private String sharetype;
-	private String shareholdertype;
+	private Integer sharetype;
+	private Integer shareholdertype;
 	private String actualsharepercentage;
 	private String minsharepercentage;
 	private String maxsharepercentage;
@@ -96,20 +96,20 @@ public class SharePartner extends Base implements java.io.Serializable {
 	}
 
 	@Column(name = "SHARETYPE", length = 1020)
-	public String getSharetype() {
+	public Integer getSharetype() {
 		return this.sharetype;
 	}
 
-	public void setSharetype(String sharetype) {
+	public void setSharetype(Integer sharetype) {
 		this.sharetype = sharetype;
 	}
 
 	@Column(name = "SHAREHOLDERTYPE", length = 1020)
-	public String getShareholdertype() {
+	public Integer getShareholdertype() {
 		return this.shareholdertype;
 	}
 
-	public void setShareholdertype(String shareholdertype) {
+	public void setShareholdertype(Integer shareholdertype) {
 		this.shareholdertype = shareholdertype;
 	}
 

@@ -107,7 +107,7 @@ public class TransactionAmountDistributorProcessImpl extends BaseFixProcessor im
 			e.setSubscriberID(transaction.getSubscriber().getId().longValue());
 		}
 		e.setChargeTypeName(tc.getChargeType().getName());
-		e.setIsChargeFromCustomer(Boolean.valueOf(Short.toString(tc.getChargeDefinition().getIschargefromcustomer())));
+		e.setIsChargeFromCustomer(tc.getChargeDefinition().getIschargefromcustomer() == 1 ? Boolean.TRUE : Boolean.FALSE);
 		e.setPocketID(transaction.getPocket().getId().longValue());
 		e.setServiceChargeTransactionLogID(transaction.getServicechargetransactionlogid().longValue());
 		e.setShareAmount(transaction.getShareamount());

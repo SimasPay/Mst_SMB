@@ -36,10 +36,10 @@ public class SharePartnerProcessorImpl extends BaseFixProcessor implements Share
 			sp.setMaxsharepercentage(e.getActualSharePercentage());
 		}
 		if (e.getShareHolderType() != null) {
-			sp.setShareholdertype(e.getShareHolderType().toString());
+			sp.setShareholdertype(e.getShareHolderType());
 		}
 		if (e.getShareType() != null) {
-			sp.setSharetype(e.getShareType().toString());
+			sp.setSharetype(e.getShareType());
 		}
 	}
 	
@@ -53,10 +53,10 @@ public class SharePartnerProcessorImpl extends BaseFixProcessor implements Share
 			e.setPartnerID(sp.getPartner().getId().longValue());
 		}
 		if (sp.getShareholdertype() != null){
-			e.setShareHolderType(Integer.parseInt(sp.getShareholdertype()));
+			e.setShareHolderType(sp.getShareholdertype());
 		}
 		if (sp.getSharetype() != null){
-			e.setShareType(Integer.parseInt(sp.getSharetype()));
+			e.setShareType(sp.getSharetype());
 		}
 		e.setActualSharePercentage(sp.getActualsharepercentage());
 		e.setMinSharePercentage(sp.getMinsharepercentage());

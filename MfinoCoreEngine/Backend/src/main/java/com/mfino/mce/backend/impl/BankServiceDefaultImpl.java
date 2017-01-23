@@ -331,7 +331,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //						coreDataWrapper.save(chargesPocket);
 //					}
 					List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), 
-							coreDataWrapper.getSuspensePocket(), objDestPocket, coreDataWrapper.getChargesPocket(), amount.add(charges), BigDecimal.ZERO, 
+							coreDataWrapper.getSuspensePocket(), objDestPocket, coreDataWrapper.getChargesPocket(), amount, BigDecimal.ZERO, 
 							ConfigurationUtil.getMfinoNettingLedgerEntries());
 					coreDataWrapper.save(lstMfsLedgers);
 					if(ledgerService.isImmediateUpdateRequiredForPocket(objDestPocket)){
@@ -1903,7 +1903,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //												transferAmountWithCharges);
 										List<MfsLedger> lstMfsLedgers = ledgerService.createLedgerEntries(false,confirmationToBank.getServiceChargeTransactionLogID(),
 												pct.getId().longValue(), coreDataWrapper.getGlobalSVAPocket(), coreDataWrapper.getSuspensePocket(), coreDataWrapper.getChargesPocket(), 
-												transferAmountWithCharges, BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
+												pct.getAmount(), BigDecimal.ZERO, ConfigurationUtil.getMfinoNettingLedgerEntries());
 										pct.setTransferstatus(CmFinoFIX.TransferStatus_MoneyTransaferSentToBank);
 										pct.setBanksystemtraceauditnumber(""
 												+ confirmationToBank

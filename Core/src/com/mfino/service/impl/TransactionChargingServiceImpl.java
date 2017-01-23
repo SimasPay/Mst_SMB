@@ -417,7 +417,13 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 				sctl.setParentsctlid(sc.getParentSctlId());
 			}
 			sctl.setStatus(CmFinoFIX.SCTLStatus_Inquiry);
-			sctl.setIschargedistributed(CmFinoFIX.Boolean_False);
+			if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED.equals(sc.getTransactionTypeName()) || 
+					ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER.equals(sc.getTransactionTypeName())) {
+				sctl.setIschargedistributed(CmFinoFIX.Boolean_False);	
+			} else {
+				// treating the transactions which involve bank as charge distribution completed as the bank will take the charge amount.
+				sctl.setIschargedistributed(CmFinoFIX.Boolean_True);				
+			}
 			sctl.setIntegrationtransactionid(null!=sc.getIntegrationTxnID()?sc.getIntegrationTxnID():null);
 			sctl.setChargemode((tr != null) ? tr.getChargemode() : null);
 			sctl.setDescription(sc.getDescription());
@@ -1482,7 +1488,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 					if (share.compareTo(BigDecimal.ZERO) > 0) {
 						PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 						Pocket colectorPocket = pocketDao.getById(p.getCollectorpocket().longValue());
-						tadl = getTADL(sctlId, transactionId, tc, p.getPartnerByParentid(), null, colectorPocket, share, true, false, true, false);
+						tadl = getTADL(sctlId, transactionId, tc, p.getPartnerByPartnerid(), null, colectorPocket, share, true, false, true, false);
 						lstTADL.add(tadl);
 					}
 				}
@@ -1492,7 +1498,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		if (moneyService.subtract(amount, amt).compareTo(BigDecimal.ZERO) > 0) {
 			PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
 			Pocket colectorPocket = pocketDao.getById(ps.getCollectorpocket().longValue());
-			tadl = getTADL(sctlId, transactionId, tc, ps.getPartnerByParentid(), null, colectorPocket, moneyService.subtract(amount, amt), true, false, false, false);
+			tadl = getTADL(sctlId, transactionId, tc, ps.getPartnerByPartnerid(), null, colectorPocket, moneyService.subtract(amount, amt), true, false, false, false);
 			lstTADL.add(tadl);
 		}
 		return lstTADL;

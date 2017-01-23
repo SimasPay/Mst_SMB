@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 
+import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.query.TransactionAmountDistributionQuery;
 import com.mfino.domain.Partner;
@@ -22,6 +23,7 @@ import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionCharge;
 import com.mfino.domain.TransactionResponse;
+import com.mfino.domain.TransactionType;
 import com.mfino.domain.TxnAmountDstrbLog;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -32,6 +34,7 @@ import com.mfino.service.ServiceChargeTransactionLogService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionAmountDistributionLogService;
 import com.mfino.service.TransactionChargingService;
+import com.mfino.service.TransactionTypeService;
 import com.mfino.transactionapi.handlers.money.ChargeDistributionHandler;
 
 /**
@@ -63,6 +66,10 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 	@Qualifier("ServiceChargeTransactionLogServiceImpl")
 	private ServiceChargeTransactionLogService serviceChargeTransactionLogService;
 	
+	@Autowired
+	@Qualifier("TransactionTypeServiceImpl")
+	private TransactionTypeService transactionTypeService;
+	
 	private HibernateTransactionManager txManager;
 	
 	public HibernateTransactionManager getTxManager() {
@@ -77,6 +84,14 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 	
 	public void distributeTransactionAmount() {
 		log.info("BEGIN distribute Transaction amount");
+		
+			TransactionType tt = transactionTypeService.getTransactionTypeByName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER_UNREGISTERED);
+			long expiryDays = systemParametersService.getLong(SystemParameterKeys.TRANSFER_TO_UNREGISTERED_EXPIRY_TIME);
+			if (expiryDays == -1) {
+				expiryDays = 2;
+			}
+			expiryDays = expiryDays  + 1;
+			long expiryTime = expiryDays * 24 * 60 * 60 *1000;
 			
 			Timestamp currentTime = new Timestamp();			
 			Integer[] status = new Integer[]{
@@ -93,9 +108,17 @@ public class TransactionAmountDistributionServiceImpl  implements TransactionAmo
 			if (CollectionUtils.isNotEmpty(lst)) {
 				for (ServiceChargeTxnLog sctl : lst) {
 					if ((sctl.getIschargedistributed()!= null ) && (!(sctl.getIschargedistributed())) && 
-							((currentTime.getTime() - sctl.getLastupdatetime().getTime()) > 300000) ) {
+							((currentTime.getTime() - sctl.getLastupdatetime().getTime()) > 300000)) {
 						log.info("Charge Distribution of SCTL ID --> " + sctl.getId());
-						distribute(sctl.getId().longValue());
+						if (sctl.getTransactiontypeid().intValue() == tt.getId().intValue()) {
+							if ((currentTime.getTime() - sctl.getLastupdatetime().getTime() > expiryTime)) {
+								distribute(sctl.getId());
+							} else {
+								log.info("As the transaction is of type Transfer to Un-Registered, Charge Distribution is postponed until the expiry time");
+							}
+						} else {
+							distribute(sctl.getId());
+						}
 					}
 					// Changing the Confirmed SCTL status based on the IsChargeDistributed value to Distribution_Completed.
 					else if((sctl.getIschargedistributed()!= null ) && (sctl.getIschargedistributed()) && 
