@@ -991,6 +991,9 @@ color:red;
 .mfino-button-upgrade-approve {
     background-image:url(../images/upgrade-approve-16.png) !important;
 }
+.mfino-button-subscriber-addpocket {
+    background-image:url(../images/subscriber_AddPocket_Request.png) !important;
+}
 .mfino-button-delete-agent {
     background-image:url(../images/Delete_Resized.png) !important;
 }

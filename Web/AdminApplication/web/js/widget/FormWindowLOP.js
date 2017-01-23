@@ -98,6 +98,11 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
         	itemId: "upgradekyc",
         	text: _('Upgrade'),
         	handler: this.onUpgradeKyc.createDelegate(this)
+        },
+        {
+        	itemId: "addpocket",
+        	text: _('AddPocket'),
+        	handler: this.onAddPocket.createDelegate(this)
         }
         ];
 
@@ -157,6 +162,9 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             }
 
             if(mode === "upgradekyc" && (item.itemId === "upgradekyc" || item.itemId === "cancel")){
+                item.show();
+            }
+            if(mode === "addpocket" && (item.itemId === "addpocket" || item.itemId === "cancel")){
                 item.show();
             }
             if(mode === "cancel" && (item.itemId === "cancel")){
@@ -430,7 +438,19 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
         }
     },
-    
+    onAddPocket : function(){
+    	if(this.form.getForm().isValid()){
+    		Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to Add the Pocket ?"),
+		        function(btn){
+		            if(btn !== "yes"){
+		                return;
+		            }
+		            this.form.onAddPocket(this);
+		        }, this);
+        }else{
+            Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
+        }
+    },
     setRecord : function(record){
         this.form.setRecord(record);
     },

@@ -73,6 +73,15 @@ mFino.page.subscriber = function(config){
         mode:"upgradekyc"
     }, config));
     
+    var subscriberAddPocketWindow = new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.SubscriberAddPocketWindow(config),
+        store : new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber),
+        title : _("ADD Bank pocket for Emoney Subscriber"),
+        width:450,
+        height: 300,
+        mode:"addpocket"
+    }, config));
+    
     var subClosing = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberClosingInquiry(config),
         title : _("Subscriber Account Closing"),
@@ -573,6 +582,31 @@ mFino.page.subscriber = function(config){
                             });
                         }
                     }
+                }
+            }, {
+                iconCls: 'mfino-button-subscriber-addpocket',
+                tooltip : _('Request for MBanking Services'),
+                itemId : 'emoneysub.add.bankpocket',
+                id : 'emoneysub.add.bankpocket', 
+                handler : function(){
+                	if(!detailsForm.record){
+                            Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                        } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                        	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
+                        }else if((detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.NoKyc)&&(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.UnBanked)){
+                        	Ext.MessageBox.alert(_("Info"), _("Subscriber's KYC level should be Nokyc or Unbanked"));
+                        } else{
+                        	
+                        	var newrecord = new subscriberAddPocketWindow.store.recordType();
+    					
+                        subscriberAddPocketWindow.show();
+                        newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.MDNID._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
+    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.MDN._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name];
+    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.FirstName._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name];
+    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.LastName._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.LastName._name];
+    					subscriberAddPocketWindow.setStore(subscriberAddPocketWindow.store);                
+    					subscriberAddPocketWindow.setRecord(newrecord);
+    					}
                 }
             },
             {

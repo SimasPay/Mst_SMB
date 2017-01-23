@@ -3,9 +3,11 @@ package com.mfino.dao;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.mfino.domain.SubscriberUpgradeData;
+import com.mfino.fix.CmFinoFIX;
 
 public class SubscriberUpgradeDataDAO extends BaseDAO<SubscriberUpgradeData> {
 
@@ -18,6 +20,15 @@ public class SubscriberUpgradeDataDAO extends BaseDAO<SubscriberUpgradeData> {
 		if(result != null)
 			Hibernate.initialize(result.getAddress());
 		return result;
+	}
+	public int getCountByMdnId(Long mdnId) {
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_MdnId, mdnId));
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_SubsActivityStatus,CmFinoFIX.SubscriberActivityStatus_Initialized));
+		criteria.setProjection(Projections.rowCount());
+        int count = ((Long) criteria.uniqueResult()).intValue();
+		
+		return count;
 	}
 	
 

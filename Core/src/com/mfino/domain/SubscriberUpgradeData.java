@@ -38,6 +38,8 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	private String  subsActivityApprovedBY;
 	private Timestamp subsActivityAprvTime;
 	private String  subsActivityComments;
+	private String  applicationId;
+	private String  bankAccountNumber;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -171,6 +173,22 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	}
 	public void setSubsActivityComments(String subsActivityComments) {
 		this.subsActivityComments = subsActivityComments;
+	}
+	
+	@Column(name = "APPLICATIONID")
+	public String getApplicationId() {
+		return applicationId;
+	}
+	public void setApplicationId(String applicationId) {
+		this.applicationId = applicationId;
+	}
+	
+	@Column(name = "BANKACCOUNTNUMBER")
+	public String getBankAccountNumber() {
+		return bankAccountNumber;
+	}
+	public void setBankAccountNumber(String bankAccountNumber) {
+		this.bankAccountNumber = bankAccountNumber;
 	}
 	
 }

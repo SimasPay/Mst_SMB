@@ -328,7 +328,8 @@ public class ConfigurationUtil {
 		CodeForTransferRecipientUsingEMoney("code.for.transfer.recipient.using.emoney", "85"),
 		MfinoSubFavCategoryIdName("mfino.sub.fav.category.id.name","1,4,5,6,7,10,11,12"),
 		MfinoSubFavCategoryIdBillerCode("mfino.sub.fav.category.id.billercode","2,3,8,9"),
-		PrefixWordingForAdminBank("prefix.wording.for.admin.bank", "ADMIN BANK : RP.");
+		PrefixWordingForAdminBank("prefix.wording.for.admin.bank", "ADMIN BANK : RP."),
+		SubscriberActivityActiveMessage("sub.activity.active.message","Already an active request is available.");
 		
 		
 		private final String key;
@@ -1328,5 +1329,9 @@ public class ConfigurationUtil {
 	public static String getPrefixWordingForAdminBank(){
 		return get(ConfigurationKey.PrefixWordingForAdminBank);
 	}
+	public static String getSubscriberActivityActiveMessage(){
+		return get(ConfigurationKey.SubscriberActivityActiveMessage);
+	}
+	
 	
 }

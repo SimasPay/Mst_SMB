@@ -29,6 +29,7 @@ import com.mfino.fix.CMultiXBuffer;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSActorChannelMapping;
 import com.mfino.fix.CmFinoFIX.CMJSActorChannelMappingValidator;
+import com.mfino.fix.CmFinoFIX.CMJSAddBankPocketToEmoneySubscriber;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustments;
 import com.mfino.fix.CmFinoFIX.CMJSAdjustmentsPocket;
 import com.mfino.fix.CmFinoFIX.CMJSAgent;
@@ -675,6 +676,10 @@ public class FixController {
 	@Qualifier("SubscriberUpgradeKycProcessorImpl")
 	private SubscriberUpgradeKycProcessor subscriberUpgradeKycProcessor;
 	
+	@Autowired
+	@Qualifier("AddBankPocketToEmoneySubscriberProcessorImpl")
+	private AddBankPocketToEmoneySubscriberProcessor addBankPocketToEmoneySubscriber;
+	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -1301,6 +1306,9 @@ public class FixController {
 			} else if (msgClassName.equals(CMJSSubscriberUpgradeKyc.class.getName())){
 				fixProcessor = subscriberUpgradeKycProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberUpgradeKyc);
+			}else if (msgClassName.equals(CMJSAddBankPocketToEmoneySubscriber.class.getName())){
+				fixProcessor = addBankPocketToEmoneySubscriber;
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAddBankPocketToEmoneySubscriber);
 			}
 
 			/*
