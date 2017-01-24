@@ -43,7 +43,7 @@ public class ServiceSettlementConfigProcessorImpl extends BaseFixProcessor imple
 			PartnerServices partnerServices = psDAO.getById(e.getPartnerServicesID());
 			sc.setPartnerServices(partnerServices);
 			PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-			Pocket pocket = pocketDAO.getById(partnerServices.getCollectorpocket().longValue());
+			Pocket pocket = pocketDAO.getById(partnerServices.getCollectorpocket().getId());
 			sc.setPocket(pocket);
 		}
 		

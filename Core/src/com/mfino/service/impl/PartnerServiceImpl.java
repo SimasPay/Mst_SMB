@@ -1,6 +1,5 @@
 package com.mfino.service.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +48,7 @@ import com.mfino.domain.Address;
 import com.mfino.domain.Company;
 import com.mfino.domain.Groups;
 import com.mfino.domain.KycLevel;
+import com.mfino.domain.MfinoUser;
 import com.mfino.domain.Partner;
 import com.mfino.domain.PartnerDefaultServices;
 import com.mfino.domain.PartnerServices;
@@ -61,7 +61,6 @@ import com.mfino.domain.SettlementTemplate;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
-import com.mfino.domain.MfinoUser;
 import com.mfino.exceptions.InvalidPasswordException;
 import com.mfino.exceptions.MDNNotFoudException;
 import com.mfino.exceptions.MfinoRuntimeException;
@@ -995,7 +994,7 @@ public class PartnerServiceImpl implements PartnerService {
 			partnerService.setMfinoServiceProvider(mspDAO.getById(1l));
 			partnerService.setPartnerByPartnerid(defaultService.getServiceDefualtConfig().getPartner());
 			partnerService.setService(defaultService.getServiceDefualtConfig().getService());
-			partnerService.setCollectorpocket(new BigDecimal(CmFinoFIX.ServicePocketType_Collector));
+			partnerService.setCollectorpocket(pockets.get(CmFinoFIX.ServicePocketType_Collector));
 			partnerService.setPocketBySourcepocket(pockets.get(defaultService.getServiceDefualtConfig().getSourcepockettype()));
 			partnerService.setPocketByDestpocketid(pockets.get(defaultService.getServiceDefualtConfig().getSourcepockettype()));
 			partnerService.setIsservicechargeshare(CmFinoFIX.IsServiceChargeShare_Individual);
@@ -1018,7 +1017,7 @@ public class PartnerServiceImpl implements PartnerService {
 		serviceSettlementConfig.setIsdefault(Boolean.TRUE);
 		serviceSettlementConfig.setMfinoServiceProvider(serviceSettlementConfig.getMfinoServiceProvider());
 		serviceSettlementConfig.setPartnerServices(partnerService);
-		Pocket collectorPocket = pocketDAO.getById(partnerService.getCollectorpocket().longValue());
+		Pocket collectorPocket = pocketDAO.getById(partnerService.getCollectorpocket().getId());
 		serviceSettlementConfig.setPocket(collectorPocket);
 		serviceSettlementConfig.setSchedulerstatus(CmFinoFIX.SchedulerStatus_TobeScheduled.longValue());
 		serviceSettlementConfig.setSettlementTemplate(settlementTemplate);

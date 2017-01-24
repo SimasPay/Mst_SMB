@@ -87,7 +87,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 			if(ps.getCollectorpocket()==null || !e.getCollectorPocket().equals(ps.getCollectorpocket())){
 				log.info("Partner Services ID: " + ps.getId() + " Pocket By collector pocket updated to "+ e.getCollectorPocket() +" by user:"+getLoggedUserNameWithIP());
         	}
-			ps.setCollectorpocket(new BigDecimal(e.getCollectorPocket()));
+			ps.setCollectorpocket(pocketDAO.getById(e.getCollectorPocket()));
 		}
 		 
 		if (e.getSourcePocket() != null) {
@@ -156,8 +156,8 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 		
 		if (ps.getCollectorpocket() != null) {
 			PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-			Pocket pocket = pocketDAO.getById(ps.getCollectorpocket().longValue());
-			e.setCollectorPocket(ps.getCollectorpocket().longValue());
+			Pocket pocket = pocketDAO.getById(ps.getCollectorpocket().getId());
+			e.setCollectorPocket(ps.getCollectorpocket().getId());
 			e.setCollectorCardPAN(pocket.getCardpan());
 			if (StringUtils.isNotBlank(pocket.getCardpan()) && 
 					pocket.getPocketTemplateByPockettemplateid() != null) {
@@ -390,7 +390,7 @@ public class PartnerServicesProcessorImpl extends BaseFixProcessor implements Pa
 	private boolean validatePockets(PartnerServices ps) {
 		boolean result = true;
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-		Pocket pocket = pocketDAO.getById(ps.getCollectorpocket().longValue());
+		Pocket pocket = pocketDAO.getById(ps.getCollectorpocket().getId());
 		if (checkPocketStatus(pocket) && (ps.getPocketBySourcepocket()==null || 
 				(ps.getPocketBySourcepocket()!=null && checkPocketStatus(ps.getPocketBySourcepocket())))) {
 			Set<ServiceSettlementCfg> setSSC = ps.getServiceSettlementCfgs();

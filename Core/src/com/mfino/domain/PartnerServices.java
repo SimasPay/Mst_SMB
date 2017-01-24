@@ -2,7 +2,6 @@ package com.mfino.domain;
 
 // Generated Sep 27, 2016 5:23:21 PM by Hibernate Tools 3.4.0.CR1
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +42,7 @@ public class PartnerServices extends Base implements java.io.Serializable {
 	private Pocket pocketBySourcepocket;
 	private Integer pslevel;
 	private Integer status;
-	private BigDecimal collectorpocket;
+	private Pocket collectorpocket;
 	private Integer isservicechargeshare;
 	
 	private Set<ServiceSettlementCfg> serviceSettlementCfgs = new HashSet<ServiceSettlementCfg>(
@@ -168,12 +167,13 @@ public class PartnerServices extends Base implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "COLLECTORPOCKET", scale = 0)
-	public BigDecimal getCollectorpocket() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "COLLECTORPOCKET")
+	public Pocket getCollectorpocket() {
 		return this.collectorpocket;
 	}
 
-	public void setCollectorpocket(BigDecimal collectorpocket) {
+	public void setCollectorpocket(Pocket collectorpocket) {
 		this.collectorpocket = collectorpocket;
 	}
 

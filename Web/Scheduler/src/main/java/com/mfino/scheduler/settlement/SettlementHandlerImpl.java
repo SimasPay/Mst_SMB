@@ -168,7 +168,7 @@ public class SettlementHandlerImpl implements SettlementHandler{
 		}
 		
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-		Pocket pocket = pocketDAO.getById(partnerService.getCollectorpocket().longValue());
+		Pocket pocket = pocketDAO.getById(partnerService.getCollectorpocket().getId());
 		
 		Pocket collectorPocket = pocket;
 		Pocket settlementPocket = null;

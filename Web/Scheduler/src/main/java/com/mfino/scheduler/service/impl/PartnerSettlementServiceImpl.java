@@ -313,7 +313,7 @@ public class PartnerSettlementServiceImpl implements PartnerSettlementService, I
 
 		ServiceSettlementConfigQuery query = new ServiceSettlementConfigQuery();
 		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
-		Pocket pocket = pocketDAO.getById(partnerServices.getCollectorpocket().longValue());
+		Pocket pocket = pocketDAO.getById(partnerServices.getCollectorpocket().getId());
 		query.setCollectorPocket(pocket);
 		query.setSchedulerStatus(CmFinoFIX.SchedulerStatus_Scheduled);
 		List<ServiceSettlementCfg> settlementConfigs = serviceSettlementConfigCoreService.get(query);		

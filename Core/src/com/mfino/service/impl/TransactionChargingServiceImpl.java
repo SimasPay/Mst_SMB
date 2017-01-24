@@ -1487,7 +1487,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 					// Logs the Distribution of partners Service charge among the shared up chain partners
 					if (share.compareTo(BigDecimal.ZERO) > 0) {
 						PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
-						Pocket colectorPocket = pocketDao.getById(p.getCollectorpocket().longValue());
+						Pocket colectorPocket = pocketDao.getById(p.getCollectorpocket().getId());
 						tadl = getTADL(sctlId, transactionId, tc, p.getPartnerByPartnerid(), null, colectorPocket, share, true, false, true, false);
 						lstTADL.add(tadl);
 					}
@@ -1497,7 +1497,7 @@ public class TransactionChargingServiceImpl implements TransactionChargingServic
 		// Logs the Distribution of partners Service charge after the shared up chain
 		if (moneyService.subtract(amount, amt).compareTo(BigDecimal.ZERO) > 0) {
 			PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
-			Pocket colectorPocket = pocketDao.getById(ps.getCollectorpocket().longValue());
+			Pocket colectorPocket = pocketDao.getById(ps.getCollectorpocket().getId());
 			tadl = getTADL(sctlId, transactionId, tc, ps.getPartnerByPartnerid(), null, colectorPocket, moneyService.subtract(amount, amt), true, false, false, false);
 			lstTADL.add(tadl);
 		}
