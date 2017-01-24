@@ -30,7 +30,10 @@
 		<td>appVersion</td>
 		<td><input type="text" name="appversion" value="" /></td>
 	</tr>
-	
+	<tr>
+		<td>Is Simaspay Activity</td>
+		<td><input type="text" name="isSimaspayActivity" value="" /><em>true or false</em></td>
+	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" value="submit" /></td>
 	</tr>
