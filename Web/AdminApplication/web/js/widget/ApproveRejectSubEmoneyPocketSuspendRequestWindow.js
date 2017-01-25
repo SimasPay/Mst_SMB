@@ -101,9 +101,9 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
 			   success : function(response){
 				   if(response.m_psuccess == true){
 				   Ext.Msg.show({
-					  title: _('Success'),
+					  title: _('Info'),
 					  minProgressWidth:250,
-					  msg: "Subscriber's e-money pocket is suspended.",
+					  msg: response.m_pErrorDescription,
 					  buttons: Ext.MessageBox.OK,
 					  multiline: false
 				   });
@@ -129,3 +129,4 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
     }
 });
 
+Ext.reg("ApproveRejectSubEmoneyPocketSuspendRequestWindow", mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow);

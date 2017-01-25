@@ -17,25 +17,19 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
+import com.mfino.fix.CmFinoFIX.CMSuspendSubscriberEmoneyPocket;
 import com.mfino.hibernate.Timestamp;
-import com.mfino.i18n.MessageText;
 import com.mfino.service.PendingCommodityTransferService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
-import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.SuspendSubscriberEmoneyPocketProcessor;
 import com.mfino.util.ConfigurationUtil;
-import com.mfino.fix.CmFinoFIX.CMSuspendSubscriberEmoneyPocket;
 
 @Service("SuspendSubscriberEmoneyPocketProcessorImpl")
 public class SuspendSubscriberEmoneyPocketProcessorImpl extends BaseFixProcessor implements SuspendSubscriberEmoneyPocketProcessor {
 	
 	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
-	
-	@Autowired
-	@Qualifier("UserServiceImpl")
-	private UserService userService;
 	
 	@Autowired
 	@Qualifier("PocketServiceImpl")
@@ -55,55 +49,65 @@ public class SuspendSubscriberEmoneyPocketProcessorImpl extends BaseFixProcessor
 		log.info("In SuspendSubscriberEmoneyPocketProcessorImpl Process method");
 		
 		CMSuspendSubscriberEmoneyPocket realMsg = (CMSuspendSubscriberEmoneyPocket) msg;
-		CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
-		error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+		CmFinoFIX.CMJSError result = new CmFinoFIX.CMJSError();
+		result.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 		
 		if (CmFinoFIX.JSaction_Insert.equalsIgnoreCase(realMsg.getaction())) {
 	        int count=  subscriberUpgradeDataDAO.getCountByMdnId(realMsg.getMDNID());
 			if(count == 0) {
 				List<PendingCommodityTransfer> lst = getPendingTransactions(realMsg);
 				if (CollectionUtils.isNotEmpty(lst)) {
-		    		error.setErrorDescription(MessageText._("Can't suspend the E-money pocket as there are pending transactions need to be resolved."));
-		    		error.setsuccess(Boolean.FALSE);
-		        	return error;
+		    		result.setErrorDescription("Can't suspend the e-money pocket as there are pending transactions need to be resolved.");
+		    		result.setsuccess(Boolean.FALSE);
+				} else {
+					SubscriberUpgradeData subscriberUpgradeData=new SubscriberUpgradeData();
+					subscriberUpgradeData.setMdnId(realMsg.getMDNID());
+					subscriberUpgradeData.setCreatedby(getLoggedUserName());
+					subscriberUpgradeData.setCreatetime(new Timestamp());
+					subscriberUpgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Suspend_Emoney_Pocket);
+					subscriberUpgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
+					subscriberUpgradeData.setComments(realMsg.getComments());
+					subscriberUpgradeDataDAO.save(subscriberUpgradeData);
+					result.setErrorDescription("Request to suspend subscriber's e-Money pocket has been submitted successfully. " +
+							"Subscriber's e-money pocket will be suspended once approved.");
+					result.setsuccess(Boolean.TRUE);
 				}
-				SubscriberUpgradeData subscriberUpgradeData=new SubscriberUpgradeData();
-				subscriberUpgradeData.setMdnId(realMsg.getMDNID());
-				subscriberUpgradeData.setCreatedby(userService.getCurrentUser().getUsername());
-				subscriberUpgradeData.setCreatetime(new Timestamp());
-				subscriberUpgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Suspend_Emoney_Pocket);
-				subscriberUpgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
-				subscriberUpgradeData.setComments(realMsg.getComments());
-				subscriberUpgradeDataDAO.save(subscriberUpgradeData);
-				log.info("SuspendSubscriberEmoneyPocketProcessorImpl Process method Completed");
-				realMsg.setsuccess(Boolean.TRUE);
-	        	return realMsg;
 			} else{
-	    		error.setErrorDescription(MessageText._(ConfigurationUtil.getSubscriberActivityActiveMessage()));
-	    		error.setsuccess(Boolean.FALSE);
-	        	return error;
+	    		result.setErrorDescription(ConfigurationUtil.getSubscriberActivityActiveMessage());
+	    		result.setsuccess(Boolean.FALSE);
 	    	}
+			return result;
 		}
 		else if (CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())) {
 			SubscriberUpgradeData sud = subscriberUpgradeDataDAO.getUpgradeDataByMdnId(realMsg.getMDNID());
+			sud.setSubsActivityApprovedBY(getLoggedUserName());
+			sud.setSubsActivityAprvTime(new Timestamp());
+			sud.setSubsActivityComments(realMsg.getComments());
 			
 			if (CmFinoFIX.AdminAction_Approve.intValue() == realMsg.getAdminAction()) {
 				sud.setAdminAction(CmFinoFIX.AdminAction_Approve);
 				List<PendingCommodityTransfer> lst = getPendingTransactions(realMsg);
 				if (CollectionUtils.isNotEmpty(lst)) {
-		    		error.setErrorDescription(MessageText._("Can't suspend the E-money pocket as there are pending transactions need to be resolved."));
-		    		error.setsuccess(Boolean.FALSE);
+		    		result.setErrorDescription("Can't suspend the e-money pocket as there are pending transactions need to be resolved.");
+		    		result.setsuccess(Boolean.FALSE);
 		    		sud.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Failed);
-		        	return error;
+		        	return result;
 				}
-				//TODO
+				Pocket pocket = pocketService.getDefaultPocket(subscriberMdnService.getById(realMsg.getMDNID()), CmFinoFIX.PocketType_SVA.toString());
+				pocket.setStatus(CmFinoFIX.PocketStatus_Suspend);
+				pocketService.save(pocket);
+				sud.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
+				result.setErrorDescription("Subscriber's e-money pocket is suspended.");
+				result.setsuccess(Boolean.TRUE);
 			}
 			else if (CmFinoFIX.AdminAction_Reject.intValue() == realMsg.getAdminAction()) {
 				sud.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
 				sud.setAdminAction(CmFinoFIX.AdminAction_Reject);
-				
+				result.setErrorDescription("Rejected the subscriber's e-money pocket suspend request.");
+				result.setsuccess(Boolean.TRUE);
 			}
 			subscriberUpgradeDataDAO.save(sud);
+        	return result;
 		}
 		return realMsg;
 	}

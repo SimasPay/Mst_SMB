@@ -8689,6 +8689,7 @@
 			<value enum="2" description="PendingRetirement" />
 			<value enum="3" description="Retired" />
 			<value enum="4" description="OneTimeActive" />
+			<value enum="5" description="Suspend"/>
 		</field>
 		<field number="5052" name="BankCodeForRouting" type="INT32" >
 			<value enum="153" description="Sinarmas" />
