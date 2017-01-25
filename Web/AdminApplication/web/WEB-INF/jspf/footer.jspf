@@ -91,6 +91,10 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectWindow.js"/>">
 </script>
+<script type="text/javascript" src="<c:url value="/js/widget/CreateSubEmoneyPocketSuspenseRequestWindow.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/ApproveRejectSubEmoneyPocketSuspendRequestWindow.js"/>">
+</script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberTab.js"/>">
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/FormWindowForSubscriber.js"/>">

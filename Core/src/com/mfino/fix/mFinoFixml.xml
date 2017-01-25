@@ -4842,6 +4842,17 @@
 		<field name="OtherMDN" required="Y"/>		
 		<field name="Pin" required="Y" isSecure="Y"/> 
 	</message>
+	
+	<message name="SuspendSubscriberEmoneyPocket" msgtype="1603" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="MDNID" required="Y" />		
+		<field name="Comments" required="Y"/>
+		<field name="AdminAction" required="N"/>
+	</message>
+	
+	<message name="GetSubscriberUpgradeDataRequest" msgtype="1604" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="MDNID" required="Y" />
+		<field name="SubscriberActivity" required="N"/>		
+	</message>		
    
     <message name="HSMBase" msgtype="1700" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
     </message>
@@ -8464,6 +8475,8 @@
 			<value enum="1441" description="QRPaymentReversalFromBank"/>			
 			<value enum="1600" description="GenerateOTP"/>
 			<value enum="1601" description="ValidateOTP"/>
+			<value enum="1603" description="SuspendSubscriberEmoneyPocket"/>
+			<value enum="1604" description="GetSubscriberUpgradeDataRequest"/>
 			<value enum="1731" description="JSMoneyTransfer"/>
 			<value enum="1732" description="ModifyNFCCardAlias"/>
 			<value enum="1741" description="BalanceInquiryFromNFC"/>
@@ -27281,6 +27294,7 @@ ERROR:Mismatch of  mdn type and app type
     <field number="8258" name="SubscriberActivityStatus" type="INT32">
     	<value enum="0" description="Initialized"/>
     	<value enum="1" description="Completed"/>
+    	<value enum="2" description="Failed"/>
     </field>
     <field number="8301"  name="AgentCode" type="STRING"/>
 	<field number="8302"  name="AgentType" type="STRING"/>

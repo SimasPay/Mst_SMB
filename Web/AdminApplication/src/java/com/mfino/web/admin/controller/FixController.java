@@ -680,6 +680,14 @@ public class FixController {
 	@Qualifier("AddBankPocketToEmoneySubscriberProcessorImpl")
 	private AddBankPocketToEmoneySubscriberProcessor addBankPocketToEmoneySubscriber;
 	
+	@Autowired
+	@Qualifier("SuspendSubscriberEmoneyPocketProcessorImpl")
+	private SuspendSubscriberEmoneyPocketProcessor suspendSubscriberEmoneyPocketProcessor;
+	
+	@Autowired
+	@Qualifier("GetSubscriberUpgradeDataRequestProcessorImpl")
+	private GetSubscriberUpgradeDataRequestProcessor getSubscriberUpgradeDataRequestProcessor;
+	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -1309,6 +1317,12 @@ public class FixController {
 			}else if (msgClassName.equals(CMJSAddBankPocketToEmoneySubscriber.class.getName())){
 				fixProcessor = addBankPocketToEmoneySubscriber;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSAddBankPocketToEmoneySubscriber);
+			} else if (msgClassName.equals(CmFinoFIX.CMSuspendSubscriberEmoneyPocket.class.getName())) {
+				fixProcessor = suspendSubscriberEmoneyPocketProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_SuspendSubscriberEmoneyPocket);
+			} else if (msgClassName.equals(CmFinoFIX.CMGetSubscriberUpgradeDataRequest.class.getName())) {
+				fixProcessor = getSubscriberUpgradeDataRequestProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_GetSubscriberUpgradeDataRequest);
 			}
 
 			/*

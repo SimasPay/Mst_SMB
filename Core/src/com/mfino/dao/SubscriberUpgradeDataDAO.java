@@ -31,5 +31,15 @@ public class SubscriberUpgradeDataDAO extends BaseDAO<SubscriberUpgradeData> {
 		return count;
 	}
 	
+	public SubscriberUpgradeData getUpgradeDataByMdnId(Long mdnId) {
+		SubscriberUpgradeData result = null;
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_MdnId, mdnId));
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_SubsActivityStatus,CmFinoFIX.SubscriberActivityStatus_Initialized));
+		criteria.setMaxResults(1);
+		result = (SubscriberUpgradeData)criteria.uniqueResult();
+		return result;
+	}
+	
 
 }
