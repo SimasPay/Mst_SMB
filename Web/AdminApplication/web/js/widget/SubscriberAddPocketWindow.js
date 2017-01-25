@@ -53,21 +53,12 @@ Ext.extend(mFino.widget.SubscriberAddPocketWindow, Ext.FormPanel, {
                      	},
                      	{
                      		xtype : 'textfield',
-                     		fieldLabel: _(' First Name'),
+                     		fieldLabel: _(' Full Name'),
                      		allowBlank: false,
-                     		blankText : _('First Name is required'),
+                     		blankText : _('Full Name is required'),
                      		anchor : '100%',
 							itemId : 'subaddpocket.form.firstname',
                      		name: CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.FirstName._name
-                     	},
-                     	{
-                     		xtype : 'textfield',
-                     		fieldLabel: _(' Last Name'),
-                     		allowBlank: false,
-                     		blankText : _('Last Name is required'),
-                     		anchor : '100%',
-							itemId : 'subaddpocket.form.lastname',
-                     		name: CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.LastName._name
                      	},
                      	{
                      		xtype : 'textfield',
@@ -83,7 +74,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketWindow, Ext.FormPanel, {
                      		fieldLabel: _('CIF No'),
                      		allowBlank: false,
                      		blankText : _('CIF No is required'),
-                     		vtype:'number',
+                     		vtype:'name',
                      		anchor : '100%',
 							itemId : 'subaddpocket.form.cifno',
                      		name: CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.ApplicationID._name
@@ -93,7 +84,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketWindow, Ext.FormPanel, {
                      		fieldLabel: _('Bank Account No'),
                      		allowBlank: false,
                      		blankText : _('Bank Account No is required'),
-                     		vtype:'number',
+                     		vtype:'tendigitnumber',
                      		anchor : '100%',
 							itemId : 'subaddpocket.form.bankaccno',
                      		name: CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.AccountNumber._name
@@ -101,13 +92,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketWindow, Ext.FormPanel, {
                      	
                      	
             ]
-		},
-        {
-        	xtype: 'displayfield',
-        	anchor: '100%',
-        	fieldLabel: _(' Mandatory'),
-        	labelSeparator : ''
-        }]
+		}]
     	mFino.widget.SubscriberAddPocketWindow.superclass.initComponent.call(this);
     	markMandatoryFields(this.form);
     },
@@ -119,7 +104,6 @@ Ext.extend(mFino.widget.SubscriberAddPocketWindow, Ext.FormPanel, {
 		this.find('itemId', 'subaddpocket.form.mdnid')[0].setValue(record.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.MDNID._name]);
 		this.find('itemId', 'subaddpocket.form.mdn')[0].setValue(record.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.MDN._name]).disable();
 	    this.find('itemId', 'subaddpocket.form.firstname')[0].setValue(record.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.FirstName._name]).disable();
-		this.find('itemId', 'subaddpocket.form.lastname')[0].setValue(record.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.LastName._name]).disable();
 		this.find('itemId', 'subaddpocket.form.pockettemplate')[0].setValue("BankAccount-Savings").disable();
     },    
     onAddPocket : function(formWindow){

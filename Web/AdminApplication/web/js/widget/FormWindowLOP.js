@@ -101,8 +101,13 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
         },
         {
         	itemId: "addpocket",
-        	text: _('AddPocket'),
+        	text: _('Submit'),
         	handler: this.onAddPocket.createDelegate(this)
+        },
+        {
+        	itemId: "proceed",
+        	text: _('Proceed'),
+        	handler: this.onProceed.createDelegate(this)
         }
         ];
 
@@ -165,6 +170,9 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
                 item.show();
             }
             if(mode === "addpocket" && (item.itemId === "addpocket" || item.itemId === "cancel")){
+                item.show();
+            }
+            if(mode === "proceed" && (item.itemId === "proceed" || item.itemId === "cancel")){
                 item.show();
             }
             if(mode === "cancel" && (item.itemId === "cancel")){
@@ -440,14 +448,31 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
     },
     onAddPocket : function(){
     	if(this.form.getForm().isValid()){
-    		Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to Add the Pocket ?"),
+        	this.form.onAddPocket(this);
+        }else{
+            Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
+        }
+    },
+    onProceed : function(){
+    	if(this.form.getForm().isValid()){
+    		if(this.form.find("itemId","approve")[0].checked){
+    		Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to approve the request to add Bank pocket for this subscriber ?"),
 		        function(btn){
 		            if(btn !== "yes"){
 		                return;
 		            }
-		            this.form.onAddPocket(this);
+		            this.form. onProceed(this);
 		        }, this);
-        }else{
+    		}else if(this.form.find("itemId","reject")[0].checked){
+    			Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to reject the request to add Bank pocket for this subscriber? ?"),
+    			        function(btn){
+    			            if(btn !== "yes"){
+    			                return;
+    			            }
+    			            this.form. onProceed(this);
+    			        }, this);
+    		}
+    		}else{
             Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
         }
     },

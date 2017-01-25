@@ -86,6 +86,15 @@ mFino.page.subscriber = function(config){
         mode:"addpocket"
     }, config));
     
+    var subscriberAddPocketApproveRejectWindow =new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.SubscriberAddPocketApproveRejectWindow(config),
+        store : new FIX.FIXStore(mFino.DATA_URL, CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber),
+        title : _("Approve/Reject Subscriber for MBanking Services"),
+        width:450,
+        height: 450,
+        mode:"proceed"
+    }, config));
+    
     var subClosing = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberClosingInquiry(config),
         title : _("Subscriber Account Closing"),
@@ -598,7 +607,7 @@ mFino.page.subscriber = function(config){
                         } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
                         	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
                         }else if((detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.NoKyc)&&(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.UnBanked)){
-                        	Ext.MessageBox.alert(_("Info"), _("Subscriber's KYC level should be Nokyc or Unbanked"));
+                        	Ext.MessageBox.alert(_("Info"), _("Subscriber already have Mbanking Services"));
                         } else{
                         	
                         	var newrecord = new subscriberAddPocketWindow.store.recordType();
@@ -607,7 +616,6 @@ mFino.page.subscriber = function(config){
                         newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.MDNID._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
     					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.MDN._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name];
     					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.FirstName._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name];
-    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.LastName._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.LastName._name];
     					subscriberAddPocketWindow.setStore(subscriberAddPocketWindow.store);                
     					subscriberAddPocketWindow.setRecord(newrecord);
     					}
@@ -631,7 +639,7 @@ mFino.page.subscriber = function(config){
                 }
             },
             {
-                iconCls: '.mfino-button-suspend-subscriber-emoneypocket-approve',
+                iconCls: 'mfino-button-suspend-subscriber-emoneypocket-approve',
                 tooltip : _('Approve/Reject suspend E-money pocket request'),
                 itemId : 'approve.sub.suspend.emoneypocket',
                 id : 'approve.sub.suspend.emoneypocket', 
@@ -684,6 +692,48 @@ mFino.page.subscriber = function(config){
                                 multiline: false
                             });
                         }
+                    }
+                }
+            },{
+            },
+            {
+                iconCls : "mfino-button-subscriber-addpocket-approve",
+                tooltip : _('Approve for MBanking Services'),
+                itemId: 'emoneysub.add.bankpocket.checker',
+                id: 'emoneysub.add.bankpocket.checker',
+                handler : function(){
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active!"));
+                    }else if((detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.NoKyc)&&(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) != CmFinoFIX.SubscriberKYCLevel.UnBanked)){
+                    	Ext.MessageBox.alert(_("Info"), _("Subscriber already have Mbanking Services"));
+                    }
+         else{
+                    		var amsg = new CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber();
+                            amsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                            amsg.m_paction = "read";
+                            var params = mFino.util.showResponse.getDisplayParam();
+                            mFino.util.fix.send(amsg, params);
+                            Ext.apply(params, {
+                    			success :  function(response){
+                    				if(response.m_psuccess == true){
+                    					var newrecord = new subscriberAddPocketApproveRejectWindow.store.recordType();
+                    					
+                    					subscriberAddPocketApproveRejectWindow.show();
+                                        newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.MDNID._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
+                    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.MDN._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.MDN._name];
+                    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.FirstName._name] = detailsForm.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.FirstName._name];
+                    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.ApplicationID._name]=response.m_pApplicationID;
+                    					newrecord.data[CmFinoFIX.message.JSAddBankPocketToEmoneySubscriber.Entries.AccountNumber._name]=response.m_pAccountNumber;
+                    					subscriberAddPocketApproveRejectWindow.setStore(subscriberAddPocketApproveRejectWindow.store);                
+                    					subscriberAddPocketApproveRejectWindow.setRecord(newrecord);
+                    					var comments = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name);
+                    			   }else{
+                    				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
+                    			   }
+                    			}
+                    		});
                     }
                 }
             }
@@ -871,9 +921,9 @@ mFino.page.subscriber = function(config){
         
         var sumsg = new CmFinoFIX.message.GetSubscriberUpgradeDataRequest();
         sumsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
-        amsg.m_paction = "read";
+        sumsg.m_paction = "read";
         var params = mFino.util.showResponse.getDisplayParam();
-        mFino.util.fix.send(amsg, params);
+        mFino.util.fix.send(sumsg, params);
         Ext.apply(params, {
 			success :  function(response){
 				if(response.m_psuccess == true){

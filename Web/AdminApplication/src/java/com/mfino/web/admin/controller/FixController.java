@@ -36,6 +36,7 @@ import com.mfino.fix.CmFinoFIX.CMJSAgent;
 import com.mfino.fix.CmFinoFIX.CMJSAgentCloseApproveReject;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosing;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosingInquiry;
+import com.mfino.fix.CmFinoFIX.CMJSApproveRejectAddBankPocketToEmoneySubscriber;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInConfirm;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInInquiry;
@@ -688,6 +689,10 @@ public class FixController {
 	@Qualifier("GetSubscriberUpgradeDataRequestProcessorImpl")
 	private GetSubscriberUpgradeDataRequestProcessor getSubscriberUpgradeDataRequestProcessor;
 	
+	@Autowired
+	@Qualifier("ApproveRejectAddBankPocketToEmoneySubscriberProcessorImpl")
+	private ApproveRejectAddBankPocketToEmoneySubscriberProcessor approveRejectAddBankPocketToEmoneySubscriberProcessor;
+	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -1323,6 +1328,9 @@ public class FixController {
 			} else if (msgClassName.equals(CmFinoFIX.CMGetSubscriberUpgradeDataRequest.class.getName())) {
 				fixProcessor = getSubscriberUpgradeDataRequestProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_GetSubscriberUpgradeDataRequest);
+			}else if (msgClassName.equals(CMJSApproveRejectAddBankPocketToEmoneySubscriber.class.getName())){
+				fixProcessor = approveRejectAddBankPocketToEmoneySubscriberProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_JSApproveRejectAddBankPocketToEmoneySubscriber);
 			}
 
 			/*
