@@ -91,6 +91,8 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
 							itemId : 'subaddpocket.form.bankaccno',
                      		name: CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber.Entries.AccountNumber._name
                      	},{
+                     	   fieldLabel: 'Comment'
+                        },{
                             xtype : 'textarea',
                             itemId :'comment',
                             id:'comment',
@@ -116,17 +118,8 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                                    itemId : 'approve',
                                    name: 'selectone',
                                    anchor : '100%',
-                                   checked : true,
-                                   boxLabel: _('Approve'),
-                                   handler: {
-                                   	call:function(field){
-                                   		
-               	                    	if(field.checked){
-               	                			
-               	                    		Ext.getCmp('comment').enable();
-               	                		}
-                                   	}
-                                   }
+                                   boxLabel: _('Approve')
+                                 
                                },
                                {
                                    columnWidth: 0.3,
@@ -134,16 +127,8 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                                    itemId : 'reject',
                                    anchor : '100%',
                                    name: 'selectone',
-                                   boxLabel: _('Reject'),
-                                   handler: {
-                                   	call :  function(field){
-                                   		
-                                   		if(field.checked){
-                                   			
-                                   			Ext.getCmp('comment').enable();
-                                   		}
-                                       }
-                                   }
+                                   boxLabel: _('Reject')
+                                 
                                }]
                            }]
                    
@@ -166,6 +151,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
     },    
     onProceed : function(formWindow){
         if(this.getForm().isValid()){
+        	if (this.find('itemId','approve')[0].checked || this.find('itemId','reject')[0].checked){
         		   var amsg= new CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber();
         		   var values = this.form.getValues();
               	  amsg.m_pMDNID =values[CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber.MDNID._name];
@@ -200,7 +186,10 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
          		   }
          	   	});
                	formWindow.hide();
-         }     
+         } 
+		else {
+			Ext.ux.Toast.msg(_("Error"), _("Please select one of the approval status."),5);				
+		} }   
          else{
              Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
          }
