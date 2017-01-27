@@ -23,8 +23,8 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
     initComponent : function(){
         this.buttons = [
         {
-            text: _('Ok'),
-            handler: this.ok.createDelegate(this)
+            text: _('Proceed'),
+            handler: this.proceed.createDelegate(this)
         },
         {
             text: _('Cancel'),
@@ -80,47 +80,70 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
     cancel : function(){
         this.hide();
     },
-
-    ok : function(){
-        if(this.form.getForm().isValid()){
+    
+	proceed : function() {
+		if(this.form.getForm().isValid()){
 			if (this.form.find('itemId','approve')[0].checked || this.form.find('itemId','reject')[0].checked) {
-				var msg = new CmFinoFIX.message.SuspendSubscriberEmoneyPocket();
-				msg.m_pComments = this.form.items.get('comment').getValue();
-				msg.m_paction = "update";
-				msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
 				if(this.form.find('itemId','approve')[0].checked) {
-					msg.m_pAdminAction = CmFinoFIX.AdminAction.Approve;
+					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Approve the request to suspend e-money pocket for this subscriber ?"),
+					function(btn){
+						if(btn !== "yes"){
+							return;
+						}
+						this.ok(this);
+					}, this);
 				} 
 				else if(this.form.find('itemId','reject')[0].checked) {
-					msg.m_pAdminAction = CmFinoFIX.AdminAction.Reject;
+					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Reject the request to suspend e-money pocket for this subscriber ?"),
+					function(btn){
+						if(btn !== "yes"){
+							return;
+						}
+						this.ok(this);
+					}, this);					
 				}
-				var params = mFino.util.showResponse.getDisplayParam();
-				mFino.util.fix.send(msg, params);
-				this.hide();
-				Ext.apply(params, {
-				   success : function(response){
-					   if(response.m_psuccess == true){
-					   Ext.Msg.show({
-						  title: _('Info'),
-						  minProgressWidth:250,
-						  msg: response.m_pErrorDescription,
-						  buttons: Ext.MessageBox.OK,
-						  multiline: false
-					   });
-					   }else{
-						   Ext.MessageBox.alert(_("Error"), _(response.m_pErrorDescription));   	   
-					   }
-				   }
-				});				
 			}
 			else {
 				Ext.ux.Toast.msg(_("Error"), _("Please select one of the approval status."),5);				
 			}
-        }     
-        else{
+		}
+		else{
             Ext.ux.Toast.msg(_("Error"), _("Please provide the comments."),5);
         }
-    },
+	},    
+
+    ok : function(){
+		var msg = new CmFinoFIX.message.SuspendSubscriberEmoneyPocket();
+		msg.m_pComments = this.form.items.get('comment').getValue();
+		msg.m_paction = "update";
+		msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
+		if(this.form.find('itemId','approve')[0].checked) {
+			msg.m_pAdminAction = CmFinoFIX.AdminAction.Approve;
+		} 
+		else if(this.form.find('itemId','reject')[0].checked) {
+			msg.m_pAdminAction = CmFinoFIX.AdminAction.Reject;
+		}
+		var params = mFino.util.showResponse.getDisplayParam();
+		mFino.util.fix.send(msg, params);
+		this.hide();
+		Ext.apply(params, {
+		   success : function(response){
+			   if(response.m_psuccess == true){
+				   Ext.Msg.show({
+					  title: _('Info'),
+					  minProgressWidth:250,
+					  msg: response.m_pErrorDescription,
+					  buttons: Ext.MessageBox.OK,
+					  multiline: false
+				   });
+			   }
+			   else{
+				   Ext.MessageBox.alert(_("Error"), _(response.m_pErrorDescription));   	   
+			   }
+		   }
+		});				
+	},
+	
     setRecord : function(record){
         this.form.getForm().reset();
         this.record = record;
