@@ -23649,6 +23649,24 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="ApproveMBankingServicesToEmoneySubScriber" enum="2313">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Successfully Enabled the MBanking services</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			<value description="RejectMBankingServicesToEmoneySubScriber" enum="2314">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Sorry.Your MBanking feature Rejected</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

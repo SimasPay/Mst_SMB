@@ -997,6 +997,12 @@ color:red;
 .mfino-button-subscriber-addpocket-approve {
     background-image:url(../images/subscriber_AddPocket_Request_Approve.png) !important;
 }
+.mfino-button-suspend-subscriber-emoneypocket {
+    background-image:url(../images/newlock.png) !important;
+}
+.mfino-button-suspend-subscriber-emoneypocket-approve {
+    background-image:url(../images/newlock-ok.png) !important;
+}
 .mfino-button-delete-agent {
     background-image:url(../images/Delete_Resized.png) !important;
 }

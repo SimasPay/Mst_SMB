@@ -98,7 +98,9 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                             allowBlank: false,
                             hideLabel: true,
                             labelSeparator :'',
-                            anchor : '100%'
+                            anchor : '100%',
+                            itemId : 'subaddpocket.form.comments',
+                     		name: CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber.Entries.AdminComment._name
                            },
                          	{
                                xtype: 'fieldset',
@@ -138,7 +140,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                                    		
                                    		if(field.checked){
                                    			
-                                   			Ext.getCmp('comment').reset();
+                                   			Ext.getCmp('comment').enable();
                                    		}
                                        }
                                    }

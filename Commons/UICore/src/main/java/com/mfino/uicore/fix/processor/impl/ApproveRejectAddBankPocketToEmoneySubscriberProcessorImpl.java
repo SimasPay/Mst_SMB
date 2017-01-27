@@ -17,6 +17,7 @@ import com.mfino.domain.Groups;
 import com.mfino.domain.KycLevel;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
+import com.mfino.domain.SMSValues;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeData;
@@ -25,12 +26,12 @@ import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectAddBankPocketToEmoneySubscriber;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
+import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
-import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.ApproveRejectAddBankPocketToEmoneySubscriberProcessor;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 
@@ -48,9 +49,6 @@ ApproveRejectAddBankPocketToEmoneySubscriberProcessor {
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
 	
-	@Autowired
-	@Qualifier("UserServiceImpl")
-	private UserService userService;
 	
 	@Autowired
 	@Qualifier("PocketServiceImpl")
@@ -72,15 +70,26 @@ ApproveRejectAddBankPocketToEmoneySubscriberProcessor {
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
 		log.info("In ApproveRejectAddBankPocketToEmoneySubscriberProcessorImpl Process method");
-		
+		Integer notificationCode =null;
 		CMJSApproveRejectAddBankPocketToEmoneySubscriber realMsg = (CMJSApproveRejectAddBankPocketToEmoneySubscriber) msg;
 		SubscriberUpgradeData subscriberUpgradeData=  subscriberUpgradeDataDAO.getUpgradeDataByMdnId(realMsg.getMDNID());
 		
 		CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
 		errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
+		
+		
+		
 		if(CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())){
+			
+			SubscriberMdn srcSubscriberMDN = subscriberMdnService.getSubscriberMDNById(subscriberUpgradeData.getMdnId());
+			subscriberUpgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Enable_MBanking_For_Emoney_Subscriber);
+			subscriberUpgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
+			subscriberUpgradeData.setSubsActivityApprovedBY(getLoggedUserName());
+			subscriberUpgradeData.setSubsActivityAprvTime(new Timestamp());
+			subscriberUpgradeData.setSubsActivityComments(realMsg.getAdminComment());
+			
 			if (CmFinoFIX.AdminAction_Approve.equals(realMsg.getAdminAction())) {
-				SubscriberMdn srcSubscriberMDN = subscriberMdnService.getSubscriberMDNById(subscriberUpgradeData.getMdnId());
+				
 				Long groupID = null;
 				
 				Subscriber subscriber = srcSubscriberMDN.getSubscriber();
@@ -107,36 +116,29 @@ ApproveRejectAddBankPocketToEmoneySubscriberProcessor {
 				
 				
 				
-				subscriberUpgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Enable_MBanking_For_Emoney_Subscriber);
-				subscriberUpgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
-				subscriberUpgradeData.setSubsActivityApprovedBY(userService.getCurrentUser().getUsername());
-				subscriberUpgradeData.setSubsActivityAprvTime(new Timestamp());
-				subscriberUpgradeData.setSubsActivityComments(realMsg.getAdminComment());
 				
-				subscriberUpgradeDataDAO.save(subscriberUpgradeData);
-				Integer notificationCode = null;
-				//sendSMS(srcSubscriberMDN,notificationCode);
+				subscriberUpgradeData.setAdminAction(CmFinoFIX.AdminAction_Approve);
+				notificationCode = CmFinoFIX.NotificationCode_ApproveMBankingServicesToEmoneySubScriber;
 				realMsg.setsuccess(Boolean.TRUE);
 		        return realMsg;
 				
 				
 			}else if(CmFinoFIX.AdminAction_Reject.equals(realMsg.getAdminAction())){
 				
-				subscriberUpgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Enable_MBanking_For_Emoney_Subscriber);
-				subscriberUpgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
-				subscriberUpgradeData.setSubsActivityApprovedBY(userService.getCurrentUser().getUsername());
-				subscriberUpgradeData.setSubsActivityAprvTime(new Timestamp());
-				subscriberUpgradeData.setSubsActivityComments(realMsg.getAdminComment());
 				
-				subscriberUpgradeDataDAO.save(subscriberUpgradeData);
-				errorMsg.setErrorDescription(MessageText._("Successfully rejected the subscriber"));
+				subscriberUpgradeData.setAdminAction(CmFinoFIX.AdminAction_Reject);
+			    notificationCode = CmFinoFIX.NotificationCode_RejectMBankingServicesToEmoneySubScriber;
+				
+				errorMsg.setErrorDescription(MessageText._("MBanking Services rejected"));
 				errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 				return errorMsg;
 				
 				
 			}
+			subscriberUpgradeDataDAO.save(subscriberUpgradeData);
+			sendSMS(srcSubscriberMDN,notificationCode);
 			
-			
+			log.info("In ApproveRejectAddBankPocketToEmoneySubscriberProcessorImpl Process method"+subscriberUpgradeData.getAdminAction()+" action completed");
 		}
         
 		if(CmFinoFIX.JSaction_Select.equalsIgnoreCase(realMsg.getaction())){
@@ -159,7 +161,7 @@ ApproveRejectAddBankPocketToEmoneySubscriberProcessor {
 		}
 		return errorMsg; 
 	}
-/*
+
 	private void sendSMS (SubscriberMdn subscriberMDN , Integer notificationCode) {
 		try{
 			Subscriber subscriber = subscriberMDN.getSubscriber();
@@ -171,7 +173,6 @@ ApproveRejectAddBankPocketToEmoneySubscriberProcessor {
 			smsNotificationWrapper.setDestMDN(mdn2);
 			smsNotificationWrapper.setLanguage(subscriber.getLanguage());
 			smsNotificationWrapper.setFirstName(subscriber.getFirstname());
-	    	smsNotificationWrapper.setLastName(subscriber.getLastname());
 			
 	    	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper, true);
 			SMSValues smsValues= new SMSValues();
@@ -184,5 +185,5 @@ ApproveRejectAddBankPocketToEmoneySubscriberProcessor {
 			e.printStackTrace();
 			log.error("Error in Sending SMS "+e.getMessage(),e);
 		}
-	}*/
+	}
 }
