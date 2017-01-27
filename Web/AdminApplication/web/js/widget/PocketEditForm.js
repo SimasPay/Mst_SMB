@@ -185,6 +185,16 @@ Ext.extend(mFino.widget.PocketEditForm, Ext.FormPanel, {
             this.find('itemId','SecurityLocked')[0].disable();
             this.find('itemId','AbsoluteLocked')[0].disable();
             this.find('itemId','IsDefault')[0].disable();
+        }else if(status==CmFinoFIX.PocketStatus.Suspend){
+            this.find('itemId','sub.pocket.status')[0].disable();
+            this.find('itemId','sub.pocket.template')[0].disable();
+            this.find('itemId','sub.pocket.cardpan')[0].disable();
+            this.find('itemId','cardAlias')[0].disable();
+            this.find('itemId','SelfSuspended')[0].disable();
+            this.find('itemId','Suspended')[0].disable();
+            this.find('itemId','SecurityLocked')[0].disable();
+            this.find('itemId','AbsoluteLocked')[0].disable();
+            this.find('itemId','IsDefault')[0].disable();
         }else if(status==CmFinoFIX.PocketStatus.Initialized){
         	//check to see if the 'Initialized' is initial status value or newly selected value. If it is newly selected status we shld not allow to change status to initialiazed. 
         	if(this.record.get(CmFinoFIX.message.JSPocket.Entries.PocketStatus._name) == CmFinoFIX.PocketStatus.Initialized){

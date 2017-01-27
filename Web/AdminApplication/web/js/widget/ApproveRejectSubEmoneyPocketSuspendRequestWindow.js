@@ -61,7 +61,6 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
                     itemId : 'approve',
                     name: 'selectone',
                     anchor : '90%',
-                    checked : true,
                     boxLabel: _('Approve')
                 },
                 {
@@ -84,34 +83,39 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
 
     ok : function(){
         if(this.form.getForm().isValid()){
-        	var msg = new CmFinoFIX.message.SuspendSubscriberEmoneyPocket();
-            msg.m_pComments = this.form.items.get('comment').getValue();
-			msg.m_paction = "update";
-			msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
-            if(this.form.find('itemId','approve')[0].checked) {
-            	msg.m_pAdminAction = CmFinoFIX.AdminAction.Approve;
-            } 
-            else if(this.form.find('itemId','reject')[0].checked) {
-            	msg.m_pAdminAction = CmFinoFIX.AdminAction.Reject;
-            }
-            var params = mFino.util.showResponse.getDisplayParam();
-            mFino.util.fix.send(msg, params);
-			this.hide();
-			Ext.apply(params, {
-			   success : function(response){
-				   if(response.m_psuccess == true){
-				   Ext.Msg.show({
-					  title: _('Info'),
-					  minProgressWidth:250,
-					  msg: response.m_pErrorDescription,
-					  buttons: Ext.MessageBox.OK,
-					  multiline: false
-				   });
-				   }else{
-					   Ext.MessageBox.alert(_("Error"), _(response.m_pErrorDescription));   	   
+			if (this.form.find('itemId','approve')[0].checked || this.form.find('itemId','reject')[0].checked) {
+				var msg = new CmFinoFIX.message.SuspendSubscriberEmoneyPocket();
+				msg.m_pComments = this.form.items.get('comment').getValue();
+				msg.m_paction = "update";
+				msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
+				if(this.form.find('itemId','approve')[0].checked) {
+					msg.m_pAdminAction = CmFinoFIX.AdminAction.Approve;
+				} 
+				else if(this.form.find('itemId','reject')[0].checked) {
+					msg.m_pAdminAction = CmFinoFIX.AdminAction.Reject;
+				}
+				var params = mFino.util.showResponse.getDisplayParam();
+				mFino.util.fix.send(msg, params);
+				this.hide();
+				Ext.apply(params, {
+				   success : function(response){
+					   if(response.m_psuccess == true){
+					   Ext.Msg.show({
+						  title: _('Info'),
+						  minProgressWidth:250,
+						  msg: response.m_pErrorDescription,
+						  buttons: Ext.MessageBox.OK,
+						  multiline: false
+					   });
+					   }else{
+						   Ext.MessageBox.alert(_("Error"), _(response.m_pErrorDescription));   	   
+					   }
 				   }
-			   }
-			});
+				});				
+			}
+			else {
+				Ext.ux.Toast.msg(_("Error"), _("Please select one of the approval status."),5);				
+			}
         }     
         else{
             Ext.ux.Toast.msg(_("Error"), _("Please provide the comments."),5);
