@@ -2042,8 +2042,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 												.copy(confirmationToBank);
 										moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
                                         moneyTransferToBank.setLanguage((int)objSourceSubscriber.getLanguage());
-										moneyTransferToBank.setAmount(pct
-												.getAmount());
+										moneyTransferToBank.setAmount(pct.getAmount());
+										moneyTransferToBank.setServiceChargeAmount(pct.getCharges());										
 										moneyTransferToBank.setBankCode(pct
 												.getBankcode().intValue());
 										moneyTransferToBank.setDestCardPAN(pct
