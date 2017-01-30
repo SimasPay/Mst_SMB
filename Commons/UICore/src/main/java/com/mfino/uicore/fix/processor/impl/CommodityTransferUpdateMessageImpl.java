@@ -109,8 +109,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         if (c.getSourcereferenceid() != null) {
             entry.setSourceReferenceID(c.getSourcereferenceid());
         }
-        if (c.getDestmdn() != null) {
-            entry.setSourceMDN(c.getDestmdn());
+        if (c.getSourcemdn() != null) {
+            entry.setSourceMDN(c.getSourcemdn());
         }
         entry.setSourceMDNID(c.getSubscriberMdn().getId().longValue());
         entry.setSourceSubscriberID(c.getSubscriber().getId().longValue());
@@ -472,8 +472,8 @@ public class CommodityTransferUpdateMessageImpl implements CommodityTransferUpda
         if (pct.getSourcereferenceid() != null) {
             entry.setSourceReferenceID(pct.getSourcereferenceid());
         }
-        if (pct.getDestmdn() != null) {
-            entry.setSourceMDN(pct.getDestmdn());
+        if (pct.getSourcemdn()!= null) {
+            entry.setSourceMDN(pct.getSourcemdn());
         }
         entry.setSourceMDNID(pct.getSubscriberMdn().getId().longValue());
         entry.setSourceSubscriberID(pct.getSubscriber().getId().longValue());

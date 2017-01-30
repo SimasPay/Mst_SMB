@@ -40,7 +40,7 @@ public class TransactionRuleAddnInfoProcessorImpl extends BaseFixProcessor imple
 		if(txnRule.getTxnrulecomparator() != null) {
 			e.setTxnRuleComparator(txnRule.getTxnrulecomparator());
 		}
-		e.setRecordVersion(Integer.valueOf(Long.valueOf(txnRule.getVersion()).intValue()));
+		e.setRecordVersion(txnRule.getVersion());
 	}
 	
 	private void updateEntity(TxnRuleAddnInfo txnRule, CMJSTxnRuleAddnInfo.CGEntries e) {
