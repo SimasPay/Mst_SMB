@@ -8489,6 +8489,7 @@
 			<value enum="1601" description="ValidateOTP"/>
 			<value enum="1603" description="SuspendSubscriberEmoneyPocket"/>
 			<value enum="1604" description="GetSubscriberUpgradeDataRequest"/>
+			<value enum="1605" description="RetireSubscriberEmoneyPocket"/>
 			<value enum="1606" description="ReleaseSuspendSubscriberEmoneyPocket"/>
 			<value enum="1731" description="JSMoneyTransfer"/>
 			<value enum="1732" description="ModifyNFCCardAlias"/>
