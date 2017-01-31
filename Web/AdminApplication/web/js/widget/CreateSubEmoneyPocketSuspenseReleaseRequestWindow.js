@@ -3,11 +3,11 @@
 
 Ext.ns("mFino.widget");
 
-mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow = function (config){
+mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow = function (config){
     var localConfig = Ext.apply({}, config);
     localConfig = Ext.applyIf(localConfig, {
         modal:true,
-        title : _("Create Subscriber Emoney pocket Suspense Request"),
+        title : _("Create Subscriber Emoney pocket Suspension Release Request"),
         layout:'fit',
         floating: true,
         width:400,
@@ -16,10 +16,10 @@ mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow = function (config){
         closable: false,
         resizable: false
     });
-    mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow.superclass.constructor.call(this, localConfig);
+    mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow.superclass.constructor.call(this, localConfig);
 };
 
-Ext.extend(mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow, Ext.Window, {
+Ext.extend(mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow, Ext.Window, {
     initComponent : function(){
         this.buttons = [
         {
@@ -50,7 +50,7 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow, Ext.Window, 
 			]
         });
         this.items = [ this.form ];
-        mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow.superclass.initComponent.call(this);
+        mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow.superclass.initComponent.call(this);
     },
 
     cancel : function(){
@@ -59,7 +59,7 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow, Ext.Window, 
 
     ok : function(){
         if(this.form.getForm().isValid()){
-			var msg = new CmFinoFIX.message.SuspendSubscriberEmoneyPocket();
+			var msg = new CmFinoFIX.message.ReleaseSuspendSubscriberEmoneyPocket();
             msg.m_pComments = this.form.items.get('comment').getValue();
 			msg.m_paction = "create";
 			msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
@@ -84,7 +84,7 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow, Ext.Window, 
 			});
 		}     
         else{
-            Ext.ux.Toast.msg(_("Error"), _("Please provide the reason for e-money pocket suspension"),5);
+            Ext.ux.Toast.msg(_("Error"), _("Please provide the reason for e-money pocket suspension release."),5);
         }
     },
     setRecord : function(record){
@@ -98,4 +98,4 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow, Ext.Window, 
         this.store = store;
     }
 });
-Ext.reg("CreateSubEmoneyPocketSuspenseRequestWindow", mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow);
+Ext.reg("CreateSubEmoneyPocketSuspenseReleaseRequestWindow", mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow);

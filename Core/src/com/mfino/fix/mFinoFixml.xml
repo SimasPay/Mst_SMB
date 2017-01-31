@@ -4859,6 +4859,12 @@
 		<field name="Comments" required="Y"/>
 		<field name="AdminAction" required="N"/>
 	</message>
+	
+	<message name="ReleaseSuspendSubscriberEmoneyPocket" msgtype="1606" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="MDNID" required="Y" />		
+		<field name="Comments" required="Y"/>
+		<field name="AdminAction" required="N"/>
+	</message>
    
     <message name="HSMBase" msgtype="1700" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
     </message>
@@ -8483,6 +8489,7 @@
 			<value enum="1601" description="ValidateOTP"/>
 			<value enum="1603" description="SuspendSubscriberEmoneyPocket"/>
 			<value enum="1604" description="GetSubscriberUpgradeDataRequest"/>
+			<value enum="1606" description="ReleaseSuspendSubscriberEmoneyPocket"/>
 			<value enum="1731" description="JSMoneyTransfer"/>
 			<value enum="1732" description="ModifyNFCCardAlias"/>
 			<value enum="1741" description="BalanceInquiryFromNFC"/>

@@ -62,8 +62,10 @@ mFino.page.subscriber = function(config){
     var approveWindow = new mFino.widget.ApproveRejectWindow(config);
     
     var createEmoneyPocketSuspenseRequestWindow = new mFino.widget.CreateSubEmoneyPocketSuspenseRequestWindow(config);
-    
     var approveRejectEmoneyPocketSuspendRequestWindow = new mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow(config);
+    
+    var createEmoneyPocketSuspenseReleaseRequestWindow = new mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow(config);
+    var approveRejectEmoneyPocketSuspenseReleaseRequestWindow = new mFino.widget.ApproveRejectSubEmoneyPocketSuspenseReleaseRequestWindow(config);
     
     var subscriberUpgradeApproveRejectWindow = new mFino.widget.SubscriberUpgradeApproveRejectWindow(config);
     
@@ -619,7 +621,7 @@ mFino.page.subscriber = function(config){
             },
             {
                 iconCls: 'mfino-button-suspend-subscriber-emoneypocket',
-                tooltip : _('Request for suspend E-money pocket'),
+                tooltip : _('Request for suspend e-money pocket'),
                 itemId : 'create.sub.suspend.emoneypocket',
                 id : 'create.sub.suspend.emoneypocket', 
                 handler : function(){
@@ -636,7 +638,7 @@ mFino.page.subscriber = function(config){
             },
             {
                 iconCls: 'mfino-button-suspend-subscriber-emoneypocket-approve',
-                tooltip : _('Approve/Reject suspend E-money pocket request'),
+                tooltip : _('Approve/Reject suspend e-money pocket request'),
                 itemId : 'approve.sub.suspend.emoneypocket',
                 id : 'approve.sub.suspend.emoneypocket', 
                 handler : function(){
@@ -648,6 +650,40 @@ mFino.page.subscriber = function(config){
                     	approveRejectEmoneyPocketSuspendRequestWindow.show();
                     	approveRejectEmoneyPocketSuspendRequestWindow.setStore(detailsForm.store);                
                     	approveRejectEmoneyPocketSuspendRequestWindow.setRecord(detailsForm.record);
+    				}
+                }
+            },
+            {
+                iconCls: 'mfino-button-release-suspend-subscriber-emoneypocket',
+                tooltip : _('Request for release e-money pocket suspension'),
+                itemId : 'sub.emoneypocket.release.suspension.request',
+                id : 'sub.emoneypocket.release.suspension.request', 
+                handler : function(){
+                	if(!detailsForm.record){
+                            Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                        	 Ext.MessageBox.alert(_("Info"), _("Subscriber is not Active."));
+                    } else {
+                    	createEmoneyPocketSuspenseReleaseRequestWindow.show();
+                    	createEmoneyPocketSuspenseReleaseRequestWindow.setStore(detailsForm.store);                
+                    	createEmoneyPocketSuspenseReleaseRequestWindow.setRecord(detailsForm.record);
+    				}
+                }
+            },
+            {
+                iconCls: 'mfino-button-release-suspend-subscriber-emoneypocket-approve',
+                tooltip : _('Approve/Reject release e-money pocket Suspension request'),
+                itemId : 'sub.emoneypocket.release.suspension.approve',
+                id : 'sub.emoneypocket.release.suspension.approve', 
+                handler : function(){
+                	if(!detailsForm.record){
+                            Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                        	 Ext.MessageBox.alert(_("Info"), _("Subscriber is not Active."));
+                    } else {
+                    	approveRejectEmoneyPocketSuspenseReleaseRequestWindow.show();
+                    	approveRejectEmoneyPocketSuspenseReleaseRequestWindow.setStore(detailsForm.store);                
+                    	approveRejectEmoneyPocketSuspenseReleaseRequestWindow.setRecord(detailsForm.record);
     				}
                 }
             },            
@@ -859,16 +895,18 @@ mFino.page.subscriber = function(config){
 		var subscriberUpgradeChecker = mainItem.getTopToolbar().getComponent('sub.approveUpgrade');
 		var createEmoneyPocketSuspenseRequest =  mainItem.getTopToolbar().getComponent('create.sub.suspend.emoneypocket');
 		var approveRejectEmoneyPocketSuspendRequest =  mainItem.getTopToolbar().getComponent('approve.sub.suspend.emoneypocket');
+		var createEmoneyPocketSuspenseReleaseRequest =  mainItem.getTopToolbar().getComponent('sub.emoneypocket.release.suspension.request');
+		var approveRejectEmoneyPocketSuspenseReleaseRequest =  mainItem.getTopToolbar().getComponent('sub.emoneypocket.release.suspension.approve');
 		var addBankPocketToEmoneySubscriber=  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket');
 		var approveAddBankPocketToEmoneySubscriber =  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket.checker');
 		if(addBankPocketToEmoneySubscriber){
-         if((detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == 
-			CmFinoFIX.SubscriberKYCLevel.NoKyc)||(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == 
-				CmFinoFIX.SubscriberKYCLevel.UnBanked)&&detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)==CmFinoFIX.SubscriberStatus.Active){
-          addBankPocketToEmoneySubscriber.show(); 
-	       }else{
-		   addBankPocketToEmoneySubscriber.hide();
-	      }
+			 if ( (detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.NoKyc ||
+					 detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.UnBanked) && 
+					 detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)== CmFinoFIX.SubscriberStatus.Active) {
+				 addBankPocketToEmoneySubscriber.show(); 
+			  } else {
+				 addBankPocketToEmoneySubscriber.hide();
+			  }
 		}
 		var amsg = new CmFinoFIX.message.JSPocket();
         amsg.m_pMDNIDSearch = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
@@ -880,10 +918,14 @@ mFino.page.subscriber = function(config){
 			success :  function(response){
 				if(response.m_psuccess == true){
 					var isSVAActive = false;
+					var isSuspend = false;
 					for(var i=0; i< response.m_pEntriesCount; i++){
 						if(response.m_pEntries[i].m_pPocketType == CmFinoFIX.PocketType.SVA){
 							if (response.m_pEntries[i].m_pPocketStatus == CmFinoFIX.PocketStatus.Active) {
 								isSVAActive = true;
+							}
+							if (response.m_pEntries[i].m_pPocketStatus == CmFinoFIX.PocketStatus.Suspend) {
+								isSuspend = true;
 							}
 							if(subscriberUpgradeKyc){
 								subscriberUpgradeKyc.show();
@@ -912,13 +954,20 @@ mFino.page.subscriber = function(config){
 							}
 						}
 					}
-					if(createEmoneyPocketSuspenseRequest){
-					 if (isSVAActive == true) {
-						 createEmoneyPocketSuspenseRequest.show();
-					 }else {
-						 createEmoneyPocketSuspenseRequest.hide();
-					 }
-				}
+					if (createEmoneyPocketSuspenseRequest) {
+						 if (isSVAActive == true) {
+							 createEmoneyPocketSuspenseRequest.show();
+						 } else {
+							 createEmoneyPocketSuspenseRequest.hide();
+						 }
+				   }
+				   if (createEmoneyPocketSuspenseReleaseRequest) {
+					   if (isSuspend) {
+						   createEmoneyPocketSuspenseReleaseRequest.show();
+					   } else {
+						   createEmoneyPocketSuspenseReleaseRequest.hide();
+					   }
+				   }
 			    }
 			}
 		});
@@ -932,18 +981,25 @@ mFino.page.subscriber = function(config){
 			success :  function(response){
 				if(response.m_psuccess == true){
 					if(approveRejectEmoneyPocketSuspendRequest){
-					if (CmFinoFIX.SubscriberActivity.Suspend_Emoney_Pocket == response.m_pSubscriberActivity) {
-						approveRejectEmoneyPocketSuspendRequest.show();
-					}else {
-						approveRejectEmoneyPocketSuspendRequest.hide();	
+						if (CmFinoFIX.SubscriberActivity.Suspend_Emoney_Pocket == response.m_pSubscriberActivity) {
+							approveRejectEmoneyPocketSuspendRequest.show();
+						}else {
+							approveRejectEmoneyPocketSuspendRequest.hide();	
+						}
 					}
-					}
+					if(approveRejectEmoneyPocketSuspenseReleaseRequest){
+						if (CmFinoFIX.SubscriberActivity.Release_Suspend_For_Emoney_Pocket == response.m_pSubscriberActivity) {
+							approveRejectEmoneyPocketSuspenseReleaseRequest.show();
+						}else {
+							approveRejectEmoneyPocketSuspenseReleaseRequest.hide();	
+						}
+					}					
 					if(approveAddBankPocketToEmoneySubscriber){
-					if (CmFinoFIX.SubscriberActivity.Enable_MBanking_For_Emoney_Subscriber == response.m_pSubscriberActivity) {
-						approveAddBankPocketToEmoneySubscriber.show();
-					}else {
-						approveAddBankPocketToEmoneySubscriber.hide();
-					}
+						if (CmFinoFIX.SubscriberActivity.Enable_MBanking_For_Emoney_Subscriber == response.m_pSubscriberActivity) {
+							approveAddBankPocketToEmoneySubscriber.show();
+						}else {
+							approveAddBankPocketToEmoneySubscriber.hide();
+						}
 					}
 				}
 			}

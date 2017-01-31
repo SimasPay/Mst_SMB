@@ -686,6 +686,10 @@ public class FixController {
 	private SuspendSubscriberEmoneyPocketProcessor suspendSubscriberEmoneyPocketProcessor;
 	
 	@Autowired
+	@Qualifier("ReleaseSuspendSubscriberEmoneyPocketProcessorImpl")
+	private ReleaseSuspendSubscriberEmoneyPocketProcessor releaseSuspendSubscriberEmoneyPocketProcessor;
+	
+	@Autowired
 	@Qualifier("GetSubscriberUpgradeDataRequestProcessorImpl")
 	private GetSubscriberUpgradeDataRequestProcessor getSubscriberUpgradeDataRequestProcessor;
 	
@@ -1325,6 +1329,9 @@ public class FixController {
 			} else if (msgClassName.equals(CmFinoFIX.CMSuspendSubscriberEmoneyPocket.class.getName())) {
 				fixProcessor = suspendSubscriberEmoneyPocketProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_SuspendSubscriberEmoneyPocket);
+			} else if (msgClassName.equals(CmFinoFIX.CMReleaseSuspendSubscriberEmoneyPocket.class.getName())) {
+				fixProcessor = releaseSuspendSubscriberEmoneyPocketProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_ReleaseSuspendSubscriberEmoneyPocket);
 			} else if (msgClassName.equals(CmFinoFIX.CMGetSubscriberUpgradeDataRequest.class.getName())) {
 				fixProcessor = getSubscriberUpgradeDataRequestProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_GetSubscriberUpgradeDataRequest);

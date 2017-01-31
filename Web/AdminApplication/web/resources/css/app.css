@@ -1009,3 +1009,9 @@ color:red;
 .mfino-button-delete-agent-approve {
     background-image:url(../images/Delete_Approve.png) !important;
 }
+.mfino-button-release-suspend-subscriber-emoneypocket {
+    background-image:url(../images/release-lock.png) !important;
+}
+.mfino-button-release-suspend-subscriber-emoneypocket-approve {
+    background-image:url(../images/release-lock-ok.png) !important;
+}
