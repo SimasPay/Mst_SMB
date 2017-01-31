@@ -4852,7 +4852,13 @@
 	<message name="GetSubscriberUpgradeDataRequest" msgtype="1604" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 		<field name="MDNID" required="Y" />
 		<field name="SubscriberActivity" required="N"/>		
-	</message>		
+	</message>
+			
+	<message name="RetireSubscriberEmoneyPocket" msgtype="1605" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+		<field name="MDNID" required="Y" />		
+		<field name="Comments" required="Y"/>
+		<field name="AdminAction" required="N"/>
+	</message>
    
     <message name="HSMBase" msgtype="1700" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
     </message>
@@ -27309,6 +27315,7 @@ ERROR:Mismatch of  mdn type and app type
     	<value enum="4" description="Suspend_Emoney_Pocket"/>
     	<value enum="5" description="Release_Suspend_For_Emoney_Pocket"/>
     	<value enum="6" description="Reset_Pin"/>
+    	<value enum="7" description="Retire_Subscriber_Emoney_Pocket"/>
     </field>
     <field number="8258" name="SubscriberActivityStatus" type="INT32">
     	<value enum="0" description="Initialized"/>
