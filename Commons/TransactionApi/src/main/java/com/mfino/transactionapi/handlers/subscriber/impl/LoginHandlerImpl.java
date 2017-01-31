@@ -246,7 +246,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 						if(lastAppPinChange.before(configureDate)) {
 							
 							log.info("Subscriber is forced to change the Pin");
-							result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+							result.setNotificationCode(CmFinoFIX.NotificationCode_ChangePinBeforePerformingTransactions);
 							result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
 							return result;
 						}
@@ -254,7 +254,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					} else {
 						
 						log.info("Subscriber is forced to change the Pin");
-						result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+						result.setNotificationCode(CmFinoFIX.NotificationCode_ChangePinBeforePerformingTransactions);
 						result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
 						return result;
 					}
