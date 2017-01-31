@@ -23680,6 +23680,15 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			<value description="ChangePinBeforePerformingTransactions" enum="2315">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Please change your mPIN before performing transaction.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

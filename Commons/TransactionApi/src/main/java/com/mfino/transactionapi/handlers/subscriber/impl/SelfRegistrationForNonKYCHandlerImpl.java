@@ -142,6 +142,23 @@ public class SelfRegistrationForNonKYCHandlerImpl extends FIXMessageHandler impl
 
 		if(isValidOTP(transDetails.getSourceMDN(), transDetails.getActivationOTP())) {
 			
+			log.info("Since hashed pin is enabled, pin length and pin strength checks are not performed");
+			log.info("checking for new pin strength for subscribermdn "+subscriberRegistration.getSourceMDN());
+			if(MfinoUtil.containsSequenceOfDigits(subscriberRegistration.getPin())){
+				
+				log.info("The pin is not strong enough for subscribermdn "+subscriberRegistration.getSourceMDN() + " for sequence of digits");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+				return result;
+				
+			} else if(MfinoUtil.containsRepetitiveDigits(subscriberRegistration.getPin())){
+				
+				log.info("The pin is not strong enough for subscribermdn "+subscriberRegistration.getSourceMDN() + " for repetitive digits");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+				return result;
+				
+			}
+			log.info("Pin passed strength conditions");
+			
 			Subscriber subscriber = new Subscriber();
 			SubscriberMdn subscriberMDN = new SubscriberMdn();
 			

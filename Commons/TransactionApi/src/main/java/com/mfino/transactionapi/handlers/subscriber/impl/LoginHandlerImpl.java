@@ -226,7 +226,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			log.info("checking for pin strength with Subscriber MDN "+srcSubscriberMDN.getMdn() );
 			if(!MfinoUtil.isPinStrongEnough(userPwd)){
 				log.info("Subscriber is Registered with weak mPIN and forced to change the Pin");
-				result.setNotificationCode(CmFinoFIX.NotificationCode_ForceUpgradeAppForUsers);
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ChangePinBeforePerformingTransactions);
 				result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
 				return result;
 			}
