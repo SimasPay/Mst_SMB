@@ -67,6 +67,9 @@ mFino.page.subscriber = function(config){
     var createEmoneyPocketSuspenseReleaseRequestWindow = new mFino.widget.CreateSubEmoneyPocketSuspenseReleaseRequestWindow(config);
     var approveRejectEmoneyPocketSuspenseReleaseRequestWindow = new mFino.widget.ApproveRejectSubEmoneyPocketSuspenseReleaseRequestWindow(config);
     
+    var createEmoneyPocketRetireRequestWindow = new mFino.widget.CreateSubEmoneyPocketRetireRequestWindow(config);
+    var approveRejectEmoneyPocketRetireRequestWindow = new mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow(config);
+    
     var subscriberUpgradeApproveRejectWindow = new mFino.widget.SubscriberUpgradeApproveRejectWindow(config);
     
     var subscriberUpgradeKycApproveRejectWindow = new mFino.widget.SubscriberUpgradeKycApproveRejectWindow(config);
@@ -686,6 +689,40 @@ mFino.page.subscriber = function(config){
                     	approveRejectEmoneyPocketSuspenseReleaseRequestWindow.setRecord(detailsForm.record);
     				}
                 }
+            },
+            {
+                iconCls: 'mfino-button-retire-subscriber-emoneypocket',
+                tooltip : _('Request for retire e-money pocket/Subscriber'),
+                itemId : 'create.sub.retire.emoneypocket',
+                id : 'create.sub.retire.emoneypocket', 
+                handler : function(){
+                	if(!detailsForm.record){
+                            Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                        	 Ext.MessageBox.alert(_("Info"), _("Subscriber is not Active."));
+                    } else {
+                        createEmoneyPocketRetireRequestWindow.show();
+                        createEmoneyPocketRetireRequestWindow.setStore(detailsForm.store);                
+                        createEmoneyPocketRetireRequestWindow.setRecord(detailsForm.record);
+    				}
+                }
+            },
+            {
+                iconCls: 'mfino-button-retire-subscriber-emoneypocket-approve',
+                tooltip : _('Approve/Reject retire e-money pocket request'),
+                itemId : 'approve.sub.retire.emoneypocket',
+                id : 'approve.sub.retire.emoneypocket', 
+                handler : function(){
+                	if(!detailsForm.record){
+                            Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                        	 Ext.MessageBox.alert(_("Info"), _("Subscriber is not Active."));
+                    } else {
+                    	approveRejectEmoneyPocketRetireRequestWindow.show();
+                    	approveRejectEmoneyPocketRetireRequestWindow.setStore(detailsForm.store);                
+                    	approveRejectEmoneyPocketRetireRequestWindow.setRecord(detailsForm.record);
+    				}
+                }
             },            
             {
                 iconCls : "mfino-button-upgrade-approve",
@@ -897,6 +934,8 @@ mFino.page.subscriber = function(config){
 		var approveRejectEmoneyPocketSuspendRequest =  mainItem.getTopToolbar().getComponent('approve.sub.suspend.emoneypocket');
 		var createEmoneyPocketSuspenseReleaseRequest =  mainItem.getTopToolbar().getComponent('sub.emoneypocket.release.suspension.request');
 		var approveRejectEmoneyPocketSuspenseReleaseRequest =  mainItem.getTopToolbar().getComponent('sub.emoneypocket.release.suspension.approve');
+		var createEmoneyPocketRetireRequest =  mainItem.getTopToolbar().getComponent('create.sub.retire.emoneypocket');
+		var approveRejectEmoneyPocketRetireRequest =  mainItem.getTopToolbar().getComponent('approve.sub.retire.emoneypocket');
 		var addBankPocketToEmoneySubscriber=  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket');
 		var approveAddBankPocketToEmoneySubscriber =  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket.checker');
 		if(addBankPocketToEmoneySubscriber){
@@ -968,6 +1007,13 @@ mFino.page.subscriber = function(config){
 						   createEmoneyPocketSuspenseReleaseRequest.hide();
 					   }
 				   }
+				   if (createEmoneyPocketRetireRequest) {
+					   if (isSVAActive) {
+						   createEmoneyPocketRetireRequest.show();
+					   } else {
+						   createEmoneyPocketRetireRequest.hide();
+					   }
+				   }
 			    }
 			}
 		});
@@ -993,7 +1039,14 @@ mFino.page.subscriber = function(config){
 						}else {
 							approveRejectEmoneyPocketSuspenseReleaseRequest.hide();	
 						}
-					}					
+					}
+					if(approveRejectEmoneyPocketRetiredRequest){
+						if (CmFinoFIX.SubscriberActivity.Retire_Subscriber_Emoney_Pocket == response.m_pSubscriberActivity) {
+							approveRejectEmoneyPocketRetiredRequest.show();
+						}else {
+							approveRejectEmoneyPocketRetiredRequest.hide();	
+						}
+					}
 					if(approveAddBankPocketToEmoneySubscriber){
 						if (CmFinoFIX.SubscriberActivity.Enable_MBanking_For_Emoney_Subscriber == response.m_pSubscriberActivity) {
 							approveAddBankPocketToEmoneySubscriber.show();

@@ -1003,6 +1003,12 @@ color:red;
 .mfino-button-suspend-subscriber-emoneypocket-approve {
     background-image:url(../images/newlock-ok.png) !important;
 }
+.mfino-button-retire-subscriber-emoneypocket {
+    background-image:url(../images/newlock.png) !important;
+}
+.mfino-button-retire-subscriber-emoneypocket-approve {
+    background-image:url(../images/newlock-ok.png) !important;
+}
 .mfino-button-delete-agent {
     background-image:url(../images/Delete_Resized.png) !important;
 }
