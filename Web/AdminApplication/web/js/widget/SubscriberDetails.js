@@ -172,7 +172,13 @@ mFino.widget.SubscriberDetails = function (config)
                 	    }
                              	
                 }
-            }  
+            } ,
+            {
+                xtype: "displayfield",
+                anchor : '100%',
+                fieldLabel: _('PendingRequestType'),
+                name: CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberActivityText._name
+            } 
             ]
         },
         {
@@ -314,7 +320,7 @@ mFino.widget.SubscriberDetails = function (config)
             },
             {
                 xtype: "displayfield",
-                fieldLabel: _('SupportingDocument'),
+                fieldLabel: _('SupportingDocumentone'),
                 anchor : '100%',
 				style: {
 					color: '#0000ff' ,

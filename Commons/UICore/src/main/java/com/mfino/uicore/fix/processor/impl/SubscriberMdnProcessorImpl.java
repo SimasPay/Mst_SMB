@@ -35,6 +35,7 @@ import com.mfino.dao.PocketTemplateConfigDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
+import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.dao.SubscribersAdditionalFieldsDAO;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.KtpDetailsQuery;
@@ -59,6 +60,7 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.errorcodes.Codes;
 import com.mfino.exceptions.InvalidMDNException;
@@ -104,6 +106,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 	private Company company = null;
 	private KYCLevelDAO kyclevelDao = DAOFactory.getInstance().getKycLevelDAO();
 	private PocketTemplateConfigDAO ptcDao = DAOFactory.getInstance().getPocketTemplateConfigDao();
+	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
 	private  boolean sendOTPOnIntialized;
 	private  boolean isEMoneyPocketRequired;
 	
@@ -877,7 +880,11 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}else{
 					entry.setDetailsRequired(false);
 				}
-
+				SubscriberUpgradeData subscriberUpgradeData=subscriberUpgradeDataDAO.getUpgradeDataByMdnId(s.getId());
+				if(subscriberUpgradeData!=null){
+					    entry.setSubscriberActivityText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_SubscriberActivity, languageI, subscriberUpgradeData.getSubActivity()));
+						
+				}
 				if(saf!=null){
 					if (saf.getProofofaddress() != null) {
 						entry.setProofofAddress(saf.getProofofaddress());

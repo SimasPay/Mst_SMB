@@ -921,6 +921,7 @@
 				<field name="IsDomesticAddrIdentity" required="N" />
 				<field name="OtherWork" required="N" />
 				<field name="KTPID" required="N" />
+				<field name="SubscriberActivityText" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplate" msgtype="1040" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -27528,6 +27529,7 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8462" name="UpgradeAcctRequestBy" type="STRING" />
 	<field number="8463" name="IDTypeText" type="STRING" />
 	<field number="8464" name="OnBehalfMDN" type="STRING" />
+	<field number="8465" name="SubscriberActivityText" type="STRING" />
     </fields>
     <primitives>
 		<dbtype name="mysql">
