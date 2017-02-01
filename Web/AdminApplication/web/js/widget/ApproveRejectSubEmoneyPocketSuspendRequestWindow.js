@@ -85,7 +85,7 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
 		if(this.form.getForm().isValid()){
 			if (this.form.find('itemId','approve')[0].checked || this.form.find('itemId','reject')[0].checked) {
 				if(this.form.find('itemId','approve')[0].checked) {
-					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Approve the request to suspend e-money pocket for this subscriber ?"),
+					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Approve the request to suspend e-money pocket for this subscriber?"),
 					function(btn){
 						if(btn !== "yes"){
 							return;
@@ -94,7 +94,7 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketSuspendRequestWindow, Ext.Wi
 					}, this);
 				} 
 				else if(this.form.find('itemId','reject')[0].checked) {
-					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Reject the request to suspend e-money pocket for this subscriber ?"),
+					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Reject the request to suspend e-money pocket for this subscriber?"),
 					function(btn){
 						if(btn !== "yes"){
 							return;
