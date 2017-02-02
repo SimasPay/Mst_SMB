@@ -69,6 +69,7 @@ import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
 import com.mfino.fix.CmFinoFIX.CMJSValidateChargeExpr;
 import com.mfino.fix.CmFinoFIX.CMJSVillage;
+import com.mfino.fix.CmFinoFIX.CMRetireSubscriberEmoneyPocket;
 import com.mfino.fix.processor.IFixProcessor;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -696,6 +697,10 @@ public class FixController {
 	@Autowired
 	@Qualifier("ApproveRejectAddBankPocketToEmoneySubscriberProcessorImpl")
 	private ApproveRejectAddBankPocketToEmoneySubscriberProcessor approveRejectAddBankPocketToEmoneySubscriberProcessor;
+	
+	@Autowired
+	@Qualifier("RetireEmoneyPocketSubscriberProcessorImpl")
+	private RetireEmoneyPocketSubscriberProcessor retireEmoneyPocketSubscriberProcessor;
 	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
@@ -1338,6 +1343,9 @@ public class FixController {
 			}else if (msgClassName.equals(CMJSApproveRejectAddBankPocketToEmoneySubscriber.class.getName())){
 				fixProcessor = approveRejectAddBankPocketToEmoneySubscriberProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSApproveRejectAddBankPocketToEmoneySubscriber);
+			}else if (msgClassName.equals(CMRetireSubscriberEmoneyPocket.class.getName())){
+				fixProcessor = retireEmoneyPocketSubscriberProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberClosing);
 			}
 
 			/*

@@ -5794,7 +5794,8 @@
 				<field name="IDTypeText" required="Y" />
 			</group>
 		</message>
-		<message name="SubRegularWithEMoneyInquiry" msgtype="1786" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">		
+		<message name="SubRegularWithEMoneyInquiry" msgtype="1786" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<message name="JSSubscriberCloseApproveReject" msgtype="1787" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSAgentCloseApproveReject"/>		
 	</message>
 	<message name="SubRegularWithEMoney" msgtype="1787" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 	<field name="OTP" required="Y" isSecure="Y"/>		
@@ -8515,6 +8516,7 @@
 			<value enum="1783" description="TransferToUangkuInquiry"/>
 			<value enum="1784" description="TransferToUangku"/>	
 			<value enum="1785" descripption="JSSubscriberUpgradeKyc" />
+			<value enum="1787" description="JSSubscriberCloseApproveReject"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -23689,6 +23691,20 @@ ERROR:Mismatch of  mdn type and app type
 							<Text>Please change your mPIN before performing transaction.</Text>
 						</SMS>
 					</English>
+				</C1>
+			</value>
+			<value description="SubscriberClosingRequestRejectedByApprover" enum="2316">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Closing Request Rejected by Approver</Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Subscriber Closing Request Rejected by Approver</Text>
+						</SMS>
+					</Bahasa>
 				</C1>
 			</value>
 		</field>
