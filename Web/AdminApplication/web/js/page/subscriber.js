@@ -1040,11 +1040,11 @@ mFino.page.subscriber = function(config){
 							approveRejectEmoneyPocketSuspenseReleaseRequest.hide();	
 						}
 					}
-					if(approveRejectEmoneyPocketRetiredRequest){
+					if(approveRejectEmoneyPocketRetireRequest){
 						if (CmFinoFIX.SubscriberActivity.Retire_Subscriber_Emoney_Pocket == response.m_pSubscriberActivity) {
-							approveRejectEmoneyPocketRetiredRequest.show();
+							approveRejectEmoneyPocketRetireRequest.show();
 						}else {
-							approveRejectEmoneyPocketRetiredRequest.hide();	
+							approveRejectEmoneyPocketRetireRequest.hide();	
 						}
 					}
 					if(approveAddBankPocketToEmoneySubscriber){
