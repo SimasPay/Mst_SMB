@@ -70,7 +70,6 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
 	@Qualifier("TransactionChargingServiceImpl")
 	private TransactionChargingService transactionChargingService ;
 	
-
 	@Autowired
 	@Qualifier("NotificationMessageParserServiceImpl")
 	private NotificationMessageParserService notificationMessageParserService;
@@ -84,7 +83,6 @@ public class SubscriberUpgradeProcessorImpl extends BaseFixProcessor implements 
 	@Qualifier("ChannelCodeServiceImpl")
 	private ChannelCodeService ChannelCodeService;
 	
-
  	@Autowired
  	@Qualifier("TransactionIdentifierServiceImpl")
  	private TransactionIdentifierService transactionIdentifierService;

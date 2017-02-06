@@ -23,4 +23,10 @@ public class SubscriberUpgradeDataServiceImpl implements SubscriberUpgradeDataSe
 	public SubscriberUpgradeData getByMdnId(Long mdnId) {
 		return subscriberUpgradeDataDAO.getByMdnId(mdnId);
 	}
+
+	@Override
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
+	public int getCountByMdnId(Long mdnId) {
+		return subscriberUpgradeDataDAO.getCountByMdnId(mdnId);
+	}
 }

@@ -387,4 +387,6 @@ public class ServiceAndTransactionConstants {
 	public static final String SUBSCRIBER_UPGRADE = "SubscriberUpgrade";
 
 	public static final String SUBSCRIBER_UPGRADE_KYC = "SubscriberUpgradeKyc";
+	
+	public static final String SUBSCRIBER_EDIT = "SubscriberEdit";
 }

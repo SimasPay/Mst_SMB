@@ -121,6 +121,10 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/SubscriberClosing.js" />">
 </script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberEditMakerForm.js" />">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/SubscriberEditCheckerWindow.js" />">
+</script>
 
 <!-- Pocket widgets -->
 <script type="text/javascript" src="<c:url value="/js/widget/PocketAddForm.js"/>">

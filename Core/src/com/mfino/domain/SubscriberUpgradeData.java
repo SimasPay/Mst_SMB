@@ -21,6 +21,7 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	private static final long serialVersionUID = 1L;
 	public static final String FieldName_MdnId = "mdnId";
 	public static final String FieldName_SubsActivityStatus = "subsActivityStatus";
+	public static final String FieldName_SubActivity = "subActivity";
 	
 	private Long id;
 	private String fullName;
@@ -40,9 +41,14 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	private String  subsActivityComments;
 	private String  applicationId;
 	private String  bankAccountNumber;
+
 	private String comments;
 	private Integer adminAction;
-	
+
+	private Integer language;
+	private Integer notificationMethod;
+	private Integer subscriberRestriction;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
 	@SequenceGenerator(name = "id_Sequence", sequenceName = "SUBSCRIBER_UPGRADE_DATA_ID_SEQ")
@@ -209,5 +215,28 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 		this.adminAction = adminAction;
 	}
 	
+	@Column(name = "LANGUAGE")
+	public Integer getLanguage() {
+		return language;
+	}
+	public void setLanguage(Integer language) {
+		this.language = language;
+	}
+	
+	@Column(name = "NOTIFICATION_METHOD")
+	public Integer getNotificationMethod() {
+		return notificationMethod;
+	}
+	public void setNotificationMethod(Integer notificationMethod) {
+		this.notificationMethod = notificationMethod;
+	}
+	
+	@Column(name = "SUBSCRIBER_RESTRICTION")
+	public Integer getSubscriberRestriction() {
+		return subscriberRestriction;
+	}
+	public void setSubscriberRestriction(Integer subscriberRestriction) {
+		this.subscriberRestriction = subscriberRestriction;
+	}
 	
 }

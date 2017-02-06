@@ -109,120 +109,132 @@ public class SubscriberUpgradeKycController {
 		responseMap.put("success", false);
 		String idCardpath = null;
 		try {
+			
 			String idType = request.getParameter("IDType");
 			String mdnId = request.getParameter("ID");
 
-			SubscriberMdn subscriberMdn = subscriberMdnService.getById(Long.valueOf(mdnId));
-			if(subscriberMdn == null){
-	        	responseMap.put("Error", MessageText._("Invalid MDN ID"));
-	        	return new JSONView(responseMap);
-	        }
+			int activeProcess =  subscriberUpgradeDataService.getCountByMdnId(Long.valueOf(mdnId));
+			if(activeProcess == 0){
 			
-			if(subscriberMdn.getUpgradeacctstatus() != null){
-				if(subscriberMdn.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeKycStatus_Approve){
-		        	responseMap.put("Error", MessageText._("Subscriber Upgrade Not Allowed"));
+				SubscriberMdn subscriberMdn = subscriberMdnService.getById(Long.valueOf(mdnId));
+				if(subscriberMdn == null){
+		        	responseMap.put("Error", MessageText._("Invalid MDN ID"));
 		        	return new JSONView(responseMap);
-		        	
-		    	}else if(subscriberMdn.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeKycStatus_Revision){
-		    		String prevMakerUsername = subscriberMdn.getUpgradeacctrequestby();
-					MfinoUser prevMakerUser = userService.getByUserName(prevMakerUsername);
+		        }
+				
+				if(subscriberMdn.getUpgradeacctstatus() != null){
+					if(subscriberMdn.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeKycStatus_Approve){
+			        	responseMap.put("Error", MessageText._("Subscriber Upgrade Not Allowed"));
+			        	return new JSONView(responseMap);
+			        	
+			    	}else if(subscriberMdn.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeKycStatus_Revision){
+			    		String prevMakerUsername = subscriberMdn.getUpgradeacctrequestby();
+						MfinoUser prevMakerUser = userService.getByUserName(prevMakerUsername);
+						
+						Long currentMakerUserBranchId = userService.getCurrentUser().getBranchcodeid();
+						BranchCodes currentMakerBranchCodes = branchCodeService.getById(currentMakerUserBranchId);
+						
+						if(prevMakerUser == null){
+							responseMap.put("Error", MessageText._("Unknow upgrade request branch"));
+			        		return new JSONView(responseMap);
+						}
+						
+						if (!(prevMakerUser.getBranchcodeid() == currentMakerUserBranchId ||
+								StringUtils.equals(currentMakerBranchCodes.getBranchcode(), DEFAULT_BRANCH)) ) {
+							responseMap.put("Error", MessageText._("User Admin doesn't have authority for Resubmit form"));
+			        		return new JSONView(responseMap);
+						}
+			    	}
+				}
+				
+				Subscriber subscriber = subscriberMdn.getSubscriber();
+		        Integer subscriberStatus = subscriber.getStatus();
+		        
+		        if(!(subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active)
+		        		|| subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active))){
+		        	responseMap.put("Error", MessageText._("Subscriber Should be Active!"));
+		        	return new JSONView(responseMap);
+		        }
+		        
+		        if (request instanceof MultipartHttpServletRequest) {
+					String path = storeFile(request, responseMap, idType, mdnId);
 					
-					Long currentMakerUserBranchId = userService.getCurrentUser().getBranchcodeid();
-					BranchCodes currentMakerBranchCodes = branchCodeService.getById(currentMakerUserBranchId);
+					if(responseMap.get("Error") != null)
+						return new JSONView(responseMap);
 					
-					if(prevMakerUser == null){
-						responseMap.put("Error", MessageText._("Unknow upgrade request branch"));
-		        		return new JSONView(responseMap);
-					}
+					if(StringUtils.isNotBlank(path))
+						idCardpath = path;
+				}
+		        
+		        Long groupID = null;
+				SubscriberGroups subscriberGroup = subscriberGroupService.getBySubscriberID(subscriber.getId());
+				if(subscriberGroup != null){
+					groupID = subscriberGroup.getGroupid();
+				}
+		        
+		        KycLevel nonKycLevel = kycLevelService.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_NoKyc.longValue());
+		        PocketTemplate eMoneyNonKycTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(
+		        		nonKycLevel.getKyclevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
+		        
+		        if (eMoneyNonKycTemplate != null) {
 					
-					if (!(prevMakerUser.getBranchcodeid() == currentMakerUserBranchId ||
-							StringUtils.equals(currentMakerBranchCodes.getBranchcode(), DEFAULT_BRANCH)) ) {
-						responseMap.put("Error", MessageText._("User Admin doesn't have authority for Resubmit form"));
-		        		return new JSONView(responseMap);
-					}
-		    	}
+					Pocket nonKycPocket = getNonKycPocket(subscriberMdn, eMoneyNonKycTemplate);	
+	            	if (nonKycPocket == null) {
+	                	responseMap.put("Error", MessageText._("Subscriber Not Have Emoney-Non KYC Pocket."));
+	    	        	return new JSONView(responseMap);
+	            	}
+	            	
+	            	String dateOfBirthStr = request.getParameter("DateOfBirth");
+	            	Date dateOfBirth = DateUtil.getDate(dateOfBirthStr, "dd-MM-yyyy");
+	            	SubscriberUpgradeData upgradeData = subscriberUpgradeDataService.getByMdnId(subscriberMdn.getId());
+	
+	            	Address addressBaseOnIdCard = new Address();
+	            	if(upgradeData == null){
+	            		upgradeData = new SubscriberUpgradeData();
+	            	}else{
+	            		addressBaseOnIdCard = upgradeData.getAddress();
+	            	}
+	            	
+	            	addressBaseOnIdCard.setRegionname(request.getParameter("RegionName"));
+	            	addressBaseOnIdCard.setState(request.getParameter("State"));
+	            	addressBaseOnIdCard.setSubstate(request.getParameter("SubState"));
+	            	addressBaseOnIdCard.setCity(request.getParameter("City"));
+	            	addressBaseOnIdCard.setLine1(request.getParameter("StreetAddress"));
+	            	addressService.save(addressBaseOnIdCard);
+	            	
+	            	upgradeData.setAddress(addressBaseOnIdCard);
+	            	upgradeData.setBirthPlace(request.getParameter("BirthPlace"));
+	            	upgradeData.setBirthDate(new Timestamp(dateOfBirth));
+	            	upgradeData.setFullName(request.getParameter("FirstName"));
+	            	upgradeData.setMotherMaidenName(request.getParameter("MothersMaidenName"));
+	            	upgradeData.setEmail(request.getParameter("Email"));
+	            	upgradeData.setMdnId(subscriberMdn.getId());
+	            	upgradeData.setIdType(idType);
+	            	upgradeData.setIdNumber(request.getParameter("IDNumber"));
+	            	upgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Upgrade_From_NonKyc_To_KYC);
+	            	upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
+	            	upgradeData.setCreatedby(userService.getCurrentUser().getUsername());
+	            	upgradeData.setCreatetime(new Timestamp(System.currentTimeMillis()));
+	            	
+	            	if(StringUtils.isNotBlank(idCardpath))
+	            		upgradeData.setIdCardScanPath(idCardpath);
+	            	
+	            	subscriberUpgradeDataService.save(upgradeData);
+	            	
+	            	subscriberMdn.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeKycStatus_Initialized);
+	            	subscriberMdn.setUpgradeacctrequestby(userService.getCurrentUser().getUsername());
+	        		subscriberMdnService.save(subscriberMdn);
+	            	
+					responseMap.put("success", true);
+					
+				} else {
+	            	responseMap.put("Error", MessageText._("Emoney-UnBanked Not Available."));
+		        	return new JSONView(responseMap);
+	            }
+			} else{
+				responseMap.put("Error", MessageText._(ConfigurationUtil.getSubscriberActivityActiveMessage()));
+				return new JSONView(responseMap);
 			}
-			
-			Subscriber subscriber = subscriberMdn.getSubscriber();
-	        Integer subscriberStatus = subscriber.getStatus();
-	        
-	        if(!(subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active)
-	        		|| subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active))){
-	        	responseMap.put("Error", MessageText._("Subscriber Should be Active!"));
-	        	return new JSONView(responseMap);
-	        }
-	        
-	        if (request instanceof MultipartHttpServletRequest) {
-				String path = storeFile(request, responseMap, idType, mdnId);
-				
-				if(responseMap.get("Error") != null)
-					return new JSONView(responseMap);
-				
-				if(StringUtils.isNotBlank(path))
-					idCardpath = path;
-			}
-	        
-	        Long groupID = null;
-			SubscriberGroups subscriberGroup = subscriberGroupService.getBySubscriberID(subscriber.getId());
-			if(subscriberGroup != null){
-				groupID = subscriberGroup.getGroupid();
-			}
-	        
-	        KycLevel nonKycLevel = kycLevelService.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_NoKyc.longValue());
-	        PocketTemplate eMoneyNonKycTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(
-	        		nonKycLevel.getKyclevel(), true, CmFinoFIX.PocketType_SVA, CmFinoFIX.SubscriberType_Subscriber, null, groupID);
-	        
-	        if (eMoneyNonKycTemplate != null) {
-				
-				Pocket nonKycPocket = getNonKycPocket(subscriberMdn, eMoneyNonKycTemplate);	
-            	if (nonKycPocket == null) {
-                	responseMap.put("Error", MessageText._("Subscriber Not Have Emoney-Non KYC Pocket."));
-    	        	return new JSONView(responseMap);
-            	}
-            	
-            	String dateOfBirthStr = request.getParameter("DateOfBirth");
-            	Date dateOfBirth = DateUtil.getDate(dateOfBirthStr, "dd-MM-yyyy");
-            	SubscriberUpgradeData upgradeData = subscriberUpgradeDataService.getByMdnId(subscriberMdn.getId());
-
-            	Address addressBaseOnIdCard = new Address();
-            	if(upgradeData == null){
-            		upgradeData = new SubscriberUpgradeData();
-            	}else{
-            		addressBaseOnIdCard = upgradeData.getAddress();
-            	}
-            	
-            	addressBaseOnIdCard.setRegionname(request.getParameter("RegionName"));
-            	addressBaseOnIdCard.setState(request.getParameter("State"));
-            	addressBaseOnIdCard.setSubstate(request.getParameter("SubState"));
-            	addressBaseOnIdCard.setCity(request.getParameter("City"));
-            	addressBaseOnIdCard.setLine1(request.getParameter("StreetAddress"));
-            	addressService.save(addressBaseOnIdCard);
-            	
-            	upgradeData.setAddress(addressBaseOnIdCard);
-            	upgradeData.setBirthPlace(request.getParameter("BirthPlace"));
-            	upgradeData.setBirthDate(new Timestamp(dateOfBirth));
-            	upgradeData.setFullName(request.getParameter("FirstName"));
-            	upgradeData.setMotherMaidenName(request.getParameter("MothersMaidenName"));
-            	upgradeData.setEmail(request.getParameter("Email"));
-            	upgradeData.setMdnId(subscriberMdn.getId());
-            	upgradeData.setIdType(idType);
-            	upgradeData.setIdNumber(request.getParameter("IDNumber"));
-            	
-            	if(StringUtils.isNotBlank(idCardpath))
-            		upgradeData.setIdCardScanPath(idCardpath);
-            	
-            	subscriberUpgradeDataService.save(upgradeData);
-            	
-            	subscriberMdn.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeKycStatus_Initialized);
-            	subscriberMdn.setUpgradeacctrequestby(userService.getCurrentUser().getUsername());
-        		subscriberMdnService.save(subscriberMdn);
-            	
-				responseMap.put("success", true);
-				
-			} else {
-            	responseMap.put("Error", MessageText._("Emoney-UnBanked Not Available."));
-	        	return new JSONView(responseMap);
-            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

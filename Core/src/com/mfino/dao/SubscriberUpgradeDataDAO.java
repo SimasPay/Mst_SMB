@@ -42,4 +42,17 @@ public class SubscriberUpgradeDataDAO extends BaseDAO<SubscriberUpgradeData> {
 	}
 	
 
+	public SubscriberUpgradeData getSubmitedRequestData(Long mdnId, Integer subscriberActivity){
+		Criteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_MdnId, mdnId));
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_SubsActivityStatus,
+				CmFinoFIX.SubscriberActivityStatus_Initialized));
+		criteria.add(Restrictions.eq(SubscriberUpgradeData.FieldName_SubActivity, subscriberActivity));
+		criteria.addOrder(Order.desc(SubscriberUpgradeData.FieldName_RecordID));
+		criteria.setMaxResults(1);
+		SubscriberUpgradeData result = (SubscriberUpgradeData) criteria.uniqueResult();
+		if(result != null)
+			Hibernate.initialize(result.getAddress());
+		return result;
+	}
 }

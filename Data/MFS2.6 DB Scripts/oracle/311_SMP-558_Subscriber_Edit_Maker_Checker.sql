@@ -1,0 +1,12 @@
+ALTER TABLE SUBSCRIBER_UPGRADE_DATA ADD "LANGUAGE" NUMBER(5,0);
+ALTER TABLE SUBSCRIBER_UPGRADE_DATA  ADD "NOTIFICATION_METHOD" NUMBER(5,0);
+ALTER TABLE SUBSCRIBER_UPGRADE_DATA  ADD "SUBSCRIBER_RESTRICTION" NUMBER(5,0);
+
+DELETE FROM PERMISSION_ITEM WHERE PERMISSION = 10252;
+Insert into PERMISSION_ITEM (VERSION, LASTUPDATETIME, UPDATEDBY, CREATETIME, CREATEDBY, PERMISSION, ITEMTYPE, ITEMID, FIELDID, ACTION, PERMISSIONGROUPID, DESCRIPTION) values ('1', sysdate, 'system', sysdate, 'system', '10252', '1', 'sub.details.edit.checker', 'default', 'default', '1', 'Approve/Reject Subscriber Edit Info');
+
+INSERT INTO role_permission (Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, Role, Permission) VALUES('1', sysdate, 'system', sysdate, 'system', (select id from Role where ENUMVALUE = 'Approver'),'10252');
+
+INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval, 1, sysdate, 'System', sysdate, 'System', 1, 'SubscriberEdit', 'SubscriberEdit');
+INSERT INTO SERVICE_TRANSACTION(VERSION,LASTUPDATETIME,UPDATEDBY,CREATETIME,CREATEDBY,MSPID,SERVICEID,TRANSACTIONTYPEID)  VALUES (1, SYSDATE, 'System', SYSDATE, 'System', 1, (SELECT ID FROM SERVICE WHERE SERVICENAME = 'Account'), (SELECT ID FROM TRANSACTION_TYPE WHERE TRANSACTIONNAME = 'SubscriberEdit'));
+commit;

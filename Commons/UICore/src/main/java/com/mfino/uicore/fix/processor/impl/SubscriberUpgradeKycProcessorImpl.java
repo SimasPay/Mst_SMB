@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
-import com.mfino.dao.AddressDAO;
 import com.mfino.dao.BranchCodeDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
@@ -30,7 +29,6 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
-import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
@@ -56,6 +54,7 @@ import com.mfino.service.TransactionLogService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.SubscriberUpgradeKycProcessor;
+import com.mfino.util.ConfigurationUtil;
 
 @Service("SubscriberUpgradeKycProcessorImpl")
 public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implements
@@ -64,7 +63,6 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	private SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
 	private PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
-	private AddressDAO addressDao = DAOFactory.getInstance().getAddressDAO();
 	private BranchCodeDAO branchCodeDao = DAOFactory.getInstance().getBranchCodeDAO(); 
 	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
 	private KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
@@ -113,7 +111,6 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		CMJSError error = new CMJSError();
 		error.setErrorCode(CmFinoFIX.ErrorCode_Generic);
 		TransactionLog transactionsLog = null;
-		ServiceChargeTxnLog sctl = null;
 		
 		SubscriberMdn subscriberMDN = subMdndao.getById(realMsg.getID());
         
@@ -235,7 +232,6 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		
 		transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_JSSubscriberUpgradeKyc, realMsg.DumpFields());
 		
-		Transaction transaction = null;
 		ChannelCode channelCode   =	channelCodeService.getChannelCodeByChannelCode("2");
 
 		ServiceCharge serviceCharge = new ServiceCharge();
@@ -249,7 +245,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 
 		try{
 			
-			transaction = transactionChargingService.getCharge(serviceCharge);
+			transactionChargingService.getCharge(serviceCharge);
 
 		}catch (InvalidServiceException e) {
 			log.error("Exception occured in getting charges",e);
@@ -263,8 +259,6 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 			error.setErrorDescription(MessageText._("ServiceNotAvailable"));
         	return error;
 		}
-		
-		sctl = transaction.getServiceChargeTransactionLog();
 		
 		return error;
 	}
@@ -314,13 +308,17 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				
 			} else {
 				subscriberMDN.setUpgradeacctstatus(null);
-				subscriberUpgradeDataDAO.delete(upgradeData);
-				addressDao.delete(upgradeData.getAddress());
 				error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Rejected successfully"));
 				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRejected;
 				log.info("Request for Subscriber Upgraded Rejected successfully");
 			}
 		}
+		
+		upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
+		upgradeData.setSubsActivityApprovedBY(userService.getCurrentUser().getUsername());
+		upgradeData.setSubsActivityAprvTime(new Timestamp());
+		subscriberUpgradeDataDAO.save(upgradeData);
+		
 		subMdndao.save(subscriberMDN);
 		return notificationCode;
 	}
