@@ -108,6 +108,11 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
         	itemId: "proceed",
         	text: _('Proceed'),
         	handler: this.onProceed.createDelegate(this)
+        },
+		{
+        	itemId: "subeditmaker",
+        	text: _('Submit'),
+        	handler: this.onSubscriberEdit.createDelegate(this)
         }
         ];
 
@@ -173,6 +178,9 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
                 item.show();
             }
             if(mode === "proceed" && (item.itemId === "proceed" || item.itemId === "cancel")){
+            	item.show();
+            }
+            if(mode === "subeditmaker" && (item.itemId === "subeditmaker" || item.itemId === "cancel")){
                 item.show();
             }
             if(mode === "cancel" && (item.itemId === "cancel")){
@@ -476,6 +484,21 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
             Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
         }
     },
+    
+    onSubscriberEdit : function(){
+    	if(this.form.getForm().isValid()){
+    		Ext.Msg.confirm(_("Confirm?"), _("Are you sure you want to edit Subscriber data?"),
+		        function(btn){
+		            if(btn !== "yes"){
+		                return;
+		            }
+		            this.form.onSubscriberEdit(this);
+		        }, this);
+        }else{
+            Ext.ux.Toast.msg(_("Error"), _("Some fields have invalid information. <br/> Please fix the errors before submit"),5);
+        }
+    },
+    
     setRecord : function(record){
         this.form.setRecord(record);
     },

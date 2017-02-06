@@ -64,6 +64,7 @@ import com.mfino.fix.CmFinoFIX.CMJSServiceProvider;
 import com.mfino.fix.CmFinoFIX.CMJSShowBalanceDetails;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosing;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosingInquiry;
+import com.mfino.fix.CmFinoFIX.CMJSSubscriberEdit;
 import com.mfino.fix.CmFinoFIX.CMJSSubscriberUpgradeKyc;
 import com.mfino.fix.CmFinoFIX.CMJSSubscribers;
 import com.mfino.fix.CmFinoFIX.CMJSTxnRuleAddnInfo;
@@ -681,6 +682,10 @@ public class FixController {
 	@Autowired
 	@Qualifier("AddBankPocketToEmoneySubscriberProcessorImpl")
 	private AddBankPocketToEmoneySubscriberProcessor addBankPocketToEmoneySubscriber;
+
+	@Autowired
+	@Qualifier("SubscriberEditProcessorImpl")
+	private SubscriberEditProcessor subscriberEditProcessor;
 	
 	@Autowired
 	@Qualifier("SuspendSubscriberEmoneyPocketProcessorImpl")
@@ -1346,6 +1351,9 @@ public class FixController {
 			}else if (msgClassName.equals(CMRetireSubscriberEmoneyPocket.class.getName())){
 				fixProcessor = retireEmoneyPocketSubscriberProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberClosing);
+			}else if (msgClassName.equals(CMJSSubscriberEdit.class.getName())){
+				fixProcessor = subscriberEditProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberEdit);
 			}
 
 			/*

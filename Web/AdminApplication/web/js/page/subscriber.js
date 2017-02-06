@@ -73,6 +73,8 @@ mFino.page.subscriber = function(config){
     var subscriberUpgradeApproveRejectWindow = new mFino.widget.SubscriberUpgradeApproveRejectWindow(config);
     
     var subscriberUpgradeKycApproveRejectWindow = new mFino.widget.SubscriberUpgradeKycApproveRejectWindow(config);
+
+    var subscriberEditCheckerWindow = new mFino.widget.SubscriberEditCheckerWindow(config);
     
     var subscriberUpgradeKycLevelWindow = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberUpgradeKycLevelWindow(config),
@@ -108,6 +110,14 @@ mFino.page.subscriber = function(config){
         mode:"closeaccount"
     },config));
 	
+    var subscriberEditMakerWindow = new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.SubscriberEditMakerForm(config),
+        title : _("Edit Subscriber"),
+        width : 520,
+        height : 550,
+        mode : "subeditmaker"
+    }, config));
+    
     var approveSettlementWindow = new mFino.widget.ClosedAccountSettlementApproveRejectWindow(config);
     	
     //this enables serverside form validation
@@ -170,7 +180,7 @@ mFino.page.subscriber = function(config){
                     gridEditForm.form.setAccountAndTemplateDisplay(true);                    
                    }
             },
-            {
+            /*{
                 iconCls: 'mfino-button-user-edit',
                 tooltip : _('Edit Subscriber'),
                 itemId : 'sub.details.edit',
@@ -224,6 +234,36 @@ mFino.page.subscriber = function(config){
             				}
             			})
                         
+                    }
+                }
+            },*/
+            {
+                iconCls: 'mfino-button-user-edit',
+                tooltip : _('Edit Subscriber Information'),
+                itemId : 'sub.details.edit',
+                handler : function(){
+                    if(!detailsForm.record){
+                        Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+                    	Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
+                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.NoKyc){
+                    	Ext.MessageBox.alert(_("Info"), _("Subscriber edit is not applicable for Non-Kyc Subscriber"));
+                    } else{
+                    	var amsg = new CmFinoFIX.message.JSSubscriberEdit();
+                        amsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                        amsg.m_paction = "default";
+                        var params = mFino.util.showResponse.getDisplayParam();
+                        mFino.util.fix.send(amsg, params);
+                        Ext.apply(params, {
+                			success :  function(response){
+                				if(response.m_psuccess == true){
+                					subscriberEditMakerWindow.show();
+                					subscriberEditMakerWindow.form.setDetails(response, amsg.m_pMDNID);
+                			   }else{
+                				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
+                			   }
+                			}
+                		});
                     }
                 }
             },
@@ -765,6 +805,7 @@ mFino.page.subscriber = function(config){
                 }
             },
             {
+
                 iconCls : "mfino-button-subscriber-addpocket-approve",
                 tooltip : _('Approve for MBanking Services'),
                 itemId: 'emoneysub.add.bankpocket.checker',
@@ -801,7 +842,40 @@ mFino.page.subscriber = function(config){
                     		});
                     }
                 }
-            }
+            },
+            {
+	            iconCls : "mfino-button-upgrade-approve",
+	            tooltip : _('Response Subscriber Edit'),
+	            itemId: 'sub.details.edit.checker',
+	            id: 'sub.details.edit.checker',
+	            handler : function(){
+	                if(!detailsForm.record){
+	                    Ext.MessageBox.alert(_("Alert"), _("No subscriber selected!"));
+	                } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+	                	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active!"));
+	                }else{
+	                	var amsg = new CmFinoFIX.message.JSSubscriberEdit();
+                        amsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                        amsg.m_paction = "default";
+                        var params = mFino.util.showResponse.getDisplayParam();
+                        mFino.util.fix.send(amsg, params);
+                        Ext.apply(params, {
+                			success :  function(response){
+                				if(response.m_psuccess == true){
+                					if(response.m_ptotal == 2){
+                						subscriberEditCheckerWindow.show();
+                    					subscriberEditCheckerWindow.setDetails(response, amsg.m_pMDNID); 
+                					}else{
+                						Ext.MessageBox.alert(_("Info"), _("No Request for Subscriber Edit Data Found.")); 
+                					}
+                			   }else{
+                				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
+                			   }
+                			}
+                		});
+	                }
+	            }
+	        }
             ],
             items: [ detailsForm ]
         },
@@ -904,6 +978,15 @@ mFino.page.subscriber = function(config){
     });
     
     subscriberUpgradeKycApproveRejectWindow.on("refresh", function(mdnid) {
+    	if(detailsForm.record)
+        {
+    		listBox.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+            listBox.store.lastOptions.params[CmFinoFIX.message.JSBase.mfinoaction._name] = CmFinoFIX.JSmFinoAction.Update;
+            listBox.store.load(listBox.store.lastOptions);
+        }
+    });
+    
+    subscriberEditCheckerWindow.on("refresh", function(mdnid) {
     	if(detailsForm.record)
         {
     		listBox.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
