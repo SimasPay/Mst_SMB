@@ -40,7 +40,6 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketRetireRequestWindow, Ext.Window, {
                },{
                 xtype : 'textarea',
                 itemId :'comment',
-                id:'comment',
                 fieldLabel : _('Comments'),
                 allowBlank: false,
                 hideLabel: true,
