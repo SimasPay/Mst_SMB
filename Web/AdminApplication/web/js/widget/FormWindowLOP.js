@@ -463,7 +463,7 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
     },
     onProceed : function(){
     	if(this.form.getForm().isValid()){
-    		if(this.form.find("itemId","approve")[0].checked){
+    		if(this.form.find("itemId","bapprove")[0].checked){
     		Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to approve the request to add Bank pocket for this subscriber ?"),
 		        function(btn){
 		            if(btn !== "yes"){
@@ -471,7 +471,7 @@ Ext.extend(mFino.widget.FormWindowLOP, Ext.Window, {
 		            }
 		            this.form. onProceed(this);
 		        }, this);
-    		}else if(this.form.find("itemId","reject")[0].checked){
+    		}else if(this.form.find("itemId","breject")[0].checked){
     			Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to reject the request to add Bank pocket for this subscriber? ?"),
     			        function(btn){
     			            if(btn !== "yes"){

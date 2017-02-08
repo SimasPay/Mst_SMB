@@ -94,8 +94,8 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                      	   fieldLabel: 'Comment'
                         },{
                             xtype : 'textarea',
-                            itemId :'comment',
-                            id:'comment',
+                            itemId :'bcomment',
+                            id:'bcomment',
                             fieldLabel : _('Comments'),
                             allowBlank: false,
                             hideLabel: true,
@@ -115,7 +115,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                                {
                                    columnWidth: 0.3,
                                    xtype : 'radio',
-                                   itemId : 'approve',
+                                   itemId : 'bapprove',
                                    name: 'selectone',
                                    anchor : '100%',
                                    boxLabel: _('Approve')
@@ -124,7 +124,7 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
                                {
                                    columnWidth: 0.3,
                                    xtype : 'radio',
-                                   itemId : 'reject',
+                                   itemId : 'breject',
                                    anchor : '100%',
                                    name: 'selectone',
                                    boxLabel: _('Reject')
@@ -151,16 +151,16 @@ Ext.extend(mFino.widget.SubscriberAddPocketApproveRejectWindow, Ext.FormPanel, {
     },    
     onProceed : function(formWindow){
         if(this.getForm().isValid()){
-        	if (this.find('itemId','approve')[0].checked || this.find('itemId','reject')[0].checked){
+        	if (this.find('itemId','bapprove')[0].checked || this.find('itemId','breject')[0].checked){
         		   var amsg= new CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber();
         		   var values = this.form.getValues();
               	  amsg.m_pMDNID =values[CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber.MDNID._name];
                   amsg.m_pMDN=values[CmFinoFIX.message.JSApproveRejectAddBankPocketToEmoneySubscriber.MDN._name];
-                  if(this.find('itemId','approve')[0].checked)
+                  if(this.find('itemId','bapprove')[0].checked)
                   {
               	  amsg.m_pAdminAction= CmFinoFIX.AdminAction.Approve;
               	  
-                  }else if(this.find('itemId','reject')[0].checked)
+                  }else if(this.find('itemId','breject')[0].checked)
                   {
                   	  amsg.m_pAdminAction= CmFinoFIX.AdminAction.Reject;
                   }

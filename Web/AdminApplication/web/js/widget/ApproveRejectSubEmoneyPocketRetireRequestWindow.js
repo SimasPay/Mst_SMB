@@ -40,7 +40,7 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow, Ext.Win
                },
                {
                 xtype : 'textarea',
-                itemId :'comment',
+                itemId :'rcomment',
                 fieldLabel : _('Comments'),
                 allowBlank: false,
                 hideLabel: true,
@@ -58,7 +58,7 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow, Ext.Win
                 {
                     columnWidth: 0.5,
                     xtype : 'radio',
-                    itemId : 'approve',
+                    itemId : 'rapprove',
                     name: 'selectone',
                     anchor : '90%',
                     boxLabel: _('Approve')
@@ -66,7 +66,7 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow, Ext.Win
                 {
                     columnWidth: 0.5,
                     xtype : 'radio',
-                    itemId : 'reject',
+                    itemId : 'rreject',
                     anchor : '90%',
                     name: 'selectone',
                     boxLabel: _('Reject')
@@ -83,8 +83,8 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow, Ext.Win
     
 	proceed : function() {
 		if(this.form.getForm().isValid()){
-			if (this.form.find('itemId','approve')[0].checked || this.form.find('itemId','reject')[0].checked) {
-				if(this.form.find('itemId','approve')[0].checked) {
+			if (this.form.find('itemId','rapprove')[0].checked || this.form.find('itemId','rreject')[0].checked) {
+				if(this.form.find('itemId','rapprove')[0].checked) {
 					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Approve the request to retire e-money pocket/Subscriber ?"),
 					function(btn){
 						if(btn !== "yes"){
@@ -93,7 +93,7 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow, Ext.Win
 						this.ok(this);
 					}, this);
 				} 
-				else if(this.form.find('itemId','reject')[0].checked) {
+				else if(this.form.find('itemId','rreject')[0].checked) {
 					Ext.Msg.confirm(_("Confirm?"), _("Are you sure want to Reject the request to retire e-money pocket/Subscriber ?"),
 					function(btn){
 						if(btn !== "yes"){
@@ -114,13 +114,13 @@ Ext.extend(mFino.widget.ApproveRejectSubEmoneyPocketRetireRequestWindow, Ext.Win
 
     ok : function(){
 		var msg = new CmFinoFIX.message.RetireSubscriberEmoneyPocket();
-		msg.m_pComments = this.form.items.get('comment').getValue();
+		msg.m_pComments = this.form.items.get('rcomment').getValue();
 		msg.m_paction = "update";
 		msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
-		if(this.form.find('itemId','approve')[0].checked) {
+		if(this.form.find('itemId','rapprove')[0].checked) {
 			msg.m_pAdminAction = CmFinoFIX.AdminAction.Approve;
 		} 
-		else if(this.form.find('itemId','reject')[0].checked) {
+		else if(this.form.find('itemId','rreject')[0].checked) {
 			msg.m_pAdminAction = CmFinoFIX.AdminAction.Reject;
 		}
 		var params = mFino.util.showResponse.getDisplayParam();

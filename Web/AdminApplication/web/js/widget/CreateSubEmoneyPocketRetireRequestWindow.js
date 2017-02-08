@@ -39,7 +39,7 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketRetireRequestWindow, Ext.Window, {
             	   fieldLabel: 'Reason'
                },{
                 xtype : 'textarea',
-                itemId :'comment',
+                itemId :'rcomment',
                 fieldLabel : _('Comments'),
                 allowBlank: false,
                 hideLabel: true,
@@ -59,7 +59,7 @@ Ext.extend(mFino.widget.CreateSubEmoneyPocketRetireRequestWindow, Ext.Window, {
     ok : function(){
         if(this.form.getForm().isValid()){
 			var msg = new CmFinoFIX.message.RetireSubscriberEmoneyPocket();
-            msg.m_pComments = this.form.items.get('comment').getValue();
+            msg.m_pComments = this.form.items.get('rcomment').getValue();
 			msg.m_paction = "create";
 			msg.m_pMDNID = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name];
 
