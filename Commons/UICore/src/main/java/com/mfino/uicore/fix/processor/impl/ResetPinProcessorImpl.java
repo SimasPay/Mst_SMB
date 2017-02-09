@@ -4,6 +4,7 @@
  */
 package com.mfino.uicore.fix.processor.impl;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,15 +19,19 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
+import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSError;
 import com.mfino.fix.CmFinoFIX.CMJSResetPin;
 import com.mfino.fix.CmFinoFIX.CMResetPin;
 import com.mfino.fix.processor.MultixCommunicationHandler;
+import com.mfino.hibernate.Timestamp;
+import com.mfino.i18n.MessageText;
 import com.mfino.mailer.NotificationWrapper;
 import com.mfino.service.MailService;
 import com.mfino.service.MfinoUtilService;
@@ -36,6 +41,7 @@ import com.mfino.service.SubscriberServiceExtended;
 import com.mfino.service.SystemParametersService;
 import com.mfino.uicore.fix.processor.ResetPinProcessor;
 import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 import com.mfino.util.PasswordGenUtil;
   	
@@ -49,6 +55,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
     private static final String PIN_SOURCE = "0123456789";
     private static SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
     private static SubscriberDAO subdao = DAOFactory.getInstance().getSubscriberDAO();
+    private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
     
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
@@ -86,7 +93,9 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         	log.warn("Invalid MDN selected by " + getLoggedUserNameWithIP());
         	return error;
         }
+        
         SubscriberMdn mdn=subMdndao.getByMDN(realMsg.getSourceMDN());
+        
         Subscriber subscriber=mdn.getSubscriber();
         
         Long tempStatusL = mdn.getStatus().longValue();
@@ -103,51 +112,56 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         mdn.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         subscriber.setRestrictions(CmFinoFIX.SubscriberRestrictions_None);
         String name=subscriber.getFirstname();
+        
         if(name==null){
         	Set<Partner> partner=subscriber.getPartners();
         	name = partner!=null&&(!partner.isEmpty())?partner.iterator().next().getTradename():" ";
         }
+        
         if(StringUtils.isNotBlank(resetPinMode) && GeneralConstants.RESET_PIN_MODE_OTP.equals(resetPinMode)){
-    		Integer OTPLength = systemParametersService.getOTPLength();
-        	String otp = MfinoUtil.generateOTP(OTPLength);
-     		String digestPin1 = MfinoUtil.calculateDigestPin(mdn.getMdn(), otp);
-     		mdn.setOtp(digestPin1);
-        	mdn.setDigestedpin(null);
-        	mdn.setAuthorizationtoken(null);
-        	subMdndao.save(mdn);
-        	subdao.save(subscriber);
-        	
-        	NotificationWrapper notificationWrapper = new NotificationWrapper();
-        	
-        	Long tempLanguageL = subscriber.getLanguage().longValue();
-        	Integer tempLanguageLI = tempLanguageL.intValue();
-        	
-			notificationWrapper.setLanguage(tempLanguageLI);
-			notificationWrapper.setCompany(subscriber.getCompany());
-			notificationWrapper.setCode(CmFinoFIX.NotificationCode_ForgotPinOTPSent);
-			notificationWrapper.setDestMDN(mdn.getMdn());
-			notificationWrapper.setFirstName(subscriber.getFirstname());
-			notificationWrapper.setLastName(subscriber.getLastname());		
-			notificationWrapper.setOneTimePin(otp);
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
-			String smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true);
-			notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
-			String emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
-        	
-        	log.info("Subscriber MDN: " + mdn.getId() + " : new OTP generated for subscriber:" + subscriber.getId() + "selected by user: " + getLoggedUserNameWithIP());
-            if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationmethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
-            	String to=subscriber.getEmail();
-            	String subject="OTP";
+        
+        	Integer subscriberStatus = subscriber.getStatus();
+            
+            if( !subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active) ){
             	
-            	mailService.asyncSendEmail(to, name, subject, emailMsg);
+            	error.setErrorDescription(MessageText._("Subscriber Should be Active! "));
+            	return error;
             }
-            smsService.setDestinationMDN(mdn.getMdn());
-            smsService.setMessage(smsMsg);
-            smsService.asyncSendSMS();
-            error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
-            error.setErrorDescription("Successfully generated OTP for "+realMsg.getSourceMDN());
-        }
-        else{
+            
+            if (CmFinoFIX.JSaction_Insert.equalsIgnoreCase(realMsg.getaction())) {
+            	
+            	int count=  subscriberUpgradeDataDAO.getCountByMdnId(mdn.getId());
+                
+        		if(count == 0) {
+        			error = makerResetMpin(mdn, error, subscriber, name, realMsg);
+        		} else{
+        			error.setErrorDescription(MessageText._(ConfigurationUtil.getSubscriberActivityActiveMessage()));
+            		error.setsuccess(Boolean.FALSE);
+        		}
+        		
+            } else if (CmFinoFIX.JSaction_Update.equalsIgnoreCase(realMsg.getaction())) {
+            	SubscriberUpgradeData sud = subscriberUpgradeDataDAO.getUpgradeDataByMdnId(mdn.getId());
+    			sud.setSubsActivityApprovedBY(getLoggedUserName());
+    			sud.setSubsActivityAprvTime(new Timestamp());
+    			
+    			if (CmFinoFIX.AdminAction_Approve.intValue() == realMsg.getAdminAction()) {
+    				sud.setAdminAction(CmFinoFIX.AdminAction_Approve);
+    				
+    				error = checkerResetMpin(mdn, error, subscriber, name, realMsg);
+    				
+    				sud.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
+    				
+    			} else if (CmFinoFIX.AdminAction_Reject.intValue() == realMsg.getAdminAction()) {
+    				sud.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
+    				sud.setAdminAction(CmFinoFIX.AdminAction_Reject);
+    				
+    				error.setErrorDescription("Rejected Reset Pin for "+realMsg.getSourceMDN());
+    				error.setsuccess(Boolean.TRUE);
+    			}
+    			subscriberUpgradeDataDAO.save(sud);
+            }
+
+        } else{     
 	        String newpin;
 			try {
 				newpin = systemParametersService.generatePIN();
@@ -194,11 +208,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
 	        error.setErrorDescription("Successfully Reset Pin for "+realMsg.getSourceMDN());
         }
         return error;
-//        updateMessage(newMsg, realMsg);
-//        return handleRequestResponse(newMsg);
     }
-    
-    
     
     public void updateMessage(CMResetPin newMsg, CMJSResetPin realMsg) {
         if (realMsg.getAuthenticationPhrase() != null) {
@@ -229,5 +239,72 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
         if (realMsg.getServletPath() != null) {
             newMsg.setServletPath(realMsg.getServletPath());
         }
+    }
+    
+    private CMJSError makerResetMpin(SubscriberMdn mdn, CMJSError error, Subscriber subscriber, String name, CMJSResetPin realMsg){
+    	
+    	SubscriberUpgradeData subscriberUpgradeData=new SubscriberUpgradeData();
+    	
+		subscriberUpgradeData.setMdnId(mdn.getId());
+		subscriberUpgradeData.setCreatedby(getLoggedUserName());
+		subscriberUpgradeData.setCreatetime(new Timestamp());
+		subscriberUpgradeData.setSubActivity(CmFinoFIX.SubscriberActivity_Reset_Pin);
+		subscriberUpgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberUpgradeStatus_Initialized);
+		subscriberUpgradeDataDAO.save(subscriberUpgradeData);
+		
+		error.setErrorDescription("Request to reset mPIN for "+realMsg.getSourceMDN()+" has been submitted successfully. Subscriber's mPIN will be reset once approved ");
+		error.setsuccess(Boolean.TRUE);
+    	
+    	return error;
+    }
+    
+    private CMJSError checkerResetMpin(SubscriberMdn mdn, CMJSError error, Subscriber subscriber, String name, CMJSResetPin realMsg){
+
+    	Integer OTPLength = systemParametersService.getOTPLength();
+    	String otp = MfinoUtil.generateOTP(OTPLength);
+ 		String digestPin1 = MfinoUtil.calculateDigestPin(mdn.getMdn(), otp);
+ 		mdn.setOtp(digestPin1);
+ 		mdn.setOtpexpirationtime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
+    	mdn.setDigestedpin(null);
+    	mdn.setAuthorizationtoken(null);
+    	mdn.setStatus(CmFinoFIX.SubscriberStatus_Initialized);
+    	
+    	subMdndao.save(mdn);
+    	subdao.save(subscriber);
+    	
+    	log.info("Subscriber MDN: " +mdn.getId() + " :new pin updated for subscriber: " + subscriber.getId() + "selected by user: " + getLoggedUserNameWithIP());
+    	
+    	NotificationWrapper notificationWrapper = new NotificationWrapper();
+    	
+    	Long tempLanguageL = subscriber.getLanguage().longValue();
+    	Integer tempLanguageLI = tempLanguageL.intValue();
+    	
+		notificationWrapper.setLanguage(tempLanguageLI);
+		notificationWrapper.setCompany(subscriber.getCompany());
+		notificationWrapper.setCode(CmFinoFIX.NotificationCode_ForgotPinOTPSent);
+		notificationWrapper.setDestMDN(mdn.getMdn());
+		notificationWrapper.setFirstName(subscriber.getFirstname());
+		notificationWrapper.setLastName(subscriber.getLastname());		
+		notificationWrapper.setOneTimePin(otp);
+		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+		String smsMsg = notificationMessageParserService.buildMessage(notificationWrapper,true);
+		notificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_Email);
+		String emailMsg = notificationMessageParserService.buildMessage(notificationWrapper,true); 
+    	
+    	log.info("Subscriber MDN: " + mdn.getId() + " : new OTP generated for subscriber:" + subscriber.getId() + "selected by user: " + getLoggedUserNameWithIP());
+        if((CmFinoFIX.NotificationMethod_Email&subscriber.getNotificationmethod())>0 && subscriberServiceExtended.isSubscriberEmailVerified(subscriber)){
+        	String to=subscriber.getEmail();
+        	String subject="OTP";
+        	
+        	mailService.asyncSendEmail(to, name, subject, emailMsg);
+        }
+        smsService.setDestinationMDN(mdn.getMdn());
+        smsService.setMessage(smsMsg);
+        smsService.asyncSendSMS();
+        error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
+        error.setErrorDescription("Successfully Reset Pin for "+mdn.getMdn()+", Activation code sent to "+mdn.getMdn());
+		error.setsuccess(Boolean.TRUE);
+        
+    	return error;
     }
 }

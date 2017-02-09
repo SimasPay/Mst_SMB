@@ -76,6 +76,8 @@ mFino.page.subscriber = function(config){
 
     var subscriberEditCheckerWindow = new mFino.widget.SubscriberEditCheckerWindow(config);
     
+    var approveRejectResetMPinWindow = new mFino.widget.ApproveRejectResetMPinWindow(config);
+    
     var subscriberUpgradeKycLevelWindow = new mFino.widget.FormWindowLOP(Ext.apply({
         form : new mFino.widget.SubscriberUpgradeKycLevelWindow(config),
         title : _("Upgrade from Non-KYC E-Money to KYC E-Money"),
@@ -427,6 +429,7 @@ mFino.page.subscriber = function(config){
                                 }
                                 var msg = mFino.util.fix.getResetPinMsgFromRecord(detailsForm.record);
                                 msg.m_pServletPath = CmFinoFIX.ServletPath.WebAppFEForSubscribers;
+                                msg.m_paction = "create";
                                 var params = mFino.util.showResponse.getDisplayParam();
                                 params.store = detailsForm.store;
                                 params.store.lastOptions.params[CmFinoFIX.message.JSSubscriberMDN.IDSearch._name] = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
@@ -434,6 +437,18 @@ mFino.page.subscriber = function(config){
                             }, this);
                     }
                 }
+            },
+            {
+            	iconCls : 'mfino-button-key',
+            	tooltip : _('Approve/Reject Reset mPIN'), itemId : 'sub.approve.resetpin',
+            	id : 'sub.approve.resetpin',
+            	handler : function(){
+            	if(!detailsForm.record){
+            	Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
+            	} else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
+            	Ext.MessageBox.alert(_("Info"), _("Subscriber is not Active.")); } else {
+            	approveRejectResetMPinWindow.show(); approveRejectResetMPinWindow.setStore(detailsForm.store); approveRejectResetMPinWindow.setRecord(detailsForm.record); }
+            	} 
             },
 //            {
 //                iconCls: 'mfino-button-bulkupload',
@@ -1021,6 +1036,8 @@ mFino.page.subscriber = function(config){
 		var approveRejectEmoneyPocketRetireRequest =  mainItem.getTopToolbar().getComponent('approve.sub.retire.emoneypocket');
 		var addBankPocketToEmoneySubscriber=  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket');
 		var approveAddBankPocketToEmoneySubscriber =  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket.checker');
+		var approveRejectResetMPin = mainItem.getTopToolbar().getComponent('sub.approve.resetpin');
+		
 		if(addBankPocketToEmoneySubscriber){
 			 if ( (detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.NoKyc ||
 					 detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.UnBanked) && 

@@ -1353,6 +1353,9 @@
 			<field name="AuthenticationPhrase" required="Y" isSecure="Y"/>
 			<field name="NewPin" required="Y" isSecure="Y"/>
 			<field name="ServletPath" required="Y" />
+			<field name="AdminAction" required="Y" />
+			<field name="Comments" required="Y"/>
+			<field name="MDNID" required="Y" />
 		</message>
 		<message name="JSLOP" msgtype="1067" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
 			<field name="IDSearch" required="N" />
