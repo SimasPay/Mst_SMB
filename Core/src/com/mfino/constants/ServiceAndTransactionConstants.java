@@ -389,4 +389,6 @@ public class ServiceAndTransactionConstants {
 	public static final String SUBSCRIBER_UPGRADE_KYC = "SubscriberUpgradeKyc";
 	
 	public static final String SUBSCRIBER_EDIT = "SubscriberEdit";
+	
+	public static final String TRANSACTION_RESEND_MFAOTP_NOPIN = "ResendMFAOTPNoPIN";
 }

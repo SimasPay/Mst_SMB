@@ -158,6 +158,11 @@
 			<a href="jsp/s_generate_favorite_json.jsp">View Favorite</a>
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<a href="jsp/s_resend_mfa_otp_no_pin.jsp">Resend MFA OTP NO PIN</a>
+		</td>
+	</tr>
 	</table></td>
 	
 	</tr>

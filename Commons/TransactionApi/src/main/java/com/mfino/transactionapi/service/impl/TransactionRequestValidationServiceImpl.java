@@ -1292,7 +1292,11 @@ private void validateFullName(TransactionDetails transactionDetails)throws Inval
 	}
 	
 }
+
+public void validateResendMFAOTPNotPINDetails(TransactionDetails transactionDetails) throws InvalidDataException {
 	
+	validateSctlId(transactionDetails);
+}
 	
 	
 	

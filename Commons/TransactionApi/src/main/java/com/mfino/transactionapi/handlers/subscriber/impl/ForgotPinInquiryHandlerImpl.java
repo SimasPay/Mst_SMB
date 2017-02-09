@@ -125,6 +125,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 					result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryCompleted);
 					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
 					result.setSctlID(sctl.getId());
+					result.setMfaMode("None");
 					
 					if(mfaService.isMFATransaction(transactionDetails.getServiceName(),ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN, cc.getId().longValue()) == true){
 					

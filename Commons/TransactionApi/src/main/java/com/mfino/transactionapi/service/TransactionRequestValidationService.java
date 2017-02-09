@@ -279,4 +279,7 @@ public interface TransactionRequestValidationService {
 	public void validateSubscriberRegistrationForNonKyc(TransactionDetails transactionDetails) throws InvalidDataException;
 	
 	public void validateUpdateProfile(TransactionDetails transactionDetails) throws InvalidDataException;
+	
+	public void validateResendMFAOTPNotPINDetails(TransactionDetails transactionDetails) throws InvalidDataException;
+
 }

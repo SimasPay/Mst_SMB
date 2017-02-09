@@ -32,6 +32,7 @@ import com.mfino.transactionapi.handlers.wallet.FundAllocationInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.FundWithdrawalConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.FundWithdrawalInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.ResendMFAOTPHandler;
+import com.mfino.transactionapi.handlers.wallet.ResendMFAOTPNoPINHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMConfirmHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutAtATMInquiryHandler;
 import com.mfino.transactionapi.handlers.wallet.SubscriberCashOutConfirmHandler;
@@ -160,6 +161,10 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	@Autowired
 	@Qualifier("ResendMFAOTPHandlerImpl")
 	private ResendMFAOTPHandler resendMFAOTPHandler;
+	
+	@Autowired
+	@Qualifier("ResendMFAOTPNoPINHandlerImpl")
+	private ResendMFAOTPNoPINHandler resendMFAOTPNoPINHandler;
 	
 	private static final String MAX_NO_OF_RECORDS = "15000";
 
@@ -351,6 +356,12 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 			
 			xmlResult = (XMLResult) resendMFAOTPHandler.handle(transactionDetails);
+		}else if (ServiceAndTransactionConstants.TRANSACTION_RESEND_MFAOTP_NOPIN.equals(transactionName)) {
+		
+			transactionRequestValidationService.validateResendMFAOTPNotPINDetails(transactionDetails);
+			transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
+			
+			xmlResult = (XMLResult) resendMFAOTPNoPINHandler.handle(transactionDetails);
 		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU_INQUIRY.equalsIgnoreCase(transactionName)){
 			transactionRequestValidationService.validateTransferToUangkuInquiryDetails(transactionDetails);
