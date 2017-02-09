@@ -25119,6 +25119,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="10250" description="MbankingServicesToEmoneySubscriber" />
 			<value enum="10251" description="MbankingServicesToEmoneySubscriberChecker" />
 			<value enum="10252" description="SubscriberEditChecker" />
+			<value enum="10253" description="ResetmPinChecker" />
 			
 			<!-- Merchant Tab Permissions -->
 			<!--  <value enum="10301" description="Merchant_Details_All_Merchants_View" />
