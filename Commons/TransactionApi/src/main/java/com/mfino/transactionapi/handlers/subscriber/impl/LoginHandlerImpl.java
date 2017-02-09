@@ -366,6 +366,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			if (profileImageFile.exists()) {
 				String encodedString = Base64.encodeFromFile(profileImageFile.getAbsolutePath());
 				result.setProfileImageString(encodedString);
+				result.setProfileImageExist(true);
 			}
 		}
 		catch (Exception ex) {
