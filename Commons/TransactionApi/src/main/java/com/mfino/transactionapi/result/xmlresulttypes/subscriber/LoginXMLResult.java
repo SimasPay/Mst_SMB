@@ -20,6 +20,7 @@ public class LoginXMLResult extends XMLResult {
 	private boolean isLakupandia;
 	private boolean isKyc;
 	private String profileImageString;
+	private boolean isProfileImageExist;
 	
 	/**
 	 * @return the bankAccountNumber
@@ -198,6 +199,16 @@ public class LoginXMLResult extends XMLResult {
 		getXmlWriter().writeStartElement("bankAccountNumber");
 		getXmlWriter().writeCharacters(bankAccountNumber,false);
 		getXmlWriter().writeEndElement();
+
+		if (isProfileImageExist) {
+			getXmlWriter().writeStartElement("isProfileImageExist");
+			getXmlWriter().writeCharacters("true", false);
+			getXmlWriter().writeEndElement();
+		} else {
+			getXmlWriter().writeStartElement("isProfileImageExist");
+			getXmlWriter().writeCharacters("false", false);
+			getXmlWriter().writeEndElement();
+		}
 		
 		getXmlWriter().writeStartElement("profileImageString");
 		getXmlWriter().writeCharacters(profileImageString, false);
@@ -210,6 +221,12 @@ public class LoginXMLResult extends XMLResult {
 	}
 	public void setProfileImageString(String profileImageString) {
 		this.profileImageString = profileImageString;
+	}
+	public boolean isProfileImageExist() {
+		return isProfileImageExist;
+	}
+	public void setProfileImageExist(boolean isProfileImageExist) {
+		this.isProfileImageExist = isProfileImageExist;
 	}
 	
 	
