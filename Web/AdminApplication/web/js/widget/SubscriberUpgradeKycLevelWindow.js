@@ -115,6 +115,8 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                             xtype : 'fileuploadfield',
                             fieldLabel: _('Upload ID Card'),
                             buttonText: _('Browse'),
+                     		allowBlank: false,
+                     		blankText : _('Scan ID is required'),
                             emptyText:_(''),
                             anchor : '100%',
 							itemId : 'subupgradekyc.form.idpath',
