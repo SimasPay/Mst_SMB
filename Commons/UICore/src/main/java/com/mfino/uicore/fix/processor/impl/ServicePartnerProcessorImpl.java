@@ -455,11 +455,20 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
                 	mailService.generateEmailVerificationMail(subscriber, e.getAuthorizedEmail());
 				}
                 List<SubscriberGroups> subscriberGroups = subscriberGroupDao.getAllBySubscriberID(subscriber.getId());
+                SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 				if(subscriberGroups != null && subscriberGroups.size() > 0){
-					SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
 					for(SubscriberGroups sg: subscriberGroups){
 						subscriberGroupDao.save(sg);
 					}
+				}else{
+					// load the default group id
+					GroupDao groupDao = DAOFactory.getInstance().getGroupDao();
+					Groups defaultGroup = groupDao.getSystemGroup();
+				    Long groupID = defaultGroup.getId();
+				    SubscriberGroups sg = new SubscriberGroups();
+					sg.setSubscriber(subscriber);
+					sg.setGroupid(groupID);
+					subscriberGroupDao.save(sg);
 				}
 				
 				updateMessage(partner,subscriber,subscriberMdn, e);
