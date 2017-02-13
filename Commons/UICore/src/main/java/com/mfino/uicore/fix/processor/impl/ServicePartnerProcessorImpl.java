@@ -931,7 +931,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        if(partner.getPartnercode() != null){
 	        	entry.setPartnerCode(partner.getPartnercode());
 	        }
-	        if(partner.getPartnerstatus() != 0){
+	        if(partner.getPartnerstatus() != null){
 	        	entry.setPartnerStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_PartnerStatus, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), partner.getPartnerstatus()));
 	        	entry.setPartnerStatus((int) partner.getPartnerstatus());
 	        }
