@@ -329,6 +329,7 @@ public class ConfigurationUtil {
 		MfinoSubFavCategoryIdName("mfino.sub.fav.category.id.name","1,4,5,6,7,10,11,12"),
 		MfinoSubFavCategoryIdBillerCode("mfino.sub.fav.category.id.billercode","2,3,8,9"),
 		PrefixWordingForAdminBank("prefix.wording.for.admin.bank", "ADMIN BANK : RP."),
+		PrefixWordingForTotalTagihan("prefix.wording.for.total.tagihan", "TOTAL TAGIHAN : RP."),
 		SubscriberActivityActiveMessage("sub.activity.active.message","Already an active request is available.");
 		
 		
@@ -1328,6 +1329,9 @@ public class ConfigurationUtil {
 	}
 	public static String getPrefixWordingForAdminBank(){
 		return get(ConfigurationKey.PrefixWordingForAdminBank);
+	}
+	public static String getPrefixWordingForTotalTagihan(){
+		return get(ConfigurationKey.PrefixWordingForTotalTagihan);
 	}
 	public static String getSubscriberActivityActiveMessage(){
 		return get(ConfigurationKey.SubscriberActivityActiveMessage);

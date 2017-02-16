@@ -468,7 +468,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 					returnFix.setDestinationUserName(fromBank.getDestinationUserName().trim());
 				}
 				
-				String additionalInfo = MfinoUtil.replaceAdminBankValue(fromBank.getAdditionalInfo(), pct.getCharges(), ConfigurationUtil.getPrefixWordingForAdminBank());
+				String additionalInfo = MfinoUtil.replaceAdminBankValue(fromBank.getAdditionalInfo(), pct.getCharges(), pct.getAmount(), ConfigurationUtil.getPrefixWordingForAdminBank());
 				integrationSummaryService.logIntegrationSummary(toBank.getServiceChargeTransactionLogID(), pct.getId().longValue(), "BANK", fromBank.getProcessingCode(), 
 						additionalInfo, fromBank.getBankAccountName(), fromBank.getDestinationUserName(),toBank.getReceiveTime());
 			}

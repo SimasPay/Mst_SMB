@@ -413,7 +413,7 @@ public class BillPayInquiryHandlerImpl extends FIXMessageHandler implements Bill
 				billPaymentInquiry.setTransactionID(transactionResponse.getTransactionId());
 				result.setTransactionID(transactionResponse.getTransactionId());
 				additionalInfo = MfinoUtil.replaceFormatedAdminBankValue(additionalInfo, transactionResponse.getCharges(), 
-						ConfigurationUtil.getPrefixWordingForAdminBank());
+						transactionResponse.getAmount(), ConfigurationUtil.getPrefixWordingForAdminBank());
 				result.setAdditionalInfo(additionalInfo);
 				transactionChargingService.saveServiceTransactionLog(sctl);
 			}
