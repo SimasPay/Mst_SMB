@@ -124,8 +124,6 @@ public class SubscriberEditController {
 	        	Address addressBaseOnIdCard = new Address();
 	        	if(upgradeData == null){
 	        		upgradeData = new SubscriberUpgradeData();
-	        	}else{
-	        		addressBaseOnIdCard = upgradeData.getAddress();
 	        	}
 	        	
 	        	addressBaseOnIdCard.setRegionname(request.getParameter("RegionName"));
@@ -153,6 +151,9 @@ public class SubscriberEditController {
 	        	upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
 	        	upgradeData.setCreatedby(userService.getCurrentUser().getUsername());
 	        	upgradeData.setCreatetime(new Timestamp(System.currentTimeMillis()));
+	        	String subscriberStatusReq = request.getParameter("SubscriberStatus");
+	        	Integer subscriberStatusInt = Integer.valueOf(subscriberStatusReq);
+	        	upgradeData.setSubscriberStatus(StringUtils.isBlank(subscriberStatusReq) ? subscriberStatus : subscriberStatusInt);
 	        	
 	        	if(StringUtils.isNotBlank(idCardpath))
 	        		upgradeData.setIdCardScanPath(idCardpath);

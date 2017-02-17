@@ -5897,6 +5897,7 @@
 				<field name="UpgradeAcctComments" required="N"/>
 				<field name="NotificationMethod" required="Y" />
 				<field name="MDNRestrictions" required="N"/>
+				<field name="SubscriberStatus" required="Y"/>
 			</group>
 		</message>
 		<message name="JSResendMFAOTPNoPIN" msgtype="1795" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">

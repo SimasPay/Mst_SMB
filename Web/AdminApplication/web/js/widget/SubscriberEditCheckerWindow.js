@@ -118,6 +118,15 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 		                     		labelSeparator: _(''),
    									value: ":",
 								 	fieldLabel: _('Bank Account Number')
+								},
+								{
+								 	xtype : 'displayfield',
+    								style:{
+    									margin: '5px 0px 0px 0px'
+   									},
+		                     		labelSeparator: _(''),
+   									value: ":",
+								 	fieldLabel: _('Status')
 								}
             				]
             	   		},
@@ -139,7 +148,8 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 									labelSeparator: '',
 									style:{
 										'font-weight': 'bold',
-										'font-size': '12px'
+										'font-size': '12px',
+										'padding-top': '0px'
 									},
 									anchor : '100%'
 								},
@@ -226,7 +236,17 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
                      				labelSeparator : ' ',
             						readOnly:true,
 								 	name: CmFinoFIX.message.JSSubscriberEdit.Entries.AccountNumber._name
-								}
+								},
+								{
+		                            xtype : "enumdropdown",
+		                            anchor : '100%',
+		                            disabled: true,
+		                            itemId : 'subeditchecker.old.form.status',
+		                     		fieldLabel: _(''),
+                     				labelSeparator : '', 
+		                            enumId : CmFinoFIX.TagID.SubscriberStatus,
+		                            name : CmFinoFIX.message.JSSubscriberEdit.Entries.SubscriberStatus._name
+		                        }
             				]
             	   		},
             	   		{
@@ -242,7 +262,8 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
             				        labelSeparator: '',
             				        style:{
             				        	 'font-weight': 'bold',
-            				        	 'font-size': '12px'
+            				        	 'font-size': '12px',
+ 										 'padding-top': '0px'
             				        },
             				        anchor : '100%'
             				    },
@@ -329,6 +350,16 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 		                     		fieldLabel: _(''),
                      				labelSeparator : '',
 		                       	 	name: CmFinoFIX.message.JSSubscriberEdit.Entries.AccountNumber._name
+		                        },
+								{
+		                            xtype : "enumdropdown",
+		                            anchor : '100%',
+		                     		fieldLabel: _(''),
+                     				labelSeparator : '', 
+		                            disabled: true,
+		                            itemId : 'subeditchecker.form.status',
+		                            enumId : CmFinoFIX.TagID.SubscriberStatus,
+		                            name : CmFinoFIX.message.JSSubscriberEdit.Entries.SubscriberStatus._name
 		                        }
             				]
             	   		}
@@ -532,6 +563,7 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 	        this.form.getForm().items.get("subeditchecker.form.VillageCom").setValue(response.m_pEntries[0].m_pSubState);
 	        this.form.getForm().items.get("subeditchecker.form.StreetAddress").setValue(response.m_pEntries[0].m_pStreetAddress);
 	        this.form.getForm().items.get("subeditchecker.form.language").setValue(response.m_pEntries[0].m_pLanguage);
+	        this.form.getForm().items.get("subeditchecker.form.status").setValue(response.m_pEntries[0].m_pSubscriberStatus);
         	if(response.m_pEntries[0].m_pAccountNumber == '#'){
         		this.form.getForm().items.get("subeditchecker.form.bankaccid").disable();
         	}else{
@@ -571,6 +603,7 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 	        this.form.getForm().items.get("subeditchecker.old.form.StreetAddress").setValue(response.m_pEntries[1].m_pStreetAddress);
 	        this.form.getForm().items.get("subeditchecker.old.form.language").setValue(response.m_pEntries[1].m_pLanguage);
 	        this.form.getForm().items.get("subeditchecker.old.form.bankaccid").setValue(response.m_pEntries[1].m_pAccountNumber);
+	        this.form.getForm().items.get("subeditchecker.old.form.status").setValue(response.m_pEntries[1].m_pSubscriberStatus);
 	        
 	        var resValue = response.m_pEntries[1].m_pMDNRestrictions;
 	        this.form.getForm().items.get("subeditchecker.old.Suspended").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.Suspended) > 0);
@@ -658,7 +691,8 @@ var subsAddressChecker = {
 			labelSeparator: '',
 			style:{
 				'font-weight': 'bold',
-				'font-size': '12px'
+				'font-size': '12px',
+				'padding-top': '0px'
 			},
 		    anchor : '100%'
 		},
@@ -713,7 +747,8 @@ var subsAddressChecker2 = {
 		    value: _('New Value'),
 			style:{
 				'font-weight': 'bold',
-				'font-size': '12px'
+				'font-size': '12px',
+				'padding-top': '0px'
 			},
 			labelSeparator: '',
 		    anchor : '100%'

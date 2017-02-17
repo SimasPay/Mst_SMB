@@ -48,6 +48,7 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	private Integer language;
 	private Integer notificationMethod;
 	private Integer subscriberRestriction;
+	private Integer subscriberStatus;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
@@ -237,6 +238,13 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	}
 	public void setSubscriberRestriction(Integer subscriberRestriction) {
 		this.subscriberRestriction = subscriberRestriction;
+	}
+	@Column(name = "SUBSCRIBER_STATUS")
+	public Integer getSubscriberStatus() {
+		return subscriberStatus;
+	}
+	public void setSubscriberStatus(Integer subscriberStatus) {
+		this.subscriberStatus = subscriberStatus;
 	}
 	
 }

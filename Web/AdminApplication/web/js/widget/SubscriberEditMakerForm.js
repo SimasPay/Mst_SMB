@@ -20,6 +20,8 @@ mFino.widget.SubscriberEditMakerForm = function (config){
 
 Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     initComponent : function(){
+        this.autoScroll = true;
+        this.frame = true;
     	this.labelWidth = 220;
         this.labelPad = 5;
         this.defaults = {
@@ -150,6 +152,25 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
                        	 	itemId : 'subeditmaker.form.bankaccid',
                        	 	anchor : '100%',
                        	 	name: CmFinoFIX.message.JSSubscriberEdit.Entries.AccountNumber._name
+                        },
+                        {
+                            xtype : "enumdropdown",
+                            anchor : '100%',
+                            allowBlank: false,
+                            blankText : _('Status is required'),
+                            itemId : 'subeditmaker.form.status',
+                            emptyText : _('<select one..>'),
+                            fieldLabel :status,
+                            addEmpty: false,
+                            enumId : CmFinoFIX.TagID.SubscriberStatus,
+                            name : CmFinoFIX.message.JSSubscriberEdit.Entries.SubscriberStatus._name,
+                            value : CmFinoFIX.MDNStatus.Initialized,
+                            listeners : {
+                                select :  function(field){
+                                    var status= field.getValue();
+                                    this.findParentByType('SubscriberEditMakerForm').onStatusDropdown(status);
+                                }
+                            }
                         }
             ]
 		},
@@ -177,14 +198,14 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
 				    layout:'column',
 				    frame:true,
 				    autoHeight: true,
-				    items:[subsNotificationMethod]
+				    items:[subsEditMakerNotificationMethod]
 				},
 				{
 				    title: _('Restriction'),
 				    layout:'column',
 				    frame:true,
 				    autoHeight: true,
-				    items:[subsRestrictions]
+				    items:[subsEditMakerRestrictions]
 				}
 			]
         }]
@@ -192,7 +213,14 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     	markMandatoryFields(this.form);
     },
     onSubscriberEdit : function(formWindow){
-        if(this.getForm().isValid()){
+    	var status = this.form.items.get("subeditmaker.form.status").getValue();
+    	
+    	if((status < CmFinoFIX.MDNStatus.Active || status > CmFinoFIX.MDNStatus.Retired) &&
+    			!(this.form.items.get("subeditmaker.AbsoluteLocked").checked)){
+    		Ext.ux.Toast.msg(_("Error"), _("Status not Allowed."),5);
+    		return;
+    	}
+    	if(this.getForm().isValid()){
         	
            var notiValue = 0;
            if(this.form.items.get("subeditmaker.SMS").checked){
@@ -217,6 +245,9 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
            }
            this.getForm().items.get("subeditmaker.form.notificationMethod").setValue(notiValue);
            this.getForm().items.get("subeditmaker.form.mdnRestriction").setValue(resValue);
+           
+           this.getForm().items.get("subeditmaker.form.status").enable();
+           
      	   this.getForm().submit({
      		   url: 'subscribereditmaker.htm',
      		   waitMsg: _('Processing Subscriber Edit...'),
@@ -315,6 +346,10 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
         	this.form.items.get("subeditmaker.form.idnumber").setValue(response.m_pEntries[0].m_pIDNumber);
         	this.form.items.get("subeditmaker.form.email").setValue(response.m_pEntries[0].m_pEmail);
         	this.form.items.get("subeditmaker.form.language").setValue(response.m_pEntries[0].m_pLanguage);
+        	this.form.items.get("subeditmaker.form.status").setValue(response.m_pEntries[0].m_pSubscriberStatus);
+        	
+        	this.onStatusDropdown(response.m_pEntries[0].m_pSubscriberStatus);
+        	
         	if(response.m_pEntries[0].m_pAccountNumber == '#'){
         		this.form.items.get("subeditmaker.form.bankaccid").disable();
         	}else{
@@ -354,7 +389,86 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
 		}else{
 			Ext.Msg.alert('Info', 'Document Not Available!');
 		}
+    },
+    onStatusDropdown : function(status){
+    	var items = this.form.items.keys;
+    	if(status == CmFinoFIX.MDNStatus.PendingRetirement || status==CmFinoFIX.MDNStatus.Retired){
+            for(var i=0;i<items.length;i++){
+            	this.find('itemId',items[i])[0].disable();
+            }
+            
+        }else{
+        	for(i=0;i<items.length;i++){
+                this.find('itemId',items[i])[0].enable();
+            }
+            
+            if((status == CmFinoFIX.MDNStatus.Active) || (status == CmFinoFIX.MDNStatus.Initialized)) {
+            	this.find('itemId','subeditmaker.form.status')[0].enable();
+            } else {
+            	this.find('itemId','subeditmaker.form.status')[0].disable();
+            }
+        }
+        
+    	this.find('itemId','subeditmaker.form.mdn')[0].disable();
+    	this.find('itemId','subeditmaker.form.mdnid')[0].enable();
+    },
+    onSuspendClick: function(){
+    	var currentStatus = this.form.items.get("subeditmaker.form.status").getValue();
+        if(this.form.items.get("subeditmaker.Suspended").checked) {
+            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+        } else {
+        	if (CmFinoFIX.SubscriberStatus.Suspend === currentStatus) {
+        		currentStatus = CmFinoFIX.SubscriberStatus.Initialized;
+        	}
+            this.form.items.get("subeditmaker.form.status").setValue(currentStatus);
+        }
+    },
+    onSecurityLockClick: function(){
+    	var currentStatus = this.form.items.get("subeditmaker.form.status").getValue();
+        if(this.form.items.get("subeditmaker.SecurityLocked").checked) {
+            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            if(this.form.items.get("subeditmaker.Suspended").checked) {
+                this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+            }
+        } else {
+        	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
+        		currentStatus = CmFinoFIX.SubscriberStatus.Initialized;
+        	}
+            this.form.items.get("subeditmaker.form.status").setValue(currentStatus);
+        }
+    },
+    onAbsoluteLockClick: function(){
+    	var currentStatus = this.form.items.get("subeditmaker.form.status").getValue();
+        if(this.form.items.get("subeditmaker.AbsoluteLocked").checked) {
+            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            if(this.form.items.get("subeditmaker.Suspended").checked) {
+                this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+            }
+        } else {
+        	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
+        		currentStatus = CmFinoFIX.SubscriberStatus.Active;
+        	}
+            this.form.items.get("subeditmaker.form.status").setValue(currentStatus);
+        }
+    },
+     onNoFundMovementClick: function(){
+    	var currentStatus = this.form.items.get("subeditmaker.form.status").getValue();
+        if(this.form.items.get("subeditmaker.NoFundMovement").checked) {
+            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            if(this.form.items.get("subeditmaker.Suspended").checked) {
+                this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+            }
+        } else {
+        	if (CmFinoFIX.SubscriberStatus.InActive === currentStatus) {
+        		currentStatus = CmFinoFIX.SubscriberStatus.Active;
+        		if(this.form.items.get("subeditmaker.Suspended").checked) {
+                	currentStatus = CmFinoFIX.SubscriberStatus.Suspend;
+            	}
+        	}
+            this.form.items.get("subeditmaker.form.status").setValue(currentStatus);
+        }
     }
+    
 });
 
 /**
@@ -464,7 +578,7 @@ var subsAddress = {
 /*
  * Notification Method
  **/
-var subsNotificationMethod = {
+var subsEditMakerNotificationMethod = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -496,7 +610,7 @@ var subsNotificationMethod = {
 /*
  * Subscriber Restrictions
  **/
-var subsRestrictions = {
+var subsEditMakerRestrictions = {
     title: _(''),
     autoHeight: true,
     width: 300,
@@ -513,25 +627,45 @@ var subsRestrictions = {
                 	columnWidth: 0.5,
                 	xtype : 'checkbox',
                 	itemId : 'subeditmaker.SecurityLocked',
-                	boxLabel: securitylocked
+                	boxLabel: securitylocked,
+                	listeners: {
+                        check: function() {
+                            this.findParentByType("SubscriberEditMakerForm").onSecurityLockClick();
+                        }
+                    }
                 },
                 {
                 	columnWidth: 0.5,
                 	xtype : 'checkbox',
                 	itemId : 'subeditmaker.AbsoluteLocked',
-                	boxLabel: absolutelocked
+                	boxLabel: absolutelocked,
+                	listeners: {
+                        check: function() {
+                            this.findParentByType("SubscriberEditMakerForm").onAbsoluteLockClick();
+                        }
+                    }
                 },
                 {
                 	columnWidth: 0.5,
                 	xtype : 'checkbox',
                 	itemId : 'subeditmaker.Suspended',
-                	boxLabel: suspended
+                	boxLabel: suspended,
+                	listeners: {
+                        check: function() {
+                            this.findParentByType("SubscriberEditMakerForm").onSuspendClick();
+                        }
+                    }
                 },
                 {
                 	columnWidth: 0.5,
                 	xtype : 'checkbox',
                 	itemId : 'subeditmaker.NoFundMovement',
-                	boxLabel: 'NoFundMovement'
+                	boxLabel: 'NoFundMovement',
+                	listeners: {
+                        check: function() {
+                            this.findParentByType("SubscriberEditMakerForm").onNoFundMovementClick();
+                        }
+                    }
                 }
           ]
     }]

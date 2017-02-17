@@ -38,6 +38,7 @@ import com.mfino.service.EnumTextService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberService;
+import com.mfino.service.SubscriberStatusEventService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.UserService;
@@ -82,6 +83,10 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 	@Autowired
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
+
+	@Autowired
+	@Qualifier("SubscriberStatusEventServiceImpl")
+	private SubscriberStatusEventService subscriberStatusEventService;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -186,33 +191,47 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			SubscriberMdn subscriberMDN, Subscriber subscriber,
 			SubscriberUpgradeData subscriberUpgradeData) {
 		
-		subscriber.setLanguage(subscriberUpgradeData.getLanguage());
-		subscriber.setFirstname(subscriberUpgradeData.getFullName());
-		subscriber.setEmail(subscriberUpgradeData.getEmail());
-		
-		subscriber.setAddressBySubscriberaddressid(subscriberUpgradeData.getAddress());
-		subscriber.setNotificationmethod(subscriberUpgradeData.getNotificationMethod());
-		subscriber.setRestrictions(subscriberUpgradeData.getSubscriberRestriction());
-		
-		subscriberMDN.setIdtype(subscriberUpgradeData.getIdType());
-		subscriberMDN.setIdnumber(subscriberUpgradeData.getIdNumber());
-		subscriberMDN.setKtpdocumentpath(subscriberUpgradeData.getIdCardScanPath());
-		subscriberMDN.setRestrictions(subscriberUpgradeData.getSubscriberRestriction());
-		
-		subMdndao.save(subscriberMDN);
-		subscriberService.save(subscriber);
-		if(StringUtils.isNotBlank(subscriberUpgradeData.getBankAccountNumber())){
-			Pocket existingBankPocket = subscriberService.getDefaultPocket(subscriberMDN.getMdn(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
-			if(existingBankPocket != null) {
-				log.info("Bank pocket already exists for subscriber with mdn " + subscriberMDN.getMdn());
-				String existingAccountNo = existingBankPocket.getCardpan();
-				if(!existingAccountNo.equals(subscriberUpgradeData.getBankAccountNumber())) {
-					log.info("Updating the old bank a/c no " + existingAccountNo + " with the new a/c no "+realMsg.getAccountNumber() + "for subscriber with mdn "+ subscriberMDN.getMdn());
-					existingBankPocket.setCardpan(subscriberUpgradeData.getBankAccountNumber());
-					pocketDao.save(existingBankPocket);         
+		if (!(subscriberUpgradeData.getSubscriberStatus().equals(subscriberMDN.getStatus()))) {
+			if (!CmFinoFIX.MDNStatus_Retired.equals(subscriberUpgradeData.getSubscriberStatus())) {
+				log.info("Subscriber:"+subscriber.getId()+" Force Close Requested field is updated to " + 
+						userService.getCurrentUser().getUsername() + " by user:"+getLoggedUserNameWithIP());
+				subscriberMDN.setIsforcecloserequested(true);
+			}
+			subscriberMDN.setStatus(subscriberUpgradeData.getSubscriberStatus());
+			subscriberMDN.setStatustime(new Timestamp());
+			subscriberMDN.getSubscriber().setStatus(subscriberUpgradeData.getSubscriberStatus());
+			subscriberMDN.getSubscriber().setStatustime(new Timestamp());
+			subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriberMDN.getSubscriber(), true);
+		} else{
+			subscriber.setLanguage(subscriberUpgradeData.getLanguage());
+			subscriber.setFirstname(subscriberUpgradeData.getFullName());
+			subscriber.setEmail(subscriberUpgradeData.getEmail());
+			
+			subscriber.setAddressBySubscriberaddressid(subscriberUpgradeData.getAddress());
+			subscriber.setNotificationmethod(subscriberUpgradeData.getNotificationMethod());
+			subscriber.setRestrictions(subscriberUpgradeData.getSubscriberRestriction());
+			
+			subscriberMDN.setIdtype(subscriberUpgradeData.getIdType());
+			subscriberMDN.setIdnumber(subscriberUpgradeData.getIdNumber());
+			subscriberMDN.setKtpdocumentpath(subscriberUpgradeData.getIdCardScanPath());
+			subscriberMDN.setRestrictions(subscriberUpgradeData.getSubscriberRestriction());
+			
+			if(StringUtils.isNotBlank(subscriberUpgradeData.getBankAccountNumber())){
+				Pocket existingBankPocket = subscriberService.getDefaultPocket(subscriberMDN.getMdn(), CmFinoFIX.PocketType_BankAccount, CmFinoFIX.Commodity_Money);
+				if(existingBankPocket != null) {
+					log.info("Bank pocket already exists for subscriber with mdn " + subscriberMDN.getMdn());
+					String existingAccountNo = existingBankPocket.getCardpan();
+					if(!existingAccountNo.equals(subscriberUpgradeData.getBankAccountNumber())) {
+						log.info("Updating the old bank a/c no " + existingAccountNo + " with the new a/c no "+realMsg.getAccountNumber() + "for subscriber with mdn "+ subscriberMDN.getMdn());
+						existingBankPocket.setCardpan(subscriberUpgradeData.getBankAccountNumber());
+						pocketDao.save(existingBankPocket);         
+					}
 				}
 			}
 		}
+		
+		subMdndao.save(subscriberMDN);
+		subscriberService.save(subscriber);
 	}
 
 	private void displayExistingSubscriberData(SubscriberMdn subscriberMDN,
@@ -242,6 +261,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 		entry.setNotificationMethod(subscriber.getNotificationmethod());
 		entry.setMDNRestrictions(subscriberMDN.getRestrictions());
 		entry.setLanguage(subscriber.getLanguage());
+		entry.setSubscriberStatus(subscriber.getStatus());
 	}
 
 	private void displaySubmitedRequestData(SubscriberMdn subscriberMDN,
@@ -272,6 +292,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 		entry.setNotificationMethod(subscriberUpgradeData.getNotificationMethod());
 		entry.setMDNRestrictions(subscriberUpgradeData.getSubscriberRestriction());
 		entry.setLanguage(subscriberUpgradeData.getLanguage());
+		entry.setSubscriberStatus(subscriberUpgradeData.getSubscriberStatus());
 	}
 
 	private String getIdTypeCode(String idTypeValue) {
