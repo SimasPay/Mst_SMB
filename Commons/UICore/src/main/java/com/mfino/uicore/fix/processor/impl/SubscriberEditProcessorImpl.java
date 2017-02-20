@@ -301,12 +301,13 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			enumTextQuery.setTagId(CmFinoFIX.TagID_IDTypeForKycUpgrade);
 			enumTextQuery.setDisplayText(idTypeValue);
 			List<EnumText> enumTexts = enumTextService.getEnumText(enumTextQuery);
-			if(enumTexts != null){
+			if(enumTexts != null && enumTexts.size() > 0){
 				EnumText enumText = enumTexts.get(0);
 				idTypeValue = enumText.getEnumcode();
+				return idTypeValue;
 			}
 		}
-		return idTypeValue;
+		return "";
 	}
 
 }
