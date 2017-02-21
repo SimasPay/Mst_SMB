@@ -44,7 +44,7 @@ public class MdnValidationForForgotPINHandlerImpl extends FIXMessageHandler impl
 	public XMLResult handle(TransactionDetails transactionDetails) {
 		log.info("MdnValidationForForgotPINHandlerImpl :: Handling MDN for ForgotPIN webapi request for "+transactionDetails.getSourceMDN());
 		
-		XMLResult result = new MDNvalidationforForgotPINXMLResult();
+		MDNvalidationforForgotPINXMLResult result = new MDNvalidationforForgotPINXMLResult();
 		
 		CMForgotPinInquiry forgotPin=new CMForgotPinInquiry();
 		forgotPin.setSourceMDN(transactionDetails.getSourceMDN());
@@ -66,6 +66,7 @@ public class MdnValidationForForgotPINHandlerImpl extends FIXMessageHandler impl
             Pocket emoneyPocket = subscriberService.getDefaultPocket(subscriberMDN.getId().longValue(), CmFinoFIX.PocketType_SVA, 
             		CmFinoFIX.Commodity_Money);
 			if(emoneyPocket != null && emoneyPocket.getStatus().intValue() == CmFinoFIX.PocketStatus_Active){
+				result.setSecurityQuestion(subscriberMDN.getSubscriber().getSecurityquestion());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_EmoneyNotificationForForgotPin);
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
       			  return result;

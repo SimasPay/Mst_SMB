@@ -118,7 +118,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		if(subscriberMDN!=null){
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			
-			if(transactionDetails.getSecurityQuestion().equalsIgnoreCase(subscriber.getSecurityquestion())){
+			//if(transactionDetails.getSecurityQuestion().equalsIgnoreCase(subscriber.getSecurityquestion())){
 				String answer = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), transactionDetails.getSecurityAnswer());
 				if(answer.equalsIgnoreCase(subscriber.getSecurityanswer()))
 				{
@@ -139,13 +139,13 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 					return result;
 				}
-			}
+			/*}
 			else{
 				log.error("Subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has wrong security question");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryFailed);
 				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
 				return result;
-			}
+			}*/
 		}
 		log.error("Source subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has failed validations");
 		result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryFailed);
