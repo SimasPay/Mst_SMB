@@ -152,7 +152,7 @@ public class MfinoUtil {
 		BigDecimal amount = new BigDecimal(10000);
 //		String prefixWording = "ADMIN BANK : RP.";
 		String prefixWording = ConfigurationUtil.getPrefixWordingForTotalTagihan();
-		System.out.println(replaceAdminBankValue(additionalInfo, charges, amount, prefixWording));
+		System.out.println(replaceWordingValue(additionalInfo, charges, amount));
 		//System.out.println(MfinoUtil.normalizeMDN("008811234567"));
 		//System.out.println(generateComplexPin());
 	/*	String username = "Approver";
@@ -397,79 +397,89 @@ public static boolean isPinStrongEnough(String pin) {
 	 * @param prefixWording <i>ADMIN BANK : RP.</i>
 	 * @return
 	 */
-	public static String replaceFormatedAdminBankValue(String additionalInfo, BigDecimal charges, BigDecimal amount, String prefixWording){
+	public static String replaceFormatedWordingValue(String additionalInfo, BigDecimal charges, BigDecimal amount){
 		if(charges == null) charges = BigDecimal.ZERO;
-		if(StringUtils.contains(additionalInfo, prefixWording)){
+		if(amount == null) amount = BigDecimal.ZERO;
+		
+		if(StringUtils.contains(additionalInfo, ConfigurationUtil.getPrefixWordingForAdminBank()) || 
+				StringUtils.contains(additionalInfo, ConfigurationUtil.getPrefixWordingForTotalTagihan())){
+			
 			String[] splitedAdditionalInfo = StringUtils.split(additionalInfo, "|");
-			String oldAdminBankWording = "";
-			String newAdminBankWording = "";
 			
 			for (String addInfo : splitedAdditionalInfo) {
+
+				String oldWording = addInfo;
+				String newWording = "";
 				
-				if(prefixWording==ConfigurationUtil.getPrefixWordingForAdminBank()){
-					oldAdminBankWording = addInfo;
-					String addInfoValue = StringUtils.substring(addInfo, StringUtils.length(prefixWording));
+				if(StringUtils.startsWith(addInfo, ConfigurationUtil.getPrefixWordingForAdminBank())){
+					String addInfoValue = StringUtils.substring(addInfo, StringUtils.length(ConfigurationUtil.getPrefixWordingForAdminBank()));
+					
 					int length = StringUtils.length(getNumberFormat().format(charges));
 					String replacedValue = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
 								getNumberFormat().format(charges));
 					
-					newAdminBankWording = prefixWording+replacedValue;
-					additionalInfo = StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+					newWording = ConfigurationUtil.getPrefixWordingForAdminBank()+replacedValue;
+					additionalInfo = StringUtils.replace(additionalInfo, oldWording, newWording);
 				}
 				
-				if(prefixWording==ConfigurationUtil.getPrefixWordingForTotalTagihan()){
-					oldAdminBankWording = addInfo;
-					String addInfoValue = StringUtils.substring(addInfo, StringUtils.length(prefixWording));
-					int length = StringUtils.length(getNumberFormat().format(charges));
+				if(StringUtils.startsWith(addInfo, ConfigurationUtil.getPrefixWordingForTotalTagihan())){
+					String addInfoValue = StringUtils.substring(addInfo, StringUtils.length(ConfigurationUtil.getPrefixWordingForTotalTagihan()));
 					BigDecimal totalAmount = amount.add(charges);
+					int length = StringUtils.length(getNumberFormat().format(totalAmount));
 					String replacedValue = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
 							getNumberFormat().format(totalAmount));
 					
-					newAdminBankWording = prefixWording+replacedValue;
-					additionalInfo = StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+					newWording = ConfigurationUtil.getPrefixWordingForTotalTagihan()+replacedValue;
+					additionalInfo = StringUtils.replace(additionalInfo, oldWording, newWording);
 				}
 			}
 		}
 		return additionalInfo;
 	}
 	
-	public static String replaceAdminBankValue(String additionalInfo, BigDecimal charges, BigDecimal amount, String prefixWording){
+	public static String replaceWordingValue(String additionalInfo, BigDecimal charges, BigDecimal amount){
 		if(charges == null) charges = BigDecimal.ZERO;
+		if(amount == null) amount = BigDecimal.ZERO;
 		
-		String dataElement62 = additionalInfo.substring(2);
-		
-		String oldAdminBankWording = "";
-		String newAdminBankWording = "";
-		Iterable<String> records = Splitter.fixedLength(38).split(dataElement62);
-		
-		for (String addInfo : records) {
-			if (StringUtils.startsWith(addInfo, ConfigurationUtil.getPrefixWordingForAdminBank())) {
-				oldAdminBankWording = addInfo;
-				prefixWording = ConfigurationUtil.getPrefixWordingForAdminBank();
-				String addInfoValue = StringUtils.substring(addInfo, prefixWording.length());
-				int length = StringUtils.length(getNumberFormat().format(charges));
-				
-				String replacedValue  = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
-							getNumberFormat().format(charges));
-				
-				newAdminBankWording = prefixWording+replacedValue;
-				additionalInfo = StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
-			}
+		if(( StringUtils.contains(additionalInfo, ConfigurationUtil.getPrefixWordingForAdminBank()) 
+				|| StringUtils.contains(additionalInfo, ConfigurationUtil.getPrefixWordingForTotalTagihan()) )
+				&& StringUtils.length(additionalInfo) >= 38){
+
+			String dataElement62 = StringUtils.substring(additionalInfo, 2);
+			String oldAdminBankWording = "";
+			String newAdminBankWording = "";
+			Iterable<String> records = Splitter.fixedLength(38).split(dataElement62);
 			
-			if (StringUtils.startsWith(addInfo, ConfigurationUtil.getPrefixWordingForTotalTagihan())) {
-				oldAdminBankWording = addInfo;
-				prefixWording = ConfigurationUtil.getPrefixWordingForTotalTagihan();
-				String addInfoValue = StringUtils.substring(addInfo, prefixWording.length());
-				int length = StringUtils.length(getNumberFormat().format(charges));
+			for (String addInfo : records) {
+				if (StringUtils.startsWith(addInfo, ConfigurationUtil.getPrefixWordingForAdminBank())) {
+					oldAdminBankWording = addInfo;
+					String prefixWording = ConfigurationUtil.getPrefixWordingForAdminBank();
+					String addInfoValue = StringUtils.substring(addInfo, prefixWording.length());
+					int length = StringUtils.length(getNumberFormat().format(charges));
+					
+					String replacedValue  = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
+								getNumberFormat().format(charges));
+					
+					newAdminBankWording = prefixWording+replacedValue;
+					additionalInfo = StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+				}
 				
-				BigDecimal totalAmount = amount.add(charges);
-				String replacedValue = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
-							getNumberFormat().format(totalAmount));
-				
-				newAdminBankWording = prefixWording+replacedValue;
-				additionalInfo = StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+				if (StringUtils.startsWith(addInfo, ConfigurationUtil.getPrefixWordingForTotalTagihan())) {
+					oldAdminBankWording = addInfo;
+					String prefixWording = ConfigurationUtil.getPrefixWordingForTotalTagihan();
+					String addInfoValue = StringUtils.substring(addInfo, prefixWording.length());
+					
+					BigDecimal totalAmount = amount.add(charges);
+					int length = StringUtils.length(getNumberFormat().format(totalAmount));
+					String replacedValue = StringUtils.replace(addInfoValue, StringUtils.substring(addInfoValue, 1, length+1), 
+								getNumberFormat().format(totalAmount));
+					
+					newAdminBankWording = prefixWording+replacedValue;
+					additionalInfo = StringUtils.replace(additionalInfo, oldAdminBankWording, newAdminBankWording);
+				}
 			}
 		}
+		
 		return additionalInfo;
 	}
 }
