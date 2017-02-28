@@ -34,8 +34,8 @@
    "Amount" : "Jumlah",
    "Begining Balance" : "Saldo Awal",
    "Ending Balance" : "Saldo Akhir",
-   "Transaction Type" : "Jenis Transaksi"
-   
+   "Transaction Type" : "Jenis Transaksi",
+   "Withdraw From ATM" : "Tarik Tunai dari ATM"
     },
  "0" : {
    "language" : "English",
@@ -72,6 +72,7 @@
    "Amount" : "Amount",
    "Begining Balance" : "Begining Balance",
    "Ending Balance" : "Ending Balance",
-   "Transaction Type" : "Transaction Type"
+   "Transaction Type" : "Transaction Type",
+   "Withdraw From ATM" : "Cash Withdrawal From ATM"
     }
 }

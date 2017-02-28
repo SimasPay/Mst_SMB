@@ -232,7 +232,7 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 			
 			transactionRequestValidationService.validateCashOutAtATMInquiryDetails(transactionDetails);			
 			if (StringUtils.isBlank(sourceMessage)) {
-				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASH_OUT);
+				transactionDetails.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM);
 			}
 			xmlResult = (XMLResult) subscriberCashOutAtATMInquiryHandler.handle(transactionDetails);
 		}

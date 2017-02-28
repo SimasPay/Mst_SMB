@@ -512,6 +512,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			txnType = LanguageTranslator.translate(language, "QR Payment") + ((bp != null) ? bp.getInfo1() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_DONATION.equalsIgnoreCase(sourceMsg)){
 			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_DONATION);
+		} else if(ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM.equalsIgnoreCase(sourceMsg)){
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM);
 		}
 		else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);

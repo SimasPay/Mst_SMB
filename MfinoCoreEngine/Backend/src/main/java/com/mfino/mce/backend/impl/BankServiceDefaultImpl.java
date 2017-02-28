@@ -3604,7 +3604,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				                pct.setLocalbalancerevertrequired(CmFinoFIX.Boolean_True);
 				                pct.setBankreversalrequired(CmFinoFIX.Boolean_True);
 				                pct.setUicategory(confirmationToBank.getUICategory());
-		                
+				                pct.setDestmdn(confirmationToBank.getDestMDN());
+				                
 				                this.coreDataWrapper.save(pct);
 				                this.coreDataWrapper.save(objSrcPocket);
 				                if (this.ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)) {

@@ -168,7 +168,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 	    
 	    if (!"Your request is queued. Please check after sometime.".equals(transactionResponse.getMessage())) {
 	    	if (transactionResponse.isResult()) {
-	    		this.transactionChargingService.addTransferID(sctl, cashoutConfirm.getTransferID().longValue());
+	    		transactionChargingService.confirmTheTransaction(sctl, cashoutConfirm.getTransferID());
 	    		this.commodityTransferService.addCommodityTransferToResult(result, cashoutConfirm.getTransferID());
 	    		result.setDebitAmount(sctl.getTransactionamount());
 	    		result.setCreditAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
