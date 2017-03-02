@@ -140,11 +140,16 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
         	if(realMsg.getSubscriberUpgradeStatus() == CmFinoFIX.SubscriberUpgradeStatus_Approve){
 	        	approveSubscriberEdit(realMsg, subscriberMDN, subscriber, subscriberUpgradeData);
 	        	
-				error.setErrorDescription(MessageText._("Request for Subscriber Upgrade is Approved successfully"));
+	        	error.setErrorDescription(MessageText._("Request for Subscriber Edit Data is Approved successfully"));
+	        	if(CmFinoFIX.MDNStatus_Retired.equals(subscriberMDN.getStatus())){
+	        		error.setErrorDescription(MessageText._("Request for Subscriber Archival is Approved successfully"));
+	        	}
+				
 				error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 				log.info("Request for Subscriber Upgraded Approved successfully");
+				
         	} else {
-				error.setErrorDescription(MessageText._("Request for Subscriber Upgrade is Rejected successfully"));
+				error.setErrorDescription(MessageText._("Request for Subscriber Edit Data is Rejected successfully"));
 				error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
 				log.info("Request for Subscriber Upgraded Rejected successfully");
 			}
