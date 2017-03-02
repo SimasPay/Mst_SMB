@@ -1037,6 +1037,7 @@ mFino.page.subscriber = function(config){
 		var addBankPocketToEmoneySubscriber=  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket');
 		var approveAddBankPocketToEmoneySubscriber =  mainItem.getTopToolbar().getComponent('emoneysub.add.bankpocket.checker');
 		var approveRejectResetMPin = mainItem.getTopToolbar().getComponent('sub.approve.resetpin');
+		var approveRejectSubsEdit = mainItem.getTopToolbar().getComponent('sub.details.edit.checker');
 		
 		if(addBankPocketToEmoneySubscriber){
 			 if ( (detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.NoKyc ||
@@ -1152,6 +1153,13 @@ mFino.page.subscriber = function(config){
 							approveAddBankPocketToEmoneySubscriber.show();
 						}else {
 							approveAddBankPocketToEmoneySubscriber.hide();
+						}
+					}
+					if(approveRejectSubsEdit){
+						if (CmFinoFIX.SubscriberActivity.Edit_Subscriber_Details == response.m_pSubscriberActivity) {
+							approveRejectSubsEdit.show();
+						}else {
+							approveRejectSubsEdit.hide();
 						}
 					}
 				}
