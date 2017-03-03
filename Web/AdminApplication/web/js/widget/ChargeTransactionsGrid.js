@@ -129,6 +129,11 @@ mFino.widget.ChargeTransactionsGrid = function (config) {
             
         },
         {
+            header: _("SourcePocketType"),
+            width : 100,
+            dataIndex: CmFinoFIX.message.JSServiceChargeTransactions.Entries.SourcePocketTypeText._name
+        },
+        {
         	header: _("AdditionalInfo"),
         	width : 120,
         	dataIndex: CmFinoFIX.message.JSServiceChargeTransactions.Entries.AdditionalInfo._name

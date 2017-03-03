@@ -3553,7 +3553,8 @@
 			<field name="ParentSCTLID" required="N"/>   
 			<field name="Info1" required="N"/>
 			<field name="AdjustmentStatus" required="N"/>
-			<field name="ServiceID" required="N"/>						
+			<field name="ServiceID" required="N"/>
+			<field name="SourcePocketTypeText" required="Y"/>						
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N">
 				<field name="TransactionID" required="N"/> 
 				<field name="RecordID" id="ID" required="N" />  	
@@ -3607,7 +3608,7 @@
 				<field name="AdjustmentStatusText" required="N"/>
 				<field name="SourceAccountNumber" required="N"/>
 				<field name="DestBankCode" required="N"/>
-				
+				<field name="SourcePocketTypeText" required="Y"/>
 			</group>
 		</message>
 		<message name="MoneyTransferReversalFromBank" msgtype="1289" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="MoneyTransferFromBank">

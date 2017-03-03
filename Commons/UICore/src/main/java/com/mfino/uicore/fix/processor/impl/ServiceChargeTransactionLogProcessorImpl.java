@@ -310,6 +310,8 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		}
 		entry.setCommodityTransferID(ctid);
 		PendingCommodityTransfer pct = pctDao.getById(ctid);
+		String SourcePocketTypeText = "";
+		
 	    if(pct != null)
 	    {
 	    	if(pct.getOperatorresponsecode() != null){
@@ -320,6 +322,18 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	    		}
 	    	}
 	    	entry.setSourceAccountNumber(pct.getSourcecardpan());
+	    	
+	    	if(pct.getSourcepockettype()!=null){
+	    		SourcePocketTypeText=enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, CmFinoFIX.Language_English, pct.getSourcepockettype());
+	    		if(SourcePocketTypeText.equals("SVA"))
+	    		SourcePocketTypeText="e-Money";
+	    		else if(SourcePocketTypeText.equals("BankAccount"))
+		    	SourcePocketTypeText="Bank";
+	    		else if(SourcePocketTypeText.equals("LakuPandai"))
+		    	SourcePocketTypeText="Laku Pandai";
+	    		
+	    	}
+	    	
 	    }
 	    else
 	    {		    	
@@ -334,8 +348,18 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 		    		}
 		    	}
 		    	entry.setSourceAccountNumber(ct.getSourcecardpan());
+		    	if(ct.getSourcepockettype()!=null){
+		    		SourcePocketTypeText=enumTextService.getEnumTextValue(CmFinoFIX.TagID_PocketType, CmFinoFIX.Language_English, ct.getSourcepockettype());
+		    		if(SourcePocketTypeText.equals("SVA"))
+			    	SourcePocketTypeText="e-Money";
+			    	else if(SourcePocketTypeText.equals("BankAccount"))
+				    SourcePocketTypeText="Bank";
+			    	else if(SourcePocketTypeText.equals("LakuPandai"))
+				    SourcePocketTypeText="Laku Pandai";
+		    	}
 		    }
 	    }
+	    entry.setSourcePocketTypeText(SourcePocketTypeText);
 		if(sctl.getDestmdn()!=null){
 			entry.setDestMDN(sctl.getDestmdn());
 		}
