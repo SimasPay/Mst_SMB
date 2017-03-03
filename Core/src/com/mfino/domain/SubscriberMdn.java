@@ -117,8 +117,8 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 	}
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBSCRIBERID", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SUBSCRIBERID")
 	public Subscriber getSubscriber() {
 		return this.subscriber;
 	}

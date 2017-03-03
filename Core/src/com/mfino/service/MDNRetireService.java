@@ -15,5 +15,9 @@ public interface MDNRetireService {
 	 * @return
 	 */
 	public Integer retireMDN(Long subscriberMDNId);
+	
+	public Integer closeMDN(Long subscriberMDNId);
+	
+	public void retireAllCardPans(Long mdnId, boolean isRetireBankPocket);
 
 }

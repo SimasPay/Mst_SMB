@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,11 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.PocketDAO;
-import com.mfino.dao.SubscriberDAO;
-import com.mfino.dao.SubscriberMDNDAO;
+import com.mfino.dao.RetiredCardPANInfoDAO;
 import com.mfino.dao.query.PocketQuery;
+import com.mfino.dao.query.RetiredCardPANInfoQuery;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.RetiredCardPANInfo;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.fix.CmFinoFIX;
@@ -29,6 +31,7 @@ import com.mfino.fix.CmFinoFIX.CMJSSubscriberClosing;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.result.Result;
 import com.mfino.result.XMLResult;
+import com.mfino.service.MDNRetireService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
@@ -92,6 +95,10 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
 	@Qualifier("SubscriberStatusEventServiceImpl")
 	private SubscriberStatusEventService subscriberStatusEventService;
 	
+	@Autowired
+	@Qualifier("MDNRetireServiceImpl")
+	private MDNRetireService mdnRetireService;
+	
 	boolean isMoneyAvailable = false;
 	boolean isBankPocketAvailable = false;
 	
@@ -124,26 +131,29 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
 						if(!isBankPocketAvailable) {
 							
 							Subscriber subscriber = subMDN.getSubscriber();
-							subscriber.setStatus(CmFinoFIX.SubscriberStatus_Retired);
 							
-							SubscriberDAO subscriberDAO = DAOFactory.getInstance().getSubscriberDAO();
-							subscriberDAO.save(subscriber);
+							Integer res = mdnRetireService.closeMDN(subMDN.getId());
 							
-							subMDN.setMdn(subMDN.getMdn() + "R");
-							subMDN.setStatus(CmFinoFIX.SubscriberStatus_Retired);
-							subMDN.setSubscriber(subscriber);
+							if(res == CmFinoFIX.ResolveAs_success) {
 							
-							SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
-							subscriberMDNDAO.save(subMDN);
-							
-							subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
+								subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriber,true);
+								
+								result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingSuccess));
+								result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+								result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingSuccess);
+								
+								log.info("Subscriber state modifeid to retired....");
+								
+							} else {
+								
+								result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+								result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingFailed);
+								
+								log.info("Subscriber state not modifeid to retired....");
+							}
 						}
 						
-						result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingSuccess));
-						result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
-						result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingSuccess);
 						
-						log.info("Subscriber state modifeid to retired....");
 						
 					} else {
 						
@@ -235,12 +245,15 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
 	        	
         	} else {
         		
-        		String cardPanStringToReplace = null;
+                String cardPanStringToReplace = null;
                 String cardPan = eachPocket.getCardpan();
+                int timesRetired = 0;
                 
                 if (StringUtils.isNotBlank(cardPan)) {
                 	
-                	cardPanStringToReplace = cardPan + "R";
+                	//cardPanStringToReplace = getCardPanRetiredStringForThisCardPan(cardPan);
+                	timesRetired = getTimesRetiredForThisCardPan(cardPan);
+                	cardPanStringToReplace = cardPan + "R" + timesRetired;
                 }
 
                 if (StringUtils.isBlank(cardPanStringToReplace)) {
@@ -250,9 +263,28 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
 
                 eachPocket.setCardpan(cardPanStringToReplace);
                 eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
-                eachPocket.setIsdefault(CmFinoFIX.Boolean_False);
+                eachPocket.setIsdefault(true);
                 
-                pocketDAO.save(eachPocket);
+                try{
+                	
+                	pocketDAO.save(eachPocket);
+                	
+                }catch(ConstraintViolationException e){
+                	
+                	//Handles already existing duplicate card pans insertion, Scheduler picks it in next cycle
+                	log.info("Handling Constraint violation Exception Occured: " + e );
+                	if (StringUtils.isNotBlank(cardPan)) {
+                		
+                		timesRetired=timesRetired+1;
+                    	updateCardPANInfo(cardPan, timesRetired);
+                    	throw e;
+                    }            	
+                }
+                
+                if (StringUtils.isNotBlank(cardPan)) {
+                	
+                	updateCardPANInfo(cardPan, timesRetired+1);
+                }
                 
                 isMoneyMoved = true;
         	}
@@ -260,6 +292,46 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
         
         return isMoneyMoved;
 	}
+
+	private void updateCardPANInfo(String cardPan, int timesRetired) {
+		
+	    RetiredCardPANInfoQuery query = new RetiredCardPANInfoQuery();
+		query.setCardPan(cardPan);
+		
+		RetiredCardPANInfoDAO dao = DAOFactory.getInstance().getRetiredCardPANInfoDAO();
+		List<RetiredCardPANInfo> results = dao.get(query);
+		
+		if(results.size() > 0){
+			RetiredCardPANInfo retiredCardPANInfo = results.get(0);
+			if(retiredCardPANInfo != null){
+				retiredCardPANInfo.setRetirecount(timesRetired);
+				dao.save(retiredCardPANInfo);
+			}    	    	
+		}
+		else{
+			RetiredCardPANInfo retiredCardPANInfo = new RetiredCardPANInfo();
+			retiredCardPANInfo.setCardpan(cardPan);
+			retiredCardPANInfo.setRetirecount(timesRetired);
+			dao.save(retiredCardPANInfo);
+		}
+	}
+	
+	private int getTimesRetiredForThisCardPan(String cardPan) {
+        RetiredCardPANInfoQuery query = new RetiredCardPANInfoQuery();
+    	query.setCardPan(cardPan);
+    	
+    	RetiredCardPANInfoDAO dao = DAOFactory.getInstance().getRetiredCardPANInfoDAO();
+    	List<RetiredCardPANInfo> results = dao.get(query);
+    	int timesRetired = 0;
+    	if(results.size() > 0){
+	    	RetiredCardPANInfo retiredCardPANInfo = results.get(0);
+	    	if(retiredCardPANInfo != null){
+	    		timesRetired = (int) retiredCardPANInfo.getRetirecount();    		
+	    	}
+    	}
+    	
+    	return timesRetired;    	
+    }
 	
 	private XMLResult sendMoneyTransferInquiry(TransactionDetails txnDetails) {
 

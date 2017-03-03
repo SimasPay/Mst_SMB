@@ -62,6 +62,36 @@ public class MDNRetireServiceImpl implements MDNRetireService{
 	private SubscriberStatusEventService subscriberStatusEventService;
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public Integer closeMDN(Long subscriberMDNId) {
+		Integer result = null;
+		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
+		SubscriberMdnQuery query = new SubscriberMdnQuery();
+		query.setId(subscriberMDNId);
+		List <SubscriberMdn> lst = subscriberMDNDAO.get(query);
+		SubscriberMdn subscriberMDN = lst.get(0);
+		
+		if (subscriberMDN != null) {
+			log.info("Retiring the MDN -->" + subscriberMDN.getMdn());
+			
+			try {
+				
+				String markedMDN = getRXString(subscriberMDN);
+				suffixMDNWithRX(subscriberMDN.getId().longValue(), markedMDN);
+				result = CmFinoFIX.ResolveAs_success;
+				
+			} catch (Exception ex) {
+				
+				log.error("Error while getting the pending transactions for MDN --> " + subscriberMDN.getMdn(), ex);
+				result = CmFinoFIX.ResolveAs_failed;
+			}
+		}
+		
+		log.info("Retiring Status is --> " + result);
+		
+		return result;
+	}
+	
+	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public Integer retireMDN(Long subscriberMDNId) {
 		Integer result = null;
 		SubscriberMDNDAO subscriberMDNDAO = DAOFactory.getInstance().getSubscriberMdnDAO();
@@ -246,7 +276,59 @@ public class MDNRetireServiceImpl implements MDNRetireService{
             	updateCardPANInfo(cardPan, timesRetired+1);
             }
         }        
-        }
+    }
+    
+    public void retireAllCardPans(Long mdnId, boolean isRetireBankPocket) {
+        // Here we need to get the Records from pocket table for MdnId.        
+		PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();			
+        PocketQuery pocketQuery = new PocketQuery();
+        pocketQuery.setMdnIDSearch(mdnId);
+        
+        List<Pocket> resultantPockets = pocketDAO.get(pocketQuery);
+
+        for (Pocket eachPocket : resultantPockets) {
+        	
+        	if(!isRetireBankPocket) {
+        		
+        		if(eachPocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())) {
+                	
+            		continue;
+            	}
+        	}
+        	
+        	String cardPanStringToReplace = null;
+            String cardPan = eachPocket.getCardpan();
+            int timesRetired = 0;            
+            if (StringUtils.isNotBlank(cardPan)) {
+            	//cardPanStringToReplace = getCardPanRetiredStringForThisCardPan(cardPan);
+            	timesRetired = getTimesRetiredForThisCardPan(cardPan);
+            	cardPanStringToReplace = cardPan + "R" + timesRetired;
+            }
+
+            if (StringUtils.isBlank(cardPanStringToReplace)) {
+            	cardPanStringToReplace = cardPan;
+            }
+
+            eachPocket.setCardpan(cardPanStringToReplace);
+            eachPocket.setStatus(CmFinoFIX.PocketStatus_Retired);
+            eachPocket.setIsdefault(true);
+            // Now set back the Data into the table.
+            try{
+            	pocketDAO.save(eachPocket);
+            }catch(ConstraintViolationException e){
+            	//Handles already existing duplicate card pans insertion, Scheduler picks it in next cycle
+            	log.info("Handling Constraint violation Exception Occured: " + e );
+            	if (StringUtils.isNotBlank(cardPan)) {
+            		timesRetired=timesRetired+1;
+                	updateCardPANInfo(cardPan, timesRetired);
+                	throw e;
+                }            	
+            }
+            if (StringUtils.isNotBlank(cardPan)) {
+            	updateCardPANInfo(cardPan, timesRetired+1);
+            }
+        }        
+       }
     
     
     
