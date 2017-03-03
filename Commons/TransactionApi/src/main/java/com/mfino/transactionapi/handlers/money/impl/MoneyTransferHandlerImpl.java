@@ -216,6 +216,9 @@ public class MoneyTransferHandlerImpl extends FIXMessageHandler implements Money
 			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
 				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER;
 			}
+			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_SVA)){
+				transactionName = ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER;
+			}
 		}
 		if(srcPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_LakuPandai)){
 			if(destinationPocket.getPocketTemplateByPockettemplateid().getType()==(CmFinoFIX.PocketType_BankAccount)){
