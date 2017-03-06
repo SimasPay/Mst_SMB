@@ -176,5 +176,7 @@ public interface TransactionApiValidationService {
 	public Integer validateSubscriberForResetPinRequest(SubscriberMdn subscriberMDN);
 	
 	public Integer validateSubscriberForResetPinInquiryRequest(SubscriberMdn subscriberMDN);
+	
+	public Integer validateSubscriberForForgotPinRequest(SubscriberMdn subscriberMDN);
 
 }

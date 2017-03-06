@@ -1,6 +1,8 @@
 package com.mfino.transactionapi.handlers.subscriber.impl;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.constants.GeneralConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
@@ -90,6 +93,19 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		result.setTransactionID(transactionLog.getId().longValue());
 		
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(forgotPinInquiry.getSourceMDN());
+		
+		Set<Pocket> pocketsSet = subscriberMDN.getPockets();
+		for (Iterator<Pocket> iterator = pocketsSet.iterator(); iterator.hasNext();) {
+			
+			Pocket pocket = (Pocket) iterator.next();
+			
+			if(pocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_BankAccount) {
+				
+				result.setNotificationCode(CmFinoFIX.NotificationCode_BankNotificationForForgotPin);
+				return result;
+				
+			}
+		}
 		
 		log.info("creating the serviceCharge object....");
 		Transaction transaction = null;

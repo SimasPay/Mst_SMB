@@ -83,12 +83,12 @@ public class ResendMFAOTPNoPINHandlerImpl  extends FIXMessageHandler implements 
 		sourceMDN = subscriberMdnService.getByMDN(transactionDetails.getSourceMDN());
 		result.setCompany(sourceMDN.getSubscriber().getCompany());
 			
-		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
+		/*Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(sourceMDN);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			validationResult = processValidationResultForAgent(validationResult); // Gets the corresponding Agent Notification message
 			result.setNotificationCode(validationResult);
 			return result;
-		}
+		}*/
 		
 		int noOfRetryAttemptsForMFAOTP = systemParametersService.getInteger(SystemParameterKeys.MAXIMUM_NO_OF_RETRIE_ATTEMPTS);
 		Long sctlid = transactionDetails.getSctlId();

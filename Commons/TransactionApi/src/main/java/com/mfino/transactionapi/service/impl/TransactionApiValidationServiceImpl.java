@@ -716,4 +716,23 @@ public class TransactionApiValidationServiceImpl implements TransactionApiValida
 		}
 		return CmFinoFIX.ResponseCode_Success;
 	}
+	
+	public Integer validateSubscriberForForgotPinRequest(SubscriberMdn subscriberMDN) {
+		
+		if(subscriberMDN == null){
+			
+			log.error("SourceMDN is null");
+			return CmFinoFIX.NotificationCode_MDNNotFound;
+		}
+		
+		if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberMDN.getStatus()) ||
+				CmFinoFIX.SubscriberStatus_PendingRetirement.equals(subscriberMDN.getStatus()) ||
+				CmFinoFIX.SubscriberStatus_Retired.equals(subscriberMDN.getStatus()))  {
+			
+			log.error("Source Subscriber status : " + subscriberMDN.getStatus());
+			return CmFinoFIX.NotificationCode_MDNIsRestricted;
+		}
+		
+		return CmFinoFIX.ResponseCode_Success;
+	}
 }
