@@ -180,6 +180,7 @@ public abstract class ReportGenerator {
 		
 		cellContent = cellContent.replace("${BankRRN}", (getReportParameters().getBankRRN() != null) ? getReportParameters().getBankRRN() : "");
 		
+		cellContent = cellContent.replace("${SourcePocketType}", StringUtils.isNotBlank(getReportParameters().getSourcePocketType()) ? getReportParameters().getSourcePocketType() : "");
 		
 		return cellContent;
 	}

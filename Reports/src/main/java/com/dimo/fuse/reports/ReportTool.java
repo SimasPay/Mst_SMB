@@ -290,6 +290,11 @@ public class ReportTool {
 			}			
 		}
 		
+		if (reportParameters.getSourcePocketType() != null) {
+			query = query.replace("${SourcePocketType}", "'" + reportParameters.getSourcePocketType() + "'");
+		} else {
+			query = query.replace("${SourcePocketType}", "'%%'");
+		}
 		if (reportParameters.getMdn() != null) {
 			query = query.replace("${MDN}", "'" + reportParameters.getMdn() + "'");
 		} else {

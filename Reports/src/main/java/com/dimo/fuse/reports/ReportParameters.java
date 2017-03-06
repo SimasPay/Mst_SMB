@@ -85,6 +85,8 @@ public class ReportParameters {
 	private String bankRRN;
 	
 	private String email;
+	
+	private String sourcePocketType;
 
 	public Date getStartTime() {
 		return startTime;
@@ -388,4 +390,13 @@ public class ReportParameters {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getSourcePocketType() {
+		return sourcePocketType;
+	}
+
+	public void setSourcePocketType(String sourcePocketType) {
+		this.sourcePocketType = sourcePocketType;
+	}
+	
 }

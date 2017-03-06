@@ -20,6 +20,7 @@
     					"RC Code", 
     					"Transaction Time",
     					"SourceMDN",
+						"SourcePocketType",
     					"Customer Name",
     					"CIF",    					
     					"Additional Info",
@@ -31,9 +32,9 @@
     					"Destination Bank"
     					],
     
-    "HeaderColumnsWidth" : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "HeaderColumnsWidth" : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
-    "EncryptedColumnIndices" : [16,17],
+    "EncryptedColumnIndices" : [17,18],
         
     "Query" : " SELECT 
 					sctl.ID,
@@ -45,6 +46,7 @@
 					COALESCE(ct.OperatorResponseCode||'', ct.bankrejectreason),
 					TO_CHAR (FROM_TZ(CAST(sctl.CreateTime AS TIMESTAMP),'+00:00') AT TIME ZONE '$(TimeZone)',  'DD-MM-YYYY HH24:MI:SS'),
 					sctl.SourceMDN,
+					decode(ct.SourcePocketType,'1','e-Money','3','Bank','6','Laku Pandia'),
 					s.firstname || ' ' || s.lastname,
 					nvl(sm.applicationid, ' '),					
 					sctl.Info1,
