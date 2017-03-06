@@ -32,6 +32,7 @@ import com.mfino.dao.MerchantDAO;
 import com.mfino.dao.MfinoServiceProviderDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.PocketTemplateConfigDAO;
+import com.mfino.dao.SubsUpgradeBalanceLogDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
@@ -60,6 +61,7 @@ import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.domain.SubscriberUpgradeData;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.errorcodes.Codes;
@@ -1881,6 +1883,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 
 	private void updateUnregisteredSubsPocket(SubscriberMdn subscriberMDN) {
 		Pocket unregisteredPocket = subscriberMDN.getPockets().iterator().next();
+		Subscriber subscriber = subscriberMDN.getSubscriber();
 		
 		KycLevel unBankedLevel = kyclevelDao.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_UnBanked.longValue());
 	    PocketTemplate eMoneyUnBankedTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(unBankedLevel.getKyclevel(), 
@@ -1890,6 +1893,13 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		unregisteredPocket.setPocketTemplateByPockettemplateid(eMoneyUnBankedTemplate);
 		unregisteredPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 		pocketService.save(unregisteredPocket);
+
+		SubsUpgradeBalanceLogDAO subsUpgradeBalanceLogDAO = DAOFactory.getInstance().getSubsUpgradeBalanceLogDAO();
+		SubscriberUpgradeBalanceLog subUpgradeBalanceLog = new SubscriberUpgradeBalanceLog();
+		subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
+		subUpgradeBalanceLog.setPockatBalance(unregisteredPocket.getCurrentbalance());
+		subUpgradeBalanceLog.setTxnDate(new Timestamp());
+		subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
 	}
 
 	/**

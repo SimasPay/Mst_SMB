@@ -1,7 +1,6 @@
 package com.mfino.web.admin.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,6 +25,7 @@ import com.mfino.domain.Address;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeData;
+import com.mfino.errorcodes.Codes;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -101,14 +101,60 @@ public class SubscriberEditController {
 		        }
 				
 				Subscriber subscriber = subscriberMdn.getSubscriber();
-		        Integer subscriberStatus = subscriber.getStatus();
+
+	        	String subscriberStatusReq = request.getParameter("SubscriberStatus");
+	        	Integer subscriberStatusInt = Integer.valueOf(subscriberStatusReq);
+	        	String restrictions = request.getParameter("MDNRestrictions");
+	        	Integer restrictionsInt = 0;
+	        	if(StringUtils.isNotBlank(restrictions) && StringUtils.isNumeric(restrictions))
+	        		restrictionsInt = Integer.valueOf(restrictions);
+	        	
+				if(CmFinoFIX.SubscriberStatus_Active.equals(subscriberStatusInt) && 
+						!isActivationAllowed(subscriber, subscriberStatusInt, restrictionsInt)){
+					responseMap.put("Error", MessageText._("Subscriber Activation not allowed."));
+					return new JSONView(responseMap);
+				}
 		        
-		        if(!(subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active)
-		        		|| subscriberStatus.equals(CmFinoFIX.SubscriberStatus_Active))){
-		        	responseMap.put("Error", MessageText._("Subscriber Should be Active!"));
-		        	return new JSONView(responseMap);
-		        }
+				if(CmFinoFIX.SubscriberStatus_InActive.equals(subscriberStatusInt)){
+					if(!CmFinoFIX.SubscriberRestrictions_AbsoluteLocked.equals(restrictionsInt)){
+						responseMap.put("Error", MessageText._("Subscriber InActivation not allowed."));
+						return new JSONView(responseMap);
+					}
+				}
 		        
+				if(CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriberStatusInt)){
+					responseMap.put("Error", MessageText._("Changing Subscriber status to 'Not Registered' is not allowed."));
+					return new JSONView(responseMap);
+				}
+				
+				if(CmFinoFIX.SubscriberStatus_Initialized.equals(subscriberStatusInt) && 
+						!( CmFinoFIX.SubscriberStatus_Initialized.equals(subscriber.getStatus()) 
+								|| CmFinoFIX.SubscriberStatus_Suspend.equals(subscriber.getStatus()) 
+								|| CmFinoFIX.SubscriberStatus_InActive.equals(subscriber.getStatus())
+								||CmFinoFIX.SubscriberStatus_NotRegistered.equals(subscriber.getStatus())) 
+								){
+					responseMap.put("Error", MessageText._("Intializing subscriber not allowed."));
+					return new JSONView(responseMap);
+				}
+				
+				if(CmFinoFIX.SubscriberStatus_Suspend.equals(subscriberStatusInt) && 
+						!CmFinoFIX.SubscriberStatus_Suspend.equals(subscriber.getStatus())){
+					responseMap.put("Error", MessageText._("Suspending of subscriber not allowed."));
+					return new JSONView(responseMap);
+				}
+				
+				if(subscriberStatusInt != null && !CmFinoFIX.SubscriberStatus_Initialized.equals(subscriberStatusInt) &&
+						CmFinoFIX.SubscriberStatus_Suspend.equals(subscriber.getStatus())){
+					responseMap.put("Error", MessageText._("Suspended subscriber can be moved to Intialized status only."));
+					return new JSONView(responseMap);
+				}
+				
+				if(subscriberStatusInt != null && !CmFinoFIX.SubscriberStatus_Initialized.equals(subscriberStatusInt) &&
+						CmFinoFIX.SubscriberStatus_InActive.equals(subscriber.getStatus()) && !isActivationAllowed(subscriber, subscriberStatusInt, restrictionsInt)){
+					responseMap.put("Error", MessageText._("Inactive subscriber can be moved to Intialized status only."));
+					return new JSONView(responseMap);
+				}
+				
 		        if (request instanceof MultipartHttpServletRequest) {
 					String path = storeFile(request, responseMap, idType, mdnId);
 					
@@ -130,7 +176,7 @@ public class SubscriberEditController {
 	        	addressBaseOnIdCard.setState(request.getParameter("State"));
 	        	addressBaseOnIdCard.setSubstate(request.getParameter("SubState"));
 	        	addressBaseOnIdCard.setCity(request.getParameter("City"));
-	        	addressBaseOnIdCard.setLine1(request.getParameter("StreetAddress"));
+	        	addressBaseOnIdCard.setLine2(request.getParameter("StreetAddress"));
 	        	addressService.save(addressBaseOnIdCard);
 	        	
 	        	upgradeData.setAddress(addressBaseOnIdCard);
@@ -142,7 +188,6 @@ public class SubscriberEditController {
 	        	upgradeData.setBankAccountNumber(request.getParameter("AccountNumber"));
 	        	upgradeData.setLanguage(StringUtils.isBlank(language) ? 0 : Integer.valueOf(language));
 	        	String notifMethod = request.getParameter("NotificationMethod");
-	        	String restrictions = request.getParameter("MDNRestrictions");
 	        	if(StringUtils.isNumeric(notifMethod))
 	        		upgradeData.setNotificationMethod(Integer.valueOf(notifMethod));
 	        	if(StringUtils.isNumeric(restrictions))
@@ -151,9 +196,7 @@ public class SubscriberEditController {
 	        	upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
 	        	upgradeData.setCreatedby(userService.getCurrentUser().getUsername());
 	        	upgradeData.setCreatetime(new Timestamp(System.currentTimeMillis()));
-	        	String subscriberStatusReq = request.getParameter("SubscriberStatus");
-	        	Integer subscriberStatusInt = Integer.valueOf(subscriberStatusReq);
-	        	upgradeData.setSubscriberStatus(StringUtils.isBlank(subscriberStatusReq) ? subscriberStatus : subscriberStatusInt);
+	        	upgradeData.setSubscriberStatus(StringUtils.isBlank(subscriberStatusReq) ? subscriber.getStatus() : subscriberStatusInt);
 	        	
 	        	if(StringUtils.isNotBlank(idCardpath))
 	        		upgradeData.setIdCardScanPath(idCardpath);
@@ -176,6 +219,23 @@ public class SubscriberEditController {
 		return new JSONView(responseMap);
 	}
 	
+	private boolean isActivationAllowed(Subscriber subscriber,
+			Integer subscriberStatusInt, Integer subscriberRestrictionInt) {
+
+		if(CmFinoFIX.SubscriberStatus_Active.equals(subscriber.getStatus())){
+			return true;
+		}
+		if(CmFinoFIX.SubscriberStatus_InActive.equals(subscriber.getStatus())){
+			if(CmFinoFIX.SubscriberRestrictions_NoFundMovement.equals(subscriber.getRestrictions()) && (
+					(subscriberStatusInt == null) || 
+					(CmFinoFIX.SubscriberRestrictions_None.equals(subscriberRestrictionInt)
+							))){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private String storeFile(HttpServletRequest request,
 			Map<String, Object> responseMap, String idType, String mdnId){
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;

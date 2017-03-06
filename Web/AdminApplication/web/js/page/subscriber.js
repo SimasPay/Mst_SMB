@@ -246,10 +246,9 @@ mFino.page.subscriber = function(config){
                 handler : function(){
                     if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
-                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
-                    	Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active."));
-                    } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name) == CmFinoFIX.SubscriberKYCLevel.NoKyc){
-                    	Ext.MessageBox.alert(_("Info"), _("Subscriber edit is not applicable for Non-Kyc Subscriber"));
+                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.SubscriberStatus.PendingRetirement 
+                    		|| detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.SubscriberStatus.Retired){
+                    	Ext.MessageBox.alert(_("Info"), _("Subscriber Edit Data can't be perform to Archived or Retired Subscriber."));
                     } else{
                     	var amsg = new CmFinoFIX.message.JSSubscriberEdit();
                         amsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
@@ -866,8 +865,6 @@ mFino.page.subscriber = function(config){
 	            handler : function(){
 	                if(!detailsForm.record){
 	                    Ext.MessageBox.alert(_("Alert"), _("No subscriber selected!"));
-	                } else if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name)!=CmFinoFIX.SubscriberStatus.Active){
-	                	 Ext.MessageBox.alert(_("Info"), _("Subscriber Should be Active!"));
 	                }else{
 	                	var amsg = new CmFinoFIX.message.JSSubscriberEdit();
                         amsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);

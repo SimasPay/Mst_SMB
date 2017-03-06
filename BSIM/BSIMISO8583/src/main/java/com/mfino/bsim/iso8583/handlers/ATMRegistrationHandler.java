@@ -18,6 +18,7 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.GroupDao;
+import com.mfino.dao.SubsUpgradeBalanceLogDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
@@ -32,6 +33,7 @@ import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
 import com.mfino.domain.UnregisteredTxnInfo;
@@ -456,8 +458,15 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 					defaultPocket.setPocketTemplateByOldpockettemplateid(existingPocketTemplate);
 					defaultPocket.setPocketTemplateByPockettemplateid(emoneyPocketTemplate);
 					defaultPocket.setStatus(CmFinoFIX.PocketStatus_Active);
-							
+					
 					pocketService.save(defaultPocket);
+
+					SubsUpgradeBalanceLogDAO subsUpgradeBalanceLogDAO = DAOFactory.getInstance().getSubsUpgradeBalanceLogDAO();
+					SubscriberUpgradeBalanceLog subUpgradeBalanceLog = new SubscriberUpgradeBalanceLog();
+					subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
+					subUpgradeBalanceLog.setPockatBalance(defaultPocket.getCurrentbalance());
+					subUpgradeBalanceLog.setTxnDate(new Timestamp());
+					subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
 					
 					PocketTemplate bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Subscriber, null, 1L);
 					

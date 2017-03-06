@@ -481,9 +481,22 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 	                  
 			            var aparams = mFino.util.showResponse.getDisplayParam();
 			            mFino.util.fix.send(amsg, aparams);
-			            this.hide();
+			            var window = new Ext.Window({
+							layout:'anchor',
+							width:300,
+							height:100,
+							autoScroll:true,
+							bodyStyle:'backgroundColor:white',
+							title:'Loading..',
+							items:[{
+								anchor : '100%',
+								html: "<h4>Please wait, Processing Subscriber Edit..</h4>"
+							}]
+						});
+						window.show();
 			            Ext.apply(aparams, {
                 			success :  function(response){
+        						window.hide();
                 				this.scope.fireEvent("refresh", amsg.m_pID );
                 				Ext.Msg.show({
                                     title: _('Success'),
@@ -492,9 +505,19 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
                                     buttons: Ext.MessageBox.OK,
                                     multiline: false
                    			   });
-                			},
+                			}, failure : function(fp, action){
+                   			   window.hide();
+                  			   Ext.Msg.show({
+                                   title: _('Error'),
+                                   minProgressWidth:250,
+                                   msg: action.result.Error,
+                                   buttons: Ext.MessageBox.OK,
+                                   multiline: false
+                               });
+                  		   },
                 			scope: this
                 		});
+			            this.hide();
 			        }, this
 			   );
         	}     

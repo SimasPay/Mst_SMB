@@ -15,6 +15,7 @@ import com.mfino.dao.BranchCodeDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PocketDAO;
+import com.mfino.dao.SubsUpgradeBalanceLogDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
@@ -32,8 +33,8 @@ import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
+import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.domain.SubscriberUpgradeData;
-import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -54,12 +55,12 @@ import com.mfino.service.TransactionLogService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
 import com.mfino.uicore.fix.processor.SubscriberUpgradeKycProcessor;
-import com.mfino.util.ConfigurationUtil;
 
 @Service("SubscriberUpgradeKycProcessorImpl")
 public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implements
 		SubscriberUpgradeKycProcessor {
-	
+
+	private SubsUpgradeBalanceLogDAO subsUpgradeBalanceLogDAO = DAOFactory.getInstance().getSubsUpgradeBalanceLogDAO();
 	private SubscriberMDNDAO subMdndao = DAOFactory.getInstance().getSubscriberMdnDAO();
 	private PocketDAO pocketDAO = DAOFactory.getInstance().getPocketDAO();
 	private SubscriberDAO subscriberDao = DAOFactory.getInstance().getSubscriberDAO();
@@ -283,7 +284,13 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				nonKycPocket.setPockettemplatechangedby(userService.getCurrentUser().getUsername());
 				nonKycPocket.setPockettemplatechangetime(new Timestamp());
 				pocketDAO.save(nonKycPocket);
-				
+
+				SubscriberUpgradeBalanceLog subUpgradeBalanceLog = new SubscriberUpgradeBalanceLog();
+				subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
+				subUpgradeBalanceLog.setPockatBalance(nonKycPocket.getCurrentbalance());
+				subUpgradeBalanceLog.setTxnDate(new Timestamp());
+				subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
+    			
 				subscriber.setAddressBySubscriberaddressid(upgradeData.getAddress());
 				subscriber.setEmail(upgradeData.getEmail());
 				subscriber.setBirthplace(upgradeData.getBirthPlace());

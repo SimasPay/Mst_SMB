@@ -6,6 +6,7 @@ package com.mfino.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.hibernate.session.HibernateSessionHolder;
 
 /**
@@ -321,6 +322,14 @@ public class DAOFactory {
 	private CommodityTransferNextIDDAO commodityTransferNextIDDAO;
 	
 	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO;
+	
+	private SubsUpgradeBalanceLogDAO subsUpgradeBalanceLogDAO;
+	
+	public SubsUpgradeBalanceLogDAO getSubsUpgradeBalanceLogDAO(){
+		subsUpgradeBalanceLogDAO = new SubsUpgradeBalanceLogDAO();
+		subsUpgradeBalanceLogDAO.setHibernateSessionHolder(getHibernateSessionHolder());
+		return subsUpgradeBalanceLogDAO;
+	}
 	
 	public SubscriberUpgradeDataDAO getSubscriberUpgradeDataDAO(){
 		subscriberUpgradeDataDAO = new SubscriberUpgradeDataDAO();
