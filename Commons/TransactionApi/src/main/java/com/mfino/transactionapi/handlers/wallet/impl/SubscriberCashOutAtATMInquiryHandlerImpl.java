@@ -43,7 +43,7 @@ import com.mfino.transactionapi.vo.TransactionDetails;
 public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler implements SubscriberCashOutAtATMInquiryHandler{
   
 	private static Logger log = LoggerFactory.getLogger(SubscriberCashOutAtATMInquiryHandlerImpl.class);
-	
+
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
 	private TransactionApiValidationService transactionApiValidationService;
@@ -122,11 +122,11 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 	    	result.setMultiplesOff(multiplyAmount);
 	    	return result;
 	    }
-	    
+
 	    SubscriberMdn srcSubscriberMDN = this.subscriberMdnService.getByMDN(cashOutInquiry.getSourceMDN());
 	    Subscriber srcSubscriber = srcSubscriberMDN.getSubscriber();
-	    if ((srcSubscriber.getKycLevel() == null) || (srcSubscriber.getKycLevel().getKyclevel() == null) || 
-	    		(srcSubscriber.getKycLevel().getKyclevel().intValue() != CmFinoFIX.SubscriberKYCLevel_UnBanked.intValue())) {
+	    if ((srcSubscriber.getKycLevel() == null) || (srcSubscriber.getKycLevel().getKyclevel() == null) 
+	    		|| (srcSubscriber.getKycLevel().getKyclevel().intValue() == CmFinoFIX.SubscriberKYCLevel_NoKyc.intValue())) {
 	    	result.setNotificationCode(CmFinoFIX.NotificationCode_AtmCashWithdrawalOnlyForKYC);
 	    	return result;
 	    }
@@ -137,8 +137,8 @@ public class SubscriberCashOutAtATMInquiryHandlerImpl extends FIXMessageHandler 
 	    	result.setNotificationCode(validationResult);
 	    	return result;
 	    }
-	    
-	    Pocket srcSubscriberPocket = this.pocketService.getDefaultPocket(srcSubscriberMDN, transactionDetails.getSourcePocketCode());
+	     
+	    Pocket srcSubscriberPocket = this.pocketService.getDefaultPocket(srcSubscriberMDN, CmFinoFIX.PocketType_SVA.toString());
 	    
 	    validationResult = this.transactionApiValidationService.validateSourcePocket(srcSubscriberPocket);
 	    if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
