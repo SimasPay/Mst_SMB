@@ -275,6 +275,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		subscriberMDN.setUpgradeacctapprovedby(userService.getCurrentUser().getUsername());
 		subscriberMDN.setUpgradeaccttime(new Timestamp());
 		
+		
 		SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getByMdnId(subscriberMDN.getId());
 		Integer notificationCode = null;
 		if(upgradeData != null){

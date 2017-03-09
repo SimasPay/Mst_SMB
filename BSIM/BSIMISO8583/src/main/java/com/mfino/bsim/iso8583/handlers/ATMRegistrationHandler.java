@@ -287,6 +287,7 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 			if (kycLevel == null ) {
 				return CmFinoFIX.NotificationCode_InvalidKYCLevel;
 			}
+			
 			subscriber.setKycLevel(kycLevel);
 			Long groupID = null;
 			SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();

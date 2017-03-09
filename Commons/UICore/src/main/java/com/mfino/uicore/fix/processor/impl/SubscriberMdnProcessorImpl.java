@@ -1901,6 +1901,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		subUpgradeBalanceLog.setTxnDate(new Timestamp());
 		subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
 	}
+	
 
 	/**
 	 * Creates bank pocket for the subscriber with the given account no.
