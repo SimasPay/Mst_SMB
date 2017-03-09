@@ -16,7 +16,9 @@ import com.mfino.hibernate.Timestamp;
 
 @Entity
 @Table(name = "SUBSCRIBER_UPGRADE_BALANCE_LOG")
-public class SubscriberUpgradeBalanceLog {
+public class SubscriberUpgradeBalanceLog extends Base implements java.io.Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private Long id;
 	private Long subscriberId;
 	private BigDecimal pockatBalance;

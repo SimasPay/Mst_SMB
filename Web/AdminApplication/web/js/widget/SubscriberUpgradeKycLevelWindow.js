@@ -28,6 +28,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
             msgTarget: 'side',
             labelSeparator : ':'
         };
+        
     	this.items = [{
 		    xtype: 'fieldset',
 		    title : _('Personal Data'),
@@ -44,6 +45,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		xtype : 'textfield',
                      		fieldLabel: _(' Full Name'),
                      		allowBlank: false,
+                            maxLength : 255,
                      		blankText : _('Full Name is required'),
                      		anchor : '100%',
 							itemId : 'subupgradekyc.form.fullname',
@@ -52,7 +54,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      	{
                      		xtype : 'enumdropdown',
                      		fieldLabel: _(' ID Type'),
-                     		labelSeparator : '',
                      		anchor : '100%',
                      		triggerAction : "all",
 							forceSelection : true,
@@ -69,6 +70,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		xtype : 'textfield',
                      		fieldLabel: _(' ID Number'),
                      		allowBlank: false,
+                            maxLength : 30,
                      		blankText : _('ID Number is required'),
                      		anchor : '100%',
 							itemId : 'subupgradekyc.form.idnumber',
@@ -78,6 +80,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		xtype : 'textfield',
                      		fieldLabel: _(' Birth Place'),
                      		allowBlank: false,
+                            maxLength : 255,
                      		blankText : _('Birth Place is required'),
                      		anchor : '100%',
 							itemId : 'subupgradekyc.form.birthplace',
@@ -98,6 +101,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		xtype : 'textfield',
                      		fieldLabel: _(' Mother Maiden Name'),
                      		allowBlank: false,
+                            maxLength : 255,
                      		blankText : _('Mother Maiden Name is required'),
                      		anchor : '100%',
 							itemId : 'subupgradekyc.form.mothermaidenname',
@@ -107,6 +111,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                             xtype : 'textfield',
                             fieldLabel: _('Email'),
                             vtype: 'email',
+                            maxLength : 255,
                             anchor : '100%',
 							itemId : 'subupgradekyc.form.email',
                             name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.Email._name
@@ -115,7 +120,6 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                             xtype : 'fileuploadfield',
                             fieldLabel: _('Upload ID Card'),
                             buttonText: _('Browse'),
-                     		allowBlank: false,
                      		blankText : _('Scan ID is required'),
                             emptyText:_(''),
                             anchor : '100%',
@@ -124,7 +128,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                         },
                      	{
                             xtype : 'displayfield',
-                            fieldLabel: _(' '),
+                            fieldLabel: _('Uploaded ID Card'),
                             anchor : '100%',
                             name: CmFinoFIX.message.JSSubscriberUpgradeKyc.KTPDocumentPath._name,
 							itemId : 'subupgradekyc.form.displayfield.idpath',
