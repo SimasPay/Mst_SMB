@@ -1899,6 +1899,10 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 		subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
 		subUpgradeBalanceLog.setPockatBalance(unregisteredPocket.getCurrentbalance());
 		subUpgradeBalanceLog.setTxnDate(new Timestamp());
+		subUpgradeBalanceLog.setCreatedby(getLoggedUserName());
+		subUpgradeBalanceLog.setCreatetime(new Timestamp());
+		subUpgradeBalanceLog.setUpdatedby(getLoggedUserName());
+		subUpgradeBalanceLog.setLastupdatetime(new Timestamp());
 		subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
 	}
 	

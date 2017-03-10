@@ -290,6 +290,10 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
 				subUpgradeBalanceLog.setPockatBalance(nonKycPocket.getCurrentbalance());
 				subUpgradeBalanceLog.setTxnDate(new Timestamp());
+				subUpgradeBalanceLog.setCreatedby(getLoggedUserName());
+				subUpgradeBalanceLog.setCreatetime(new Timestamp());
+				subUpgradeBalanceLog.setUpdatedby(getLoggedUserName());
+				subUpgradeBalanceLog.setLastupdatetime(new Timestamp());
 				subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
     			
 				subscriber.setAddressBySubscriberaddressid(upgradeData.getAddress());

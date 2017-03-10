@@ -461,14 +461,18 @@ public class ATMRegistrationHandler extends FIXMessageHandler implements IATMReg
 					defaultPocket.setStatus(CmFinoFIX.PocketStatus_Active);
 					
 					pocketService.save(defaultPocket);
-
-					SubsUpgradeBalanceLogDAO subsUpgradeBalanceLogDAO = DAOFactory.getInstance().getSubsUpgradeBalanceLogDAO();
-					SubscriberUpgradeBalanceLog subUpgradeBalanceLog = new SubscriberUpgradeBalanceLog();
-					subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
-					subUpgradeBalanceLog.setPockatBalance(defaultPocket.getCurrentbalance());
-					subUpgradeBalanceLog.setTxnDate(new Timestamp());
-					subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
-					
+					if(isUnregistered) {
+						SubsUpgradeBalanceLogDAO subsUpgradeBalanceLogDAO = DAOFactory.getInstance().getSubsUpgradeBalanceLogDAO();
+						SubscriberUpgradeBalanceLog subUpgradeBalanceLog = new SubscriberUpgradeBalanceLog();
+						subUpgradeBalanceLog.setSubscriberId(subscriber.getId());
+						subUpgradeBalanceLog.setPockatBalance(defaultPocket.getCurrentbalance());
+						subUpgradeBalanceLog.setTxnDate(new Timestamp());
+						subUpgradeBalanceLog.setCreatedby("ATM");
+						subUpgradeBalanceLog.setCreatetime(new Timestamp());
+						subUpgradeBalanceLog.setUpdatedby("ATM");
+						subUpgradeBalanceLog.setLastupdatetime(new Timestamp());
+						subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
+					}
 					PocketTemplate bankPocketTemplate = pocketService.getPocketTemplateFromPocketTemplateConfig(Long.parseLong(CmFinoFIX.RecordType_SubscriberFullyBanked.toString()), true, CmFinoFIX.PocketType_BankAccount, CmFinoFIX.SubscriberType_Subscriber, null, 1L);
 					
 					if(bankPocketTemplate == null) {
