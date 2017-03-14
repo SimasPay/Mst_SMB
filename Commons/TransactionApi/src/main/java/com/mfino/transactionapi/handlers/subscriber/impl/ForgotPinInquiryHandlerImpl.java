@@ -74,7 +74,7 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		ChannelCode cc = transactionDetails.getCc();
-		
+
 		CMForgotPinInquiry forgotPinInquiry= new CMForgotPinInquiry();		
 		forgotPinInquiry.setSourceMDN(transactionDetails.getSourceMDN());			
 		forgotPinInquiry.setSourceApplication((int)cc.getChannelsourceapplication());
@@ -91,22 +91,22 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		result.setSourceMessage(forgotPinInquiry);
 		result.setTransactionTime(transactionLog.getTransactiontime());
 		result.setTransactionID(transactionLog.getId().longValue());
-		
+
 		SubscriberMdn subscriberMDN = subscriberMdnService.getByMDN(forgotPinInquiry.getSourceMDN());
-		
+
 		Set<Pocket> pocketsSet = subscriberMDN.getPockets();
 		for (Iterator<Pocket> iterator = pocketsSet.iterator(); iterator.hasNext();) {
-			
+
 			Pocket pocket = (Pocket) iterator.next();
-			
+
 			if(pocket.getPocketTemplateByPockettemplateid().getType() == CmFinoFIX.PocketType_BankAccount) {
-				
+
 				result.setNotificationCode(CmFinoFIX.NotificationCode_BankNotificationForForgotPin);
 				return result;
-				
+
 			}
 		}
-		
+
 		log.info("creating the serviceCharge object....");
 		Transaction transaction = null;
 		ServiceCharge sc = new ServiceCharge();
@@ -132,29 +132,37 @@ public class ForgotPinInquiryHandlerImpl extends FIXMessageHandler implements Fo
 		}
 		ServiceChargeTxnLog sctl = transaction.getServiceChargeTransactionLog();
 		if(subscriberMDN!=null){
+			if(subscriberMDN.getStatus().equals(CmFinoFIX.SubscriberStatus_InActive)&&
+					subscriberMDN.getRestrictions().equals(CmFinoFIX.SubscriberRestrictions_AbsoluteLocked)){
+				log.error("Subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" Restrictions : "+subscriberMDN.getRestrictions()+" not allowed for forgotpin feature");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryFailed);
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+				return result;
+
+			}
 			Subscriber subscriber = subscriberMDN.getSubscriber();
-			
+
 			//if(transactionDetails.getSecurityQuestion().equalsIgnoreCase(subscriber.getSecurityquestion())){
-				String answer = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), transactionDetails.getSecurityAnswer());
-				if(answer.equalsIgnoreCase(subscriber.getSecurityanswer()))
-				{
-					result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryCompleted);
-					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
-					result.setSctlID(sctl.getId());
-					result.setMfaMode("None");
-					
-					if(mfaService.isMFATransaction(transactionDetails.getServiceName(),ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN, cc.getId().longValue()) == true){
-					
-						result.setMfaMode("OTP");
-					 }
-					return result;
+			String answer = MfinoUtil.calculateDigestPin(subscriberMDN.getMdn(), transactionDetails.getSecurityAnswer());
+			if(answer.equalsIgnoreCase(subscriber.getSecurityanswer()))
+			{
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryCompleted);
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+				result.setSctlID(sctl.getId());
+				result.setMfaMode("None");
+
+				if(mfaService.isMFATransaction(transactionDetails.getServiceName(),ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN, cc.getId().longValue()) == true){
+
+					result.setMfaMode("OTP");
 				}
-				else{
-					log.error("Subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has wrong security answer");
-					result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryFailed);
-					result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
-					return result;
-				}
+				return result;
+			}
+			else{
+				log.error("Subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has wrong security answer");
+				result.setNotificationCode(CmFinoFIX.NotificationCode_ForgotPinInquiryFailed);
+				result.setResponseStatus(GeneralConstants.RESPONSE_CODE_FAILURE);
+				return result;
+			}
 			/*}
 			else{
 				log.error("Subscriber with mdn : "+forgotPinInquiry.getSourceMDN()+" has wrong security question");
