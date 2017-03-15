@@ -153,24 +153,6 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 		
 		if(mfaTransactionType.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY)){
 
-			String newpin = null;
-			
-	 		newpin = subscriberActivation.getPin();
-			
-	 		if(MfinoUtil.containsSequenceOfDigits(newpin)){
-				
-				log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for sequence of digits");
-				result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
-				return result;
-			
-			} else if(MfinoUtil.containsRepetitiveDigits(newpin)){
-				
-				log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for repetitive digits");
-				result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
-				return result;
-				
-			}
-			
 			Transaction transaction = null;
 			ServiceCharge serviceCharge = new ServiceCharge();
 			
@@ -250,6 +232,24 @@ public class MFASubscriberActivationHandlerImpl extends FIXMessageHandler implem
 						return result;
 				}
 			}
+		}
+		
+		String newpin = null;
+		
+ 		newpin = subscriberActivation.getPin();
+		
+ 		if(MfinoUtil.containsSequenceOfDigits(newpin)){
+			
+			log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for sequence of digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SequenceNumberAsPin);
+			return result;
+		
+		} else if(MfinoUtil.containsRepetitiveDigits(newpin)){
+			
+			log.info("The pin is not strong enough for subscribermdn "+subscriberActivation.getSourceMDN() + " for repetitive digits");
+			result.setNotificationCode(CmFinoFIX.NotificationCode_SameNumbersAsPin);
+			return result;
+			
 		}
 		
 		subscriberActivation.setServiceChargeTransactionLogID(sctl.getId().longValue());
