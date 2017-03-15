@@ -419,4 +419,5 @@
     <osgi:service ref ="GroupServiceImpl" interface="com.mfino.service.GroupService"/>
     <osgi:service ref ="MfinoServiceProviderServiceImpl" interface="com.mfino.service.MfinoServiceProviderService"/>
     <osgi:service ref="txManager" interface="org.springframework.orm.hibernate4.HibernateTransactionManager" />
+    <osgi:service ref ="MDNRetireServiceImpl" interface="com.mfino.service.MDNRetireService"/>
 </beans>

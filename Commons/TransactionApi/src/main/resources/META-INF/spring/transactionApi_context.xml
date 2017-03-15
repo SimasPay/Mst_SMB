@@ -99,6 +99,7 @@
 		<osgi:reference id="SubscriberGroupServiceImpl" interface="com.mfino.service.SubscriberGroupService"/>
 		<osgi:reference id="IBTServiceImpl" interface="com.mfino.service.IBTService"/>
 		<osgi:reference id="CashinFirstTimeServiceImpl" interface="com.mfino.service.CashinFirstTimeService" context-class-loader="service-provider"/>
+		<osgi:reference id="MDNRetireServiceImpl" interface="com.mfino.service.MDNRetireService"/>
 		
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.impl"/>
 		<context:component-scan base-package="com.mfino.transactionapi.handlers.interswitch.impl"/>
