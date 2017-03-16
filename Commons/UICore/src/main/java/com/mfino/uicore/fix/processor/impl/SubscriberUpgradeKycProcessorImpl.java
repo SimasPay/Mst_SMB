@@ -162,7 +162,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         String actionString = realMsg.getaction();
         log.info("Action is :"+actionString);
         if (StringUtils.equals(actionString, "default")){
-        	SubscriberUpgradeData subscriberUpgradeData = subscriberUpgradeDataDAO.getByMdnId(subscriberMDN.getId());
+        	SubscriberUpgradeData subscriberUpgradeData = subscriberUpgradeDataDAO.getSubmitedRequestData(subscriberMDN.getId(), CmFinoFIX.SubscriberActivity_Upgrade_From_NonKyc_To_KYC);
     		realMsg.settotal(0);
         	if(subscriberUpgradeData != null){
         		realMsg.allocateEntries(1);
@@ -182,14 +182,16 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         		entry.setIDTypeText(idTypeValue);
         		
         		Address address = subscriberUpgradeData.getAddress();
-        		entry.setCity(address.getCity());
-        		entry.setRegionName(address.getRegionname());
-        		entry.setState(address.getState());
-        		entry.setSubState(address.getSubstate());
-        		entry.setStreetAddress(address.getLine1());
+        		if(address != null){
+	        		entry.setCity(address.getCity());
+	        		entry.setRegionName(address.getRegionname());
+	        		entry.setState(address.getState());
+	        		entry.setSubState(address.getSubstate());
+	        		entry.setStreetAddress(address.getLine2());
+        		}
         		realMsg.getEntries()[0] = entry;
         		realMsg.settotal(1);
-        	}
+        	} 
         	realMsg.setsuccess(Boolean.TRUE);
         	return realMsg;
         } 
@@ -276,7 +278,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		subscriberMDN.setUpgradeaccttime(new Timestamp());
 		
 		
-		SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getByMdnId(subscriberMDN.getId());
+		SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getSubmitedRequestData(subscriberMDN.getId(), CmFinoFIX.SubscriberActivity_Upgrade_From_NonKyc_To_KYC);
 		Integer notificationCode = null;
 		if(upgradeData != null){
 			if (upgradeStatus == CmFinoFIX.SubscriberUpgradeStatus_Approve){

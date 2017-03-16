@@ -359,7 +359,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 						
 					"<div style=\"text-align:left;line-height:3px;padding:5px 3px 4px;\">" +
 						"<span>" + 
-								"<img height=300 width=400 alt=\"image\" src=\""+imagePath+"\" />" +
+								"<img width='100%' alt=\"image\" src=\""+imagePath+"\" />" +
 						"</span>" + 
 					"</div>" +
 				   "</div>"

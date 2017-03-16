@@ -21,11 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.domain.Address;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeData;
-import com.mfino.errorcodes.Codes;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
@@ -35,7 +36,6 @@ import com.mfino.service.EnumTextService;
 import com.mfino.service.KYCLevelService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
-import com.mfino.service.SubscriberUpgradeDataService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.web.JSONView;
 import com.mfino.util.ConfigurationUtil;
@@ -43,6 +43,8 @@ import com.mfino.util.ConfigurationUtil;
 @Controller
 public class SubscriberEditController {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+
+	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
 	
 	@Autowired
 	@Qualifier("UserServiceImpl")
@@ -68,9 +70,6 @@ public class SubscriberEditController {
 	@Qualifier("BranchCodeServiceImpl")
 	private BranchCodeService branchCodeService;
 
-	@Autowired
-	@Qualifier("SubscriberUpgradeDataServiceImpl")
-	private SubscriberUpgradeDataService subscriberUpgradeDataService;
 
 	@Autowired
 	@Qualifier("KYCLevelServiceImpl")
@@ -81,12 +80,11 @@ public class SubscriberEditController {
 		log.info("Upgrade Subscriber KYC Level");
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		responseMap.put("success", false);
-		String idCardpath = null;
 		try {
 			String idType = request.getParameter("IDType");
 			String mdnId = request.getParameter("MDNID");
 			String language = request.getParameter("Language");
-			int activeProcess =  subscriberUpgradeDataService.getCountByMdnId(Long.valueOf(mdnId));
+			int activeProcess =  subscriberUpgradeDataDAO.getCountByMdnId(Long.valueOf(mdnId));
 			
 			if(activeProcess == 0){
 				
@@ -154,6 +152,8 @@ public class SubscriberEditController {
 					responseMap.put("Error", MessageText._("Inactive subscriber can be moved to Intialized status only."));
 					return new JSONView(responseMap);
 				}
+
+				String idCardpath = subscriberMdn.getKtpdocumentpath();
 				
 		        if (request instanceof MultipartHttpServletRequest) {
 					String path = storeFile(request, responseMap, idType, mdnId);
@@ -161,11 +161,12 @@ public class SubscriberEditController {
 					if(responseMap.get("Error") != null)
 						return new JSONView(responseMap);
 					
-					if(StringUtils.isNotBlank(path))
+					if(StringUtils.isNotBlank(path)){
 						idCardpath = path;
+					} 
 				}
 		        
-	        	SubscriberUpgradeData upgradeData = subscriberUpgradeDataService.getByMdnId(subscriberMdn.getId());
+	        	SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getSubmitedRequestData(subscriberMdn.getId(), CmFinoFIX.SubscriberActivity_Edit_Subscriber_Details);
 
 	        	Address addressBaseOnIdCard = new Address();
 	        	if(upgradeData == null){
@@ -201,7 +202,7 @@ public class SubscriberEditController {
 	        	if(StringUtils.isNotBlank(idCardpath))
 	        		upgradeData.setIdCardScanPath(idCardpath);
 	        	
-	        	subscriberUpgradeDataService.save(upgradeData);
+	        	subscriberUpgradeDataDAO.save(upgradeData);
 	        	
 	        	subscriberMdn.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeKycStatus_Initialized);
 	        	subscriberMdn.setUpgradeacctrequestby(userService.getCurrentUser().getUsername());

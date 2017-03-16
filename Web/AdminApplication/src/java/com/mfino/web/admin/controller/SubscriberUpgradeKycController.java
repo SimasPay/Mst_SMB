@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.dao.query.PocketQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.BranchCodes;
@@ -47,7 +49,6 @@ import com.mfino.service.PocketTemplateService;
 import com.mfino.service.SubscriberGroupService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
-import com.mfino.service.SubscriberUpgradeDataService;
 import com.mfino.service.UserService;
 import com.mfino.uicore.web.JSONView;
 import com.mfino.util.ConfigurationUtil;
@@ -57,6 +58,7 @@ import com.mfino.util.DateUtil;
 public class SubscriberUpgradeKycController {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final String DEFAULT_BRANCH = "000";
+	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
 	
 	@Autowired
 	@Qualifier("UserServiceImpl")
@@ -95,10 +97,6 @@ public class SubscriberUpgradeKycController {
 	private BranchCodeService branchCodeService;
 
 	@Autowired
-	@Qualifier("SubscriberUpgradeDataServiceImpl")
-	private SubscriberUpgradeDataService subscriberUpgradeDataService;
-
-	@Autowired
 	@Qualifier("KYCLevelServiceImpl")
 	private KYCLevelService kycLevelService;
 	
@@ -107,13 +105,12 @@ public class SubscriberUpgradeKycController {
 		log.info("Upgrade Subscriber KYC Level");
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		responseMap.put("success", false);
-		String idCardpath = null;
 		try {
 			
 			String idType = request.getParameter("IDType");
 			String mdnId = request.getParameter("ID");
 
-			int activeProcess =  subscriberUpgradeDataService.getCountByMdnId(Long.valueOf(mdnId));
+			int activeProcess =  subscriberUpgradeDataDAO.getCountByMdnId(Long.valueOf(mdnId));
 			if(activeProcess == 0){
 			
 				SubscriberMdn subscriberMdn = subscriberMdnService.getById(Long.valueOf(mdnId));
@@ -155,7 +152,9 @@ public class SubscriberUpgradeKycController {
 		        	responseMap.put("Error", MessageText._("Subscriber Should be Active!"));
 		        	return new JSONView(responseMap);
 		        }
-		        
+
+				String idCardpath = subscriberMdn.getKtpdocumentpath();
+				
 		        if (request instanceof MultipartHttpServletRequest) {
 					String path = storeFile(request, responseMap, idType, mdnId);
 					
@@ -186,7 +185,7 @@ public class SubscriberUpgradeKycController {
 	            	
 	            	String dateOfBirthStr = request.getParameter("DateOfBirth");
 	            	Date dateOfBirth = DateUtil.getDate(dateOfBirthStr, "dd-MM-yyyy");
-	            	SubscriberUpgradeData upgradeData = subscriberUpgradeDataService.getByMdnId(subscriberMdn.getId());
+	            	SubscriberUpgradeData upgradeData = subscriberUpgradeDataDAO.getSubmitedRequestData(subscriberMdn.getId(), CmFinoFIX.SubscriberActivity_Upgrade_From_NonKyc_To_KYC);
 	
 	            	Address addressBaseOnIdCard = new Address();
 	            	if(upgradeData == null){
@@ -199,7 +198,7 @@ public class SubscriberUpgradeKycController {
 	            	addressBaseOnIdCard.setState(request.getParameter("State"));
 	            	addressBaseOnIdCard.setSubstate(request.getParameter("SubState"));
 	            	addressBaseOnIdCard.setCity(request.getParameter("City"));
-	            	addressBaseOnIdCard.setLine1(request.getParameter("StreetAddress"));
+	            	addressBaseOnIdCard.setLine2(request.getParameter("StreetAddress"));
 	            	addressService.save(addressBaseOnIdCard);
 	            	
 	            	upgradeData.setAddress(addressBaseOnIdCard);
@@ -219,7 +218,7 @@ public class SubscriberUpgradeKycController {
 	            	if(StringUtils.isNotBlank(idCardpath))
 	            		upgradeData.setIdCardScanPath(idCardpath);
 	            	
-	            	subscriberUpgradeDataService.save(upgradeData);
+	            	subscriberUpgradeDataDAO.save(upgradeData);
 	            	
 	            	subscriberMdn.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeKycStatus_Initialized);
 	            	subscriberMdn.setUpgradeacctrequestby(userService.getCurrentUser().getUsername());
@@ -264,16 +263,15 @@ public class SubscriberUpgradeKycController {
 					String imagePath = ConfigurationUtil.getKTPImagePath();
 					String fileName = file.getOriginalFilename();
 					String extension = FilenameUtils.getExtension(fileName);
-					String[] completeFileName = {imagePath, idType, "_", mdnId, FilenameUtils.EXTENSION_SEPARATOR_STR, extension};
-					String newFileName = StringUtils.join(completeFileName);
+					String[] completeFileName = {idType, "_", mdnId, String.valueOf(System.currentTimeMillis()), FilenameUtils.EXTENSION_SEPARATOR_STR, extension};
+					String newFileName = imagePath+StringUtils.join(completeFileName);
 					log.info("KTP Scan uploaded to: "+newFileName);
 					
 					File destFile = new File(newFileName);
 					file.transferTo(destFile);
 
 					String url = ConfigurationUtil.getKTPImageUrl();
-					String[] urlImage = {url, idType, "_", mdnId, FilenameUtils.EXTENSION_SEPARATOR_STR, extension};
-					return StringUtils.join(urlImage);
+					return url+StringUtils.join(completeFileName);
 				}
 			}
 		}

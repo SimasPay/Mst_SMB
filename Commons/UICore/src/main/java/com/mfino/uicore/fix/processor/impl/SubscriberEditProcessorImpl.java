@@ -707,7 +707,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				return idTypeValue;
 			}
 		}
-		return "";
+		return idTypeValue;
 	}
 
 }

@@ -15,6 +15,7 @@ mFino.widget.SubscriberEditCheckerWindow = function (config){
         labelWidth: 5,
         plain:true,
         layout: 'fit',
+    	autoScroll : true,
         closable:true
     });
     mFino.widget.SubscriberEditCheckerWindow.superclass.constructor.call(this, localConfig);
@@ -22,6 +23,7 @@ mFino.widget.SubscriberEditCheckerWindow = function (config){
 
 Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
     initComponent : function(){
+    	this.autoScroll = true;
         this.buttons = [
             {
             	text: _('Proceed'),
@@ -34,6 +36,7 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
         ];
 
         this.form = new Ext.form.FormPanel({
+        	autoScroll : true,
             bodyStyle: 'padding: 10px 10px 0 10px;',
             items : [
             	{
@@ -546,7 +549,7 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 						
 					"<div style=\"text-align:left;line-height:3px;padding:5px 3px 4px;\">" +
 						"<span>" + 
-								"<img height=300 width=400 alt=\"image\" src=\""+imagePath+"\" />" +
+								"<img width='100%' alt=\"image\" src=\""+imagePath+"\" />" +
 						"</span>" + 
 					"</div>" +
 				   "</div>"
