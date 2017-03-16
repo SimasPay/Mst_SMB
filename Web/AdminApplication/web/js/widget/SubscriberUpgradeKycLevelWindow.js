@@ -87,15 +87,16 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                      		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.BirthPlace._name
                      	},
                      	{
-                            anchor : '100%',
-                            renderer: "date",
-                            xtype : 'datefield',
-                            format : 'd-m-Y',
-                     		allowBlank: false,
-                     		blankText : _('Birth Date is required'),
-                            fieldLabel: _(' Date of Birth'),
-							itemId : 'subupgradekyc.form.birthdate',
-                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.DateOfBirth._name
+                     		xtype : 'datefield',
+                          	allowBlank: false,
+                          	editable: false,
+                       	    fieldLabel: _('Date of Birth'),
+                       	    blankText : _('Birth Date is required'),
+                       	    itemId : 'subupgradekyc.form.birthdate',
+                       	    anchor : '100%',
+                       	    name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.DateOfBirth._name,
+                            maxValue:new Date().add('d',-1),
+                            maxText:'Date of birth should not be future date'
                         },
                      	{
                      		xtype : 'textfield',
