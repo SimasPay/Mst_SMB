@@ -493,21 +493,22 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			txnType = LanguageTranslator.translate(language, "Cash In")+ct.getSourcesubscribername();
 		}else if(sourceMsg.equalsIgnoreCase("from BSM")){
 			txnType = LanguageTranslator.translate(language, "from BSM");
-		}else if(sourceMsg.equalsIgnoreCase("Purchase")){
-			txnType = LanguageTranslator.translate(language, "Purchase") + ct.getSourcesubscribername();
+		}else if(sourceMsg.equalsIgnoreCase("Purchase") || ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
+			
+			txnType = LanguageTranslator.translate(language, "Purchase") + " "+ ((sctl != null) ? sctl.getInvoiceno() : "");
+			
 		}else if(ServiceAndTransactionConstants.MESSAGE_BILL_PAY.equalsIgnoreCase(sourceMsg)){
-			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoicenumber() : "");
+			
+			txnType = LanguageTranslator.translate(language, "Bill Pay") + " "+ ((sctl != null) ? sctl.getInvoiceno() : "");
+			
 		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
 			
 			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER) + " " + ct.getDestcardpan();
 			
-		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
-			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + " " + ((bp != null) ? bp.getInvoicenumber() : "");
-		}else if(ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT.equalsIgnoreCase(sourceMsg)){
-			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
+		} else if(ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT.equalsIgnoreCase(sourceMsg)){
+			
 			txnType = LanguageTranslator.translate(language, "QR Payment");
+			
 		}else if(ServiceAndTransactionConstants.MESSAGE_DONATION.equalsIgnoreCase(sourceMsg)){
 			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_DONATION);
 		} else if(ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM.equalsIgnoreCase(sourceMsg)){
