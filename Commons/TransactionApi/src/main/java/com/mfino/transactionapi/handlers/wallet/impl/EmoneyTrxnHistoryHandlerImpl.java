@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.lowagie.text.DocumentException;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.DAOFactory;
 import com.mfino.domain.BillPayments;
 import com.mfino.domain.BookingDatedBalance;
 import com.mfino.domain.ChannelCode;
@@ -455,6 +456,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		String sourceMsg = ct.getSourcemessage();
 		boolean isCredit = !(ct.getPocket().getId().equals(pk.getId()));
 		String txnType = null;
+		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(ct.getSctlId());
+		
 		if(sourceMsg.equalsIgnoreCase("Mobile Transfer")){
 			if (isCredit) {
 				//txnType = "Transfer dari "+ ct.getSourceMDN();
@@ -496,24 +499,57 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
 			txnType = LanguageTranslator.translate(language, "Bill Pay") + ((bp != null) ? bp.getInvoicenumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER.equalsIgnoreCase(sourceMsg)){
-			/*BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			String acctNum = null;
-			String acctName = null;
-			if (bp != null) {
-				acctName = bp.getInfo3();
-				acctNum = bp.getInvoiceNumber();
-			}*/
-			txnType = LanguageTranslator.translate(language, "InterBank Transfer") + ct.getDestcardpan(); 
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_INTERBANK_TRANSFER) + " " + ct.getDestcardpan();
+			
 		}else if(ServiceAndTransactionConstants.MESSAGE_AIRTIME_PURCHASE.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + ((bp != null) ? bp.getInvoicenumber() : "");
+			txnType = LanguageTranslator.translate(language, "Airtime Purchase") + " " + ((bp != null) ? bp.getInvoicenumber() : "");
 		}else if(ServiceAndTransactionConstants.MESSAGE_QR_PAYMENT.equalsIgnoreCase(sourceMsg)){
 			BillPayments bp = billPaymentsService.getBySctlId(ct.getSctlId());
-			txnType = LanguageTranslator.translate(language, "QR Payment") + ((bp != null) ? bp.getInfo1() : "");
+			txnType = LanguageTranslator.translate(language, "QR Payment");
 		}else if(ServiceAndTransactionConstants.MESSAGE_DONATION.equalsIgnoreCase(sourceMsg)){
 			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_DONATION);
 		} else if(ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM.equalsIgnoreCase(sourceMsg)){
-			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM);
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM) + " " + ct.getSourcemdn();
+			
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER)){
+				
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER) + " " + ct.getDestmdn();
+			
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.TRANSACTION_E2BTRANSFER) + " " + ct.getDestcardpan();
+		
+		}  else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.TRANSACTION_TRANSFER)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.TRANSACTION_TRANSFER) + " " + ct.getDestcardpan();
+		
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.MESSAGE_TRANSFER_UNREGISTERED)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_TRANSFER_UNREGISTERED) + " " + ct.getDestmdn();
+		
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.MESSAGE_TRANSFER_TO_UANGKU)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_TRANSFER_TO_UANGKU) + " " + ct.getDestcardpan();
+		
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER) + " " + ct.getSourcecardpan();
+		
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.MESSAGE_SELF_BANK_CASHIN)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_SELF_BANK_CASHIN);
+		
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.MESSAGE_OTHER_BANK_CASHIN)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_OTHER_BANK_CASHIN);
+		
+		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.MESSAGE_CASHWITHDRAWAL_REFUND)){
+			
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_CASHWITHDRAWAL_REFUND);
+		
 		}
 		else {
 			txnType = LanguageTranslator.translate(language, sourceMsg);

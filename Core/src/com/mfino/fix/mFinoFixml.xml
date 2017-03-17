@@ -5812,6 +5812,7 @@
 		<field name="DestPocketID" required="Y"/>
 		<field name="OriginalReferenceID" required="N"/> 
 		<field name="Description" required="N"/>
+		<field name="SourceMessage" required="N" />
 	</message>
 	<message name="CashWithdrawalRefundInquiry" msgtype="1790" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount"/>
 	<message name="CashWithdrawalRefund" msgtype="1791" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="CashInFromATM"/>

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.amazonaws.partitions.model.Service;
 import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
@@ -100,6 +101,7 @@ public class CashinHandler extends FIXMessageHandler {
 			String de102 = msg.getString("102");
 			String amount = msg.getString("4");
 			BigDecimal actualAmount = new BigDecimal(amount).divide(new BigDecimal("100"));
+			boolean isSelfBank = (msg.getString("3").startsWith("49") ? true : false);
 			
 			if(StringUtils.isNotBlank(accnumber) && !accnumber.startsWith(ConfigurationUtil.getCodeForTransferUsingEMoney())) {
 				
@@ -200,6 +202,11 @@ public class CashinHandler extends FIXMessageHandler {
 			cashin.setMessageType(CmFinoFIX.MessageType_CashIn);
 			cashin.setOriginalReferenceID(intTxnId);
 			cashin.setUICategory(CmFinoFIX.TransactionUICategory_Cashin_From_ATM);
+			
+			if(isSelfBank)
+				cashin.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_SELF_BANK_CASHIN);
+			else
+				cashin.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_OTHER_BANK_CASHIN);
 			
 			try {
 	            

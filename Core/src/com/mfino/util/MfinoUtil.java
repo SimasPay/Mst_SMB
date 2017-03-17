@@ -235,7 +235,7 @@ public class MfinoUtil {
 
 
 
-public static boolean isPinStrongEnough(String pin) {
+	public static boolean isPinStrongEnough(String pin) {
 		
 		if (StringUtils.isBlank(pin))
 			return false;
@@ -285,6 +285,9 @@ public static boolean isPinStrongEnough(String pin) {
 	
 	public static boolean containsRepetitiveDigits(String tpin) {
 		
+		if(tpin == null)
+	    	return false;
+		
 	    char firstChar = tpin.charAt(0);
 	    for (int i = 1; i < tpin.length(); i++) {
 	        char nextChar = tpin.charAt(i);
@@ -298,7 +301,10 @@ public static boolean isPinStrongEnough(String pin) {
 	
 	public static boolean containsSequenceOfDigits(String tpin) {
 		
-	    String firstChar = String.valueOf(tpin.charAt(0));
+	    if(tpin == null)
+	    	return false;
+	    	
+		String firstChar = String.valueOf(tpin.charAt(0));
 	    StringBuffer sb = new StringBuffer();
 	    
 	    for (int i = 0; i < tpin.length(); i++) {

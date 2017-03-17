@@ -199,6 +199,7 @@ public class CashWithdrawalRefundHandler extends FIXMessageHandler {
 			cashwithdrawalRefund.setMessageType(CmFinoFIX.MessageType_CashWithdrawalRefund);
 			cashwithdrawalRefund.setOriginalReferenceID(intTxnId);
 			cashwithdrawalRefund.setUICategory(CmFinoFIX.TransactionUICategory_Cashwithdrawal_Refund);
+			cashwithdrawalRefund.setSourceMessage(ServiceAndTransactionConstants.MESSAGE_CASHWITHDRAWAL_REFUND);
 			
 			try {
 	            

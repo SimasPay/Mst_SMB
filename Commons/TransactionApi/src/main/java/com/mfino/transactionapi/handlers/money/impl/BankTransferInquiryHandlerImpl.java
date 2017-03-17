@@ -211,6 +211,8 @@ public class BankTransferInquiryHandlerImpl extends FIXMessageHandler implements
 			}
 						
 			//sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_TRANSFER);
+			
+			bankAccountToBankAccount.setSourceMessage(transactionName);
 		}
 		
 		sc.setTransactionAmount(bankAccountToBankAccount.getAmount());

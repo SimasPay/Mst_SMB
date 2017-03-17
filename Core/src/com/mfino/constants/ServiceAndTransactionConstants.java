@@ -391,4 +391,10 @@ public class ServiceAndTransactionConstants {
 	public static final String SUBSCRIBER_EDIT = "SubscriberEdit";
 	
 	public static final String TRANSACTION_RESEND_MFAOTP_NOPIN = "ResendMFAOTPNoPIN";
+	
+	public static final String MESSAGE_SELF_BANK_CASHIN = "CashInFromSelf";
+	
+	public static final String MESSAGE_OTHER_BANK_CASHIN = "CashInFromOther";
+	
+	public static final String MESSAGE_CASHWITHDRAWAL_REFUND = "CashWithdrawalRefund";
 }

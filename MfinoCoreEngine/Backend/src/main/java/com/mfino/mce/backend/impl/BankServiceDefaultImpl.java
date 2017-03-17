@@ -3057,7 +3057,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 							pct = commodityTransferService.createPCT(cashinfromAtm, sourceSubscriber, destinationSubscriber, sourcePocket,
 											destinationPocket,sourceSubcriberMdn,destinationSubcriberMdn,
-											ServiceAndTransactionConstants.MESSAGE_CASH_IN,
+											cashinfromAtm.getSourceMessage(),
 											amount,	null,CmFinoFIX.BucketType_Special_Bank_Account,
 											CmFinoFIX.BillingType_None, CmFinoFIX.TransferStatus_Initialized);
 	

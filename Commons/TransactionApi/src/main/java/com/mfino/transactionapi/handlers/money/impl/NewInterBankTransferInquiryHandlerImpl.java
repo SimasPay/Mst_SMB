@@ -136,7 +136,7 @@ public class NewInterBankTransferInquiryHandlerImpl extends FIXMessageHandler im
 		ibtInquiry.setMessageType(CmFinoFIX.MessageType_InterBankFundsTransferInquiry);
 		ibtInquiry.setParentTransactionID(0L);
 		ibtInquiry.setUICategory(CmFinoFIX.TransactionUICategory_InterBank_Transfer);
-		
+		ibtInquiry.setOnBeHalfOfMDN(transactionDetails.getDestBankCode());
 		
 		srcpocketcode=transactionDetails.getSourcePocketCode();
         ibtInquiry.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
