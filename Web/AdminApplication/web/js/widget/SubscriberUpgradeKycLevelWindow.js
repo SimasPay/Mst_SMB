@@ -242,6 +242,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 						    allowBlank: false,
 				            blankText : _('Alamat is required'),
 						    anchor : '100%',
+                            maxLength : 255,
 				            itemId : 'subupgradekyc.form.StreetAddress',
 						    name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.StreetAddress._name
 						}
