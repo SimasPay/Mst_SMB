@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -141,7 +142,7 @@ public class SubscriberCashOutAtATMConfirmHandlerImpl extends FIXMessageHandler 
 	    	return result;
 	    }
 	    
-	    String dummySubMdn = this.systemParametersService.getString("platform.dummy.subscriber.mdn");
+	    String dummySubMdn = this.systemParametersService.getString(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
 	    SubscriberMdn objDestSubMdn = this.subscriberMdnService.getByMDN(dummySubMdn);
 	    Pocket dummyPocket = (Pocket)objDestSubMdn.getPockets().iterator().next();
     

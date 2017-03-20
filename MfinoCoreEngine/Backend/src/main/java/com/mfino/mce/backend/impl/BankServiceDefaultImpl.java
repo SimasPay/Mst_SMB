@@ -3379,6 +3379,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 	public CFIXMsg onCashOutAtATMInquiry(CMCashOutAtATMInquiry cashOutInquiry) {
 		log.info("BankServiceDefaultImpl :: onCashOutAtATMInquiry BEGIN");
+		
 	    cashOutInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Cashout_At_ATM);
 	    CFIXMsg returnFix = createResponseObject();
 	    try {
@@ -3404,7 +3405,6 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	public CFIXMsg onCashOutInquiryToBank(CmFinoFIX.CMCashOutAtATMInquiry requestFix) {
 		
 	    this.log.info("BankServiceDefaultImpl::onCashOutInquiryToBank() Begin");
-	    
 	    BackendResponse returnFix = createResponseObject();
 	    
 	    Subscriber objSourceSubscriber = null;
@@ -3442,6 +3442,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 	    	if (StringUtils.isNotBlank(requestFix.getOnBehalfMDN())) {
 	    		destBankAccountNo = ConfigurationUtil.getCodeForTransferRecipientUsingEMoney() + requestFix.getOnBehalfMDN();
 	    	}
+	    	objSrcPocket.setCardpan(sourceBankAccountNo);
 	    	pct = this.commodityTransferService.createPCT(requestFix, objSourceSubscriber, objDestSubscriber, objSrcPocket, 
 	    			objDestPocket, objSrcSubMdn, objDestSubMdn, requestFix.getSourceMessage(), requestFix.getAmount(), requestFix.getCharges(), 
 	    			null, CmFinoFIX.BucketType_Special_Bank_Account, CmFinoFIX.BillingType_None, CmFinoFIX.TransferStatus_Initialized, 
@@ -3493,8 +3494,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		        	inquiryToBank.setDestMDN(requestFix.getOnBehalfMDN());
 		        }
 		        
-		        inquiryToBank.setSourceBankAccountType("" + CmFinoFIX.BankAccountType_UnSpecified);
-		        inquiryToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_UnSpecified);
+		        inquiryToBank.setSourceBankAccountType("" + CmFinoFIX.BankAccountType_Lakupandai);
+		        inquiryToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_Lakupandai);
 		        inquiryToBank.setTransferID(Long.valueOf(pct.getId().longValue()));
 		        
 		        return inquiryToBank;
@@ -3604,7 +3605,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				                pct.setLocalbalancerevertrequired(CmFinoFIX.Boolean_True);
 				                pct.setBankreversalrequired(CmFinoFIX.Boolean_True);
 				                pct.setUicategory(confirmationToBank.getUICategory());
-				                pct.setDestmdn(confirmationToBank.getDestMDN());
+				                //pct.setDestmdn(confirmationToBank.getDestMDN());
 				                
 				                this.coreDataWrapper.save(pct);
 				                this.coreDataWrapper.save(objSrcPocket);
@@ -3623,7 +3624,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		                
 				                Timestamp ts = DateTimeUtil.getGMTTime();
 				                moneyTransferToBank.copy(confirmationToBank);
-				                moneyTransferToBank.setSourceMDN(confirmationToBank.getSourceMDN());
+				                moneyTransferToBank.setSourceMDN(pct.getSourcemdn());
 				                moneyTransferToBank.setRemarks(confirmationToBank.getRemarks());
 				                moneyTransferToBank.setSourceMDNToUseForBank(this.coreDataWrapper.getPlatformMdn());
 				                moneyTransferToBank.setAmount(pct.getAmount());
@@ -3642,8 +3643,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 				                moneyTransferToBank.setSourceCardPAN(pct.getSourcecardpan());
 				                moneyTransferToBank.setOriginalReferenceID(confirmationToBank.getOriginalReferenceID());
 				                moneyTransferToBank.setDestCardPAN(pct.getDestcardpan());
-				                moneyTransferToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_UnSpecified);
-				                moneyTransferToBank.setSourceBankAccountType("" + CmFinoFIX.BankAccountCardType_UnSpecified);
+				                moneyTransferToBank.setDestinationBankAccountType("" + CmFinoFIX.BankAccountType_Lakupandai);
+				                moneyTransferToBank.setSourceBankAccountType("" + CmFinoFIX.BankAccountType_Lakupandai);
 				                if (StringUtils.isNotBlank(confirmationToBank.getINTxnId())) {
 				                	moneyTransferToBank.setINTxnId(confirmationToBank.getINTxnId());
 				                }
