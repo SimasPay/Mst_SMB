@@ -330,7 +330,8 @@ public class ConfigurationUtil {
 		MfinoSubFavCategoryIdBillerCode("mfino.sub.fav.category.id.billercode","2,3,8,9"),
 		PrefixWordingForAdminBank("prefix.wording.for.admin.bank", "ADMIN BANK : RP."),
 		PrefixWordingForTotalTagihan("prefix.wording.for.total.tagihan", "TOTAL TAGIHAN : RP."),
-		SubscriberActivityActiveMessage("sub.activity.active.message","Already an active request is available.");
+		SubscriberActivityActiveMessage("sub.activity.active.message","Already an active request is available."),
+		MfsMobileAppTimeout("mfs.mobile.app.timeout","600000");
 		
 		
 		private final String key;
@@ -1337,5 +1338,8 @@ public class ConfigurationUtil {
 		return get(ConfigurationKey.SubscriberActivityActiveMessage);
 	}
 	
-	
+	public static Integer getMfsMobileAppTimeout() {
+		
+		return getInteger(ConfigurationKey.MfsMobileAppTimeout);
+	}
 }

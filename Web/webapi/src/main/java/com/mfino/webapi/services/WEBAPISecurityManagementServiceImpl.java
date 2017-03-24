@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mfino.constants.SecurityConstants;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelSessionMgmt;
@@ -26,6 +25,7 @@ import com.mfino.service.ChannelSessionManagementService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.transactionapi.constants.ApiConstants;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.webapi.utilities.IUserDataContainer;
 import com.mfino.webapi.utilities.InvalidWeabpiSessionException;
 import com.mfino.webapi.utilities.ReceivedUserDataContainer;
@@ -74,7 +74,8 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 		Timestamp presentTime = new Timestamp();
 		long timeDiff = presentTime.getTime() - lastRequestTime.getTime();
 
-		if (timeDiff >= SecurityConstants.TIME_SINCE_LAST_LOGIN_MILLIS)
+		if (timeDiff >= ConfigurationUtil.getMfsMobileAppTimeout())
+			
 			return false;
 
 		return true;
