@@ -1409,7 +1409,7 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 					
 					KycLevel fullyBankedLevel = kyclevelDao.getByKycLevel(CmFinoFIX.SubscriberKYCLevel_FullyBanked.longValue());
 					sub.setKycLevel(fullyBankedLevel);
-					
+					sub.setUpgradablekyclevel(fullyBankedLevel.getId());
 					UnRegisteredTxnInfoQuery query = new UnRegisteredTxnInfoQuery();
 					query.setSubscriberMDNID(sub.getId());
 					UnRegisteredTxnInfoDAO unregisteredDao = DAOFactory.getInstance().getUnRegisteredTxnInfoDAO();
