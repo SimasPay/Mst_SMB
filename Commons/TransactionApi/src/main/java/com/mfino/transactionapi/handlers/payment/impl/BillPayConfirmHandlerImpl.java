@@ -126,7 +126,7 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		 billPay.setChannelCode(cc.getChannelcode());
 		 billPay.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		 //Change as part of migration to include old parameter names
-		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName) && 
+		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionDetails.getTransactionName()) && 
 				 StringUtils.isNotBlank(transactionDetails.getDestMDN())) {
 			 billPay.setInvoiceNumber(transactionDetails.getDestMDN());
 		 }
@@ -134,7 +134,7 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 			 billPay.setInvoiceNumber(transactionDetails.getBillNum());
 		 }
 		 //Change as part of migration to include old parameter names
-		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionName) && 
+		 if (ServiceAndTransactionConstants.TRANSACTION_AIRTIME_PURCHASE.equalsIgnoreCase(transactionDetails.getTransactionName()) && 
 				 StringUtils.isNotBlank(transactionDetails.getCompanyID())) {
 			 billPay.setBillerCode(transactionDetails.getCompanyID());
 		 }
@@ -155,11 +155,9 @@ public class BillPayConfirmHandlerImpl extends FIXMessageHandler implements Bill
 		log.info("Handling Subscriber bill pay confirmation WebAPI request");
 		XMLResult result = new MoneyTransferXMLResult();
 		
-		serviceName = transactionDetails.getServiceName();
-		
 		//2FA
 		ServiceChargeTxnLog sctlForMFA = sctlService.getByTransactionLogId(billPay.getParentTransactionID());
-		if(mfaService.isMFATransaction(serviceName, transactionName, cc.getId().longValue())){
+		if(mfaService.isMFATransaction(transactionDetails.getServiceName(), transactionDetails.getTransactionName(), cc.getId().longValue())){
 			if(transactionOtp == null || !(mfaService.isValidOTP(transactionOtp,sctlForMFA.getId().longValue(), billPay.getSourceMDN()))){
 				result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidMFAOTP);
 				return result;
