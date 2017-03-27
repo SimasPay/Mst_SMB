@@ -91,6 +91,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                           	allowBlank: false,
                           	editable: false,
                        	    fieldLabel: _('Date of Birth'),
+                       	    format : 'd-m-Y',
                        	    blankText : _('Birth Date is required'),
                        	    itemId : 'subupgradekyc.form.birthdate',
                        	    anchor : '100%',

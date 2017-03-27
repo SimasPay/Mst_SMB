@@ -151,6 +151,12 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
 								
 								log.info("Subscriber state not modifeid to retired....");
 							}
+						} else {
+							
+							result.setCode(String.valueOf(CmFinoFIX.NotificationCode_SubscriberClosingSuccess));
+							result.setResponseStatus(GeneralConstants.RESPONSE_CODE_SUCCESS);
+							result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberClosingSuccess);
+							log.info("Subscriber e-Money pocket  state  only modifeid to retired....");
 						}
 						
 						
@@ -222,7 +228,7 @@ public class SubscriberEMoneyClosingHandlerImpl  extends FIXMessageHandler imple
 
         for (Pocket eachPocket : resultantPockets) {
         	
-        	if(eachPocket.getPocketTemplateByPockettemplateid().getType() == (CmFinoFIX.PocketType_BankAccount.longValue())) {
+        	if(eachPocket.getPocketTemplateByPockettemplateid().getType().equals(CmFinoFIX.PocketType_BankAccount)) {
         	
         		isBankPocketAvailable = true;
         		continue;
