@@ -279,7 +279,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
         var srecord = this.record;
       	
         if( record!=null && record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.SubscriberStatus.NotRegistered) {
-      		record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, CmFinoFIX.NotificationMethod.SMS+CmFinoFIX.NotificationMethod.Email);
+      		record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, CmFinoFIX.NotificationMethod.SMS);
       		record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name, CmFinoFIX.MDNStatus.Initialized);
       		this.setRecord(record);
       		this.unregisterRecord = record;

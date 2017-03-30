@@ -168,7 +168,7 @@ mFino.page.subscriber = function(config){
                     gridEditForm.show();
                     gridEditForm.setEditable(false);
 //                    gridEditForm.form.onStatusDropdown(CmFinoFIX.MDNStatus.Initialized);
-                    record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, CmFinoFIX.NotificationMethod.SMS+CmFinoFIX.NotificationMethod.Email);
+                    record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, CmFinoFIX.NotificationMethod.SMS);
                     record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.SubscriberTypeText._name, "Subscriber");
                     record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name, CmFinoFIX.MDNStatus.Initialized);
                     record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.Language._name,CmFinoFIX.Language.English);
