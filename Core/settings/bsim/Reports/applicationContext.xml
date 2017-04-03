@@ -39,7 +39,30 @@
         <property name="cronExpression" value="0 0 2 1/1 * ? *" />
     </bean>
     
+    <bean id="ftpService" class="com.dimo.fuse.reports.FtpService" init-method="init" />
     
+    <bean id="dailyGLReportScheduler" class="com.dimo.fuse.reports.scheduler.DailyGLReportScheduller">
+    	<property name="ftpService" ref="ftpService"></property>
+    </bean>
+    <bean id="dailyGLReportSchedulerJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="dailyGLReportScheduler" />
+        <property name="targetMethod" value="generate" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <!-- Simple Trigger, run every 5 seconds -->
+    <!-- <bean id="dailyGLReportSchedulerJobTrigger"
+        class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        
+        <property name="jobDetail" ref="dailyGLReportSchedulerJob" />
+        <property name="repeatInterval" value="600000" />
+        <property name="startDelay" value="60000" />
+        
+    </bean> -->
+    <bean id="dailyGLReportSchedulerJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="dailyGLReportSchedulerJob" />
+        <property name="timeZone" ref="timeZone" />
+        <property name="cronExpression" value="0 20 20 1/1 * ? *" />
+    </bean>
     
      <bean id="monthlyReportScheduler" class="com.dimo.fuse.reports.scheduler.MonthlyReportScheduler"> 
     </bean>
@@ -60,6 +83,7 @@
         <property name="triggers">
             <list>
               	<ref bean="dailyReportSchedulerJobTrigger"/>
+              	<ref bean="dailyGLReportSchedulerJobTrigger"/>
               	<ref bean="monthlyReportSchedulerJobTrigger"/>  
             </list>
         </property>

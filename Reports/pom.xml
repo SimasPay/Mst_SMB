@@ -159,6 +159,19 @@
 		    <artifactId>aws-java-sdk-ses</artifactId>
 		    <version>1.11.7</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>commons-net</groupId>
+		    <artifactId>commons-net</artifactId>
+		    <version>3.6</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jsch</artifactId>
+		    <version>0.1.54</version>
+		</dependency>
+		
   	</dependencies>  	
   	
   	<build>
