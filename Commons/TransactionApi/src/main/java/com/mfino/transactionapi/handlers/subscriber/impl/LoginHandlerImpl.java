@@ -299,7 +299,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					isBankTypePocket=false;
 				}
 				
-				if(emoneyPocket != null && emoneyPocket.getStatus() == CmFinoFIX.PocketStatus_Active){
+				if(emoneyPocket != null && (emoneyPocket.getStatus() == CmFinoFIX.PocketStatus_Active
+						|| emoneyPocket.getStatus() == CmFinoFIX.PocketStatus_Suspend)){
 					isEmoneyTypePocket=true;
 				
 				}
