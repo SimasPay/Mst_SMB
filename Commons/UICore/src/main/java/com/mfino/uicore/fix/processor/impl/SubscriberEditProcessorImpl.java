@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,12 +19,14 @@ import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.KtpDetailsDAO;
+import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.PocketDAO;
 import com.mfino.dao.SubsUpgradeBalanceLogDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
+import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.dao.query.KtpDetailsQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
@@ -32,6 +35,7 @@ import com.mfino.domain.ChannelCode;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.KtpDetails;
 import com.mfino.domain.KycLevel;
+import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.ServiceCharge;
@@ -274,6 +278,21 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				if (subscriberUpgradeData.getSubscriberStatus() != null && (subscriberUpgradeData.getSubscriberStatus().equals(CmFinoFIX.SubscriberStatus_Retired) || 
 						subscriberUpgradeData.getSubscriberStatus().equals(CmFinoFIX.SubscriberStatus_PendingRetirement))) {
 					
+					subscriberUpgradeData.setSubscriberStatus(CmFinoFIX.SubscriberStatus_PendingRetirement);
+					subscriberUpgradeData.setSubscriberRestriction(CmFinoFIX.SubscriberRestrictions_None);
+					
+					CommodityTransferQuery ctQuery = new CommodityTransferQuery();
+					ctQuery.setSourceDestnMDN(subscriberMDN.getMdn());
+					
+					PendingCommodityTransferDAO pctDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
+					List<PendingCommodityTransfer> lstPCT = pctDAO.get(ctQuery);
+					
+					if (!CollectionUtils.isEmpty(lstPCT)) {
+						error = new CmFinoFIX.CMJSError();
+						error.setErrorDescription(MessageText._("There are "+lstPCT.size()+" pending transactions to be resolved"));
+						return error;
+					}
+					
 					int code = subscriberService.retireSubscriber(subscriberMDN);
 					if (code == Codes.OPERATION_NOT_ALLOWED) {
 						error = new CmFinoFIX.CMJSError();
@@ -363,7 +382,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				}	
 				
 	        	error.setErrorDescription(MessageText._("Request for Subscriber Edit Data is Approved successfully"));
-	        	if(CmFinoFIX.MDNStatus_Retired.equals(subscriberMDN.getStatus())){
+	        	if(CmFinoFIX.MDNStatus_Retired.equals(subscriberMDN.getStatus()) || CmFinoFIX.MDNStatus_PendingRetirement.equals(subscriberMDN.getStatus())){
 	        		error.setErrorDescription(MessageText._("Request for Subscriber Archival is Approved successfully"));
 	        	}
 	        	
@@ -513,7 +532,8 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			// *FindbugsChange*
         	// Previous -- if (subscriberUpgradeData.getSubscriberStatus() != subscriberMDN.getStatus()) {
 			if (!(subscriberUpgradeData.getSubscriberStatus().equals(subscriberMDN.getStatus()))) {
-				if (CmFinoFIX.MDNStatus_Retired.equals(subscriberUpgradeData.getSubscriberStatus())) {
+				if (CmFinoFIX.MDNStatus_Retired.equals(subscriberUpgradeData.getSubscriberStatus()) ||
+						CmFinoFIX.MDNStatus_PendingRetirement.equals(subscriberUpgradeData.getSubscriberStatus())) {
 					subscriberMDN.setIsforcecloserequested(true);
 				}
 				subscriberMDN.setStatus(subscriberUpgradeData.getSubscriberStatus());
