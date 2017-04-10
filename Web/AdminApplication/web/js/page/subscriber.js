@@ -82,7 +82,7 @@ mFino.page.subscriber = function(config){
         form : new mFino.widget.SubscriberUpgradeKycLevelWindow(config),
         title : _("Upgrade from Non-KYC E-Money to KYC E-Money"),
         width:520,
-        height: 550,
+        height: 570,
         mode:"upgradekyc"
     }, config));
     
