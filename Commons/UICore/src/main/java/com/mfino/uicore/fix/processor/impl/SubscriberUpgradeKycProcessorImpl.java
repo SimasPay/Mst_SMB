@@ -314,21 +314,23 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Approved successfully"));
 				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestApproved;
 				log.info("Request for Subscriber Upgraded Approved successfully");
+				upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
 				
 			} else if(upgradeStatus == CmFinoFIX.SubscriberUpgradeKycStatus_Revision){
 				error.setErrorDescription(MessageText._("Request for Subscriber Need Revision"));
 				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRevision;
 				log.info("Request for Subscriber Need Revision");
+				upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
 				
 			} else {
 				subscriberMDN.setUpgradeacctstatus(null);
 				error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Rejected successfully"));
 				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRejected;
 				log.info("Request for Subscriber Upgraded Rejected successfully");
+				upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
 			}
 		}
 		
-		upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Completed);
 		upgradeData.setSubsActivityApprovedBY(userService.getCurrentUser().getUsername());
 		upgradeData.setSubsActivityAprvTime(new Timestamp());
 		subscriberUpgradeDataDAO.save(upgradeData);

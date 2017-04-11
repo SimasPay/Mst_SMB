@@ -111,14 +111,14 @@ public class SubscriberUpgradeKycController {
 			String mdnId = request.getParameter("ID");
 
 			int activeProcess =  subscriberUpgradeDataDAO.getCountByMdnId(Long.valueOf(mdnId));
-			if(activeProcess == 0){
 			
-				SubscriberMdn subscriberMdn = subscriberMdnService.getById(Long.valueOf(mdnId));
-				if(subscriberMdn == null){
-		        	responseMap.put("Error", MessageText._("Invalid MDN ID"));
-		        	return new JSONView(responseMap);
-		        }
-				
+			SubscriberMdn subscriberMdn = subscriberMdnService.getById(Long.valueOf(mdnId));
+			if(subscriberMdn == null){
+	        	responseMap.put("Error", MessageText._("Invalid MDN ID"));
+	        	return new JSONView(responseMap);
+	        }
+			
+			if(activeProcess == 0 || CmFinoFIX.SubscriberUpgradeKycStatus_Revision.equals(subscriberMdn.getUpgradeacctstatus())){
 				if(subscriberMdn.getUpgradeacctstatus() != null){
 					if(subscriberMdn.getUpgradeacctstatus() == CmFinoFIX.SubscriberUpgradeKycStatus_Approve){
 			        	responseMap.put("Error", MessageText._("Subscriber Upgrade Not Allowed"));
