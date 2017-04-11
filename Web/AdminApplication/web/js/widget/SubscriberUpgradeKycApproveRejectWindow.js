@@ -211,6 +211,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 								id:'commentsu',
 								fieldLabel : _('Comments'),
 								allowBlank: false,
+								maxLength : 255,
 								hideLabel: true,
 								labelSeparator :'',
 								itemId : 'subupgradekyc.displayfield.commentsu',
@@ -224,14 +225,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 								name: 'selectone',
 								anchor : '100%',
 								checked : true,
-								boxLabel: _('Approve'),
-								handler: {
-									call:function(field){
-										if(field.checked){
-											Ext.getCmp('commentsu').enable();
-										}
-									}
-								}
+								boxLabel: _('Approve')
 							},
 							{
 								columnWidth: 0.33,
@@ -239,14 +233,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 								itemId : 'revision',
 								anchor : '100%',
 								name: 'selectone',
-								boxLabel: _('Revision'),
-								handler: {
-									call :  function(field){
-										if(field.checked){
-											Ext.getCmp('commentsu').reset();
-										}
-									}
-								}
+								boxLabel: _('Revision')
 							},
 							{
 								columnWidth: 0.33,
@@ -254,14 +241,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 								itemId : 'reject',
 								anchor : '100%',
 								name: 'selectone',
-								boxLabel: _('Reject'),
-								handler: {
-									call :  function(field){
-										if(field.checked){
-											Ext.getCmp('commentsu').reset();
-										}
-									}
-								}
+								boxLabel: _('Reject')
 							}
             	    ]
                }
