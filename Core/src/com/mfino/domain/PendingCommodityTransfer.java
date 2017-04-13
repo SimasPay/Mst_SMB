@@ -178,7 +178,7 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
 	private Boolean localbalancerevertrequired = Boolean.TRUE;
 	private Boolean localrevertrequired = Boolean.TRUE;
 	private Boolean bankreversalrequired = Boolean.TRUE;
-	private Boolean operatoractionrequired = Boolean.TRUE;
+	private Boolean operatoractionrequired = Boolean.FALSE;
 
 	private Long id;
 	

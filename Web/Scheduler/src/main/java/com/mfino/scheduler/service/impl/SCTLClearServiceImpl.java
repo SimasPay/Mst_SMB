@@ -189,24 +189,24 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 			if (CollectionUtils.isNotEmpty(lst)) {
 				for (ServiceChargeTxnLog sctl : lst) {
 					if ((currentTime.getTime() - sctl.getLastupdatetime().getTime()) > EXPIRATION_TIME) {
-					log.info("Checking the status of the Transaction with SCTLID --> " + sctl.getId());
-					if (CmFinoFIX.SCTLStatus_Inquiry.intValue() == sctl.getStatus()) {
-						handleTimeout(sctl);	
+						log.info("Checking the status of the Transaction with SCTLID --> " + sctl.getId());
+						if (CmFinoFIX.SCTLStatus_Inquiry.intValue() == sctl.getStatus()) {
+							handleTimeout(sctl);	
+						}
+						else if(sctl.getServiceid().equals(tellerServiceID)){
+							handleProcessingStatusTellerTransactions(sctl);
+						} 
+						else if (sctl.getTransactiontypeid().equals(cashOutAtATM_Id)) {
+							handleProcessingStatusCashOutTransactions(sctl);
+						}
+							else if((sctl.getTransactiontypeid().equals(airtimePurchaseTxnId)) || (sctl.getTransactiontypeid().equals(billPayTxnId))
+									 || (sctl.getTransactiontypeid().equals(ieTxnId))){
+							handleBillPayProcessingStatusTransactions(sctl);
+						}
+						else if (CmFinoFIX.SCTLStatus_Processing.intValue() == sctl.getStatus()) {
+							handleProcessingStatusTransactions(sctl);
+						}
 					}
-					else if(sctl.getServiceid().equals(tellerServiceID)){
-						handleProcessingStatusTellerTransactions(sctl);
-					} 
-					else if (sctl.getTransactiontypeid().equals(cashOutAtATM_Id)) {
-						handleProcessingStatusCashOutTransactions(sctl);
-					}
-						else if((sctl.getTransactiontypeid().equals(airtimePurchaseTxnId)) || (sctl.getTransactiontypeid().equals(billPayTxnId))
-								 || (sctl.getTransactiontypeid().equals(ieTxnId))){
-						handleBillPayProcessingStatusTransactions(sctl);
-					}
-					else if (CmFinoFIX.SCTLStatus_Processing.intValue() == sctl.getStatus()) {
-						handleProcessingStatusTransactions(sctl);
-					}
-				}
 					else {
 						log.info("SCTL with ID: " + sctl.getId() + " will be cleared in next cycle");
 					}
