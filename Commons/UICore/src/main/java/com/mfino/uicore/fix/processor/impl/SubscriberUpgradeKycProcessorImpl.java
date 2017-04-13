@@ -15,6 +15,7 @@ import com.mfino.dao.BranchCodeDAO;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
 import com.mfino.dao.PocketDAO;
+import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.SubsUpgradeBalanceLogDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
@@ -30,11 +31,13 @@ import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
+import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.domain.SubscriberUpgradeData;
+import com.mfino.domain.Transaction;
 import com.mfino.domain.TransactionLog;
 import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidServiceException;
@@ -68,6 +71,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	private SubscriberUpgradeDataDAO subscriberUpgradeDataDAO = DAOFactory.getInstance().getSubscriberUpgradeDataDAO();
 	private KYCLevelDAO kycLevelDao = DAOFactory.getInstance().getKycLevelDAO();
 	private SubscriberGroupDao subscriberGroupDao = DAOFactory.getInstance().getSubscriberGroupDao();
+	private ServiceChargeTransactionLogDAO sctlDAO = DAOFactory.getInstance().getServiceChargeTransactionLogDAO();
 	
 	private static final String DEFAULT_BRANCH = "000";
 	
@@ -247,9 +251,11 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 		serviceCharge.setTransactionLogId(transactionsLog.getId());
 
 		try{
+			Transaction charge = transactionChargingService.getCharge(serviceCharge);
+			ServiceChargeTxnLog serviceChargeTransactionLog = charge.getServiceChargeTransactionLog();
+			serviceChargeTransactionLog.setStatus(CmFinoFIX.SCTLStatus_Confirmed);
+			sctlDAO.save(serviceChargeTransactionLog);
 			
-			transactionChargingService.getCharge(serviceCharge);
-
 		}catch (InvalidServiceException e) {
 			log.error("Exception occured in getting charges",e);
 			error.setCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
