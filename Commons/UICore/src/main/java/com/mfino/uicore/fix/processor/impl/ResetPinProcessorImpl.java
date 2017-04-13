@@ -254,6 +254,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
 		
 		error.setErrorDescription("Request to reset mPIN for "+realMsg.getSourceMDN()+" has been submitted successfully. Subscriber's mPIN will be reset once approved ");
 		error.setsuccess(Boolean.TRUE);
+    	error.setErrorCode(CmFinoFIX.ErrorCode_NoError);
     	
     	return error;
     }
