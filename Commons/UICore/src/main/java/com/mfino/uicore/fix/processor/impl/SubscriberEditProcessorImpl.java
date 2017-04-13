@@ -1,6 +1,5 @@
 package com.mfino.uicore.fix.processor.impl;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.KYCLevelDAO;
@@ -31,23 +29,18 @@ import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.dao.query.KtpDetailsQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Address;
-import com.mfino.domain.ChannelCode;
 import com.mfino.domain.EnumText;
 import com.mfino.domain.KtpDetails;
 import com.mfino.domain.KycLevel;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
-import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.domain.SubscriberUpgradeData;
-import com.mfino.domain.TransactionLog;
 import com.mfino.domain.UnregisteredTxnInfo;
 import com.mfino.errorcodes.Codes;
-import com.mfino.exceptions.InvalidChargeDefinitionException;
-import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.exceptions.SubscriberRetiredException;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
@@ -402,34 +395,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			subscriberUpgradeData.setSubsActivityAprvTime(new Timestamp());
 			subscriberUpgradeDataDAO.save(subscriberUpgradeData);
         }
-        TransactionLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_JSSubscriberEdit, realMsg.DumpFields());
-		
-		ChannelCode channelCode   =	channelCodeService.getChannelCodeByChannelCode("2");
-
-		ServiceCharge serviceCharge = new ServiceCharge();
-		serviceCharge.setSourceMDN(null);
-		serviceCharge.setDestMDN(null);
-		serviceCharge.setChannelCodeId(channelCode.getId());
-		serviceCharge.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
-		serviceCharge.setTransactionTypeName(ServiceAndTransactionConstants.SUBSCRIBER_EDIT);
-		serviceCharge.setTransactionAmount(BigDecimal.ZERO);
-		serviceCharge.setTransactionLogId(transactionsLog.getId());
-
-		try{
-			transactionChargingService.getCharge(serviceCharge);
-		}catch (InvalidServiceException e) {
-			log.error("Exception occured in getting charges",e);
-			error.setCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
-			error.setErrorDescription(MessageText._("ServiceNotAvailable"));
-        	return error;
-		
-		} catch (InvalidChargeDefinitionException e) {
-			log.error(e.getMessage());
-			error.setCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
-			error.setErrorDescription(MessageText._("ServiceNotAvailable"));
-        	return error;
-		}
-		
+        
 		return error;
 	}
 
