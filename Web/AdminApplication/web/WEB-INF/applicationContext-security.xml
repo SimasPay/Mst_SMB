@@ -27,6 +27,7 @@
      <http pattern="/resources/**" security="none"/>
      <http pattern="/login.htm*" security="none"/>
      <http pattern="/forgotpassword.htm*" security="none"/>
+     <http pattern="/resetpassword.htm*" security="none"/>
  
     <http auto-config="true" use-expressions="true" >
         <form-login login-page="/login.htm" default-target-url="/index.htm"
