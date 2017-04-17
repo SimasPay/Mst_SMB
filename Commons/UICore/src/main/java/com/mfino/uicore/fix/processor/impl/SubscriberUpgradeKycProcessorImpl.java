@@ -329,7 +329,7 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
 				
 			} else {
-				subscriberMDN.setUpgradeacctstatus(null);
+				subscriberMDN.setUpgradeacctstatus(CmFinoFIX.SubscriberUpgradeKycStatus_Reject);
 				error.setErrorDescription(MessageText._("Request for Subscriber Upgraded is Rejected successfully"));
 				notificationCode = CmFinoFIX.NotificationCode_SubscriberUpgradeRequestRejected;
 				log.info("Request for Subscriber Upgraded Rejected successfully");
