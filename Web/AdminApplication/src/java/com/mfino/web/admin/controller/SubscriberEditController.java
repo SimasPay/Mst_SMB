@@ -24,6 +24,7 @@ import org.springframework.web.servlet.View;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.domain.Address;
+import com.mfino.domain.Pocket;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeData;
@@ -153,6 +154,14 @@ public class SubscriberEditController {
 					return new JSONView(responseMap);
 				}
 
+				if(subscriberStatusInt != null && CmFinoFIX.SubscriberStatus_Retired.equals(subscriberStatusInt)){
+					Pocket emoneyPocket = subscriberService.getEmoneyPocket(subscriberMdn.getId(), Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
+					if(emoneyPocket != null && !CmFinoFIX.PocketStatus_Retired.equals(emoneyPocket.getStatus())){
+						responseMap.put("Error", MessageText._("Please retire e-Money subscriber using Retire e-Money pocket/Subsriber feature."));
+						return new JSONView(responseMap);
+					}
+				}
+				
 				String idCardpath = subscriberMdn.getKtpdocumentpath();
 				
 		        if (request instanceof MultipartHttpServletRequest) {
