@@ -51,7 +51,7 @@ public class RSClientPostHttps {
 		    
 		    //sets the post request as the resulting string
 		    httpost.setHeader("Accept", "application/json");
-		    httpost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		    httpost.addHeader("Content-Type", "application/json");
 		    
 		    if(null != reqParams) {
 		    	

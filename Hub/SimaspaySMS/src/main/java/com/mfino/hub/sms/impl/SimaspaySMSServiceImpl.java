@@ -17,7 +17,7 @@ import com.mfino.dao.DAOFactory;
 import com.mfino.dao.NotificationLogDetailsDAO;
 import com.mfino.domain.NlogDetails;
 import com.mfino.fix.CmFinoFIX;
-import com.mfino.hub.sms.utils.RSClientPostHttps;
+import com.mfino.hub.sms.utils.RSClientPostHttp;
 import com.mfino.mce.core.util.MCEUtil;
 import com.mfino.mce.notification.SMSNotification;
 import com.mfino.mce.notification.SMSNotificationService;
@@ -159,8 +159,8 @@ public class SimaspaySMSServiceImpl implements SMSNotificationService
 			String reqParams = getJSONString();
 			log.info("SimaspaySMSServiceImpl :: process() url: "+getUrl()+", Request Params: "+reqParams);
 			
-			RSClientPostHttps client = new RSClientPostHttps();
-			JSONObject responseObj = client.callHttpsPostService(reqParams, getUrl(), Integer.parseInt(getTimeout()), "Simaspay SMS GW");
+			RSClientPostHttp client = new RSClientPostHttp();
+			JSONObject responseObj = client.callHttpPostService(getJSON(), getUrl(), Integer.parseInt(getTimeout()));
 			
 			if(null != responseObj && !responseObj.get("status").equals("CommunicationFailure")) {
 				
@@ -219,5 +219,17 @@ public class SimaspaySMSServiceImpl implements SMSNotificationService
 		requestParams.put(KEY_MESSAGE, getMessage());
 		
 		return requestParams.toString();
+	}
+	
+	private JSONObject getJSON() throws UnsupportedEncodingException, JSONException {
+		
+		JSONObject requestParams = new JSONObject();
+		
+		requestParams.put(KEY_SYSTEM_ID, getSystemId());
+		requestParams.put(KEY_MSG_ID, getMsgId());
+		requestParams.put(KEY_RECEPIENT_NO, getNohp());
+		requestParams.put(KEY_MESSAGE, getMessage());
+		
+		return requestParams;
 	}
 }
