@@ -294,6 +294,8 @@ public class ServiceAndTransactionConstants {
 	
 	public static final String TRANSACTION_SUB_UPGEADE_TO_BANKING = "SubUpgradeToBanking";
 	
+	public static final String TRANSACTION_AUTOREVERSE_TRANSFER_TO_UNREGISTERED = "AutoReverseTransferToNonRegistered";
+	
 	// Messages
 	
 	public static final String	MESSAGE_MOBILE_TRANSFER	            = "Mobile Transfer";

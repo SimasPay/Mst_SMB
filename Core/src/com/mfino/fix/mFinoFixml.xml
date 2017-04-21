@@ -3857,6 +3857,15 @@
 		<message name="TransferInquiryToNonRegistered" msgtype="1337" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
 		</message>
 		<message name="TransferToNonRegistered" msgtype="1338" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
+		</message>
+		<message name="AutoReverseTransferToNonRegistered" msgtype="1796" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
+			<field name="TransferID" required="Y" />
+			<field name="Confirmed" required="Y" default="0" />
+			<field name="INTxnId" required="N"/>
+			<field name="IsRetirePartner" required="N"/>
+			<field name="CloseAcctApprovedBy" required="N"/>
+			<field name="CloseAcctStatus" required="N"/>
+			<field name="CloseApproverComments" required="N"/>
 		</message>      
 		<message name="CashOutInquiryForNonRegistered" msgtype="1339" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
 			<field name="PartnerCode" required="N"/>
@@ -8475,6 +8484,7 @@
 			<value enum="1336" description="JSOfflineReport"/>
 			<value enum="1337" description="TransferInquiryToNonRegistered"/>
 			<value enum="1338" description="TransferToNonRegistered"/>
+			<value enum="1796" description="AutoReverseTransferToNonRegistered"/>
 			<value enum="1339" description="CashOutInquiryForNonRegistered"/>
 			<value enum="1340" description="CashOutForNonRegistered"/>
 			<value enum="1341" description="InterBankTransferInquiryToBank"/>
@@ -25531,6 +25541,7 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="66" description="Cashin_From_ATM"/>
 			<value enum="67" description="Bank_To_Emoney"/>
 			<value enum="68" description="Cashwithdrawal_Refund"/>
+			<value enum="69" description="EMoney_Trf_To_UnRegistered_Refund"/>
 		</field>
 		<field number="5637" name="ReportSql" type="BLOB" unused="Y" />
 		<field number="5638" name="ReportClass" type="STRING" unused="Y" />
