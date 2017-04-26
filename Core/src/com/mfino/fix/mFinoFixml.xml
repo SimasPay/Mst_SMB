@@ -8484,7 +8484,6 @@
 			<value enum="1336" description="JSOfflineReport"/>
 			<value enum="1337" description="TransferInquiryToNonRegistered"/>
 			<value enum="1338" description="TransferToNonRegistered"/>
-			<value enum="1796" description="AutoReverseTransferToNonRegistered"/>
 			<value enum="1339" description="CashOutInquiryForNonRegistered"/>
 			<value enum="1340" description="CashOutForNonRegistered"/>
 			<value enum="1341" description="InterBankTransferInquiryToBank"/>
@@ -8581,6 +8580,7 @@
 			<value enum="1785" description="JSSubscriberUpgradeKyc" />
 			<value enum="1786" description="JSSubscriberEdit" />
 			<value enum="1787" description="JSSubscriberCloseApproveReject"/>
+			<value enum="1796" description="AutoReverseTransferToNonRegistered"/>
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
