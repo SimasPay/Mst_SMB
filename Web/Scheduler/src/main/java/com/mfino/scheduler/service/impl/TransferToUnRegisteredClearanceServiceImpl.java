@@ -58,7 +58,7 @@ import com.mfino.transactionapi.handlers.money.AutoReverseHandler;
 public class TransferToUnRegisteredClearanceServiceImpl  {
 	
 	public static final int TRANSFER_TO_UNREGISTERED_EXPIRY_TIME = 2; // Default 2 days
-	private static Logger log = LoggerFactory.getLogger(TransferToUnRegisteredClearanceServiceWith2ProcessImpl.class);
+	private static Logger log = LoggerFactory.getLogger(TransferToUnRegisteredClearanceServiceImpl.class);
 	
 	@Autowired
 	@Qualifier("AutoReverseHandlerImpl")

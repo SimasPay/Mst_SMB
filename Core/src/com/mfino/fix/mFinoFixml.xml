@@ -3862,10 +3862,6 @@
 			<field name="TransferID" required="Y" />
 			<field name="Confirmed" required="Y" default="0" />
 			<field name="INTxnId" required="N"/>
-			<field name="IsRetirePartner" required="N"/>
-			<field name="CloseAcctApprovedBy" required="N"/>
-			<field name="CloseAcctStatus" required="N"/>
-			<field name="CloseApproverComments" required="N"/>
 		</message>      
 		<message name="CashOutInquiryForNonRegistered" msgtype="1339" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccount">
 			<field name="PartnerCode" required="N"/>
