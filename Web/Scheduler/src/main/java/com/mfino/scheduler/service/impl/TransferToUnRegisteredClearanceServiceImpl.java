@@ -169,7 +169,8 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 
 		// Send the  Reverse request to Backend for processing
 		log.info("TransferToUnRegisteredClearanceServiceImpl :: Send the  Reverse request to Backend for processing :: PROCESSING");
-		reverseTransactionToUnregistered.processReverseRequest(sctltrx, parentSCTL);
+//		reverseTransactionToUnregistered.processReverseRequest(sctltrx, parentSCTL);
+		reverseTransactionToUnregistered.processReverseRequest(parentSCTL, sctltrx);
 		
 		log.info("TransferToUnRegisteredClearanceServiceImpl :: revertTransfer :: END");
         
