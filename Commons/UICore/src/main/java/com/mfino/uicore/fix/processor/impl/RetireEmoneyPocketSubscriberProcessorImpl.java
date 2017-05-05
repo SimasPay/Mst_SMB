@@ -1,5 +1,6 @@
 package com.mfino.uicore.fix.processor.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.SystemParameterKeys;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.SubscriberUpgradeDataDAO;
 import com.mfino.dao.query.CommodityTransferQuery;
@@ -25,6 +27,8 @@ import com.mfino.service.ChannelCodeService;
 import com.mfino.service.PendingCommodityTransferService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
+import com.mfino.service.SubscriberService;
+import com.mfino.service.SystemParametersService;
 import com.mfino.transactionapi.constants.ApiConstants;
 import com.mfino.transactionapi.handlers.subscriber.SubscriberEMoneyClosingHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.SubscriberAccountClosingXMLResult;
@@ -51,12 +55,20 @@ public class RetireEmoneyPocketSubscriberProcessorImpl extends BaseFixProcessor 
 	private SubscriberMdnService subscriberMdnService;
 	
 	@Autowired
+	@Qualifier("SubscriberServiceImpl")
+	private SubscriberService subscriberService;
+	
+	@Autowired
 	@Qualifier("PendingCommodityTransferServiceImpl")
 	private PendingCommodityTransferService pendingCommodityTransferService;
 	
 	@Autowired
 	@Qualifier("SubscriberEMoneyClosingHandlerImpl")
 	private SubscriberEMoneyClosingHandler subscriberEMoneyClosingHandler;
+
+	@Autowired
+	@Qualifier("SystemParametersServiceImpl")
+	private SystemParametersService systemParametersService ;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -78,6 +90,15 @@ public class RetireEmoneyPocketSubscriberProcessorImpl extends BaseFixProcessor 
 		    		result.setsuccess(Boolean.FALSE);
 		    		
 				} else {
+					
+					Pocket svaPocket = subscriberService.getDefaultPocket(realMsg.getMDNID(), CmFinoFIX.PocketType_SVA, CmFinoFIX.Commodity_Money);
+					BigDecimal currentbalance = svaPocket.getCurrentbalance();
+					BigDecimal maxClosingAmount = systemParametersService.getBigDecimal(SystemParameterKeys.MAXIMUM_SUBSCRIBER_CLOSING_AMOUNT);
+					if(currentbalance != null && currentbalance.compareTo(maxClosingAmount) > 0){
+						result.setErrorDescription("Can't retire the e-money pocket because the pocket balance more than "+maxClosingAmount);
+			    		result.setsuccess(Boolean.FALSE);
+			    		return result;
+					}
 					
 					SubscriberUpgradeData subscriberUpgradeData=new SubscriberUpgradeData();
 					subscriberUpgradeData.setMdnId(realMsg.getMDNID());
