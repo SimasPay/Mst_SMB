@@ -201,9 +201,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 			mbpquery.setBillerCode(billPayInquiry.getBillerCode());
 			List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 			if(results.size() > 0){
-				if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
+				if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype().intValue()) ){
 					response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-				}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
+				}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype().intValue()) ){
 					response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 				}else {
 					response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
@@ -512,9 +512,9 @@ public class BillPaymentServiceImpl extends BillPaymentsBaseServiceImpl implemen
 		mbpquery.setBillerCode(billPay.getBillerCode());
 		List<MfsbillerPartnerMap> results = mfsbpDAO.get(mbpquery);
 		if(results.size() > 0){
-			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype()) ){
+			if(CmFinoFIX.BillerPartnerType_Topup_Denomination.equals(results.get(0).getBillerpartnertype().intValue()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Denomination);
-			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype()) ){
+			}else if(CmFinoFIX.BillerPartnerType_Topup_Free.equals(results.get(0).getBillerpartnertype().intValue()) ){
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Topup_Free);
 			}else {
 				response.setBillerPartnerType(CmFinoFIX.BillerPartnerType_Payment_Full);
