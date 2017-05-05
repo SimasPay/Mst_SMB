@@ -69,6 +69,7 @@
 		<property name="url" value="${simaspay.sms.http.url}"/>
 		<property name="systemId" value="${simaspay.sms.systemId}"/>
 		<property name="msgId" value="${simaspay.sms.msgId}"/>
+		<property name="timeout" value="${simaspay.sms.timeout}"/>
 	</bean>
 	
 	<camelContext id="BSIMSMS" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
