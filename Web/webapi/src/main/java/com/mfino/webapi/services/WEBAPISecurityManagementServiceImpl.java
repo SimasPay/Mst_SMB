@@ -604,8 +604,6 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 			byPass = true;	
 		else if(ApiConstants.TRANSACTION_GET_PROMO_IMAGE.equals(transactionName))
 			byPass = true;
-		else if(ApiConstants.TRANSACTION_CHANGEPIN.equals(transactionName))
-			byPass = true;
 		else if(ApiConstants.TRANSACTION_RESEND_MFAOTP.equals(transactionName))
 			byPass = true;
 		log.info("bypassSessionChecks for transaction: "+transactionName+" is: "+byPass);
