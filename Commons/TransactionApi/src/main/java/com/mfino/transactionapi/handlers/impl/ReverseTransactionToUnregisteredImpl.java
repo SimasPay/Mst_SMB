@@ -170,7 +170,6 @@ public class ReverseTransactionToUnregisteredImpl extends FIXMessageHandler impl
 			}
 			
 			reverseTransactionInquiry.setSourcePocketID(reversalFundingPocket.getId().longValue());
-//			reverseTransactionInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Reverse_Charge);
 			reverseTransactionInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Auto_Reverse);
 
 			reverseTransactionInquiry.setDestPocketID(minCT.getPocket().getId().longValue());
