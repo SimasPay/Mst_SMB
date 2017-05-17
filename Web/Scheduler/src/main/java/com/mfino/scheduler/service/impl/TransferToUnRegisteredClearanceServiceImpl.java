@@ -141,9 +141,10 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 			for (UnregisteredTxnInfo urti: unRegisteredTxnInfos) {
 				if ( !(ServiceAndTransactionConstants.TRANSACTION_CASHOUT_AT_ATM.equals(urti.getTransactionname())) ) {
 					long diffTime = cuurentTime.getTime() - urti.getCreatetime().getTime();
+					log.info("diffTime:"+diffTime+"{}"+"expiryTime:"+expiryTime);
 					if (diffTime > expiryTime) {
 						revertTransfer(urti, isChargeRevese, chargeRevFundPocket);
-					} 
+					}
 				}
 			}
 		}
@@ -169,101 +170,95 @@ public class TransferToUnRegisteredClearanceServiceImpl  {
 
 		// Send the  Reverse request to Backend for processing
 		log.info("TransferToUnRegisteredClearanceServiceImpl :: Send the  Reverse request to Backend for processing :: PROCESSING");
-//		reverseTransactionToUnregistered.processReverseRequest(sctltrx, parentSCTL);
-		reverseTransactionToUnregistered.processReverseRequest(parentSCTL, sctltrx);
+		reverseTransactionToUnregistered.processReverseRequest(sctltrx, parentSCTL);
 		
 		log.info("TransferToUnRegisteredClearanceServiceImpl :: revertTransfer :: END");
         
 	}
 	
 	private ServiceChargeTxnLog getReverseTransaction(ServiceChargeTxnLog sctl) {
-		//Check the SCTL status 
-		if (((sctl.getParentsctlid() == null)) && 
-				((CmFinoFIX.SCTLStatus_Confirmed.equals(sctl.getStatus()) || CmFinoFIX.SCTLStatus_Distribution_Started.equals(sctl.getStatus()) ||
-				 CmFinoFIX.SCTLStatus_Distribution_Completed.equals(sctl.getStatus()) || CmFinoFIX.SCTLStatus_Distribution_Failed.equals(sctl.getStatus())))
-				 && ((null == sctl.getAmtrevstatus()) || (CmFinoFIX.SCTLStatus_Reverse_Failed.equals(sctl.getAmtrevstatus())))
-				 ) {
-			
-			// Get the Max CT Record for the Transaction.
-			long sourcePocketId = 0l;
-			CommodityTransfer maxCT = null;
-			CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
-			ChargeTxnCommodityTransferMapDAO txnCommodityTransferMapDAO = daoFactory.getTxnTransferMap();
-			ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
-			query.setSctlID(sctl.getId().longValue());
-			List<ChargetxnTransferMap> lstTxnCommodityTransferMaps = txnCommodityTransferMapDAO.get(query);
-			if (CollectionUtils.isNotEmpty(lstTxnCommodityTransferMaps)) {
-				for (ChargetxnTransferMap ctmap: lstTxnCommodityTransferMaps) {
-					CommodityTransfer ct = ctDao.getById(ctmap.getCommoditytransferid().longValue());
-					if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUicategory())) {
-						if (maxCT == null) {
-							maxCT = ct;
-						}
-						else if (ct.getId().longValue() > maxCT.getId().longValue()) {
-							maxCT = ct;
-						}
+		
+		log.info("getReverseTransaction sctl.getParentsctlid():"+sctl.getParentsctlid());
+		log.info("getReverseTransaction sctl.getStatus():"+sctl.getStatus());
+		log.info("getReverseTransaction sctl.getAmtrevstatus():"+sctl.getAmtrevstatus());
+				
+		// Get the Max CT Record for the Transaction.
+		long sourcePocketId = 0l;
+		CommodityTransfer maxCT = null;
+		CommodityTransferDAO ctDao = daoFactory.getCommodityTransferDAO();
+		ChargeTxnCommodityTransferMapDAO txnCommodityTransferMapDAO = daoFactory.getTxnTransferMap();
+		ChargeTxnCommodityTransferMapQuery query = new ChargeTxnCommodityTransferMapQuery();
+		query.setSctlID(sctl.getId().longValue());
+		List<ChargetxnTransferMap> lstTxnCommodityTransferMaps = txnCommodityTransferMapDAO.get(query);
+		if (CollectionUtils.isNotEmpty(lstTxnCommodityTransferMaps)) {
+			for (ChargetxnTransferMap ctmap: lstTxnCommodityTransferMaps) {
+				CommodityTransfer ct = ctDao.getById(ctmap.getCommoditytransferid().longValue());
+				if (! CmFinoFIX.TransactionUICategory_Charge_Distribution.equals(ct.getUicategory())) {
+					if (maxCT == null) {
+						maxCT = ct;
 					}
+					else if (ct.getId().longValue() > maxCT.getId().longValue()) {
+						maxCT = ct;
+					}
+				}
 
-				}
 			}
-			
-			// Get the Source pocket for the Reverse transaction based on the transaction type.		 
-			TransactionTypeDAO transactionTypeDao = daoFactory.getTransactionTypeDAO();
-			TransactionType transactionType = transactionTypeDao.getById(sctl.getTransactiontypeid().longValue());
-			if (transactionType != null && 
-					((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(transactionType.getTransactionname())) || 
-					(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(transactionType.getTransactionname()))) ) {
-				PartnerServicesDAO psDAO = DAOFactory.getInstance().getPartnerServicesDAO();
-				List<PartnerServices> lst = psDAO.getPartnerServices(sctl.getDestpartnerid().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
-				if (CollectionUtils.isNotEmpty(lst)) {
-					PartnerServices ps = lst.get(0);
-					sourcePocketId = ps.getPocketBySourcepocket().getId().longValue();
-				}
-			} 
-			else {
-				sourcePocketId = maxCT.getDestpocketid().longValue();
+		}
+		
+		// Get the Source pocket for the Reverse transaction based on the transaction type.		 
+		TransactionTypeDAO transactionTypeDao = daoFactory.getTransactionTypeDAO();
+		TransactionType transactionType = transactionTypeDao.getById(sctl.getTransactiontypeid().longValue());
+		if (transactionType != null && 
+				((ServiceAndTransactionConstants.TRANSACTION_PURCHASE.equalsIgnoreCase(transactionType.getTransactionname())) || 
+				(ServiceAndTransactionConstants.TRANSACTION_BILL_PAY.equalsIgnoreCase(transactionType.getTransactionname()))) ) {
+			PartnerServicesDAO psDAO = DAOFactory.getInstance().getPartnerServicesDAO();
+			List<PartnerServices> lst = psDAO.getPartnerServices(sctl.getDestpartnerid().longValue(), sctl.getServiceproviderid().longValue(), sctl.getServiceid().longValue());
+			if (CollectionUtils.isNotEmpty(lst)) {
+				PartnerServices ps = lst.get(0);
+				sourcePocketId = ps.getPocketBySourcepocket().getId().longValue();
 			}
-			
-			// Get the Service Name for the Reverse Transaction.
-			String serviceName = ServiceAndTransactionConstants.SERVICE_WALLET;
-			PocketDAO pocketDao = daoFactory.getPocketDAO();
-			Pocket sourcePocket = pocketDao.getById(sourcePocketId);
-			if (sourcePocket != null && CmFinoFIX.PocketType_BankAccount.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType())) {
-				serviceName = ServiceAndTransactionConstants.SERVICE_BANK;
-			}
-			
-			ServiceCharge sc = new ServiceCharge();
-			sc.setSourceMDN(sctl.getDestmdn());
-			sc.setDestMDN(sctl.getSourcemdn());
-//			ChannelCode cc = channelcodeDao.getByChannelSourceApplication(CmFinoFIX.SourceApplication_Web);
-			ChannelCode cc = channelcodeDao.getByChannelSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
-			sc.setChannelCodeId(cc.getId().longValue());
-			sc.setServiceName(serviceName);
-//			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION);
-			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AUTOREVERSE_TRANSFER_TO_UNREGISTERED);
-			sc.setTransactionAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
-			sc.setReverseTransaction(true);
-			sc.setParentSctlId(sctl.getId().longValue());
-			Transaction transaction = null;
-			try {
-				transaction = transactionChargingService.getCharge(sc);
-			} catch (InvalidServiceException e) {
-				CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
-				error.setErrorDescription(MessageText._("Invalid Service"));
-				return null;
-			} catch (InvalidChargeDefinitionException e) {
-				CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
-				error.setErrorDescription(MessageText._("Invalid Charge Definition"));				
-				return null;
-			} 
-			if (transaction != null) {
-				sctl = transaction.getServiceChargeTransactionLog();
-			} else {
-				sctl = null;
-			}
+		} 
+		else {
+			sourcePocketId = maxCT.getDestpocketid().longValue();
+		}
+		
+		// Get the Service Name for the Reverse Transaction.
+		String serviceName = ServiceAndTransactionConstants.SERVICE_WALLET;
+		PocketDAO pocketDao = daoFactory.getPocketDAO();
+		Pocket sourcePocket = pocketDao.getById(sourcePocketId);
+		if (sourcePocket != null && CmFinoFIX.PocketType_BankAccount.equals(sourcePocket.getPocketTemplateByPockettemplateid().getType())) {
+			serviceName = ServiceAndTransactionConstants.SERVICE_BANK;
+		}
+		
+		ServiceCharge sc = new ServiceCharge();
+		sc.setSourceMDN(sctl.getDestmdn());
+		sc.setDestMDN(sctl.getSourcemdn());
+		ChannelCode cc = channelcodeDao.getByChannelSourceApplication(CmFinoFIX.SourceApplication_BackEnd);
+		sc.setChannelCodeId(cc.getId().longValue());
+		sc.setServiceName(serviceName);
+		sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_AUTOREVERSE_TRANSFER_TO_UNREGISTERED);
+		sc.setTransactionAmount(sctl.getTransactionamount().subtract(sctl.getCalculatedcharge()));
+		sc.setReverseTransaction(true);
+		sc.setParentSctlId(sctl.getId().longValue());
+		Transaction transaction = null;
+		try {
+			transaction = transactionChargingService.getCharge(sc);
+		} catch (InvalidServiceException e) {
+			CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
+			error.setErrorDescription(MessageText._("Invalid Service"));
+			return null;
+		} catch (InvalidChargeDefinitionException e) {
+			CmFinoFIX.CMJSError error = new CmFinoFIX.CMJSError();
+			error.setErrorDescription(MessageText._("Invalid Charge Definition"));				
+			return null;
+		} 
+		if (transaction != null) {
+			sctl = transaction.getServiceChargeTransactionLog();
 		} else {
 			sctl = null;
 		}
+	
+	
 		return sctl;
 	}
 }
