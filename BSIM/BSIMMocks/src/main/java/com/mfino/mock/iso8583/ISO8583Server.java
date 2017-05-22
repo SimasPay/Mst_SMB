@@ -538,7 +538,8 @@ public class ISO8583Server implements Runnable {
 						response.setValue(39, "00", IsoType.ALPHA, 2);
 						response.setValue(61,"0001344568",
 								IsoType.LLLVAR, 0);
-						response.setValue(4, "000000000005148000", IsoType.NUMERIC, 18);
+//						response.setValue(4, "000000000005148000", IsoType.NUMERIC, 18);
+						response.setValue(4, "000000000020000000", IsoType.NUMERIC, 18);
 						response.setValue(62, "08PAYMENT    : Telkom Fix Line (PSTN)   IDPEL      : 02188874874              NAME       :  WARINO                  BILLING AMT: RP. 51.480               ADMIN BANK : RP. 0                    TOTAL TAGIHAN : RP. 51.480                                                                                        02188874874     020008          11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000701A            000000051480000000000000000000000000 WARINO                                         ", IsoType.LLLVAR, 0);
 					}
 					else if(incoming.getObjectValue(3).toString().startsWith("38")){
@@ -560,9 +561,11 @@ public class ISO8583Server implements Runnable {
 						response.setValue(39, "00", IsoType.ALPHA, 2);
 						response.setValue(48, "TABUNGANKU B",
 								IsoType.LLLVAR, 0);
-						response.setValue(62,"08PAYMENT    : Axis Postpaid            IDPEL      : 628382244000             NAME       : ARIEF SUSANTO MULAWARMAN BILLING AMT: RP. 11.111               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 11.111                                                                                           628382244000                    11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000000000002708    000000011111000000000000000000000000ARIEF SUSANTO MULAWARMAN                          ", IsoType.LLLVAR, 0);
+//						response.setValue(62,"08PAYMENT    : Axis Postpaid            IDPEL      : 628382244000             NAME       : ARIEF SUSANTO MULAWARMAN BILLING AMT: RP. 11.111               ADMIN BANK : RP. 0                    PAYMENT AMT: RP. 11.111                                                                                           628382244000                    11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000000000002708    000000011111000000000000000000000000ARIEF SUSANTO MULAWARMAN                          ", IsoType.LLLVAR, 0);
+						response.setValue(62,"08PAYMENT    : Telkom Fix Line (PSTN)   IDPEL      : 02188874874              NAME       :  WARINO                  BILLING AMT: RP. 51.480               ADMIN BANK : RP. 0                    TOTAL TAGIHAN : RP. 51.480                                                                                        02188874874     020008          11                000000000000000000000000000000000000                000000000000000000000000000000000000                000000000000000000000000000000000000701A            000000051480000000000000000000000000 WARINO                                         ", IsoType.LLLVAR, 0);
 						response.setValue(3, "381010", IsoType.NUMERIC, 6);
-						response.setValue(4, "1000", IsoType.NUMERIC, 18);
+//						response.setValue(4, "1000", IsoType.NUMERIC, 18);
+						response.setValue(4, "000000000010000000", IsoType.NUMERIC, 18);
 						
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
 						String de4 = (String)incoming.getObjectValue(4);
