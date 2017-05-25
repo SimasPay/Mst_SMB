@@ -4,7 +4,7 @@
 package com.mfino.transactionapi.handlers.impl;
 
 import static com.mfino.constants.ServiceAndTransactionConstants.TRANSACTION_REVERSE_TRANSACTION;
-import static com.mfino.constants.SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET;
+//import static com.mfino.constants.SystemParameterKeys.CHARGE_REVERSAL_FUNDING_POCKET;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
-import com.mfino.domain.Pocket;
+//import com.mfino.domain.Pocket;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionResponse;
@@ -121,8 +121,8 @@ public class ReverseTransactionToUnregisteredImpl extends FIXMessageHandler impl
 		if (sctl != null && parentSCTL != null && CmFinoFIX.SCTLStatus_Reverse_Start.equals(sctl.getStatus())) {
 			ChannelCode cc = channelCodeService.getChannelCodeByChannelId(sctl.getChannelcodeid().longValue());
 
-			Long chrgRevFundingPocketId = systemParametersService.getLong(CHARGE_REVERSAL_FUNDING_POCKET);
-			Pocket reversalFundingPocket = pocketService.getById(chrgRevFundingPocketId);
+//			Long chrgRevFundingPocketId = systemParametersService.getLong(CHARGE_REVERSAL_FUNDING_POCKET);
+//			Pocket reversalFundingPocket = pocketService.getById(chrgRevFundingPocketId);
 
 			String transactionTypeName = ServiceAndTransactionConstants.TRANSACTION_AUTOREVERSE_TRANSFER_TO_UNREGISTERED;
 
@@ -169,7 +169,10 @@ public class ReverseTransactionToUnregisteredImpl extends FIXMessageHandler impl
 				}
 			}
 			
-			reverseTransactionInquiry.setSourcePocketID(reversalFundingPocket.getId().longValue());
+			log.info("Reverse Trx To Unregistered with source Pocket="+maxCT.getDestpocketid().longValue());
+			
+//			reverseTransactionInquiry.setSourcePocketID(reversalFundingPocket.getId().longValue());
+			reverseTransactionInquiry.setSourcePocketID(maxCT.getDestpocketid().longValue());
 			reverseTransactionInquiry.setUICategory(CmFinoFIX.TransactionUICategory_Auto_Reverse);
 
 			reverseTransactionInquiry.setDestPocketID(minCT.getPocket().getId().longValue());
