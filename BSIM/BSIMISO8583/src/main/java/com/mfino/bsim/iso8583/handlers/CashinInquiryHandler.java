@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -98,7 +99,9 @@ public class CashinInquiryHandler extends FIXMessageHandler {
 				
 				return;
 			}
-			
+			Subscriber subscriber = subMDNByMDN.getSubscriber();
+			String name = StringUtils.substring(subscriber.getFirstname(), 0, 30);
+			msg.set(48, ISOUtil.padright(name, 118, ' '));
 			msg.set(39,GetConstantCodes.SUCCESS);
 			return;
 			
@@ -192,4 +195,5 @@ public class CashinInquiryHandler extends FIXMessageHandler {
 	public void setTransactionLogService(TransactionLogService transactionLogService) {
 		this.transactionLogService = transactionLogService;
 	}
+	
 }
