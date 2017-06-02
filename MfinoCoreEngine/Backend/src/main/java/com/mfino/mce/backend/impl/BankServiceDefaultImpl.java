@@ -715,6 +715,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 							if ((objSrcPocket.getPocketTemplateByPockettemplateid().getType().intValue()
 									 == CmFinoFIX.PocketType_SVA
+									.intValue() ||objSrcPocket.getPocketTemplateByPockettemplateid().getType().intValue()
+									 == CmFinoFIX.PocketType_BankAccount
 									.intValue() || isNFCPocketType(objSrcPocket) || isLakupandaiPocketType(objSrcPocket))
 									&& (objDestPocket.getPocketTemplateByPockettemplateid()
 											.getType().intValue() == CmFinoFIX.PocketType_SVA
