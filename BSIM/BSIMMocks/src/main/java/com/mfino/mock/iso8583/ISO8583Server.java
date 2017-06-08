@@ -785,6 +785,8 @@ public class ISO8583Server implements Runnable {
 						}					    
 						response.setValue(48, "TABUNGANKU Baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 								IsoType.LLLVAR, 0);
+						response.setValue(62,"10PURCHASE : Telkomsel                MOBILE NO  : "+incoming.getObjectValue(42)+"            DENOM      : RP. "+incoming.getObjectValue(4)+"              ADMIN BANK : RP. "+incoming.getObjectValue(63)+"                VOUCHER REF: 0041000860488803                 FOR COMPLAINT CALL 155          NPWP TELKOMSEL:01.718.327.8.093.000          WISMA MULIA LT. M-19             JL. JEND GATOT SUBROTO KAV. 42                 JAKARTA 12710",
+								IsoType.LLLVAR, 0);
 						
 					}
 					else if("561010".equals(incoming.getObjectValue(3))){
