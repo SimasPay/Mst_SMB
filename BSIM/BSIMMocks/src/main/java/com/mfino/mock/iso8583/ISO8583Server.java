@@ -4,6 +4,7 @@ package com.mfino.mock.iso8583;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
@@ -785,7 +786,10 @@ public class ISO8583Server implements Runnable {
 						}					    
 						response.setValue(48, "TABUNGANKU Baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 								IsoType.LLLVAR, 0);
-						response.setValue(62,"10PURCHASE : Telkomsel                MOBILE NO  : "+incoming.getObjectValue(42)+"            DENOM      : RP. "+incoming.getObjectValue(4)+"              ADMIN BANK : RP. "+incoming.getObjectValue(63)+"                VOUCHER REF: 0041000860488803                 FOR COMPLAINT CALL 155          NPWP TELKOMSEL:01.718.327.8.093.000          WISMA MULIA LT. M-19             JL. JEND GATOT SUBROTO KAV. 42                 JAKARTA 12710",
+
+						BigDecimal denom = new BigDecimal(incoming.getObjectValue(4).toString().substring(0, incoming.getObjectValue(4).toString().length() - 2));
+						BigDecimal adminBank = new BigDecimal(incoming.getObjectValue(63).toString().substring(incoming.getObjectValue(63).toString().length()-17, incoming.getObjectValue(63).toString().length()-9));
+						response.setValue(62,"10PURCHASE : Telkomsel                MOBILE NO  : "+incoming.getObjectValue(42)+"            DENOM      : RP. "+String.format("%,.2f", denom)+"              ADMIN BANK : RP. "+String.format("%,.2f", adminBank)+"                VOUCHER REF: 0041000860488803                 FOR COMPLAINT CALL 155          NPWP TELKOMSEL:01.718.327.8.093.000          WISMA MULIA LT. M-19             JL. JEND GATOT SUBROTO KAV. 42                 JAKARTA 12710",
 								IsoType.LLLVAR, 0);
 						
 					}
