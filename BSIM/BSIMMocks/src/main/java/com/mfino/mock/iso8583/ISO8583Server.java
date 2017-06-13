@@ -429,11 +429,11 @@ public class ISO8583Server implements Runnable {
 						response.setValue(39, "00", IsoType.ALPHA, 2);
 					}
 					// B. TOPUP other MDN (prepaid) from SMART Dompet account
-					else if ("560000".equals(incoming.getObjectValue(3))) {
-						response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						response.setValue(41, "87654321", IsoType.ALPHA, 8);
-					}
+//					else if ("560000".equals(incoming.getObjectValue(3))) {
+//						response.setValue(38, "654321", IsoType.ALPHA, 6);
+//						response.setValue(39, "00", IsoType.ALPHA, 2);
+//						response.setValue(41, "87654321", IsoType.ALPHA, 8);
+//					}
 					// B. TOPUP other MDN (prepaid) from SMART Dompet account
 					else if ("569800".equals(incoming.getObjectValue(3))) {
 						response.setValue(38, "654321", IsoType.ALPHA, 6);
@@ -762,15 +762,15 @@ public class ISO8583Server implements Runnable {
 					    response.setValue(62,"12PEMBAYARAN : ITC BSD & MALIBU         NO BAYAR   : 0060425                  NAMA       : ANDI GUNTORO             JML TAGIHAN: RP. 151.100              JML BAYAR  : RP. 151.100              PERIODE    : 04/13                    PEMBAYARAN : ITC BSD & MALIBU         NO BAYAR   : 0060425                  NAMA       : ANDI GUNTORO             JML TAGIHAN: RP. 151.100              JML BAYAR  : RP. 151.100              PERIODE    : 04/13                    ",
 								IsoType.LLLVAR, 0);
 					}
-					else if("560000".equals(incoming.getObjectValue(3))){
-					    response.setValue(38, "654321", IsoType.ALPHA, 6);
-						response.setValue(39, "00", IsoType.ALPHA, 2);
-						//Thread.sleep(50000);
-						response.setValue(48, "TABUNGANKU B",
-								IsoType.LLLVAR, 0);
-						response.setValue(61,"TABUNGANKU B",
-								IsoType.LLLVAR, 0);
-					}
+//					else if("560000".equals(incoming.getObjectValue(3))){
+//					    response.setValue(38, "654321", IsoType.ALPHA, 6);
+//						response.setValue(39, "00", IsoType.ALPHA, 2);
+//						//Thread.sleep(50000);
+//						response.setValue(48, "TABUNGANKU B",
+//								IsoType.LLLVAR, 0);
+//						response.setValue(61,"TABUNGANKU B",
+//								IsoType.LLLVAR, 0);
+//					}
 					else if(incoming.getObjectValue(3).toString().startsWith("56")){
 					    response.setValue(38, "654321", IsoType.ALPHA, 6);
 						Random r = new Random();
