@@ -905,7 +905,7 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
     private void updateMessage(Partner partner,Subscriber subscriber, SubscriberMdn subscriberMdn,  CMJSPartner.CGEntries entry) {
 
         if(partner != null){
-        	if(subscriberMdn.getMdn()!=null){
+        	if(subscriberMdn != null && subscriberMdn.getMdn()!=null){
         		entry.setMDN(subscriberMdn.getMdn());
         	}
         
@@ -926,7 +926,8 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        }
 	        if(partner.getSubscriber() != null){
 	        	entry.setSubscriberID(subscriber.getId().longValue());
-	        	entry.setMDNID(subscriberMdn.getId().longValue());
+	        	if(subscriberMdn != null)
+	        		entry.setMDNID(subscriberMdn.getId().longValue());
 	        }
 	        if(partner.getPartnercode() != null){
 	        	entry.setPartnerCode(partner.getPartnercode());
@@ -1034,7 +1035,8 @@ public class ServicePartnerProcessorImpl extends BaseFixProcessor implements Ser
 	        	entry.setBusinessPartnerTypeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_BusinessPartnerType, Integer.valueOf(Long.valueOf(subscriber.getLanguage()).intValue()), partner.getBusinesspartnertype()));
 	        	entry.setBusinessPartnerType(partner.getBusinesspartnertype().intValue());
 	        }
-	        entry.setRestrictions(Integer.valueOf(Long.valueOf(subscriberMdn.getRestrictions()).intValue()));
+	        if(subscriberMdn != null)
+	        	entry.setRestrictions(Integer.valueOf(Long.valueOf(subscriberMdn.getRestrictions()).intValue()));
         }
         if(subscriber != null){
         	if(subscriber.getFirstname() != null){

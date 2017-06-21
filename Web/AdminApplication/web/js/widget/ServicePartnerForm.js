@@ -583,7 +583,7 @@ Ext.extend(mFino.widget.ServicePartnerForm, Ext.form.FormPanel, {
                 layout:'column',
                 frame:true,
                 autoHeight: true,
-                items:[partnerRestrictions]
+                items:[partnerRestrictionsEdit]
             }
 
             ]
@@ -922,7 +922,7 @@ Ext.extend(mFino.widget.ServicePartnerForm, Ext.form.FormPanel, {
 /*
  * Partner / Agent Restrictions
  **/
-var partnerRestrictions = {
+var partnerRestrictionsEdit = {
     title: _(''),
     autoHeight: true,
     width: 300,
