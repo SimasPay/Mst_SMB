@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
+import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.query.BillPaymentsQuery;
 import com.mfino.dao.query.ChargeTxnCommodityTransferMapQuery;
 import com.mfino.dao.query.CommodityTransferQuery;
@@ -29,6 +30,7 @@ import com.mfino.domain.BulkUploadEntry;
 import com.mfino.domain.ChargetxnTransferMap;
 import com.mfino.domain.CommodityTransfer;
 import com.mfino.domain.Partner;
+import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.Service;
 import com.mfino.domain.ServiceChargeTxnLog;
@@ -40,6 +42,7 @@ import com.mfino.hibernate.Timestamp;
 import com.mfino.i18n.MessageText;
 import com.mfino.result.Result;
 import com.mfino.scheduler.service.SCTLClearService;
+import com.mfino.scheduler.util.BulkUploadUtil;
 import com.mfino.service.AutoReversalsCoreService;
 import com.mfino.service.BillPaymentsService;
 import com.mfino.service.BulkUploadEntryService;
@@ -48,6 +51,7 @@ import com.mfino.service.ChargeTxnCommodityTransferMapService;
 import com.mfino.service.CommodityTransferService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.MfinoService;
+import com.mfino.service.PendingCommodityTransferService;
 import com.mfino.service.PocketService;
 import com.mfino.service.ServiceChargeTransactionLogService;
 import com.mfino.service.SubscriberMdnService;
@@ -143,7 +147,11 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 	@Autowired
 	@Qualifier("BulkUploadEntryServiceImpl")
 	private BulkUploadEntryService bulkUploadEntryService;
-		
+	
+	@Autowired
+	@Qualifier("PendingCommodityTransferServiceImpl")
+	private PendingCommodityTransferService pendingCommodityTransferService;
+	
 	private HibernateTransactionManager txManager;
 	
 	public HibernateTransactionManager getTxManager() {
@@ -469,11 +477,60 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 	private void handleTimeout(ServiceChargeTxnLog sctl){
 		Calendar now = Calendar.getInstance();
 		
-		sctl.getCommoditytransferid();
 		if (CmFinoFIX.SCTLStatus_Inquiry.equals(sctl.getStatus()) && 
 				(now.getTimeInMillis() - sctl.getCreatetime().getTime()) >  EXPIRATION_TIME) {
 			transactionChargingService.failTheTransaction(sctl, MessageText._("Time Out"));
 			handleUnregisteredTxn(sctl);
+			revertPocketLimits(sctl);
+		}
+	}
+
+	private void revertPocketLimits(ServiceChargeTxnLog sctl) {
+		try {
+			CommodityTransferQuery commodityTransferQuery = new CommodityTransferQuery();
+			commodityTransferQuery.setTransactionID(sctl.getTransactionid());
+			List<PendingCommodityTransfer> pctList = pendingCommodityTransferService.getByQuery(commodityTransferQuery);
+			if(pctList != null && !pctList.isEmpty()){
+				for (PendingCommodityTransfer pct : pctList) {
+					if(pct != null && pct.getPocket() != null && pct.getAmount() != null){
+						Timestamp createTime = pct.getCreatetime();
+						long createMilliSecs = createTime.getTime();
+						
+						Timestamp now = new Timestamp();
+						long currentMilliSecs = now.getTime();
+						
+						long diffMilliSecs = currentMilliSecs - createMilliSecs;
+						
+						long milliSecsForDay = 24*60*60*1000; //24hrs*60mins*60secs*1000
+						
+						long mod = diffMilliSecs / milliSecsForDay;
+
+						Pocket pocket = pct.getPocket();
+						if(!((pocket .getPocketTemplateByPockettemplateid().getIscollectorpocket()) 
+								|| (pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) 
+								|| (pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) )){
+							BigDecimal transactionAmount = pct.getAmount();
+							if(mod <= 30){
+								//Within a month
+								pocket.setCurrentmonthlyexpenditure(pocket.getCurrentmonthlyexpenditure().subtract(transactionAmount ));
+								pocket.setCurrentmonthlytxnscount(pocket.getCurrentmonthlytxnscount() - 1);
+							}		
+							if(mod <= 7){
+								//Within a week
+								pocket.setCurrentweeklyexpenditure(pocket.getCurrentweeklyexpenditure().subtract(transactionAmount));
+								pocket.setCurrentweeklytxnscount(pocket.getCurrentweeklytxnscount() - 1);
+							}
+							if(mod < 1){
+								// With in Day
+								pocket.setCurrentdailyexpenditure(pocket.getCurrentdailyexpenditure().subtract(transactionAmount));
+								pocket.setCurrentdailytxnscount(pocket.getCurrentdailytxnscount() - 1);
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("SCTLClearServiceImpl :: Error while getting the PCT of the Transaction with TransactionID --> " + sctl.getTransactionid(), e);
 		}
 	}
 	
