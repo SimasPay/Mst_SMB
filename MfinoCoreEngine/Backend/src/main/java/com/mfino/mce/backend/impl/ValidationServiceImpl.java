@@ -399,9 +399,6 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount,
 			SubscriberMdn srcSubscriberMdn, SubscriberMdn destSubscriberMdn){
-		
-		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
-		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParametervalue() : null;
 
 		BackendResponse responseFix = createResponseObject();
 		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType()) && 
@@ -410,15 +407,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		} else {
 			responseFix = validateRisksAndLimits(sourcePocket, debitAmount, true);
 		}
-		if(responseFix!=null && isNullorZero(responseFix.getInternalErrorCode())){
-			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType()) && 
-					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplateByPockettemplateid().getType())) ||
-					(destSubscriberMdn.getMdn().equals(dummySubMdn))) {
-				responseFix.setInternalErrorCode(null);
-			} else {
-				responseFix = validateRisksAndLimits(destinationPocket, creditAmount, false);
-			}
-		}		
+			
 		return responseFix;
 	}
 	

@@ -671,7 +671,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 
 						if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubscriber.getType()) &&
 								!(objDestSubMdn.getMdn().equals(dummySubMdn)) ) {
-							setPocketLimits(objDestPocket, requestFix.getAmount());
+							//setPocketLimits(objDestPocket, requestFix.getAmount());
 						}						
 						
 						//objSrcPocket.setLastTransactionTime(requestFix.getReceiveTime());
@@ -2266,7 +2266,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 						log.info("After validatePocketsForBulkTransfer returnFix.getInternalErrorCode()=" + returnFix.getInternalErrorCode());
 						if (returnFix != null && isNullorZero(returnFix.getInternalErrorCode())) {
 							setPocketLimits(sourcePocket, amount);
-							setPocketLimits(destinationPocket, amount);
+							//setPocketLimits(destinationPocket, amount);
 	
 							if (bulkDistribution.getChannelCode() != null) {
 								pct.setIso8583Merchanttype(bulkDistribution.getChannelCode());
@@ -2471,7 +2471,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							destinationPocket
 									.setLasttransactiontime(chargeDistribution
 											.getReceiveTime());
-							setPocketLimits(destinationPocket, amount);
+							//setPocketLimits(destinationPocket, amount);
 
 //							sourceSubcriberMdn.setLastTransactionID(chargeDistribution.getTransactionID());
 //							sourceSubcriberMdn.setLastTransactionTime(chargeDistribution.getReceiveTime());
@@ -2705,7 +2705,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 //							destinationPocket
 //									.setLastTransactionTime(settlementOfCharge
 //											.getReceiveTime());
-							setPocketLimits(destinationPocket, amount);
+							//setPocketLimits(destinationPocket, amount);
 
 //							sourceSubcriberMdn.setLastTransactionID(settlementOfCharge.getTransactionID());
 //							sourceSubcriberMdn.setLastTransactionTime(settlementOfCharge.getReceiveTime());
@@ -3071,7 +3071,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 							if (isNullorZero(returnFix.getInternalErrorCode())) {
 								
 								setPocketLimits(sourcePocket, amount);
-								setPocketLimits(destinationPocket, amount);
+								//setPocketLimits(destinationPocket, amount);
 	
 								if (cashinfromAtm.getChannelCode() != null) {
 									
