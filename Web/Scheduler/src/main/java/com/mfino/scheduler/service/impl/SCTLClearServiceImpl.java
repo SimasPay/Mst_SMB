@@ -578,6 +578,7 @@ public class SCTLClearServiceImpl  implements SCTLClearService {
 				} else if (CmFinoFIX.TransferStatus_Failed.intValue() == ct.getTransferstatus()) {
 					transactionChargingService.failTheTransaction(sctl, 
 							enumTextService.getEnumTextValue(CmFinoFIX.TagID_TransferFailureReason, null, ct.getTransferfailurereason()));
+					revertPocketLimits(sctl);
 				}
 				// Check if the Transaction is related to Bulk Transfer then do the changes in BulkUpload table also
 				updateBulkTransfer(sctl, ct);

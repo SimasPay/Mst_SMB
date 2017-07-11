@@ -3159,8 +3159,6 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									handlePCTonFailure(pct);
 								}
 							} else {
-								BackendUtil.revertPocketLimits(sourcePocket,amount, pct);
-
 								pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_BankAccountToBankAccountSourcePocketLimits);
 								pct.setNotificationcode(NotificationCodes.getNotificationCodeFromInternalCode(returnFix.getInternalErrorCode()));
 								pct.setEndtime(pct.getStarttime());
