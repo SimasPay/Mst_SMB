@@ -512,8 +512,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}else if(ServiceAndTransactionConstants.MESSAGE_DONATION.equalsIgnoreCase(sourceMsg)){
 			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_DONATION);
 		} else if(ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM.equalsIgnoreCase(sourceMsg)){
-			
-			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM) + " " + ct.getSourcemdn();
+			String destinationMdn = ct.getSourcemdn();
+			if(StringUtils.isNotBlank(sctl.getOnbehalfofmdn()))
+				destinationMdn = sctl.getOnbehalfofmdn();
+			txnType = LanguageTranslator.translate(language, ServiceAndTransactionConstants.MESSAGE_WITHDRAW_FROM_ATM) + " " + destinationMdn;
 			
 		} else if(sourceMsg.equalsIgnoreCase(ServiceAndTransactionConstants.TRANSACTION_E2ETRANSFER)){
 				
