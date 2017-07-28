@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.amazonaws.partitions.model.Service;
 import com.mfino.bsim.iso8583.GetConstantCodes;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
@@ -109,11 +109,29 @@ public class CashinHandler extends FIXMessageHandler {
 				return;
 			}
 			
-			String sourceMDN = subscriberService.normalizeMDN(accnumber.substring(ConfigurationUtil.getCodeForTransferUsingEMoney().length()));
-			SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(sourceMDN);
-			
+			String destMdn = subscriberService.normalizeMDN(accnumber.substring(ConfigurationUtil.getCodeForTransferUsingEMoney().length()));
+			// Check Is it CashIn or B2E transfer See SMP-927.
+			String transactionIdStr = msg.getString("37");
+			Long transactionId = Long.valueOf(ISOUtil.zeroUnPad(transactionIdStr));
+			TransactionLog txnLog = transactionLogService.getById(transactionId);
+			if(txnLog != null && txnLog.getParenttransactionid() != null){
+				
+				// get SCTL based on inquiry transaction log id
+				ServiceChargeTxnLog serviceChargeTransactionLog = transactionChargingService.
+						getServiceChargeTransactionLog(txnLog.getParenttransactionid().longValue());
+				Long b2eTransfer = transactionChargingService.getTransactionTypeId(ServiceAndTransactionConstants.TRANSACTION_B2ETRANSFER);
+				if(serviceChargeTransactionLog != null && StringUtils.equals(serviceChargeTransactionLog.getDestmdn(), destMdn)
+						&& serviceChargeTransactionLog.getTransactionamount().equals(actualAmount) 
+						&& serviceChargeTransactionLog.getTransactiontypeid().equals(b2eTransfer)){
+					// pass transfer request from umg
+					msg.set(39, GetConstantCodes.SUCCESS);
+					return;
+				}
+			}
+
+			SubscriberMdn subMDNByMDN = subscriberMdnService.getByMDN(destMdn);
 			CMCashIn tcashin = new CMCashIn();
-			tcashin.setDestMDN(sourceMDN);
+			tcashin.setDestMDN(destMdn);
 			tcashin.setOriginalReferenceID(intTxnId);
 			tcashin.setServiceName(ServiceAndTransactionConstants.TRANSACTION_CASHIN);
 			
@@ -149,8 +167,8 @@ public class CashinHandler extends FIXMessageHandler {
 			
 			Transaction transactionDetails = null;
 			ServiceCharge sc = new ServiceCharge();
-			sc.setSourceMDN(sourceMDN);
-			sc.setDestMDN(sourceMDN);
+			sc.setSourceMDN(destMdn);
+			sc.setDestMDN(destMdn);
 			sc.setChannelCodeId(CmFinoFIX.SourceApplication_ATM);
 			sc.setServiceName(ServiceAndTransactionConstants.SERVICE_WALLET);
 			sc.setTransactionTypeName(ServiceAndTransactionConstants.TRANSACTION_CASHIN);
@@ -191,8 +209,8 @@ public class CashinHandler extends FIXMessageHandler {
 			}
 			
 			CMCashInFromATM cashin = new CMCashInFromATM();
-			cashin.setSourceMDN(sourceMDN);
-			cashin.setDestMDN(sourceMDN);
+			cashin.setSourceMDN(destMdn);
+			cashin.setDestMDN(destMdn);
 			cashin.setAmount(actualAmount);
 			cashin.setDestPocketID(destPocket.getId());
 			cashin.setSourceApplication(CmFinoFIX.SourceApplication_ATM);
@@ -247,6 +265,7 @@ public class CashinHandler extends FIXMessageHandler {
 		
 			msg.set(39,GetConstantCodes.FAILURE);
 			log.error(e.getMessage());
+			log.error("CashInHandler ERROR", e);
 			
 		} finally{
 			
