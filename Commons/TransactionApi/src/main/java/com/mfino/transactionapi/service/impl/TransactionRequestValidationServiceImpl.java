@@ -410,13 +410,15 @@ public class TransactionRequestValidationServiceImpl implements TransactionReque
 	}
 	
 	public void validateAppOSAndVersion(TransactionDetails transactionDetails) throws InvalidDataException {
-		if (StringUtils.isBlank(transactionDetails.getAppOS())) {
-			throw new InvalidDataException("Invalid App OS", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-					ApiConstants.PARAMETER_APPOS);
-		}
-		if (StringUtils.isBlank(transactionDetails.getAppVersion())) {
-			throw new InvalidDataException("Invalid App Version", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
-					ApiConstants.PARAMETER_APPVERSION);
+		if(transactionDetails.isSimaspayActivity()){
+			if (StringUtils.isBlank(transactionDetails.getAppOS())) {
+				throw new InvalidDataException("Invalid App OS", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+						ApiConstants.PARAMETER_APPOS);
+			}
+			if (StringUtils.isBlank(transactionDetails.getAppVersion())) {
+				throw new InvalidDataException("Invalid App Version", CmFinoFIX.NotificationCode_InvalidWebAPIRequest_ParameterMissing, 
+						ApiConstants.PARAMETER_APPVERSION);
+			}
 		}
 	}
 	

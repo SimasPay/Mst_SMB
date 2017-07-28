@@ -249,7 +249,7 @@ public class WebApiRequestController {
 			}
 			if(transactionDetails!=null){
 				
-				if(StringUtils.isNotBlank(transactionDetails.getSourcePIN())) {
+				if(StringUtils.isNotBlank(transactionDetails.getSourcePIN()) && !StringUtils.equalsIgnoreCase("null", transactionDetails.getSourcePIN())) {
 					
 					transactionDetails.setSourcePIN(CryptographyService.decryptWithPrivateKey(transactionDetails.getSourcePIN()));
 				}
