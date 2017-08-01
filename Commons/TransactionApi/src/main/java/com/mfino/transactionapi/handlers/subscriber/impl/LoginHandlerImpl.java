@@ -134,20 +134,6 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 
 		}
 		
-		Timestamp lastPinExpiry = srcSubscriberMDN.getLastapppinchange();
-		String configuredPinExpiryDays = systemParametersService.getString(SystemParameterKeys.DAYS_TO_EXPIRY_OF_MPIN_DAYS);
-		
-		Date currentDateTime = DateUtil.addDays(new Date(lastPinExpiry.getTime()), Integer.parseInt(configuredPinExpiryDays));
-		Timestamp currentTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
-		
-		if(currentDateTime.before(currentTime)) {
-			
-			log.error("Subscriber with mdn : "+request.getSourceMDN()+" has failed validations for pin expiry");
-			result.setNotificationCode(CmFinoFIX.NotificationCode_PinHasExpired);
-			return result;
-			
-		}
-		
 	//	addCompanyANDLanguageToResult(srcSubscriberMDN, result);
 
 		String password = srcSubscriberMDN.getDigestedpin();
@@ -192,6 +178,20 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 					
 				}
 
+				Timestamp lastPinExpiry = srcSubscriberMDN.getLastapppinchange();
+				String configuredPinExpiryDays = systemParametersService.getString(SystemParameterKeys.DAYS_TO_EXPIRY_OF_MPIN_DAYS);
+				
+				Date currentDateTime = DateUtil.addDays(new Date(lastPinExpiry.getTime()), Integer.parseInt(configuredPinExpiryDays));
+				Timestamp currentTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+				
+				if(currentDateTime.before(currentTime)) {
+					
+					log.error("Subscriber with mdn : "+request.getSourceMDN()+" has failed validations for pin expiry");
+					result.setNotificationCode(CmFinoFIX.NotificationCode_PinHasExpired);
+					return result;
+					
+				}
+				
 			if (StringUtils.isNotBlank(Apptype)) {
 				if(request.getIsAppTypeCheckEnabled() == null || (request.getIsAppTypeCheckEnabled()!=null && request.getIsAppTypeCheckEnabled().booleanValue())) {
 					App_Type = AppTypeCheckService.appTypeCheck(srcSubscriberMDN,Apptype);
