@@ -247,6 +247,7 @@ public class UserProcessorImpl extends BaseFixProcessor implements UserProcessor
 				PasswordEncoder encoder = new ShaPasswordEncoder(1);
 				String encPassword = encoder.encodePassword(password, u.getUsername());
 				u.setPassword(encPassword);
+				u.setFirsttimelogin(true);
 
 				userDAO.save(u);
 
