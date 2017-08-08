@@ -38,6 +38,7 @@ import com.mfino.fix.CmFinoFIX.CMCashInFromATM;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.mce.backend.BankService;
 import com.mfino.mce.core.util.BackendResponse;
+import com.mfino.mce.core.util.NotificationCodes;
 import com.mfino.service.NotificationService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SCTLService;
@@ -243,14 +244,19 @@ public class CashinHandler extends FIXMessageHandler {
 				BackendResponse fixError = (BackendResponse) fixResponse;
 				log.info(fixError.getResult() + "");
 				
-				if (fixError.getResult() == 0) {
+				if (fixError.getResult() != null && fixError.getResult() == 0) {
 					
 					msg.set(39,GetConstantCodes.SUCCESS);
 					transactionChargingService.confirmTheTransaction(sctl, fixError.getTransferID());
 					
 				} else {
-					
+
 					msg.set(39,GetConstantCodes.FAILURE);
+					if(NotificationCodes.BSM_13_BankTransactionFailedInvalidAmount.
+							getInternalErrorCode().equals(fixError.getInternalErrorCode())){
+						msg.set(39, GetConstantCodes.INVALID_AMOUNT);
+					}
+					
 					transactionChargingService.failTheTransaction(sctl, "Tansaction Failed");
 				}
 			} else {

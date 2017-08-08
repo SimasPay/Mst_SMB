@@ -400,6 +400,9 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 	public BackendResponse validateRisksAndLimits(Pocket sourcePocket, Pocket destinationPocket, BigDecimal debitAmount, BigDecimal creditAmount,
 			SubscriberMdn srcSubscriberMdn, SubscriberMdn destSubscriberMdn){
 
+		SystemParameters dummySubMdnParam = coreDataWrapper.getSystemParameterByName(SystemParameterKeys.PLATFORM_DUMMY_SUBSCRIBER_MDN);
+		String dummySubMdn = (dummySubMdnParam != null) ? dummySubMdnParam.getParametervalue() : null;
+		
 		BackendResponse responseFix = createResponseObject();
 		if ((CmFinoFIX.SubscriberType_Partner.intValue() == srcSubscriberMdn.getSubscriber().getType()) && 
 				(CmFinoFIX.PocketType_BankAccount.intValue() == sourcePocket.getPocketTemplateByPockettemplateid().getType()) ) {
@@ -407,7 +410,17 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		} else {
 			responseFix = validateRisksAndLimits(sourcePocket, debitAmount, true);
 		}
-			
+		
+		if(responseFix!=null && isNullorZero(responseFix.getInternalErrorCode())){
+			if (((CmFinoFIX.SubscriberType_Partner.intValue() == destSubscriberMdn.getSubscriber().getType()) && 
+					(CmFinoFIX.PocketType_BankAccount.intValue() == destinationPocket.getPocketTemplateByPockettemplateid().getType())) ||
+					(destSubscriberMdn.getMdn().equals(dummySubMdn))) {
+				responseFix.setInternalErrorCode(null);
+			} else {
+				responseFix = validateRisksAndLimits(destinationPocket, creditAmount, false);
+			}
+		}
+		
 		return responseFix;
 	}
 	
@@ -536,6 +549,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 				notificationCode = NotificationCodes.BalanceTooHigh.getInternalErrorCode();
 			}
 		}
+		
 		if(amount.compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountpertransaction()) == 1){
 			notificationCode = NotificationCodes.TransferAmountAboveMaximumAllowed.getInternalErrorCode();
 			responseFix.setMaxTransactionLimit(pocket.getPocketTemplateByPockettemplateid().getMaxamountpertransaction());
@@ -562,7 +576,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		else if(pocket.getCurrentmonthlyexpenditure().add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountpermonth()) == 1){
 			notificationCode = NotificationCodes.AboveMonthlyExpenditureLimit.getInternalErrorCode();
 		}
-	
+		
 		responseFix.setInternalErrorCode(notificationCode);
 		pocket.setLasttransactiontime(now);
 		

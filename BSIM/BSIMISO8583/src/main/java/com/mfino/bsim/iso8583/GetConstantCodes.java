@@ -18,6 +18,8 @@ public class GetConstantCodes {
 	public static final String SUCCESS = "00";
 	
 	public static final String FAILURE = "06";
+
+	public static final String INVALID_AMOUNT = "13";
 	
 	public static final String REJECT = "99";
 	

@@ -2892,8 +2892,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									// Revert Pocket Limits
 									BackendUtil.revertPocketLimits(
 											sourcePocket, amount, pct);
-									BackendUtil.revertPocketLimits(
-											destinationPocket, amount, pct);
+									/*BackendUtil.revertPocketLimits(
+											destinationPocket, amount, pct);*/
 
 									coreDataWrapper.save(destinationPocket);
 									coreDataWrapper.save(sourcePocket);
@@ -2910,8 +2910,8 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								// Revert Pocket Limits
 								BackendUtil.revertPocketLimits(sourcePocket,
 										amount, pct);
-								BackendUtil.revertPocketLimits(
-										destinationPocket, amount, pct);
+								/*BackendUtil.revertPocketLimits(
+										destinationPocket, amount, pct);*/
 
 								coreDataWrapper.save(destinationPocket);
 								coreDataWrapper.save(sourcePocket);
@@ -3133,7 +3133,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									} else {
 										// Revert Pocket Limits
 										BackendUtil.revertPocketLimits(sourcePocket, amount, pct);
-										BackendUtil.revertPocketLimits(destinationPocket, amount, pct);
+										//BackendUtil.revertPocketLimits(destinationPocket, amount, pct);
 	
 										coreDataWrapper.save(destinationPocket);
 										coreDataWrapper.save(sourcePocket);
@@ -3147,7 +3147,7 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 								} else {
 									// Revert Pocket Limits
 									BackendUtil.revertPocketLimits(sourcePocket,amount, pct);
-									BackendUtil.revertPocketLimits(destinationPocket, amount, pct);
+									//BackendUtil.revertPocketLimits(destinationPocket, amount, pct);
 	
 									coreDataWrapper.save(destinationPocket);
 									coreDataWrapper.save(sourcePocket);
@@ -3159,11 +3159,12 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 									handlePCTonFailure(pct);
 								}
 							} else {
+								returnFix.setInternalErrorCode(NotificationCodes.BSM_13_BankTransactionFailedInvalidAmount.getInternalErrorCode());
 								pct.setTransferfailurereason(CmFinoFIX.TransferFailureReason_BankAccountToBankAccountSourcePocketLimits);
 								pct.setNotificationcode(NotificationCodes.getNotificationCodeFromInternalCode(returnFix.getInternalErrorCode()));
 								pct.setEndtime(pct.getStarttime());
 								pct.setTransferstatus(CmFinoFIX.TransferStatus_Failed);
-	
+								
 								handlePCTonFailure(pct);
 							}
 						} else {
@@ -4257,10 +4258,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		BackendUtil.revertPocketLimits(objSrcPocket, transferAmountWithCharges,
 				pendingTransfer);
 		
-		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType()) &&
+		/*if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType()) &&
 				!(objDestSubMdn.getMdn().equals(dummySubMdn)) ) {
 			BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
-		}		
+		}*/		
 		if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 		coreDataWrapper.save(objSrcPocket);
 		}
@@ -4369,10 +4370,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		BackendUtil.revertPocketLimits(objSrcPocket, transferAmountWithCharges,
 				pendingTransfer);
 		
-		if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType()) &&
+		/*if ( (CmFinoFIX.SubscriberType_Partner.intValue() != objDestSubMdn.getSubscriber().getType()) &&
 				!(objDestSubMdn.getMdn().equals(dummySubMdn)) ) {
 			BackendUtil.revertPocketLimits(objDestPocket, amount, pendingTransfer);
-		}
+		}*/
 		if(ledgerService.isImmediateUpdateRequiredForPocket(objSrcPocket)){
 		coreDataWrapper.save(objSrcPocket);
 		}
