@@ -143,7 +143,7 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
                         CmFinoFIX.CMJSError errorMsg = new CmFinoFIX.CMJSError();
                         errorMsg.setErrorDescription(MessageText._("The new pocket template is not compatible with the old one."));
                         errorMsg.setErrorCode(CmFinoFIX.ErrorCode_Generic);
-                        log.warn("Compatible check failed between New Pocket Template:"+newId+" Old Pocket Template:"+oldTemplate.getId()+" by user:"+getLoggedUserNameWithIP());
+//                        log.warn("Compatible check failed between New Pocket Template:"+newId+" Old Pocket Template:"+oldTemplate.getId()+" by user:"+getLoggedUserNameWithIP());
                         return errorMsg;
                     }else {
                         pocketObj.setPocketTemplateByOldpockettemplateid(oldTemplate);
