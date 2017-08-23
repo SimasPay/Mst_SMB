@@ -36,6 +36,7 @@ Ext.extend(mFino.widget.Login, Ext.FormPanel, {
             allowBlank : false,
             width:140,
             blankText : _('User name is required'),
+            itemId : 'login.jusername',
             listeners   : {
                 render      : function (el) {
                     el.focus('', 1500);
@@ -52,6 +53,7 @@ Ext.extend(mFino.widget.Login, Ext.FormPanel, {
             allowBlank : false,
             width:140,
             blankText : _('Password is required'),
+            itemId : 'login.jpassword',
             listeners   : {
                 specialkey: this.enterKeyHandler.createDelegate(this)
             }
@@ -116,6 +118,24 @@ Ext.extend(mFino.widget.Login, Ext.FormPanel, {
     
     submitLogin : function(){
         var form = Ext.getCmp('loginDialog').getForm();
+        var str = form.items.get('login.jpassword').getValue();
+        var encoded = "";
+        for (i=0; i<str.length;i++) {
+            var a = str.charCodeAt(i);
+            var b = a ^ 2591;
+            encoded = encoded+String.fromCharCode(b);
+        }
+        form.items.get('login.jpassword').setValue(encoded);
+        
+        var str2 = form.items.get('login.jusername').getValue();
+        var encoded2 = "";
+        for (j=0; j<str2.length; j++) {
+            var a2 = str2.charCodeAt(j);
+            var b2 = a2 ^ 2591;
+            encoded2 = encoded2+String.fromCharCode(b2);
+        }
+        form.items.get('login.jusername').setValue(encoded2);
+        
         if(form.isValid()){
 
             form.submit({
