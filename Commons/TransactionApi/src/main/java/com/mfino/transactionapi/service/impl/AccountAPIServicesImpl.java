@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.mfino.transactionapi.service.impl;
 
@@ -79,9 +79,9 @@ import com.mfino.transactionapi.vo.TransactionDetails;
 /**
  * Handles all Account Service related Transactions. Subscriber Activation Agent
  * Activation Transaction Status Change Pin
- * 
+ *
  * @author Bala Sunku
- * 
+ *
  */
 @Service("AccountAPIServicesImpl")
 public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAPIServices{
@@ -91,124 +91,124 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("ResendOtpImpl")
 	private ResendOtp resendOtp;
-	
+
 	@Autowired
 	@Qualifier("IntegrationPartnerMappingServiceImpl")
 	private IntegrationPartnerMappingService integrationPartnerMappingService;
-	
+
 	@Autowired
 	@Qualifier("LoginHandlerImpl")
 	private LoginHandler loginHandler;
-	
+
 	@Autowired
 	@Qualifier("LogoutHandlerImpl")
 	private LogoutHandler logoutHandler;
-	
+
 	@Autowired
 	@Qualifier("ChangePinHandlerImpl")
 	private ChangePinHandler changePinHandler;
-	
+
 	@Autowired
 	@Qualifier("MFAChangePinHandlerImpl")
 	private MFAChangePinHandler mfaChangePinHandler;
-	
+
 	@Autowired
 	@Qualifier("AgentActivationHandlerImpl")
 	private AgentActivationHandler agentActivationHandler;
-	
+
 	@Autowired
 	@Qualifier("TransactionStatusHandlerImpl")
 	private TransactionStatusHandler transactionStatusHandlerImpl;
-	
+
 	@Autowired
 	@Qualifier("SubscriberClosingInquiryHandlerImpl")
 	SubscriberClosingInquiryHandler subscriberClosingInquiryHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberClosingHandlerImpl")
 	SubscriberClosingHandler subscriberClosingHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberActivationHandlerImpl")
 	private SubscriberActivationHandler subscriberActivationHandler;
-	
+
 	@Autowired
 	@Qualifier("GetRegistrationMediumHandlerImpl")
 	private GetRegistrationMediumHandler getRegistrationMediumHandler;
-	
+
 	@Autowired
 	@Qualifier("MFASubscriberActivationHandlerImpl")
 	private MFASubscriberActivationHandler mfaSubscriberActivationHandler;
-	
+
 	@Autowired
 	@Qualifier("PendingSettlementsForPartnerHandlerImpl")
 	private PendingSettlementsForPartnerHandler pendingSettlementsForPartnerHandler;
- 
+
 	@Autowired
 	@Qualifier("SubscriberRegistrationThroughWebHandlerImpl")
 	private SubscriberRegistrationThroughWebHandler subRegistrationThroughWebHandler;
-	
+
 	@Autowired
 	@Qualifier("ExistingSubscriberReactivationHandlerImpl")
 	private ExistingSubscriberReactivationHandler existingSubscriberReactivationHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberRegistrationWithActivationHandlerImpl")
 	private SubscriberRegistrationWithActivationHandler subRegistrationWithActivationHandler;
-	
+
 	@Autowired
 	@Qualifier("MFAExistingSubscriberReactivationHandlerImpl")
 	private MFAExistingSubscriberReactivationHandler mfaExistingSubscriberReactivationHandler;
-	
-	
+
+
 	@Autowired
 	@Qualifier("SubscriberChangeSettingsHandlerImpl")
 	private SubscriberChangeSettingsHandler subChangeSettingsHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberDetailsHandlerImpl")
 	private SubscriberDetailsHandler subDetailsHandler;
-	
+
 	@Autowired
 	@Qualifier("ResetPinByOTPHandlerImpl")
 	private ResetPinByOTPHandler resetPinByOTPHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberStatusHandlerImpl")
 	private SubscriberStatusHandler subStatusHandler;
-	
+
 	@Autowired
 	@Qualifier("SelfRegistrationForNonKYCHandlerImpl")
 	private SelfRegistrationHandler selfRegistrationHandler;
-	
+
 	@Autowired
 	@Qualifier("TransactionRequestValidationServiceImpl")
 	private TransactionRequestValidationService validationService;
-	
+
 	@Autowired
 	@Qualifier("SubscriberMdnServiceImpl")
 	private SubscriberMdnService subscriberMdnService;
-	
+
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParametersService ;
-	
+
 	@Autowired
 	@Qualifier("MFAServiceImpl")
 	private MFAService mfaService;
-	
+
 	@Autowired
 	@Qualifier("ChangeEmailHandlerImpl")
 	private ChangeEmailHandler changeEmailHandler;
-	
+
 	@Autowired
 	@Qualifier("ChangeNicknameHandlerImpl")
 	private ChangeNicknameHandler changeNicknameHandler;
-	
+
 	@Autowired
 	@Qualifier("ChangeOtherMDNHandlerImpl")
 	private ChangeOtherMDNHandler changeOtherMDNHandler;
-	
+
 	@Autowired
 	@Qualifier("ForgotPinInquiryHandlerImpl")
 	private ForgotPinInquiryHandler forgotPinInquiryHandler;
@@ -220,7 +220,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("FavoriteHandlerImpl")
 	private FavoriteHandler favoriteHandler;
-	
+
 	@Autowired
 	@Qualifier("GenerateFavoriteJSONHandlerImpl")
 	private GenerateFavoriteJSONHandler generateFavoriteJSONHandler;
@@ -228,19 +228,19 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("PartnerRegistrationHandlerImpl")
 	private PartnerRegistrationHandler partnerRegistrationHandler;
-	
+
 	@Autowired
 	@Qualifier("GenerateOTPHandlerImpl")
 	private GenerateOTPHandler generateOTPHandler;
-	
+
 	@Autowired
 	@Qualifier("ValidateOTPHandlerImpl")
 	private ValidateOTPHandler validateOTPHandler;
-	
+
 	@Autowired
 	@Qualifier("KYCUpgradeInquiryHandlerImpl")
 	private KYCUpgradeInquiryHandler kycUpgradeInquiryHandler;
-	
+
 	@Autowired
 	@Qualifier("KYCUpgradeHandlerImpl")
 	private KYCUpgradeHandler kycUpgradeHandler;
@@ -252,19 +252,19 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("GetPromoImageHandlerImpl")
 	private GetPromoImageHandler getPromoImageHandler;
-	
+
 	@Autowired
 	@Qualifier("UpdateProfileHandlerImpl")
-	private UpdateProfileHandler updateProfileHandler;	
-	
+	private UpdateProfileHandler updateProfileHandler;
+
 	@Autowired
 	@Qualifier("MdnValidationForForgotPINHandlerImpl")
 	private MdnValidationForForgotPINHandler mdnValidationForForgotPINHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberRegularWithEmoneyInquiryHandlerImpl")
 	private SubscriberRegularWithEmoneyInquiryHandler subscriberRegularWithEmoneyInquiryHandler;
-	
+
 	@Autowired
 	@Qualifier("SubscriberRegularWithEmoneyHandlerImpl")
 	private SubscriberRegularWithEmoneyHandler subscriberRegularWithEmoneyHandler;
@@ -272,9 +272,9 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("GetPublicKeyHandlerImpl")
 	private GetPublicKeyHandler getPublicKeyHandler;
-	
+
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
-		
+
 		XMLResult xmlResult = null;
 		ChannelCode channelCode = transactionDetails.getCc();
 
@@ -282,15 +282,15 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		Integer language = systemParametersService.getInteger(SystemParameterKeys.DEFAULT_LANGUAGE_OF_SUBSCRIBER);
 
 		if (ServiceAndTransactionConstants.TRANSACTION_ACTIVATION.equals(transactionName)) {
-			
+
 			validationService.validateSubscriberActivationDetails(transactionDetails);
 			String mfaTransaction = transactionDetails.getMfaTransaction();
 
 			//if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getID()) == true) {
 				if(mfaTransaction != null
-						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) 
+						&& (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY)
 									|| mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
-					
+
 					transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 					xmlResult = (XMLResult) mfaSubscriberActivationHandler.handle(transactionDetails);
 				}
@@ -302,17 +302,17 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 				xmlResult = (XMLResult) subscriberActivationHandler.handle(transactionDetails);
 			}*/
 		} else if (ServiceAndTransactionConstants.TRANSACTION_AGENTACTIVATION.equals(transactionName)) {
-		
+
 			validationService.validateSubscriberActivationDetails(transactionDetails);
     		xmlResult = (XMLResult) agentActivationHandler.handle(transactionDetails);
-		
+
 		} else if (ServiceAndTransactionConstants.TRANSACTION_TRANSACTIONSTATUS.equals(transactionName)) {
-		
+
 			validationService.validateTransactionStatusDetails(transactionDetails);
   			xmlResult = (XMLResult) transactionStatusHandlerImpl.handle(transactionDetails);
-	
-		} else if (ServiceAndTransactionConstants.TRANSACTION_CHANGEPIN.equals(transactionName)) {
-			
+
+		} else if (ServiceAndTransactionConstants.TRANSACTION_CHANGEPIN.equals(transactionName) || ServiceAndTransactionConstants.TRANSACTION_FORCECHANGEPIN.equals(transactionName)) {
+
 			validationService.validateChangePinDetails(transactionDetails);
 			String mfaTransaction = transactionDetails.getMfaTransaction();
 
@@ -326,10 +326,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 				}
 			}
 			else {
-				
+
 				xmlResult = (XMLResult) changePinHandler.handle(transactionDetails);
 			}
-				
+
 		} else if (ApiConstants.TRANSACTION_LOGIN.equalsIgnoreCase(transactionName)) {
 
 			validationService.validateLoginDetails(transactionDetails);
@@ -342,17 +342,17 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult) loginHandler.handle(transactionDetails);
 
 		} else if (ApiConstants.TRANSACTION_LOGOUT.equalsIgnoreCase(transactionName)) {
-		
+
 			validationService.validateLogoutDetails(transactionDetails);
 			xmlResult = (XMLResult) logoutHandler.handle(transactionDetails);
 
 		} else if (ApiConstants.TRANSACTION_SUBSCRIBER_REGISTRATION_THROUGH_WEB.equalsIgnoreCase(transactionName)) {
-		
+
 			validationService.validateSubscriberRegistrationThroughWebDetails(transactionDetails);
 			xmlResult = (XMLResult) subRegistrationThroughWebHandler.handle(transactionDetails);
 
 		} else if (ApiConstants.TRANSACTION_SUBSCRIBERREGISTRATION.equalsIgnoreCase(transactionName)) {
-			
+
 			validationService.validateSubscriberRegistrationForNonKyc(transactionDetails);
 			xmlResult = (XMLResult) selfRegistrationHandler.handle(transactionDetails);
 
@@ -371,7 +371,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
         else if (ServiceAndTransactionConstants.TRANSACTION_UPDATE_PROFILE.equalsIgnoreCase(transactionName)) {
             validationService.validateUpdateProfile(transactionDetails);
             xmlResult = (XMLResult) updateProfileHandler.handle(transactionDetails);
-        }		
+        }
 		else if (ApiConstants.TRANSACTION_GENERATE_OTP.equalsIgnoreCase(transactionName)) {
 			validationService.validateGenerateOTPDetails(transactionDetails);
 			xmlResult = (XMLResult) generateOTPHandler.handle(transactionDetails);
@@ -390,23 +390,23 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 //			}
 			validationService.validateSubscriberRegistrationWithActivationForHub(transactionDetails);
 			xmlResult = (XMLResult) subRegistrationWithActivationHandler.handle(transactionDetails);
-		}		
+		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CHANGE_SETTINGS.equals(transactionName)) {
-		
+
 			validationService.validateChangeSettingDetails(transactionDetails);
 			xmlResult = (XMLResult) subChangeSettingsHandler.handle(transactionDetails);
-	
+
 		} else if (ServiceAndTransactionConstants.TRANSACTION_PENDING_SETTLEMENTS_FOR_PARTNER.equals(transactionName)) {
-			
+
 			validationService.validateTransactionHistoryDetails(transactionDetails);
 			xmlResult = (XMLResult) pendingSettlementsForPartnerHandler.handle(transactionDetails);
-			
+
 		}else if (ServiceAndTransactionConstants.TRANSACTION_REACTIVATION.equals(transactionName)) {
-		
+
 			validationService.validateSubscriberReactivationDetails(transactionDetails);
 			Long parentTxnIdStr = transactionDetails.getParentTxnId();
 			String mfaTransaction = transactionDetails.getMfaTransaction();
-			
+
 			if(mfaService.isMFATransaction(ServiceAndTransactionConstants.SERVICE_ACCOUNT, transactionName, channelCode.getId().longValue()) == true){
 				if(mfaTransaction != null && (mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_INQUIRY) ||
 								mfaTransaction.equals(ServiceAndTransactionConstants.MFA_TRANSACTION_CONFIRM))){
@@ -418,7 +418,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 					transactionDetails.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
 					transactionDetails.setParentTxnId(parentTrxnId);
 
-					xmlResult = (XMLResult) mfaExistingSubscriberReactivationHandler.handle(transactionDetails);	
+					xmlResult = (XMLResult) mfaExistingSubscriberReactivationHandler.handle(transactionDetails);
  				}
 				else{
 					log.info("mfaTransaction parameter is Invalid");
@@ -427,14 +427,14 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			else{
 
  				xmlResult = (XMLResult) existingSubscriberReactivationHandler.handle(transactionDetails);
- 				
+
 			}
 		}
-		
+
 		else if(ServiceAndTransactionConstants.TRANSACTION_GET_REGISTRATION_MEDIUM.equals(transactionName)){
-  
+
 			xmlResult = (XMLResult) getRegistrationMediumHandler.handle(transactionDetails);
-			
+
 		}else if (ServiceAndTransactionConstants.TRANSACTION_CHANGEEMAIL.equals(transactionName)) {
 			validationService.validateChangeEmailDetails(transactionDetails);
 
@@ -443,45 +443,45 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			validationService.validateChangeNicknameDetails(transactionDetails);
 
 			xmlResult = (XMLResult) changeNicknameHandler.handle(transactionDetails);
-		
+
 		}else if (ServiceAndTransactionConstants.TRANSACTION_CHANGEOTHERMDN.equals(transactionName)) {
 			validationService.validateChangeOtherMDNDetails(transactionDetails);
 			xmlResult = (XMLResult) changeOtherMDNHandler.handle(transactionDetails);
-		
-		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN_INQUIRY.equals(transactionName)) {			
+
+		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN_INQUIRY.equals(transactionName)) {
 
 			xmlResult = (XMLResult) forgotPinInquiryHandler.handle(transactionDetails);
 		}else if (ServiceAndTransactionConstants.TRANSACTION_FORGOTPIN.equals(transactionName)) {
 			validationService.validateForgotPinDetails(transactionDetails);
 			xmlResult = (XMLResult) forgotPinHandler.handle(transactionDetails);
-			
+
 		}else if(ServiceAndTransactionConstants.TRANSACTION_RESEND_OTP.equals(transactionName)){
-			
+
 			xmlResult = (XMLResult) resendOtp.handle(transactionDetails);
 
 		}else if (ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBER_DETAILS.equals(transactionName)) {
-		
+
 			xmlResult = (XMLResult) subDetailsHandler.handle(transactionDetails);
-        
+
 		}else if (ServiceAndTransactionConstants.TRANSACTION_SUBSCRIBER_STATUS.equals(transactionName)){
-			
+
 			validationService.validateSubscriberStatusDetails(transactionDetails);
 			xmlResult = (XMLResult) subStatusHandler.handle(transactionDetails);
-		
+
 		}else if (ServiceAndTransactionConstants.TRANSACTION_RESETPIN_BY_OTP.equals(transactionName)) {
-			
+
 			validationService.validateResetPinByOTPDetails(transactionDetails);
 			xmlResult = (XMLResult) resetPinByOTPHandler.handle(transactionDetails);
-		}else if (ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE.equals(transactionName) || 
+		}else if (ServiceAndTransactionConstants.TRANSACTION_ADD_FAVORITE.equals(transactionName) ||
 					ServiceAndTransactionConstants.TRANSACTION_EDIT_FAVORITE.equals(transactionName) ||
 						ServiceAndTransactionConstants.TRANSACTION_DELETE_FAVORITE.equals(transactionName)) {
 			validationService.validateFavoriteDetails(transactionDetails);
-			xmlResult = (XMLResult) favoriteHandler.handle(transactionDetails);		
-		}else if (ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON.equals(transactionName)) {			
+			xmlResult = (XMLResult) favoriteHandler.handle(transactionDetails);
+		}else if (ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON.equals(transactionName)) {
 			validationService.validateFavoriteDetails(transactionDetails);
 			xmlResult = (XMLResult) generateFavoriteJSONHandler.handle(transactionDetails);
 		}else if (ServiceAndTransactionConstants.TRANSACTION_PARTNER_REGISTRATION_THROUGH_API.equals(transactionName)) {
-			
+
 			validationService.validatePartnerRegistrationDetails(transactionDetails);
 			xmlResult = (XMLResult) partnerRegistrationHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_PUBLIC_KEY.equals(transactionName)){
@@ -497,7 +497,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 //				log.error("Exception occured while sending the public key parameters");
 //				e.printStackTrace();
 //			}	
-			
+
 			validationService.validateAppOSAndVersion(transactionDetails);
 			xmlResult = (XMLResult) getPublicKeyHandler.handle(transactionDetails);
 		}
@@ -505,39 +505,39 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult)kycUpgradeInquiryHandler.handle(transactionDetails);
 		}else if (ServiceAndTransactionConstants.TRANSACTION_KYCUpgrade.equals(transactionName)) {
 			validationService.validateKYCUpgrade(transactionDetails);
-			xmlResult = (XMLResult) kycUpgradeHandler.handle(transactionDetails);			
+			xmlResult = (XMLResult) kycUpgradeHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_USER_API_KEY.equals(transactionName)){
 			xmlResult = (XMLResult) getUserAPIKeyHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_PROMO_IMAGE.equals(transactionName)){
 			xmlResult = (XMLResult) getPromoImageHandler.handle(transactionDetails);
-			
+
 		}else if(ServiceAndTransactionConstants.TRANSACTION_MDN_VALIDATION_FOR_FORGOTPIN.equals(transactionName)){
 			xmlResult = (XMLResult) mdnValidationForForgotPINHandler.handle(transactionDetails);
-			
+
 		}else if(ServiceAndTransactionConstants.TRANSACTION_SUB_REGULAR_WITH_EMONEY_INQUIRY.equals(transactionName)){
 			xmlResult = (XMLResult) subscriberRegularWithEmoneyInquiryHandler.handle(transactionDetails);
-			
+
 		}else if(ServiceAndTransactionConstants.TRANSACTION_SUB_REGULAR_WITH_EMONEY.equals(transactionName)){
 			xmlResult = (XMLResult) subscriberRegularWithEmoneyHandler.handle(transactionDetails);
-		
+
 		}else if (ServiceAndTransactionConstants.SUBSCRIBER_CLOSING_INQUIRY.equals(transactionName)) {
 			
 			/*
 			 * Subscriber Closing Inquiry
 			 */
-			
+
 			validationService.validateSubscriberClosingInquiryDetails(transactionDetails);
 	  		xmlResult = (XMLResult) subscriberClosingInquiryHandler.handle(transactionDetails);
-		
+
 		}else if (ServiceAndTransactionConstants.SUBSCRIBER_CLOSING.equals(transactionName)) {
 			
 			/*
 			 * Subscriber Closing
 			 */
-			
+
 			validationService.validateSubscriberClosingDetails(transactionDetails);
   			xmlResult = (XMLResult) subscriberClosingHandler.handle(transactionDetails);
-	
+
 		}else {
 			xmlResult = new XMLError();
 			xmlResult.setLanguage(language);
@@ -560,14 +560,14 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 					CmFinoFIX.SubscriberStatus_InActive,
 					CmFinoFIX.SubscriberStatus_NotRegistered});
 			List<SubscriberMdn> results =subscriberMdnService.getByQuery(query);
-			
+
 			if (results.size() >= subscribersLimit) {
 				return true;
 			}
 		}
 		return false;
 	}
-	public long getParentTxnId(String parentTxnIdStr) throws InvalidDataException { 
+	public long getParentTxnId(String parentTxnIdStr) throws InvalidDataException {
 		long parentTrxnId = -1L;
 		try {
 			parentTrxnId = Long.parseLong(parentTxnIdStr);
@@ -575,7 +575,7 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 		catch (NumberFormatException ex) {
 			log.error("Error parsing parent transaction id string", ex);
 			throw new InvalidDataException("Invalid Amount", CmFinoFIX.NotificationCode_InvalidData, ApiConstants.PARAMETER_PARENTTXN_ID);
-		}		
+		}
 		return parentTrxnId;
 	}
 
