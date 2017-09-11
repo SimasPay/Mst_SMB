@@ -47,6 +47,7 @@ public class BSIMRequestListener implements ISORequestListener{
 				transactionPool.execute(new TransactionHandler(m, source));
 			}
 			else {
+				log.info("BSIMRequestListener UnHandled at "+ System.currentTimeMillis());
 				log.info("BSMRequestListener iso mti="+mti+" de-39="+m.getString(39)+",de-11="+m.getString(11)+",de-70"+m.getString(70)+" is not for BSMRequestListener - Ignoring the message");
 				log.info("echo status "+StatusRegistrar.getEchoStatus("bsmmux"));
 				//Space sp = SpaceFactory.getSpace();

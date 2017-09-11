@@ -17,10 +17,12 @@ public abstract class BaseISOUtil {
 	
 	public ISOMsg sendAndReceive(ISOMsg isoMsg,long timeout, String muxName) throws ISOException, NotFoundException 
 	{
-		log.info("sending msg with mti="+isoMsg.getMTI()+",STAN="+isoMsg.getValue(11)+" muxName="+muxName+", isoMsg="+isoMsg);
+		log.info("sending msg with mti="+isoMsg.getMTI()+",STAN="+isoMsg.getValue(11)+" muxName="+muxName+", isoMsg="+isoMsg+", timeout"+timeout);
+		log.info("BaseISOUtil Sending at "+ System.currentTimeMillis());
 		QMUX mux = (QMUX) QMUX.getMUX(muxName);
 		ISOMsg replyMsg = mux.request(isoMsg,timeout);
-
+		log.info("BaseISOUtil Waiting Done at "+ System.currentTimeMillis());
+		
 		log.info("response received for msg with mti="+isoMsg.getMTI()+",STAN="+isoMsg.getValue(11)+" muxName="+muxName+", replyMsg="+replyMsg);
 		return replyMsg;
 	}
