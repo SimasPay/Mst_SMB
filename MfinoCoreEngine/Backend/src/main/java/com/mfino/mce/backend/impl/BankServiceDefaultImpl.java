@@ -22,6 +22,7 @@ import com.mfino.dao.PartnerDAO;
 import com.mfino.dao.SCTLSettlementMapDAO;
 import com.mfino.dao.ServiceChargeTransactionLogDAO;
 import com.mfino.dao.ServiceDAO;
+import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.domain.ActivitiesLog;
 import com.mfino.domain.IntegrationSummary;
 import com.mfino.domain.MfsLedger;
@@ -3015,10 +3016,10 @@ public class BankServiceDefaultImpl extends BaseServiceImpl implements
 		}
 		
 		if (isNullorZero(returnFix.getInternalErrorCode())) {
-		
+			
 			sourceSubcriberMdn = sourcePocket.getSubscriberMdn();
-			sourceSubscriber = sourceSubcriberMdn.getSubscriber();
-		
+			sourceSubscriber = coreDataWrapper.getSubscriberByMdn(sourceSubcriberMdn.getMdn());
+			
 			destinationSubcriberMdn = coreDataWrapper.getSubscriberMdn(cashinfromAtm.getDestMDN());
 			destinationSubscriber = destinationSubcriberMdn.getSubscriber();		
 			destinationPocket = coreDataWrapper.getPocketById(cashinfromAtm.getDestPocketID(), LockMode.UPGRADE);
