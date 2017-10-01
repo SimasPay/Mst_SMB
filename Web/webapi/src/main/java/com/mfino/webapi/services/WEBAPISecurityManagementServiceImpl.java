@@ -531,6 +531,11 @@ public class WEBAPISecurityManagementServiceImpl implements WEBAPISecurityManage
 			byPass = true;	
 		else if(ApiConstants.TRANSACTION_GET_PROMO_IMAGE.equals(transactionName))
 			byPass = true;	
+		else if ("GetSubscriberByToken".equals(transactionName)) {
+			byPass = true;
+	    } else if ("CloseSubscriberByToken".equals(transactionName)) {
+	    	byPass = true;
+	    }
 		log.info("bypassSessionChecks for transaction: "+transactionName+" is: "+byPass);
 		return byPass;
 	}

@@ -5144,6 +5144,15 @@
 	</message>
 	<message name="TransferToUangku" msgtype="1766" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="BankAccountToBankAccountConfirmation">
 	</message>
+	
+	<message name="GetSubscriberByToken" msgtype="1767" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="MigrateToken" required="Y" />
+	</message>
+	
+	<message name="CloseSubscriberByToken" msgtype="1768" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="GetSubscriberByToken">
+		<field name="ApplicationID" required="N" />
+		<field name="CardPAN" required="N" />
+	</message>
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -5537,6 +5546,10 @@
 			<field name="OtpRetryCount" required="N" />
 			<field name="CashinFirstTimeID" required="N" />
 			<field name="LastAppPinChange" required="N" />
+			<field name="MigrateToSimobiPlus" required="N" />
+			<field name="MigrateToken" required="N" />
+			<field name="MigrateDate" required="N" />
+			<field name="IsMigrateableToSimobiPlus" required="N" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -7671,6 +7684,8 @@
 			<value enum="1741" description="BalanceInquiryFromNFC"/>
 			<value enum="1765" description="TransferToUangkuInquiry"/>
 			<value enum="1766" description="TransferToUangku"/>	
+			<value enum="1767" description="GetSubscriberByToken"/>	
+			<value enum="1768" description="CloseSubscriberByToken"/>	
 		</field>
 		<field number="49" name="SenderCompID" type="STRING" />
 		<field number="52" name="SendingTime" type="UTCTIMESTAMP" />
@@ -22275,6 +22290,36 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			
+			<value description="InvalidMigrateSimobiPlusToken" enum="2180">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Invalid Secret Code for Migrate to Simobi Plus.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			<value description="TimeoutMigrateSimobiPlusToken" enum="2181">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Secret Code for Migrate to Simobi Plus is Timeout.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			<value description="SubscriberMigratedToSimobiPlus" enum="2182">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Migrated to Simobi Plus.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -25838,6 +25883,10 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8198" name="PointsRedeemed" type="RecordID" />
 	<field number="8199" name="AmountRedeemed" type="Amount" />
 	<field number="8200" name="LastAppPinChange" type="UTCTIMESTAMP" />
+	<field number="8201" name="MigrateToSimobiPlus" type="BOOLEAN" />
+	<field number="8202" name="MigrateToken" type="STRING" />
+	<field number="8203" name="MigrateDate" type="UTCTIMESTAMP" />
+	<field number="8204" name="IsMigrateableToSimobiPlus" type="BOOLEAN" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

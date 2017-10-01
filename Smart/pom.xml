@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -8,7 +9,13 @@
 		<jaxb-api-version>2.1</jaxb-api-version>
 		<jaxb-impl-version>2.1.13</jaxb-impl-version>
 	</properties>
-
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>Fuse nexus</name>
+			<url>https://repo.fusesource.com/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
 
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -16,28 +23,27 @@
 		<artifactId>root</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>Smart</artifactId>
 	<packaging>pom</packaging>
 	<name>Smart Modules</name>
 	<url>http://www.mfino.com</url>
 
 	<modules>
-		<!--<module>SMSAlerts</module>-->
-		<!--<module>CreditCardPayment</module>-->
+		<!--<module>SMSAlerts</module> -->
+		<!--<module>CreditCardPayment</module> -->
 		<module>SmartConfiguration</module>
-    	<module>BSMISO8583</module>
+		<module>BSMISO8583</module>
 		<module>BSMUangkuISO8583</module>
-    	<module>ZTEISO8583</module>
-    	<module>ZTEBillPayment</module>
-    	<module>VAISO8583</module>    	
+		<module>ZTEISO8583</module>
+		<module>ZTEBillPayment</module>
+		<module>VAISO8583</module>
 		<module>CashinIntegrationSmart</module>
-		<!--<module>SmartBillerGatewayService</module>
-		<module>BillerGatewayTestServer</module>
-		<module>ZTEDataPush</module>-->
+		<!--<module>SmartBillerGatewayService</module> <module>BillerGatewayTestServer</module> 
+			<module>ZTEDataPush</module> -->
 		<module>NFCISO8583</module>
-	</modules>	
-	
+	</modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.mfino.mce</groupId>
