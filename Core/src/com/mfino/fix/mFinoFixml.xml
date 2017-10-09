@@ -25887,6 +25887,11 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8202" name="MigrateToken" type="STRING" />
 	<field number="8203" name="MigrateDate" type="UTCTIMESTAMP" />
 	<field number="8204" name="IsMigrateableToSimobiPlus" type="BOOLEAN" />
+		<field number="8205" name="MigrateToSimobiPlusEventStatus" type="INT32">
+			<value enum="0" description="InActive" />
+			<value enum="1" description="Active" />
+			<value enum="2" description="ForceMigrate" />
+		</field>
     </fields>
     <primitives>
 		<dbtype name="mysql">

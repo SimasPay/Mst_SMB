@@ -102,7 +102,7 @@ public class LoginXMLResult extends XMLResult {
 			getXmlWriter().writeEndElement();
 		}
 		
-		if(simobiPlusUpgrade !=null ){
+		if(simobiPlusUpgrade == null ){
 			simobiPlusUpgrade = 0;
 		}
 		getXmlWriter().writeStartElement("simobiPlusUpgrade");

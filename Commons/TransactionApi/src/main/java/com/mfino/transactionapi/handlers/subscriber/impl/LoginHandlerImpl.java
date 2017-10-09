@@ -251,7 +251,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				return result;
 			}
 			
-			if(srcSubscriberMDN.getMigrateToSimobiPlus()){
+			if(srcSubscriberMDN.getMigrateToSimobiPlus() != null && 
+					srcSubscriberMDN.getMigrateToSimobiPlus()){
 				log.info("Subscriber Migrated to SimobiPlus");
 				result.setNotificationCode(CmFinoFIX.NotificationCode_SubscriberMigratedToSimobiPlus);
 				result.setResponseStatus(GeneralConstants.LOGIN_RESPONSE_FAILED);
@@ -288,19 +289,20 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				}
 			}
 			
-			result.setSimobiPlusUpgrade(0);
-			if(srcSubscriberMDN.getIsMigrateableToSimobiPlus() &&
+			result.setSimobiPlusUpgrade(CmFinoFIX.MigrateToSimobiPlusEventStatus_InActive);
+			if(srcSubscriberMDN.getIsMigrateableToSimobiPlus() != null &&
+					srcSubscriberMDN.getIsMigrateableToSimobiPlus() &&
 					StringUtils.equalsIgnoreCase(systemParametersService.getString(
 							SystemParameterKeys.SHOW_MIGRATE_TO_SIMOBIPLUS_EVENT), "true")){
 				
-				result.setSimobiPlusUpgrade(1);
+				result.setSimobiPlusUpgrade(CmFinoFIX.MigrateToSimobiPlusEventStatus_Active);
 				String lastDateStr = systemParametersService.getString(SystemParameterKeys.FORCE_MIGRATE_TO_SIMOBIPLUS_DATE);
 				
 				if(StringUtils.isNotBlank(lastDateStr)){
 					Date lastDate = DateUtil.getDate(lastDateStr);
 					Date currentDate = new Date();
-					if(currentDate.before(lastDate)) {
-						result.setSimobiPlusUpgrade(2);
+					if(currentDate.after(lastDate)) {
+						result.setSimobiPlusUpgrade(CmFinoFIX.MigrateToSimobiPlusEventStatus_ForceMigrate);
 					}
 				}
 			}
