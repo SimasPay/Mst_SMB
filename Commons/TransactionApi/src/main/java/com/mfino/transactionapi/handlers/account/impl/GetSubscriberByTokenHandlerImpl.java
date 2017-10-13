@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.account.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
@@ -17,10 +18,16 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.domain.ChannelCode;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.ServiceCharge;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.EmptyStringException;
+import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidMDNException;
+import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetSubscriberByToken;
 import com.mfino.handlers.FIXMessageHandler;
@@ -31,6 +38,7 @@ import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SystemParametersService;
+import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.GetSubscriberByTokenHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ChangeEmailXMLResult;
@@ -58,6 +66,9 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 	@Autowired
 	@Qualifier("TransactionLogServiceImpl")
 	private TransactionLogService transactionLogService;
+	@Autowired
+	@Qualifier("TransactionChargingServiceImpl")
+	private TransactionChargingService transactionChargingService ;
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		XMLResult result = new ChangeEmailXMLResult();
@@ -96,7 +107,7 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 			}
 
 			request.setSourceMDN(mdn);
-			transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetSubscriberByToken, request.DumpFields());
+			TransactionsLog transactionsLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_GetSubscriberByToken, request.DumpFields());
 			
 			log.info("GetSubscriberByTokenHandlerImpl For MDN: " + mdn + " Expired: " + sdf.format(expiredDate));
 			
@@ -122,6 +133,33 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 					}
 					
 					construnctSuccessResponse(root, mdn, subscriberMDN, subscriber, bankPocket);
+					
+					ServiceCharge sc = new ServiceCharge();
+					sc.setSourceMDN(subscriberMDN.getMDN());
+					sc.setDestMDN(null);
+					sc.setChannelCodeId(StringUtils.isNotBlank(transactionDetails.getChannelCode()) ? Long.valueOf(transactionDetails.getChannelCode()) : null);
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
+					sc.setTransactionTypeName(transactionDetails.getTransactionName());
+					sc.setTransactionAmount(BigDecimal.ZERO);
+					sc.setTransactionLogId(transactionsLog.getID());
+					sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
+
+					try{
+						Transaction transactionCharge = transactionChargingService.getCharge(sc);
+						ServiceChargeTransactionLog sctl = transactionCharge.getServiceChargeTransactionLog();
+						if (sctl != null) {
+							sctl.setCalculatedCharge(BigDecimal.ZERO);
+							transactionChargingService.completeTheTransaction(sctl);
+						}
+					}catch (InvalidServiceException e) {
+						log.error("Exception occured in getting charges",e);
+						result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
+						return result;
+					} catch (InvalidChargeDefinitionException e) {
+						log.error(e.getMessage());
+						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
+						return result;
+					}
 				} else {
 					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_InvalidMigrateSimobiPlusToken, null, null);
 					root.put("status", Integer.valueOf(404));

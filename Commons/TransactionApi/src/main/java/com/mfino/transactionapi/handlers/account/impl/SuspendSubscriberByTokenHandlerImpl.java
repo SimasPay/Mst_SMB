@@ -1,5 +1,6 @@
 package com.mfino.transactionapi.handlers.account.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -17,10 +18,16 @@ import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.crypto.CryptographyService;
 import com.mfino.dao.query.SubscriberMdnQuery;
 import com.mfino.domain.ChannelCode;
+import com.mfino.domain.ServiceCharge;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMDN;
+import com.mfino.domain.Transaction;
+import com.mfino.domain.TransactionsLog;
 import com.mfino.exceptions.EmptyStringException;
+import com.mfino.exceptions.InvalidChargeDefinitionException;
 import com.mfino.exceptions.InvalidMDNException;
+import com.mfino.exceptions.InvalidServiceException;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMCloseSubscriberByToken;
 import com.mfino.handlers.FIXMessageHandler;
@@ -34,6 +41,7 @@ import com.mfino.service.PocketService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SystemParametersService;
+import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.SuspendSubscriberByTokenHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ChangeEmailXMLResult;
@@ -67,6 +75,9 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 	@Autowired
 	@Qualifier("SystemParametersServiceImpl")
 	private SystemParametersService systemParameterService;
+	@Autowired
+	@Qualifier("TransactionChargingServiceImpl")
+	private TransactionChargingService transactionChargingService ;
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		XMLResult result = new ChangeEmailXMLResult();
@@ -109,7 +120,7 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 			}
 			
 			request.setSourceMDN(mdn);
-			transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CloseSubscriberByToken, request.DumpFields());
+			TransactionsLog trxLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CloseSubscriberByToken, request.DumpFields());
 			
 			log.info("SuspendSubscriberByTokenHandlerImpl For MDN: " + mdn + " Expired: " + sdf.format(expiredDate));
 			if (!new Date().after(expiredDate)) {
@@ -132,6 +143,34 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 						cif = subscriberMDN.getApplicationID();
 					}
 					markSubscriberMigratedToSimobiPlus(subscriberMDN, now, secreteCode, cif);
+					
+					ServiceCharge sc = new ServiceCharge();
+					sc.setSourceMDN(subscriberMDN.getMDN());
+					sc.setDestMDN(null);
+					sc.setChannelCodeId(StringUtils.isNotBlank(transactionDetails.getChannelCode()) ? Long.valueOf(transactionDetails.getChannelCode()) : null);
+					sc.setServiceName(ServiceAndTransactionConstants.SERVICE_ACCOUNT);
+					sc.setTransactionTypeName(transactionDetails.getTransactionName());
+					sc.setTransactionAmount(BigDecimal.ZERO);
+					sc.setTransactionLogId(trxLog.getID());
+					sc.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
+
+					try{
+						Transaction transactionCharge = transactionChargingService.getCharge(sc);
+						ServiceChargeTransactionLog sctl = transactionCharge.getServiceChargeTransactionLog();
+						if (sctl != null) {
+							sctl.setCalculatedCharge(BigDecimal.ZERO);
+							transactionChargingService.completeTheTransaction(sctl);
+						}
+					}catch (InvalidServiceException e) {
+						log.error("Exception occured in getting charges",e);
+						result.setNotificationCode(CmFinoFIX.NotificationCode_ServiceNotAvailable);
+						return result;
+					} catch (InvalidChargeDefinitionException e) {
+						log.error(e.getMessage());
+						result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidChargeDefinitionException);
+						return result;
+					}
+					
 					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_SubscriberMigratedToSimobiPlus, subscriberMDN, subscriber);
 					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
 					root.put("status", Integer.valueOf(200));

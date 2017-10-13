@@ -290,8 +290,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			}
 			
 			result.setSimobiPlusUpgrade(CmFinoFIX.MigrateToSimobiPlusEventStatus_InActive);
-			if(srcSubscriberMDN.getIsMigrateableToSimobiPlus() != null &&
-					srcSubscriberMDN.getIsMigrateableToSimobiPlus() &&
+			if((srcSubscriberMDN.getIsMigrateableToSimobiPlus() == null ||
+					srcSubscriberMDN.getIsMigrateableToSimobiPlus()) &&
 					StringUtils.equalsIgnoreCase(systemParametersService.getString(
 							SystemParameterKeys.SHOW_MIGRATE_TO_SIMOBIPLUS_EVENT), "true")){
 				
