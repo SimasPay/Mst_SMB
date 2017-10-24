@@ -11,6 +11,11 @@ DELETE FROM transaction_type where TRANSACTIONNAME = 'GetSubscriberByToken';
 INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,'GetSubscriberByToken','Retrieve Subscriber By Token');
 INSERT INTO service_transaction VALUES (service_transaction_id_seq.nextval,1,sysdate,'System',sysdate,'System',1, (select id from service where SERVICENAME = 'Account'), (select id from transaction_type where TRANSACTIONNAME = 'GetSubscriberByToken'),0);
 
+DELETE FROM service_transaction where serviceid=(select id from service where servicename='Account') and transactiontypeid=(select id from transaction_type where transactionname='GenerateMigrateToken');
+DELETE FROM transaction_type where TRANSACTIONNAME = 'GenerateMigrateToken';
+INSERT INTO transaction_type VALUES (transaction_type_id_seq.nextval,1,sysdate,'System',sysdate,'System',1,'GenerateMigrateToken','Generate Token for Migrate to SimobiPlus');
+INSERT INTO service_transaction VALUES (service_transaction_id_seq.nextval,1,sysdate,'System',sysdate,'System',1, (select id from service where SERVICENAME = 'Account'), (select id from transaction_type where TRANSACTIONNAME = 'GenerateMigrateToken'),0);
+
 
 -- insert statement for notification
 -- InvalidMigrateSimobiPlusToken(2180)
@@ -31,6 +36,12 @@ INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,
 Delete from notification where code = 7 and NotificationMethod = 16;
 INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,7,'MDNIsNotActive',16,'Subscriber tidak Aktif',null,1,0,sysdate,null,null,1);
 INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,7,'MDNIsNotActive',16,'Subscriber is Not Active',null,0,0,sysdate,null,null,1);
+Delete from notification where code = 2183;
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,2183,'GeneratedSubscriberMigratedToken',4,'Sukses Generate Token untuk Migrasi ke Simobi Plus',null,1,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,2183,'GeneratedSubscriberMigratedToken',4,'Success Generate Token for Migrate to Simobi Plus',null,0,0,sysdate,null,null,1);
+Delete from notification where code = 2184;
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,2184,'FailedGenerateSubscriberMigratedToken',4,'Gagal Generate Token untuk Migrasi ke Simobi Plus',null,1,0,sysdate,null,null,1);
+INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,MSPID,Code,CodeName,NotificationMethod,Text,STKML,Language,Status,StatusTime,AccessCode,SMSNotificationCode,CompanyID) VALUES (sysdate,'System',sysdate,'System',0,1,2184,'FailedGenerateSubscriberMigratedToken',4,'Failed Generate Token for Migrate to Simobi Plus',null,0,0,sysdate,null,null,1);
 
 
 -- insert statement for system parameter

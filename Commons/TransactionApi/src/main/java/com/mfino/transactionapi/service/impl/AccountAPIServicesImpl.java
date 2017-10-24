@@ -32,6 +32,7 @@ import com.mfino.transactionapi.handlers.account.AgentActivationHandler;
 import com.mfino.transactionapi.handlers.account.ExistingSubscriberReactivationHandler;
 import com.mfino.transactionapi.handlers.account.FavoriteHandler;
 import com.mfino.transactionapi.handlers.account.GenerateFavoriteJSONHandler;
+import com.mfino.transactionapi.handlers.account.GenerateMigrateTokenHandler;
 import com.mfino.transactionapi.handlers.account.GetPromoImageHandler;
 import com.mfino.transactionapi.handlers.account.GetRegistrationMediumHandler;
 import com.mfino.transactionapi.handlers.account.GetSubscriberByTokenHandler;
@@ -248,6 +249,10 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Autowired
 	@Qualifier("SuspendSubscriberByTokenHandlerImpl")
 	private SuspendSubscriberByTokenHandler suspendSubscriberByTokenHandler;
+	
+	@Autowired
+	@Qualifier("GenerateMigrateTokenHandlerImpl")
+	private GenerateMigrateTokenHandler generateMigrateTokenHandler;
 	
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		
@@ -485,7 +490,11 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	    }
 	    else if (ServiceAndTransactionConstants.TRANSACTION_CLOSE_SUBSCRIBER_BY_TOKEN.equals(transactionName)) {
 	      xmlResult = (XMLResult)this.suspendSubscriberByTokenHandler.handle(transactionDetails);
-	    }else {
+	    }
+	    else if (ServiceAndTransactionConstants.TRANSACTION_GENERATE_MIGRATE_TOKEN.equals(transactionName)) {
+	    	xmlResult = (XMLResult) generateMigrateTokenHandler.handle(transactionDetails);
+		}
+	    else {
 			xmlResult = new XMLError();
 			xmlResult.setLanguage(language);
 			xmlResult.setTransactionTime(new Timestamp());

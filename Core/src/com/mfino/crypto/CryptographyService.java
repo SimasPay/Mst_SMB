@@ -781,7 +781,7 @@ public class CryptographyService {
      * @return the encryptedText
      * @throws Exception
      */
-    private static String encryptWithPublicKey(String clearText) throws Exception{
+    public static String encryptWithPublicKey(String clearText) throws Exception{
 		RSAKeyParameters rsaKeyParameters = getPubKey();	
         AsymmetricBlockCipher eng = new RSAEngine();
         eng = new PKCS1Encoding(eng);

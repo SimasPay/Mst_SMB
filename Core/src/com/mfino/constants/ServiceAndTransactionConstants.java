@@ -349,4 +349,6 @@ public class ServiceAndTransactionConstants {
 	public static final String TRANSACTION_GET_SUBSCRIBER_BY_TOKEN = "GetSubscriberByToken";
 	
 	public static final String TRANSACTION_CLOSE_SUBSCRIBER_BY_TOKEN = "CloseSubscriberByToken";
+	
+	public static final String TRANSACTION_GENERATE_MIGRATE_TOKEN = "GenerateMigrateToken";
 }

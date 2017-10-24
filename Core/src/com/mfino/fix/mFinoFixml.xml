@@ -5153,6 +5153,11 @@
 		<field name="ApplicationID" required="N" />
 		<field name="CardPAN" required="N" />
 	</message>
+	
+	<message name="GenerateSubscriberMigrateToken" msgtype="1769" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
+		<field name="MigrateToken" required="Y" />
+	</message>
+	
 </messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -22312,6 +22317,26 @@ ERROR:Mismatch of  mdn type and app type
 			</value>
 			
 			<value description="SubscriberMigratedToSimobiPlus" enum="2182">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Migrated to Simobi Plus.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			<value description="GeneratedSubscriberMigratedToken" enum="2183">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Subscriber Migrated to Simobi Plus.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			<value description="FailedGenerateSubscriberMigratedToken" enum="2184">
 				<C1>
 					<English>
 						<SMS>
