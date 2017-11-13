@@ -217,7 +217,8 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 		data.put("email", subscriber.getEmail());
 		data.put("accountNo", bankPocket.getCardPAN());
 		data.put("pocketType", "2");
-
+		data.put("userApiKey", subscriberMDN.getUserAPIKey());
+		
 		root.put("data", data);
 	}
 	
