@@ -1,7 +1,9 @@
 package com.mfino.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFAAuthenticationDAO;
 import com.mfino.dao.MFATransactionInfoDAO;
@@ -17,11 +20,14 @@ import com.mfino.dao.query.MFATransactionInfoQuery;
 import com.mfino.domain.MFAAuthentication;
 import com.mfino.domain.MFATransactionInfo;
 import com.mfino.domain.Service;
+import com.mfino.domain.ServiceChargeTransactionLog;
 import com.mfino.domain.TransactionType;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.service.MFAService;
+import com.mfino.service.SCTLService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SystemParametersService;
+import com.mfino.service.TransactionTypeService;
 import com.mfino.util.MfinoUtil;
 
 @org.springframework.stereotype.Service("MFAServiceImpl")
@@ -36,6 +42,14 @@ public class MFAServiceImpl implements MFAService{
 	@Autowired
 	@Qualifier("SMSServiceImpl")
 	private SMSService smsService;
+	
+	@Autowired
+	@Qualifier("SCTLServiceImpl")
+	private SCTLService sctlService;
+
+	@Autowired
+	@Qualifier("TransactionTypeServiceImpl")
+	private TransactionTypeService transactionTypeService;
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	public boolean isMFATransaction(String serviceName, String transactionName, Long channelCodeId){
@@ -76,16 +90,49 @@ public class MFAServiceImpl implements MFAService{
 		
 		MFAAuthenticationDAO authDAO = DAOFactory.getInstance().getMfaAuthenticationDAO();
 		authDAO.save(mfaAuth);
-		
+
+		String additionalTrxInfo = getAdditionalTnxInfo(sctlID);
 		String message = "Your Simobi Code is "
 				+ oneTimePin+ "(ref no: "+ sctlID
-				+ ") WASPADAI PENIPUAN! JANGAN berikan kode ini kepada siapapun! Bank Sinarmas CARE 1500153";
+				+ ")"+additionalTrxInfo+" WASPADAI PENIPUAN! JANGAN berikan kode ini kepada siapapun! Bank Sinarmas CARE 1500153";
 		
 		smsService.setDestinationMDN(sourceMDN);
 		smsService.setMessage(message);
 		smsService.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 		smsService.asyncSendSMS();
 		log.info("MFAService::handleMFATransaction End");
+	}
+
+	private String getAdditionalTnxInfo(Long sctlID) {
+		String additionalTrxInfo = "";
+		ServiceChargeTransactionLog serviceChargeTransactionLog = sctlService.getBySCTLID(sctlID);
+		if(serviceChargeTransactionLog != null){
+			TransactionType transactionType = transactionTypeService.getTransactionTypeById(serviceChargeTransactionLog.getTransactionTypeID());
+			
+			if(transactionType != null){
+				if(StringUtils.equals(transactionType.getTransactionName(), ServiceAndTransactionConstants.TRANSACTION_TRANSFER)
+						|| StringUtils.equals(transactionType.getTransactionName(), ServiceAndTransactionConstants.TRANSACTION_INTERBANK_TRANSFER)
+						|| StringUtils.equals(transactionType.getTransactionName(), ServiceAndTransactionConstants.TRANSACTION_TRANSFER_TO_UANGKU)
+						){
+					additionalTrxInfo = "For Transfer";
+					String destinationAccountNo = serviceChargeTransactionLog.getOnBeHalfOfMDN();
+					if(StringUtils.isNotBlank(destinationAccountNo))
+						additionalTrxInfo = additionalTrxInfo+" to "+destinationAccountNo;
+					
+				} else if(StringUtils.equals(transactionType.getTransactionName(), ServiceAndTransactionConstants.TRANSACTION_ACTIVATION)
+						|| StringUtils.equals(transactionType.getTransactionName(), ServiceAndTransactionConstants.TRANSACTION_CHANGEPIN)
+						|| StringUtils.equals(transactionType.getTransactionName(), ServiceAndTransactionConstants.TRANSACTION_REACTIVATION)
+						){
+					additionalTrxInfo = "For "+transactionType.getDisplayName();
+					
+				}else{
+					String invoiceNo = serviceChargeTransactionLog.getInvoiceNo();
+					if(StringUtils.isNotBlank(invoiceNo))
+						additionalTrxInfo = "For IDPEL "+invoiceNo;
+				}
+			}
+		}
+		return additionalTrxInfo;
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
