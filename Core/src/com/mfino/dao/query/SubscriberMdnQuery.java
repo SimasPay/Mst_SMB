@@ -33,8 +33,17 @@ public class SubscriberMdnQuery extends BaseQuery{
     private Integer state;
     private String accountNumber;
     private Boolean isForceCloseRequested;
+    private String applicationId;
     
-    public Integer getBankCode() {
+    public String getApplicationId() {
+		return applicationId;
+	}
+
+	public void setApplicationId(String applicationId) {
+		this.applicationId = applicationId;
+	}
+
+	public Integer getBankCode() {
         return BankCode;
     }
 

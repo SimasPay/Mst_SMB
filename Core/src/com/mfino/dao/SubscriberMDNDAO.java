@@ -267,6 +267,9 @@ public class SubscriberMDNDAO extends BaseDAO<SubscriberMDN> {
         	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_IsForceCloseRequested, query.getIsForceCloseRequested()));
         }
 
+        if(StringUtils.isNotBlank(query.getApplicationId())){
+        	criteria.add(Restrictions.eq(CmFinoFIX.CRSubscriberMDN.FieldName_ApplicationID, query.getApplicationId()));
+        }
         // Paging
 		if (StringUtils.isBlank(query.getFirstName())
 				&& StringUtils.isBlank(query.getLastName())

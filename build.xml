@@ -113,9 +113,9 @@
 		</jar>
 		<echo message="Running the reportCreator"/>
 
-		<java jar="${base.dir}/InternalTools/FindBugsReportCreator/target/FindBugsReportCreator-0.1-SNAPSHOT.jar " 
+		<java jar="${base.dir}/InternalTools/FindBugsReportCreator/target/FindBugsReportCreator-0.1-SNAPSHOT.jar" 
 				fork="true">
-			<arg line="${base.dir} ${FindBugsReport.dir} "/>
+			<arg line="${base.dir} ${FindBugsReport.dir}"/>
 		</java>
     <!--
 		<exec executable="MakeRuntime.sh" dir="${base.dir}/mFinoMultiXTpmServer" resolveexecutable="true" osfamily="unix">

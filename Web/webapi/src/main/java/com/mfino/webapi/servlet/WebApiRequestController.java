@@ -310,7 +310,10 @@ public class WebApiRequestController {
 				response.setContentType("application/json");
 				servletOutputWriter.flush();
 				servletOutputWriter.close();
-			} else if(ServiceAndTransactionConstants.SERVICE_ACCOUNT.equals(serviceName) && ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON.equals(transactionName)) {
+			} else if(ServiceAndTransactionConstants.SERVICE_ACCOUNT.equals(serviceName) && 
+					(ServiceAndTransactionConstants.TRANSACTION_GENERATE_FAVORITE_JSON.equals(transactionName))|| 
+			        (ServiceAndTransactionConstants.TRANSACTION_GET_SUBSCRIBER_BY_TOKEN.equals(transactionName)) ||  
+			        (ServiceAndTransactionConstants.TRANSACTION_CLOSE_SUBSCRIBER_BY_TOKEN.equals(transactionName))) {
 				if(xmlResult.getNotificationCode() != null) {
 					xmlResult.setNotificationMessageParserService(notificationMessageParserService);
 					xmlResult.setNotificationService(notificationService);

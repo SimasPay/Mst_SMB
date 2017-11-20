@@ -13,7 +13,14 @@ public class LoginXMLResult extends XMLResult {
 	private Integer	subscriberType;
 	private boolean isValidVersion;
 	private String userAPIKey;
+	private Integer simobiPlusUpgrade;
 	
+	public Integer getSimobiPlusUpgrade() {
+		return simobiPlusUpgrade;
+	}
+	public void setSimobiPlusUpgrade(Integer simobiPlusUpgrade) {
+		this.simobiPlusUpgrade = simobiPlusUpgrade;
+	}
 	public String getNewAppURL() {
     	return newAppURL;
     }
@@ -94,6 +101,14 @@ public class LoginXMLResult extends XMLResult {
 			getXmlWriter().writeCharacters(subscriberType.toString(),false);
 			getXmlWriter().writeEndElement();
 		}
+		
+		if(simobiPlusUpgrade == null ){
+			simobiPlusUpgrade = 0;
+		}
+		getXmlWriter().writeStartElement("simobiPlusUpgrade");
+		getXmlWriter().writeCharacters(simobiPlusUpgrade.toString(), false);
+		getXmlWriter().writeEndElement();
+		
 		writeEndOfDocument();
 	}
 

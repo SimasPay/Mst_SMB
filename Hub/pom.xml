@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>Fuse nexus</name>
+			<url>https://repo.fusesource.com/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -8,15 +17,14 @@
 		<jaxb-api-version>2.1</jaxb-api-version>
 		<jaxb-impl-version>2.1.13</jaxb-impl-version>
 	</properties>
-
-
+	
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.mfino.application</groupId>
 		<artifactId>root</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>Hub</artifactId>
 	<packaging>pom</packaging>
 	<name>Hub Modules</name>
@@ -24,16 +32,20 @@
 
 	<modules>
 		<module>HubConfiguration</module>
-		<!--module>HubMocks</module-->
+		<!--module>HubMocks</module -->
+
 		<module>BayarBillPayments</module>
 		<module>BSMUangkuBillPayments</module>
+
 		<module>FlashizISO8583</module>
 		<module>FlashizBillPayment</module>
 		<module>HubSMS</module>
+
 		<module>UangkuInterBank</module>
-		<!--<module>XMLRPCDefinitions</module>-->
-    </modules>	
-	
+
+		<!--<module>XMLRPCDefinitions</module> -->
+	</modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.mfino.mce</groupId>
@@ -63,3 +75,4 @@
 	</dependencies>
 
 </project>
+

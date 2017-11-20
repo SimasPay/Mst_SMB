@@ -32,8 +32,10 @@ import com.mfino.transactionapi.handlers.account.AgentActivationHandler;
 import com.mfino.transactionapi.handlers.account.ExistingSubscriberReactivationHandler;
 import com.mfino.transactionapi.handlers.account.FavoriteHandler;
 import com.mfino.transactionapi.handlers.account.GenerateFavoriteJSONHandler;
+import com.mfino.transactionapi.handlers.account.GenerateMigrateTokenHandler;
 import com.mfino.transactionapi.handlers.account.GetPromoImageHandler;
 import com.mfino.transactionapi.handlers.account.GetRegistrationMediumHandler;
+import com.mfino.transactionapi.handlers.account.GetSubscriberByTokenHandler;
 import com.mfino.transactionapi.handlers.account.GetUserAPIKeyHandler;
 import com.mfino.transactionapi.handlers.account.KYCUpgradeHandler;
 import com.mfino.transactionapi.handlers.account.MFAExistingSubscriberReactivationHandler;
@@ -42,6 +44,7 @@ import com.mfino.transactionapi.handlers.account.PartnerRegistrationHandler;
 import com.mfino.transactionapi.handlers.account.PendingSettlementsForPartnerHandler;
 import com.mfino.transactionapi.handlers.account.ResendOtp;
 import com.mfino.transactionapi.handlers.account.SubscriberActivationHandler;
+import com.mfino.transactionapi.handlers.account.SuspendSubscriberByTokenHandler;
 import com.mfino.transactionapi.handlers.account.TransactionStatusHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangeEmailHandler;
 import com.mfino.transactionapi.handlers.subscriber.ChangeNicknameHandler;
@@ -239,6 +242,18 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 	@Qualifier("GetPromoImageHandlerImpl")
 	private GetPromoImageHandler getPromoImageHandler;
 
+	@Autowired
+	@Qualifier("GetSubscriberByTokenHandlerImpl")
+	private GetSubscriberByTokenHandler getSubscriberByTokenHandler;
+	
+	@Autowired
+	@Qualifier("SuspendSubscriberByTokenHandlerImpl")
+	private SuspendSubscriberByTokenHandler suspendSubscriberByTokenHandler;
+	
+	@Autowired
+	@Qualifier("GenerateMigrateTokenHandlerImpl")
+	private GenerateMigrateTokenHandler generateMigrateTokenHandler;
+	
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
 		
 		XMLResult xmlResult = null;
@@ -470,7 +485,17 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			xmlResult = (XMLResult) getUserAPIKeyHandler.handle(transactionDetails);
 		}else if(ServiceAndTransactionConstants.TRANSACTION_GET_PROMO_IMAGE.equals(transactionName)){
 			xmlResult = (XMLResult) getPromoImageHandler.handle(transactionDetails);
-		}else {
+		}
+		else if (ServiceAndTransactionConstants.TRANSACTION_GET_SUBSCRIBER_BY_TOKEN.equals(transactionName)) {
+	      xmlResult = (XMLResult)this.getSubscriberByTokenHandler.handle(transactionDetails);
+	    }
+	    else if (ServiceAndTransactionConstants.TRANSACTION_CLOSE_SUBSCRIBER_BY_TOKEN.equals(transactionName)) {
+	      xmlResult = (XMLResult)this.suspendSubscriberByTokenHandler.handle(transactionDetails);
+	    }
+	    else if (ServiceAndTransactionConstants.TRANSACTION_GENERATE_MIGRATE_TOKEN.equals(transactionName)) {
+	    	xmlResult = (XMLResult) generateMigrateTokenHandler.handle(transactionDetails);
+		}
+	    else {
 			xmlResult = new XMLError();
 			xmlResult.setLanguage(language);
 			xmlResult.setTransactionTime(new Timestamp());

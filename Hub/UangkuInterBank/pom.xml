@@ -1,47 +1,61 @@
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>Hub</artifactId>
-    <groupId>com.mfino.application</groupId>
-    <version>0.1-SNAPSHOT</version>
-  </parent>
-  <groupId>com.mfino.application</groupId>
-  <artifactId>UangkuInterBank</artifactId>
-  <version>0.1-SNAPSHOT</version>
-  <name>UangkuInterBank</name>
-  <packaging>bundle</packaging>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-      <version>${camel-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-spring</artifactId>
-      <version>${camel-version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-jasypt</artifactId>
-        <version>${camel-version}</version>
-    </dependency>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>Hub</artifactId>
+		<groupId>com.mfino.application</groupId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>Fuse nexus</name>
+			<url>https://repo.fusesource.com/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>jpos</id>
+			<name>jPOS Central Repository</name>
+			<url>http://jpos.org/maven</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<groupId>com.mfino.application</groupId>
+	<artifactId>UangkuInterBank</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<name>UangkuInterBank</name>
+	<packaging>bundle</packaging>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
 		<dependency>
-	    	<groupId>com.mfino.mce</groupId>
-	    	<artifactId>Backend</artifactId>
-	    	<version>${project.version}</version>
-	    </dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jasypt</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mfino.mce</groupId>
+			<artifactId>Backend</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.jpos</groupId>
 			<artifactId>jpos</artifactId>
@@ -62,23 +76,23 @@
 			<artifactId>JPOSComponent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency> 
+		<dependency>
 			<groupId>com.mfino.mce</groupId>
 			<artifactId>MCECore</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency> 
+		<dependency>
 			<groupId>com.mfino.mce</groupId>
 			<artifactId>InterBankService</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.mfino.application</groupId>
-		    <artifactId>BillPayments</artifactId>
-		    <version>${project.version}</version>		    
-	   </dependency>
-  </dependencies>
-  <build>
+			<groupId>com.mfino.application</groupId>
+			<artifactId>BillPayments</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>

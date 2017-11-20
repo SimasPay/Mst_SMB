@@ -313,8 +313,9 @@ public class ConfigurationUtil {
 		ReportFooter("mfino.report.footer","\u00a9 2013 PT Smartfren Telecom. All Rights reserved"),
 		PromoImagePath("promo.image.path","images/promoImage.png"),
 		SendOTPBeforeApproval("mfino.send.otp.before.approval", "true"),
-		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd");
-		
+		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd"), 
+		UpgradeTokenTimeoutValue("upgrade.token.timeout.value", "10");
+	    
 		
 		private final String key;
 		private final String defaultValue;
@@ -1246,5 +1247,9 @@ public class ConfigurationUtil {
 	
 	public static boolean getSendOTPBeforeApproval() {
 		return getBoolean(ConfigurationKey.SendOTPBeforeApproval);
+	}
+	
+	public static Integer getUpgradeTokenTimeoutValue(){
+	    return Integer.valueOf(getInteger(ConfigurationKey.UpgradeTokenTimeoutValue));
 	}
 }

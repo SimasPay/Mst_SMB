@@ -345,4 +345,10 @@ public class ServiceAndTransactionConstants {
 	public static final String MESSAGE_DONATION = "Donation";
 	
 	public static final String MESSAGE_TRANSFER_TO_UANGKU = "Transfer to Uangku";
+	
+	public static final String TRANSACTION_GET_SUBSCRIBER_BY_TOKEN = "GetSubscriberByToken";
+	
+	public static final String TRANSACTION_CLOSE_SUBSCRIBER_BY_TOKEN = "CloseSubscriberByToken";
+	
+	public static final String TRANSACTION_GENERATE_MIGRATE_TOKEN = "GenerateMigrateToken";
 }
