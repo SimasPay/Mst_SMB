@@ -4491,7 +4491,8 @@
 			<field name="ErrorDescription" required="N" />
 	</message>
 	<message name="GetRegistrationMedium" msgtype="1413" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
-			<field name="SourceMDN" required="Y"/>
+			<field name="SourceMDN" required="Y" />
+			<field name="OTP" required="Y" isSecure="Y" />
 	</message>
 	<message name="GetThirdPartData" msgtype="1414" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
 			<field name="DataCategory" required="Y"/>
@@ -5555,6 +5556,7 @@
 			<field name="MigrateToken" required="N" />
 			<field name="MigrateDate" required="N" />
 			<field name="IsMigrateableToSimobiPlus" required="N" />
+			<field name="ActivationWrongOTPCount" required="N" default="0" SQLDefault="0" />
 		</record>
 		<record name="TransactionsLog" ExtendsRecord="Base" Java="Y" SQLTable="transaction_log" SQLInsert="Y" SQLSelect="Y" SQLCreate="Y">
 			<field name="MSPID" required="Y" References="mFinoServiceProvider" />
@@ -22345,6 +22347,28 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			
+			
+			<value description="InvalidActivationCode" enum="2185">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Invalid Activation Code.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			
+			<value description="ActivationBlocked" enum="2186">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Your Activation Code is blocked, please go to teller to generate new activation code.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
@@ -25917,6 +25941,8 @@ ERROR:Mismatch of  mdn type and app type
 			<value enum="1" description="Active" />
 			<value enum="2" description="ForceMigrate" />
 		</field>
+		<field number="8206" name="ActivationWrongOTPCount" type="INT32" />
+		
     </fields>
     <primitives>
 		<dbtype name="mysql">

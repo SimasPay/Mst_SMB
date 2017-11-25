@@ -110,6 +110,7 @@ public class ResetPinProcessorImpl extends MultixCommunicationHandler implements
      		mdn.setOTP(digestPin1);
         	mdn.setDigestedPIN(null);
         	mdn.setAuthorizationToken(null);
+        	mdn.setActivationWrongOTPCount(0);
         	subMdndao.save(mdn);
         	subdao.save(subscriber);
         	

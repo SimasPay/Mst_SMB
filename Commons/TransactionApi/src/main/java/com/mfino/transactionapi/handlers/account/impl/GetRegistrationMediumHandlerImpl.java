@@ -3,6 +3,7 @@ package com.mfino.transactionapi.handlers.account.impl;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.mfino.domain.TransactionsLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMGetRegistrationMedium;
 import com.mfino.handlers.FIXMessageHandler;
+import com.mfino.hibernate.Timestamp;
 import com.mfino.result.XMLResult;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.SubscriberMdnService;
@@ -24,6 +26,8 @@ import com.mfino.service.TransactionLogService;
 import com.mfino.transactionapi.handlers.account.GetRegistrationMediumHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.RegistrationMediumXMLResult;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
+import com.mfino.util.MfinoUtil;
 
 @Service("GetRegistrationMediumHandlerImpl") 
 public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implements GetRegistrationMediumHandler{
@@ -48,7 +52,6 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
     	getRegistrationMedium.setSourceMDN(transactionDetails.getSourceMDN());
 		getRegistrationMedium.setTransactionIdentifier(transactionDetails.getTransactionIdentifier());
 		getRegistrationMedium.setChannelCode(transactionDetails.getChannelCode());
-		
 		log.info("Handling Get Subscriber registration medium webapi request::From"+getRegistrationMedium.getSourceMDN());
 		XMLResult result = new RegistrationMediumXMLResult();
 		
@@ -73,6 +76,22 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
  			return result;
 		}
 
+		if(sourceMDN.getActivationWrongOTPCount() != null && sourceMDN.getActivationWrongOTPCount() >= ConfigurationUtil.getMaxOTPActivationWrong()){
+			result.setNotificationCode(CmFinoFIX.NotificationCode_ActivationBlocked);
+			return result;
+		}
+		
+		String calculateDigestOtpActivation = MfinoUtil.calculateDigestPin(sourceMDN.getMDN(), transactionDetails.getActivationOTP());
+		if(!StringUtils.equalsIgnoreCase(calculateDigestOtpActivation, sourceMDN.getOTP())){
+			
+			Integer currentWrongOtpCount = (sourceMDN.getActivationWrongOTPCount() == null) ? 0 : sourceMDN.getActivationWrongOTPCount();
+			sourceMDN.setActivationWrongOTPCount(currentWrongOtpCount+1);
+			subscriberMdnService.saveSubscriberMDN(sourceMDN);
+			result.setNumberOfTriesLeft(ConfigurationUtil.getMaxOTPActivationWrong() - sourceMDN.getActivationWrongOTPCount());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+			return result;
+		}
+		
 		EnumTextQuery enumTextQuery = new EnumTextQuery();
 		enumTextQuery.setTagId(CmFinoFIX.TagID_RegistrationMedium);
 		enumTextQuery.setEnumCode(subscriber.getRegistrationMedium().toString());

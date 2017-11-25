@@ -32,6 +32,7 @@ import com.mfino.transactionapi.handlers.account.ResendOtp;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.ResendOtpXMLResult;
 import com.mfino.transactionapi.service.TransactionApiValidationService;
 import com.mfino.transactionapi.vo.TransactionDetails;
+import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.DateUtil;
 import com.mfino.util.MfinoUtil;
 
@@ -101,10 +102,10 @@ public class ResendOtpImpl extends FIXMessageHandler implements ResendOtp{
 			log.error("Invalid MDN.MDN not found: "+resendOtp.getSourceMDN());
 			return result;
         }
-	
+        
         Subscriber subscriber = sourceMDN.getSubscriber();
         String mdn = sourceMDN.getMDN();
-        if(!(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized)
+        if(!(subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Initialized) 
         		||subscriber.getStatus().equals(CmFinoFIX.SubscriberStatus_Registered))
         		||sourceMDN.getOTP()==null){
 			result.setNotificationCode(CmFinoFIX.NotificationCode_OtpGenerationNotAllowed);
@@ -112,6 +113,13 @@ public class ResendOtpImpl extends FIXMessageHandler implements ResendOtp{
 			log.error("OneTimePin generation not allowed for MDN: "+mdn+"MDN status is: "+subscriber.getStatus());
  			return result;
         }
+        
+        if(sourceMDN != null && sourceMDN.getActivationWrongOTPCount() > ConfigurationUtil.getMaxOTPActivationWrong()){
+			log.error("OneTimePin generation not allowed for MDN: "+mdn+"Number of generation otp: "+ConfigurationUtil.getMaxOTPActivationWrong());
+			result.setNotificationCode(CmFinoFIX.NotificationCode_ActivationBlocked);
+			return result;
+		}
+        
 		Integer OTPLength = systemParametersService.getOTPLength();
         String oneTimePin = MfinoUtil.generateOTP(OTPLength);
 		String digestPin1 = MfinoUtil.calculateDigestPin(sourceMDN.getMDN(), oneTimePin);

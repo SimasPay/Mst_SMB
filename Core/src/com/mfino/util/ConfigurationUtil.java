@@ -314,7 +314,8 @@ public class ConfigurationUtil {
 		PromoImagePath("promo.image.path","images/promoImage.png"),
 		SendOTPBeforeApproval("mfino.send.otp.before.approval", "true"),
 		DateFormatInReportFileNames("dateFormatInReportFileNames","yyyyMMdd"), 
-		UpgradeTokenTimeoutValue("upgrade.token.timeout.value", "10");
+		UpgradeTokenTimeoutValue("upgrade.token.timeout.value", "10"), 
+		MaxOTPActivationWrong("mfino.max.wrong.activation.otp", "3");
 	    
 		
 		private final String key;
@@ -1251,5 +1252,9 @@ public class ConfigurationUtil {
 	
 	public static Integer getUpgradeTokenTimeoutValue(){
 	    return Integer.valueOf(getInteger(ConfigurationKey.UpgradeTokenTimeoutValue));
+	}
+	
+	public static Integer getMaxOTPActivationWrong(){
+		return Integer.valueOf(getInteger(ConfigurationKey.MaxOTPActivationWrong));
 	}
 }

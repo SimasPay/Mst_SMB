@@ -18,6 +18,10 @@
 		<td><input type="text" name="sourceMDN" value="" /></td>
 	</tr>
 	<tr>
+		<td>Activation Code / OneTimePin</td>
+		<td><input type="text" name="otp" value="" /></td>
+	</tr>
+	<tr>
 		<td>channelId</td>
 		<td><input type="text" name="channelID" value="" /></td>
 	</tr>

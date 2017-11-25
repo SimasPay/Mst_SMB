@@ -408,11 +408,11 @@ public class AccountAPIServicesImpl  extends BaseAPIService implements AccountAP
 			}
 		}
 		
-		/*else if(ServiceAndTransactionConstants.TRANSACTION_GET_REGISTRATION_MEDIUM.equals(transactionName)){
-  
+		else if(ServiceAndTransactionConstants.TRANSACTION_GET_REGISTRATION_MEDIUM.equals(transactionName)){
+			validationService.validateSubscriberActivationDetails(transactionDetails);
 			xmlResult = (XMLResult) getRegistrationMediumHandler.handle(transactionDetails);
 			
-		}*/
+		}
 		else if (ServiceAndTransactionConstants.TRANSACTION_CHANGEEMAIL.equals(transactionName)) {
 			validationService.validateChangeEmailDetails(transactionDetails);
 
