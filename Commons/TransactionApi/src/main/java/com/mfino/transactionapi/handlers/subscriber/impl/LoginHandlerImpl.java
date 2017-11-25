@@ -35,6 +35,7 @@ import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.definition.MobileappVersionCheckerService;
 import com.mfino.service.impl.appversionchecker.VersionCheckerFactory;
+import com.mfino.service.impl.appversionchecker.VersionCheckerFromDB;
 import com.mfino.transactionapi.handlers.subscriber.LoginHandler;
 import com.mfino.transactionapi.result.xmlresulttypes.subscriber.LoginXMLResult;
 import com.mfino.transactionapi.service.AppTypeCheckService;
@@ -82,6 +83,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 	@Qualifier("SubscriberStatusEventServiceImpl")
 	private SubscriberStatusEventService subscriberStatusEventService;
 	
+	@Autowired
+	@Qualifier("VersionCheckerFromDB")
+	private VersionCheckerFromDB versionChecker;
+	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
 	public XMLResult handle(TransactionDetails transDetails) {
 		CMWebApiLoginRequest request = new CMWebApiLoginRequest();
@@ -89,6 +94,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		request.setWebApiSalt(transDetails.getSalt());
 		request.setAuthMAC(transDetails.getAuthenticationString());
 		request.setIsAppTypeCheckEnabled(transDetails.getIsAppTypeChkEnabled());
+		request.setAppVersion(transDetails.getAppVersion());
+		request.setAppOS(StringUtils.defaultIfEmpty(transDetails.getAppOS(), ""));
+		request.setAppType(transDetails.getAppType());
+		
 		isHttps = transDetails.isHttps();
 		
 		String Apptype=request.getAppType();
@@ -100,9 +109,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		result.setTransactionID(tLog.getID());
 		result.setTransactionTime(tLog.getTransactionTime());
 		result.setSourceMessage(request);
-		MobileappVersionCheckerService checkerService = VersionCheckerFactory.getInstance().getService(VersionCheckerFactory.VERSION_DB);
-		result.setValidVersion(checkerService.isValidVersion(request));
-		result.setNewAppURL(checkerService.checkForNewVersionOfMobileApp(request));
+		result.setValidVersion(versionChecker.isValidVersion(request));
+		result.setNewAppURL(versionChecker.checkForNewVersionOfMobileApp(request));
 		
 		if(result.isValidVersion()){
 
