@@ -228,15 +228,15 @@ public class ThalesAdaptor  extends  QBeanSupport implements Runnable, ThalesAda
                             lastKA=new Date().getTime();
                      }
                  } catch (ISOFilter.VetoException e) {
-                     getLog().warn ("channel-sender-"+in, e.getMessage ());
+                     getLog().warn ("channel-sender-veto"+in, e.getMessage ());
                  } catch (ISOException e) {
-                     getLog().warn ("channel-sender-"+in, e.getMessage ());
+                     getLog().warn ("channel-sender-iso"+in, e.getMessage ());
                      if (!ignoreISOExceptions) {
                          disconnect ();
                      }
                      ISOUtil.sleep (1000); // slow down on errors
                  } catch (Exception e) {
-                     getLog().warn ("channel-sender-"+in, e.getMessage ());
+                     getLog().warn ("channel-sender-e"+in, e.getMessage ());
                      disconnect ();
                      ISOUtil.sleep (1000);
                  }
@@ -254,6 +254,7 @@ public class ThalesAdaptor  extends  QBeanSupport implements Runnable, ThalesAda
           }
           while (running() && !channel.isConnected ()) {
               while (sp.inp (ready) != null)
+            	  getLog().info("checkConnection :: ready is not null");
                   ;
               try {
                   getLog().warn("checkConnection ThalesAdaptor 2");
@@ -276,8 +277,10 @@ public class ThalesAdaptor  extends  QBeanSupport implements Runnable, ThalesAda
     protected synchronized void disconnect () {
         try {
             while (sp.inp (ready) != null)
+            	getLog().info("disconnect :: ready is not null");
                 ;
             channel.disconnect ();
+            getLog().info("disconnect :: success");
         } catch (IOException e) {
             getLog().warn ("disconnect", e);
         }
