@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
+import java.util.TimeZone;
 
 import net.sf.json.JSONObject;
 
@@ -74,7 +75,8 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 		XMLResult result = new ChangeEmailXMLResult();
 		JSONObject root = new JSONObject();
 		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy HH:mm:ss");
-
+		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+		
 		String mdn = "";
 		Date generatedDate = null;
 		Date expiredDate = null;
@@ -115,6 +117,16 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 				
 				SubscriberMDN subscriberMDN = this.subscriberMdnService.getByMDN(mdn);
 				Subscriber subscriber = subscriberMDN.getSubscriber();
+				
+				if(subscriberMDN.getIsMigrateableToSimobiPlus()){
+					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_SubscriberMigratedToSimobiPlus, subscriberMDN, subscriber);
+					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
+					root.put("status", Integer.valueOf(201));
+					root.put("message", message);
+					result.setMessage(root.toString());
+					return result;
+				}
+				
 				Pocket bankPocket = this.pocketService.getDefaultPocket(subscriberMDN, "2");
 				Set<Pocket> subscriberPockets = subscriberMDN.getPocketFromMDNID();
 				if ((bankPocket == null) || (subscriberPockets.size() != 1)) {
@@ -210,14 +222,14 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 		root.put("message", "Success");
 
 		JSONObject data = new JSONObject();
-		data.put("firstName", subscriber.getFirstName());
-		data.put("lastName", subscriber.getLastName());
-		data.put("cif", subscriberMDN.getApplicationID());
-		data.put("mdn", mdn);
-		data.put("email", subscriber.getEmail());
-		data.put("accountNo", bankPocket.getCardPAN());
+		data.put("firstName", StringUtils.defaultIfEmpty(subscriber.getFirstName(), ""));
+		data.put("lastName", StringUtils.defaultIfEmpty(subscriber.getLastName(), ""));
+		data.put("cif", StringUtils.defaultIfEmpty(subscriberMDN.getApplicationID(), ""));
+		data.put("mdn", StringUtils.defaultIfEmpty(mdn, ""));
+		data.put("email", StringUtils.defaultIfEmpty(subscriber.getEmail(), ""));
+		data.put("accountNo", StringUtils.defaultIfEmpty(bankPocket.getCardPAN(), ""));
 		data.put("pocketType", "2");
-		data.put("userApiKey", subscriberMDN.getUserAPIKey());
+		data.put("userApiKey", StringUtils.defaultIfEmpty(subscriberMDN.getUserAPIKey(), ""));
 		
 		root.put("data", data);
 	}
@@ -238,4 +250,5 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 		}
 		return wrapper;
 	}
+	
 }

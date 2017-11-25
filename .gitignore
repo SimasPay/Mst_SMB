@@ -17,3 +17,17 @@ built
 build
 ~*
 *.tmp
+*.hbm.xml
+*.prefs
+.project
+.classpath
+org.eclipse.wst.common.project.facet.core.xml
+org.eclipse.wst.common.component
+CmFinoFIX.java
+mFinoFixml_Generated.xml
+GTBank/*
+.jsdtscope
+org.eclipse.wst.jsdt.ui.superType.container
+org.eclipse.wst.jsdt.ui.superType.name
+mFinoFIX.js
+build_log.txt

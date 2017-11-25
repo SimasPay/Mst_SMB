@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import net.sf.json.JSONObject;
 
@@ -83,7 +84,8 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 		XMLResult result = new ChangeEmailXMLResult();
 		JSONObject root = new JSONObject();
 		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy HH:mm:ss");
-
+		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+		
 		String mdn = "";
 		Date generatedDate = null;
 		Date expiredDate = null;
@@ -126,6 +128,14 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 			if (!new Date().after(expiredDate)) {
 				SubscriberMDN subscriberMDN = this.subscriberMdnService.getByMDN(mdn);
 				Subscriber subscriber = subscriberMDN.getSubscriber();
+				if(subscriberMDN.getIsMigrateableToSimobiPlus()){
+					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_SubscriberMigratedToSimobiPlus, subscriberMDN, subscriber);
+					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
+					root.put("status", Integer.valueOf(201));
+					root.put("message", message);
+					result.setMessage(root.toString());
+					return result;
+				}
 				
 				if ((subscriberMDN != null) && (subscriber != null)) {
 					Timestamp now = new Timestamp();
@@ -139,9 +149,6 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 						throw new InvalidMDNException(message);
 					}
 					String cif = transactionDetails.getApplicationId();
-					if(StringUtils.isBlank(cif)){
-						cif = subscriberMDN.getApplicationID();
-					}
 					markSubscriberMigratedToSimobiPlus(subscriberMDN, now, secreteCode, cif);
 					
 					ServiceCharge sc = new ServiceCharge();
@@ -205,7 +212,9 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 	}
 
 	private void markSubscriberMigratedToSimobiPlus(SubscriberMDN subscriberMDN, Timestamp now, String token, String cif) {
+		log.info("SuspendSubscriberByTokenHandlerImpl :: markSubscriberMigratedToSimobiPlus BEGIN");
 		if(StringUtils.isNotBlank(cif)){
+
 			SubscriberMdnQuery query = new SubscriberMdnQuery();
 			query.setApplicationId(cif);
 			List<SubscriberMDN> relatedSubscriberByCIF = this.subscriberMdnService.getByQuery(query);
@@ -223,7 +232,8 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 			subscriberMDN.setMigrateDate(now);
 			this.subscriberMdnService.saveSubscriberMDN(subscriberMDN);
 		}
-		
+
+		log.info("SuspendSubscriberByTokenHandlerImpl :: markSubscriberMigratedToSimobiPlus END");
 	}
 
 	private String validateToken(String secreteCode)

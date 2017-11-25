@@ -3,6 +3,7 @@ package com.mfino.transactionapi.handlers.account.impl;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public class GenerateMigrateTokenHandlerImpl implements GenerateMigrateTokenHand
 	public Result handle(TransactionDetails transactionDetails) {
 		MigrateTokenXMLResult result = new MigrateTokenXMLResult();
 		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
 		
 		try {
 			ChannelCode cc = transactionDetails.getCc();
