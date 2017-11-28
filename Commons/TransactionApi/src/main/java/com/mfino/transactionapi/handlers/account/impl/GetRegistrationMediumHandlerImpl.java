@@ -65,13 +65,13 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
 	
 		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(getRegistrationMedium.getSourceMDN());
 		if(sourceMDN==null){
-			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidPhoneNumberOrOTP);
 			log.error("Entered MDN is not registered");
  			return result;
 		}
 		Subscriber subscriber = sourceMDN.getSubscriber();
 		if(subscriber == null){
-			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidPhoneNumberOrOTP);
 			log.error("No Subscriber found with the given MDN in subscriber table");
  			return result;
 		}
@@ -88,7 +88,7 @@ public class GetRegistrationMediumHandlerImpl extends FIXMessageHandler implemen
 			sourceMDN.setActivationWrongOTPCount(currentWrongOtpCount+1);
 			subscriberMdnService.saveSubscriberMDN(sourceMDN);
 			result.setNumberOfTriesLeft(ConfigurationUtil.getMaxOTPActivationWrong() - sourceMDN.getActivationWrongOTPCount());
-			result.setNotificationCode(CmFinoFIX.NotificationCode_OTPInvalid);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_InvalidPhoneNumberOrOTP);
 			return result;
 		}
 		

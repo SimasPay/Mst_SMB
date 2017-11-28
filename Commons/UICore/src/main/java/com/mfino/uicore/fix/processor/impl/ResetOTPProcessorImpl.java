@@ -91,6 +91,7 @@ public class ResetOTPProcessorImpl extends BaseFixProcessor implements ResetOTPP
 		subscriberMDN.setOTP(digestPin1);
 		subscriberMDN.setOTPExpirationTime(new Timestamp(DateUtil.addHours(new Date(), systemParametersService.getInteger(SystemParameterKeys.OTP_TIMEOUT_DURATION))));
 		subscriberMDN.setActivationWrongOTPCount(0);
+		subscriberMDN.setOtpRetryCount(0);
 		subMdndao.save(subscriberMDN);
 		String mdn = subscriberMDN.getMDN();
 		

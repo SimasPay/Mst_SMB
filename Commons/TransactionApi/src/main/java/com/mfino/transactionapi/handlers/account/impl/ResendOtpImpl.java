@@ -98,9 +98,18 @@ public class ResendOtpImpl extends FIXMessageHandler implements ResendOtp{
 
 		SubscriberMDN sourceMDN = subscriberMdnService.getByMDN(resendOtp.getSourceMDN());
         if(sourceMDN==null){
-			result.setNotificationCode(CmFinoFIX.NotificationCode_MDNNotFound);
+			result.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
 			log.error("Invalid MDN.MDN not found: "+resendOtp.getSourceMDN());
 			return result;
+        }
+        
+        Integer currentOtpTrials = (sourceMDN.getOtpRetryCount()) == null ? 0 : sourceMDN.getOtpRetryCount();
+        sourceMDN.setOtpRetryCount(currentOtpTrials+1);
+        
+        if(getNumberOfRemainingTrials(sourceMDN.getOtpRetryCount()) < 0){
+        	result.setNotificationCode(CmFinoFIX.NotificationCode_ExceedMaxResendOTP);
+			result.setDestinationMDN(sourceMDN.getMDN());
+ 			return result;
         }
         
         Subscriber subscriber = sourceMDN.getSubscriber();
@@ -114,7 +123,7 @@ public class ResendOtpImpl extends FIXMessageHandler implements ResendOtp{
  			return result;
         }
         
-        if(sourceMDN != null && sourceMDN.getActivationWrongOTPCount() > ConfigurationUtil.getMaxOTPActivationWrong()){
+        if(sourceMDN != null && sourceMDN.getActivationWrongOTPCount() >= ConfigurationUtil.getMaxOTPActivationWrong()){
 			log.error("OneTimePin generation not allowed for MDN: "+mdn+"Number of generation otp: "+ConfigurationUtil.getMaxOTPActivationWrong());
 			result.setNotificationCode(CmFinoFIX.NotificationCode_ActivationBlocked);
 			return result;
@@ -167,11 +176,14 @@ public class ResendOtpImpl extends FIXMessageHandler implements ResendOtp{
 		} else {
 			log.info("Email is not sent since it is not verified for subscriber with ID ->" + subscriber.getID());
 		}
-		result.setOneTimePin(oneTimePin);
+		//result.setOneTimePin(oneTimePin);
 		result.setMessage(message);
 		result.setNotificationCode(CmFinoFIX.NotificationCode_New_OTP_Success);
  		return result;
 		
 	}
-
+	private int getNumberOfRemainingTrials(int currentOtpTrials) {
+		int maxOtpTrials = systemParametersService.getInteger(SystemParameterKeys.MAX_OTP_TRAILS);
+		return (maxOtpTrials-currentOtpTrials);
+	}
 }

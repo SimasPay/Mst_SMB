@@ -22369,6 +22369,27 @@ ERROR:Mismatch of  mdn type and app type
 					</English>
 				</C1>
 			</value>
+			
+			<value description="ExceedMaxResendOTP" enum="2187">
+				<C1>
+					<English>
+						<SMS>
+							<Text>You have reached the max attempts for OTP request.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
+			<value description="InvalidPhoneNumberOrOTP" enum="2188">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Invalid phone number or OTP code. Please try again.</Text>
+						</SMS>
+					</English>
+				</C1>
+			</value>
+			
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />
