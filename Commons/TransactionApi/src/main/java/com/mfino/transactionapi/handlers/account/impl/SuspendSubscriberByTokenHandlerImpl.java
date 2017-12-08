@@ -124,11 +124,22 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 			request.setSourceMDN(mdn);
 			TransactionsLog trxLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_CloseSubscriberByToken, request.DumpFields());
 			
-			log.info("SuspendSubscriberByTokenHandlerImpl For MDN: " + mdn + " Expired: " + sdf.format(expiredDate));
+			log.info("SuspendSubscriberByTokenHandlerImpl For MDN: " + mdn + " Expired: " + sdf.format(expiredDate));			
 			if (!new Date().after(expiredDate)) {
 				SubscriberMDN subscriberMDN = this.subscriberMdnService.getByMDN(mdn);
 				Subscriber subscriber = subscriberMDN.getSubscriber();
-				if(subscriberMDN.getIsMigrateableToSimobiPlus()){
+				
+				if(subscriberMDN.getIsMigrateableToSimobiPlus() == null ||
+						subscriberMDN.getIsMigrateableToSimobiPlus()){
+					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_InvalidMigrateSimobiPlusToken, subscriberMDN, subscriber);
+					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
+					root.put("status", Integer.valueOf(403));
+					root.put("message", message);
+					result.setMessage(root.toString());
+					return result;
+				}
+				
+				if(subscriberMDN.getMigrateToSimobiPlus() != null && subscriberMDN.getMigrateToSimobiPlus()){
 					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_SubscriberMigratedToSimobiPlus, subscriberMDN, subscriber);
 					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
 					root.put("status", Integer.valueOf(201));

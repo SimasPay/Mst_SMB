@@ -118,7 +118,7 @@ public class GetSubscriberByTokenHandlerImpl extends FIXMessageHandler
 				SubscriberMDN subscriberMDN = this.subscriberMdnService.getByMDN(mdn);
 				Subscriber subscriber = subscriberMDN.getSubscriber();
 				
-				if(subscriberMDN.getIsMigrateableToSimobiPlus()){
+				if(subscriberMDN.getMigrateToSimobiPlus() != null && subscriberMDN.getMigrateToSimobiPlus()){
 					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_SubscriberMigratedToSimobiPlus, subscriberMDN, subscriber);
 					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
 					root.put("status", Integer.valueOf(201));
