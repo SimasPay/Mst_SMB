@@ -129,8 +129,8 @@ public class SuspendSubscriberByTokenHandlerImpl extends FIXMessageHandler
 				SubscriberMDN subscriberMDN = this.subscriberMdnService.getByMDN(mdn);
 				Subscriber subscriber = subscriberMDN.getSubscriber();
 				
-				if(subscriberMDN.getIsMigrateableToSimobiPlus() == null ||
-						subscriberMDN.getIsMigrateableToSimobiPlus()){
+				if(subscriberMDN.getIsMigrateableToSimobiPlus() != null &&
+						!subscriberMDN.getIsMigrateableToSimobiPlus()){
 					NotificationWrapper wrapper = getNotificationWrapper(CmFinoFIX.NotificationCode_InvalidMigrateSimobiPlusToken, subscriberMDN, subscriber);
 					String message = notificationMessageParserServiceImpl.buildMessage(wrapper, false);
 					root.put("status", Integer.valueOf(403));
