@@ -95,6 +95,13 @@ mFino.page.subscriber = function(config){
                     gridEditForm.setRecord(record);
                     gridEditForm.setStore(listBox.store);
                     gridEditForm.form.find('itemId','sub.form.mobileno')[0].enable();
+
+                    var isMigrateableToSimobiPlus = gridEditForm.form.find('itemId','sub.form.isMigrateableToSimobiPlus')[0];
+                    isMigrateableToSimobiPlus.getEl().up('.x-form-item').setDisplayed(false);
+
+                    var isMigratedToSimobiPlus = gridEditForm.form.find('itemId','sub.form.migratedToSimobiPlus')[0];
+                    isMigratedToSimobiPlus.getEl().up('.x-form-item').setDisplayed(false);
+                    
                     gridEditForm.form.setAccountAndTemplateDisplay(true);                    
                    }
             },
@@ -119,6 +126,13 @@ mFino.page.subscriber = function(config){
                         gridEditForm.form.onKYCDropdown(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.KYCLevel._name));
                         gridEditForm.form.disableNotPermittedItems();
                         gridEditForm.form.find('itemId','sub.form.mobileno')[0].disable();
+
+                        var isMigrateableToSimobiPlus = gridEditForm.form.find('itemId','sub.form.isMigrateableToSimobiPlus')[0];
+                        isMigrateableToSimobiPlus.getEl().up('.x-form-item').setDisplayed(true);
+
+                        var isMigratedToSimobiPlus = gridEditForm.form.find('itemId','sub.form.migratedToSimobiPlus')[0];
+                        isMigratedToSimobiPlus.getEl().up('.x-form-item').setDisplayed(true);
+                        
                         gridEditForm.form.setAccountAndTemplateDisplay(false);
                     }
                 }

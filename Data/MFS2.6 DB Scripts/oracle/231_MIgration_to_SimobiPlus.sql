@@ -48,6 +48,6 @@ INSERT INTO notification (LastUpdateTime,UpdatedBy,CreateTime,CreatedBy,Version,
 -- show.migrate.to.simobiplus.event
 -- force.migrate.to.simobiplus.date
 Delete from system_parameters where ParameterName = 'show.migrate.to.simobiplus.event';
-insert into system_parameters(Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) values (1, sysdate, 'System', sysdate, 'system', 'show.migrate.to.simobiplus.event', 'true', 'Show Migrate to Simobi Plus Dialog');
+insert into system_parameters(Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) values (1, sysdate, 'System', sysdate, 'system', 'show.migrate.to.simobiplus.event', 'false', 'Show Migrate to Simobi Plus Dialog');
 Delete from system_parameters where ParameterName = 'force.migrate.to.simobiplus.date';
-insert into system_parameters(Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) values (1, sysdate, 'System', sysdate, 'system', 'force.migrate.to.simobiplus.date', '30/10/2017', 'Force Subscriber to migrate from simobi to SimobiPlus');
+insert into system_parameters(Version, LastUpdateTime, UpdatedBy, CreateTime, CreatedBy, ParameterName, ParameterValue, Description) values (1, sysdate, 'System', sysdate, 'system', 'force.migrate.to.simobiplus.date', '18/12/2017', 'Force Subscriber to migrate from simobi to SimobiPlus');

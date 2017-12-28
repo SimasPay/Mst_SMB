@@ -508,10 +508,22 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
             if(this.form.items.get("NoFundMovement").checked){
                 resValue = resValue + CmFinoFIX.SubscriberRestrictions.NoFundMovement;
             }
-
+            
+            var migrateable = false;
+            var migrated = false;
+            if(this.form.items.get("sub.form.isMigrateableToSimobiPlus").checked){
+            	migrateable = true;
+            }
+            
+            if(this.form.items.get("sub.form.migratedToSimobiPlus").checked){
+            	migrated = true;
+            }
+            
             this.record.beginEdit();
             this.record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.NotificationMethod._name, notiValue);
             this.record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.MDNRestrictions._name, resValue);
+            this.record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.IsMigrateableToSimobiPlus._name, migrateable);
+            this.record.set(CmFinoFIX.message.JSSubscriberMDN.Entries.MigrateToSimobiPlus._name, migrated);
             this.record.endEdit();
 
             if(this.store){
@@ -542,7 +554,12 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 
         this.find('itemId','sub.form.subsrefaccount')[0].disable();
         this.find('itemId','sub.form.creditcheck')[0].disable();
+        
+        var migrateableValue = record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.IsMigrateableToSimobiPlus._name);
+        this.form.items.get("sub.form.isMigrateableToSimobiPlus").setValue(migrateableValue);
 
+        var migrateValue = record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.MigrateToSimobiPlus._name);
+        this.form.items.get("sub.form.migratedToSimobiPlus").setValue(migrateValue);
         this.getForm().clearInvalid();
     },
     resetAll : function() {
@@ -666,7 +683,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
 			accNo.getEl().up('.x-form-item').setDisplayed(false);
 			bankTemplate.getEl().up('.x-form-item').setDisplayed(false);
 		}
-	}    
+	}
 });
 
 /*
@@ -1133,6 +1150,20 @@ var subsBasicDetail = {
     anchor : '100%',
     disabled: false,
     name: CmFinoFIX.message.JSSubscriberMDN.Entries.OtherMDN._name            
+},
+{
+    columnWidth: 0.5,
+    xtype : 'checkbox',
+    itemId : 'sub.form.isMigrateableToSimobiPlus',
+    fieldLabel: _("Migrateable To Simobi+"),
+    name: CmFinoFIX.message.JSSubscriberMDN.Entries.IsMigrateableToSimobiPlus._name   
+},
+{
+    columnWidth: 0.5,
+    xtype : 'checkbox',
+    itemId : 'sub.form.migratedToSimobiPlus',
+    fieldLabel: _("Migrated To Simobi+"),
+    name: CmFinoFIX.message.JSSubscriberMDN.Entries.MigrateToSimobiPlus._name   
 }
 ]
 };

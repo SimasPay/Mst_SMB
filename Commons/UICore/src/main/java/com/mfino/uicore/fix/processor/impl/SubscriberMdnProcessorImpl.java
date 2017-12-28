@@ -507,6 +507,21 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 //				s.getSubscriber().setSubscriberGroupFromSubscriberID(subscriberGroups);
 			}
 		}
+		
+		if(e.getMigrateToSimobiPlus() != null && !e.getMigrateToSimobiPlus()){
+			s.setMigrateDate(null);
+			s.setMigrateToken(null);
+			s.setMigrateToSimobiPlus(false);
+			
+		} else if(e.getMigrateToSimobiPlus() != null && e.getMigrateToSimobiPlus()){
+			s.setMigrateDate(new Timestamp());
+			s.setMigrateToken(null);
+			s.setMigrateToSimobiPlus(true);
+		}
+		
+		if(e.getIsMigrateableToSimobiPlus() != null){
+			s.setIsMigrateableToSimobiPlus(e.getIsMigrateableToSimobiPlus());
+		}
 	}
 
 	private void updateAdditionalFields(SubscribersAdditionalFields saf, CMJSSubscriberMDN.CGEntries e) {
@@ -688,8 +703,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 			entry.setEmail(s.getSubscriber().getEmail());
 		}
 
-
-
+		entry.setIsMigrateableToSimobiPlus(s.getIsMigrateableToSimobiPlus() == null ? true : s.getIsMigrateableToSimobiPlus());
+		entry.setMigrateToSimobiPlus(s.getMigrateToSimobiPlus() == null ? false : s.getMigrateToSimobiPlus());
 		entry.setLanguage(s.getSubscriber().getLanguage());
 
 		entry.setMSPID(s.getSubscriber().getmFinoServiceProviderByMSPID().getID());
@@ -951,7 +966,6 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				SubscriberMDN s = mdnDao.getById(e.getID());
 				Subscriber sub=s.getSubscriber();
 				log.info("SubscriberMDN:"+s.getID()+" details edit requested by user:"+getLoggedUserNameWithIP());
-
 				Integer oldRestrictions = s.getRestrictions();
 
 				if (!e.getRecordVersion().equals(s.getVersion())) {
@@ -1332,6 +1346,8 @@ public class SubscriberMdnProcessorImpl extends BaseFixProcessor implements Subs
 				}
 				
 				mdn.setSubscriber(s);
+				e.setIsMigrateableToSimobiPlus(Boolean.FALSE);
+				e.setMigrateToSimobiPlus(Boolean.FALSE);
 				e.setStatus(CmFinoFIX.MDNStatus_Initialized);
 				e.setSubscriberType(CmFinoFIX.SubscriberType_Subscriber);
 				//setting the company code before calling update entity
