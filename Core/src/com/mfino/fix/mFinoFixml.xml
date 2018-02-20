@@ -5783,6 +5783,14 @@
 			<field name="StreetAddress" required="Y" />
 			<field name="SubscriberUpgradeStatus" required="Y" />
 			<field name="UpgradeAcctComments" required="N"/>
+			<field name="Nationality" required="N"/>
+			<field name="Work" required="N" />
+			<field name="OtherWork" required="N" />
+			<field name="Income" required="N" />
+			<field name="GoalOfAcctOpening" required="N" />
+			<field name="SourceOfFund" required="N" />
+			<field name="Gender" required="N" />
+			<field name="MaritalStatus" required="N" />
 			
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
 				<field name="MDNID" id="ID" required="Y" />
@@ -5801,6 +5809,18 @@
 				<field name="StreetAddress" required="Y" />
 				<field name="SubscriberUpgradeStatus" required="Y" />
 				<field name="IDTypeText" required="Y" />
+				<field name="Nationality" required="N"/>
+				<field name="Work" required="N" />
+				<field name="WorkText" required="N" />
+				<field name="Income" required="N" />
+				<field name="IncomeText" required="N" />
+				<field name="GoalOfAcctOpening" required="N" />
+				<field name="SourceOfFund" required="N" />
+				<field name="OtherWork" required="N" />
+				<field name="Gender" required="N" />
+				<field name="GenderText" required="N" />
+				<field name="MaritalStatus" required="N" />
+				<field name="MaritalStatusText" required="N" />
 			</group>
 		</message>
 		<message name="SubRegularWithEMoneyInquiry" msgtype="1786" msgcat="app" AlwaysCreate="true" Java="Y" ExtendsMessage="Base">
@@ -6746,8 +6766,8 @@
 			<field name="LastNotificationTime" required="N"/>
 			<field name="SubscriberAddressKTPID" required="N"  References="Address"/>
 			<field name="MothersmaidenName" required="N"/>
+			<field name="MaritalStatus" required="N" />
 			<!--<field name="Religion" required="N" />
-				  <field name="MaritalStatus" required="N" />
 				  <field name="Citizenship" required="N" />
 				  <field name="MothersMaidenName" required="N" /> -->
 		</record>
@@ -25642,7 +25662,6 @@ ERROR:Mismatch of  mdn type and app type
 		<field number="5686" name="Gender" type="STRING">
 			<value enum="1" description="Male" />
 			<value enum="2" description="Female" />
-			<value enum="3" description="Other" />
 		</field>
 		<field number="5687" name="BirthPlace" type="STRING" />
 		<field number="5688" name="DateOfBirth" type="UTCTIMESTAMP" />
@@ -27581,12 +27600,11 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8455" name="KTPState" type="STRING" required="N" />
 	<field number="8456" name="IsDomesticAddrIdentity" type="BOOLEAN" required="N" />
 	<field number="8457" name="WorkList" type="INT32">
-			<value enum="1" description="Kartu Kredit" />
-			<value enum="2" description="Kredit Kepemilikan Mobil" />
-			<value enum="3" description="Pinjaman Modal Kerja" />
-			<value enum="4" description="Kredit Investasi" />
-			<value enum="5" description="Kredit Usaha Mikro"/>
-			<value enum="6" description="Lainnya"/>
+			<value enum="1" description="Pegawai Negeri" />
+			<value enum="2" description="Profesional" />
+			<value enum="3" description="Wiraswasta" />
+			<value enum="4" description="Karyawan Swasta" />
+			<value enum="5" description="Lainnya"/>
 		</field>
 	<field number="8458" name="OtherWork" type="STRING" required="N" />
 	<field number="8459" name="IDTypeForKycUpgrade" type="STRING">
@@ -27611,6 +27629,30 @@ ERROR:Mismatch of  mdn type and app type
 	<field number="8463" name="IDTypeText" type="STRING" />
 	<field number="8464" name="OnBehalfMDN" type="STRING" />
 	<field number="8465" name="SubscriberActivityText" type="STRING" />
+	<field number="8466" name="MaritalStatusList" type="STRING">
+		<value enum="1" description="Belum Menikah" />
+		<value enum="2" description="Menikah" />
+		<value enum="3" description="Janda_Duda" />
+	</field>
+	<field number="8467" name="AvgIncomeList" type="STRING">
+		<value enum="1" description="Dibawah_5k" />
+		<value enum="2" description="Between_5k_10k" />
+		<value enum="3" description="Between_10k_25k" />
+		<value enum="4" description="Between_25k_50k" />
+		<value enum="5" description="Between_50k_100k" />
+		<value enum="6" description="Diatas_100k" />
+	</field>
+	<field number="8468" name="JobList" type="STRING">
+		<value enum="1" description="Pegawai Negeri" />
+		<value enum="2" description="Profesional" />
+		<value enum="3" description="Wiraswasta" />
+		<value enum="4" description="Karyawan Swasta" />
+		<value enum="5" description="Lainnya"/>
+	</field>
+	<field number="8469" name="GenderText" type="STRING" />
+	<field number="8470" name="IncomeText" type="STRING" />
+	<field number="8471" name="MaritalStatusText" type="STRING" />
+	<field number="8472" name="WorkText" type="STRING" />
     </fields>
     <primitives>
 		<dbtype name="mysql">

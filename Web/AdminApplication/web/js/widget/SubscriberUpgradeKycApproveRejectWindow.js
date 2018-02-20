@@ -9,12 +9,10 @@ mFino.widget.SubscriberUpgradeKycApproveRejectWindow = function (config){
         modal:true,
         title : _("Approve/Reject Subscriber Upgrade Kyc"),
         floating: true,
-        width: 600,
-        height: 470,
+        width: 650,
+        height: 550,
         frame : true,
         labelWidth: 5,
-        plain:true,
-        layout: 'fit',
         closable:false
     });
     mFino.widget.SubscriberUpgradeKycApproveRejectWindow.superclass.constructor.call(this, localConfig);
@@ -81,6 +79,35 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
                                     anchor : '100%',
 									itemId : 'subupgradekyc.displayfield.email',
                                     name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Email._name
+                                },
+            					{
+            						xtype : 'displayfield',
+                					fieldLabel: _('Nationality'),
+                					anchor : '90%',
+									itemId : 'subupgradekyc.displayfield.Nationality',
+                					name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Nationality._name
+            					},
+                             	{
+                             		xtype : 'displayfield',
+                             		fieldLabel: _('Job'),
+                             		anchor : '100%',
+									itemId : 'subupgradekyc.displayfield.Work',
+                             		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Work._name
+                             	},
+                             	{
+                             		xtype : 'displayfield',
+                             		fieldLabel: _('Other Job'),
+                             		anchor : '100%',
+									itemId : 'subupgradekyc.displayfield.OtherWork',
+                             		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.OtherWork._name
+                             	},
+                             	{
+                                    xtype : 'displayfield',
+                                    fieldLabel: _('Gender'),
+                                    vtype: 'email',
+                                    anchor : '100%',
+									itemId : 'subupgradekyc.displayfield.Gender',
+                                    name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Gender._name
                                 }
             				]
             	   		},
@@ -129,6 +156,35 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
                                    	        });  
                                    	    }
                                     }
+                                },
+            					{
+            						xtype : 'displayfield',
+                					fieldLabel: _('Marital Status'),
+                					anchor : '90%',
+									itemId : 'subupgradekyc.displayfield.MaritalStatus',
+                					name: CmFinoFIX.message.JSSubscriberUpgradeKyc.MaritalStatus._name
+            					},
+                             	{
+                             		xtype : 'displayfield',
+                             		fieldLabel: _('Source Of Fund'),
+                             		anchor : '100%',
+									itemId : 'subupgradekyc.displayfield.SourceOfFund',
+                             		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.SourceOfFund._name
+                             	},
+                             	{
+                             		xtype : 'displayfield',
+                             		fieldLabel: _('Average Monthly Income'),
+                             		anchor : '100%',
+									itemId : 'subupgradekyc.displayfield.Income',
+                             		name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Income._name
+                             	},
+                             	{
+                                    xtype : 'displayfield',
+                                    fieldLabel: _('Account Opening Purpose'),
+                                    vtype: 'email',
+                                    anchor : '100%',
+									itemId : 'subupgradekyc.displayfield.GoalOfAcctOpening',
+                                    name: CmFinoFIX.message.JSSubscriberUpgradeKyc.GoalOfAcctOpening._name
                                 }
             				]
             	   		}
@@ -387,6 +443,14 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycApproveRejectWindow, Ext.Window, {
 	        this.form.getForm().items.get("subupgradekyc.displayfield.DistrictCom").setValue(response.m_pEntries[0].m_pState);
 	        this.form.getForm().items.get("subupgradekyc.displayfield.VillageCom").setValue(response.m_pEntries[0].m_pSubState);
 	        this.form.getForm().items.get("subupgradekyc.displayfield.StreetAddress").setValue(response.m_pEntries[0].m_pStreetAddress);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.Nationality").setValue(response.m_pEntries[0].m_pNationality);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.Gender").setValue(response.m_pEntries[0].m_pGenderText);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.Work").setValue(response.m_pEntries[0].m_pWorkText);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.OtherWork").setValue(response.m_pEntries[0].m_pOtherWork);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.SourceOfFund").setValue(response.m_pEntries[0].m_pSourceOfFund);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.MaritalStatus").setValue(response.m_pEntries[0].m_pMaritalStatusText);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.Income").setValue(response.m_pEntries[0].m_pIncomeText);
+	        this.form.getForm().items.get("subupgradekyc.displayfield.GoalOfAcctOpening").setValue(response.m_pEntries[0].m_pGoalOfAcctOpening);
         }
     }
 });

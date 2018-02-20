@@ -2,6 +2,7 @@ package com.mfino.web.admin.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -214,6 +215,15 @@ public class SubscriberUpgradeKycController {
 	            	upgradeData.setSubsActivityStatus(CmFinoFIX.SubscriberActivityStatus_Initialized);
 	            	upgradeData.setCreatedby(userService.getCurrentUser().getUsername());
 	            	upgradeData.setCreatetime(new Timestamp(System.currentTimeMillis()));
+	            	
+	            	upgradeData.setNationality(request.getParameter("Nationality"));
+	            	upgradeData.setJob(request.getParameter("Work"));
+	            	upgradeData.setGender(request.getParameter("Gender"));
+	            	upgradeData.setMaritalStatus(request.getParameter("MaritalStatus"));
+	            	upgradeData.setSourceOfFund(request.getParameter("SourceOfFund"));
+	            	upgradeData.setAvgMonthlyIncome((StringUtils.isBlank(request.getParameter("Income"))) ? BigDecimal.ZERO : new BigDecimal(request.getParameter("Income")));
+	            	upgradeData.setEmoneyOpeningPurpose(request.getParameter("GoalOfAcctOpening"));
+	            	upgradeData.setOtherJob(request.getParameter("OtherWork"));
 	            	
 	            	if(StringUtils.isNotBlank(idCardpath))
 	            		upgradeData.setIdCardScanPath(idCardpath);

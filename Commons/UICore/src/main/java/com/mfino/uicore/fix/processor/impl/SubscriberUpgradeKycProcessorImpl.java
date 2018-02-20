@@ -33,6 +33,7 @@ import com.mfino.domain.SMSValues;
 import com.mfino.domain.ServiceCharge;
 import com.mfino.domain.ServiceChargeTxnLog;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberGroups;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeBalanceLog;
@@ -53,6 +54,7 @@ import com.mfino.service.EnumTextService;
 import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
+import com.mfino.service.SubscribersAdditionalFieldsService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
 import com.mfino.service.UserService;
@@ -106,6 +108,10 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 	@Autowired
 	@Qualifier("PocketServiceImpl")
 	private PocketService pocketService;
+	
+	@Autowired
+	@Qualifier("SubscribersAdditionalFieldsServiceImpl")
+	private SubscribersAdditionalFieldsService subscriberAdditionalFieldsService;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -172,7 +178,6 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         		realMsg.allocateEntries(1);
         		String idTypeValue = enumTextService.getEnumTextValue(CmFinoFIX.TagID_IDTypeForKycUpgrade, null, 
         				subscriberUpgradeData.getIdType());
-        		
         		CMJSSubscriberUpgradeKyc.CGEntries entry = new CMJSSubscriberUpgradeKyc.CGEntries();
         		entry.setBirthPlace(subscriberUpgradeData.getBirthPlace());
         		entry.setDateOfBirth(subscriberUpgradeData.getBirthDate());
@@ -184,7 +189,18 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
         		entry.setMothersMaidenName(subscriberUpgradeData.getMotherMaidenName());
         		entry.setID(subscriberMDN.getId());
         		entry.setIDTypeText(idTypeValue);
-        		
+        		entry.setNationality(subscriberUpgradeData.getNationality());
+        		entry.setWork(subscriberUpgradeData.getJob());
+        		entry.setWorkText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_JobList, null, subscriberUpgradeData.getJob()));
+        		entry.setGender(subscriberUpgradeData.getGender());
+        		entry.setGenderText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Gender, null, subscriberUpgradeData.getGender()));
+        		entry.setMaritalStatus(subscriberUpgradeData.getMaritalStatus());
+        		entry.setMaritalStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_MaritalStatusList, null, subscriberUpgradeData.getMaritalStatus()));
+        		entry.setSourceOfFund(subscriberUpgradeData.getSourceOfFund());
+        		entry.setIncome(subscriberUpgradeData.getAvgMonthlyIncome());
+        		entry.setIncomeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AvgIncomeList, null, subscriberUpgradeData.getAvgMonthlyIncome()));
+        		entry.setGoalOfAcctOpening(subscriberUpgradeData.getEmoneyOpeningPurpose());
+        		entry.setOtherWork(subscriberUpgradeData.getOtherJob());
         		Address address = subscriberUpgradeData.getAddress();
         		if(address != null){
 	        		entry.setCity(address.getCity());
@@ -304,6 +320,8 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				subUpgradeBalanceLog.setLastupdatetime(new Timestamp());
 				subsUpgradeBalanceLogDAO.save(subUpgradeBalanceLog);
     			
+				
+				subscriber.setGender(upgradeData.getGender());
 				subscriber.setAddressBySubscriberaddressid(upgradeData.getAddress());
 				subscriber.setEmail(upgradeData.getEmail());
 				subscriber.setBirthplace(upgradeData.getBirthPlace());
@@ -312,6 +330,19 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				subscriber.setMothersmaidenname(upgradeData.getMotherMaidenName());
 				subscriber.setKycLevel(unBankedLevel);
 				subscriberDao.save(subscriber);
+
+				
+				SubscriberAddiInfo subscriberAddInfo = new SubscriberAddiInfo();
+				subscriberAddInfo.setNationality(upgradeData.getNationality());
+				subscriberAddInfo.setWork(upgradeData.getJob());
+				subscriberAddInfo.setOtherwork(upgradeData.getOtherJob());
+				subscriberAddInfo.setIncome(upgradeData.getAvgMonthlyIncome());
+				subscriberAddInfo.setSourceoffund(upgradeData.getSourceOfFund());
+				subscriberAddInfo.setGoalofacctopening(upgradeData.getEmoneyOpeningPurpose());
+				subscriberAddInfo.setMaritalStatus(upgradeData.getMaritalStatus());
+				subscriberAddInfo.setSubscriber(subscriber);
+				
+				subscriberAdditionalFieldsService.save(subscriberAddInfo);
 				
 				subscriberMDN.setIdtype(upgradeData.getIdType());
 				subscriberMDN.setIdnumber(upgradeData.getIdNumber());

@@ -596,7 +596,7 @@ public class SubscriberServiceImpl implements SubscriberService{
 			}
 		}
 		if (StringUtils.isNotBlank(subscriberSyncRecord.getGender())) {
-			if (CmFinoFIX.Gender_Female.equals(subscriberSyncRecord.getGender()) || CmFinoFIX.Gender_Male.equals(subscriberSyncRecord.getGender()) || CmFinoFIX.Gender_Other.equals(subscriberSyncRecord.getGender())) {
+			if (CmFinoFIX.Gender_Female.equals(subscriberSyncRecord.getGender()) || CmFinoFIX.Gender_Male.equals(subscriberSyncRecord.getGender())) {
 				subscriber.setGender(subscriberSyncRecord.getGender());
 			} else {
 				log.info("Gender is invalid for MDN = " + subscriberSyncRecord.getMdn());

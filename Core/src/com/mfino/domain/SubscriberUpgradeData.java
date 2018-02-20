@@ -1,5 +1,7 @@
 package com.mfino.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,6 +52,15 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 	private Integer subscriberRestriction;
 	private Integer subscriberStatus;
 
+	private String nationality;
+	private String job;
+	private String otherJob;
+	private String gender;
+	private String maritalStatus;
+	private String sourceOfFund;
+	private BigDecimal avgMonthlyIncome;
+	private String emoneyOpeningPurpose;
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
 	@SequenceGenerator(name = "id_Sequence", sequenceName = "SUBSCRIBER_UPGRADE_DATA_ID_SEQ")
@@ -247,4 +258,66 @@ public class SubscriberUpgradeData extends Base implements java.io.Serializable 
 		this.subscriberStatus = subscriberStatus;
 	}
 	
+	@Column(name = "NATIONALITY", length = 32)
+	public String getNationality() {
+		return this.nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+	@Column(name = "JOB", length = 32)
+	public String getJob() {
+		return job;
+	}
+	public void setJob(String job) {
+		this.job = job;
+	}
+	@Column(name = "OTHERJOB", length = 32)
+	public String getOtherJob() {
+		return otherJob;
+	}
+	public void setOtherJob(String otherJob) {
+		this.otherJob = otherJob;
+	}
+
+	@Column(name = "GENDER", length = 32)
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	@Column(name = "MARITALSTATUS", length = 32)
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	@Column(name = "SOURCEOFFUND", length = 32)
+	public String getSourceOfFund() {
+		return sourceOfFund;
+	}
+	public void setSourceOfFund(String sourceOfFund) {
+		this.sourceOfFund = sourceOfFund;
+	}
+	
+	@Column(name = "MONTHLYINCOME", length = 32)
+	public BigDecimal getAvgMonthlyIncome() {
+		return avgMonthlyIncome;
+	}
+	public void setAvgMonthlyIncome(BigDecimal avgMonthlyIncome) {
+		this.avgMonthlyIncome = avgMonthlyIncome;
+	}
+	
+	@Column(name = "ACCTOPENINGPURPOSE", length = 32)
+	public String getEmoneyOpeningPurpose() {
+		return emoneyOpeningPurpose;
+	}
+	public void setEmoneyOpeningPurpose(String emoneyOpeningPurpose) {
+		this.emoneyOpeningPurpose = emoneyOpeningPurpose;
+	}
 }

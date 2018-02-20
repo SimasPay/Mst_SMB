@@ -59,6 +59,8 @@ public class SubscriberAddiInfo extends Base implements java.io.Serializable {
 	private Timestamp implementatindate;
 	private String otherwork;
 
+	private String maritalStatus;
+	
 	private Long id;
 	
 	public SubscriberAddiInfo() {
@@ -332,6 +334,15 @@ public class SubscriberAddiInfo extends Base implements java.io.Serializable {
 
 	public void setOtherwork(String otherwork) {
 		this.otherwork = otherwork;
+	}
+
+	@Column(name = "MARITALSTATUS")
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
 	}
 
 }

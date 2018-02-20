@@ -9,8 +9,8 @@ mFino.widget.SubscriberUpgradeKycLevelWindow = function (config){
     	id: "upgrageKycLevel",
         defaultType: 'textfield',
         fileUpload:true,
-        width: 550,
-        height: 600,
+        width: 600,
+        height: 800,
         frame : true,
         bodyStyle: 'padding: 10px 10px 0 10px;',
         labelWidth: 5,
@@ -148,7 +148,85 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                            	        });  
                            	    }
                             }
-                        }
+                        },
+                     	{
+                            xtype : 'textfield',
+                            fieldLabel: _('Nationality'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.nationality',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.Nationality._name,
+                            value: 'Indonesia'
+                        },
+                     	{
+                            xtype : 'enumdropdown',
+                            fieldLabel: _('Job'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.work',
+							enumId : CmFinoFIX.TagID.JobList,
+							emptyText : _('<select one..>'),
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.Work._name,
+                            listeners: {
+							 	select: function(field,record) {
+								 	this.findParentByType('SubscriberUpgradeKycLevelWindow').onJobSelect();
+							    }
+							}
+                        },
+                     	{
+                            xtype : 'textfield',
+                            fieldLabel: _('Other Job'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.otherwork',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.OtherWork._name
+                        },
+                     	{
+                            xtype : 'enumdropdown',
+                            fieldLabel: _('Gender'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.gender',
+							enumId : CmFinoFIX.TagID.Gender,
+							emptyText : _('<select one..>'),
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.Gender._name
+                        },
+                     	{
+                            xtype : 'enumdropdown',
+                            fieldLabel: _('Marital Status'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.maritalstatus',
+							enumId : CmFinoFIX.TagID.MaritalStatusList,
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.MaritalStatus._name
+                        },
+                     	{
+                            xtype : 'textfield',
+                            fieldLabel: _('Source of Fund'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.sourceoffund',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.SourceOfFund._name
+                        },
+                     	{
+                            xtype : 'enumdropdown',
+                            fieldLabel: _('Average Monthly Income'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.avgincome',
+							enumId : CmFinoFIX.TagID.AvgIncomeList,
+							emptyText : _('<select one..>'),
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.Income._name
+                        },
+                     	{
+                            xtype : 'textfield',
+                            fieldLabel: _('Account Opening Purpose'),
+                            emptyText:_(''),
+                            anchor : '100%',
+							itemId : 'subupgradekyc.form.GoalOfAcctOpening',
+							value : 'Transaksi',
+                            name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.GoalOfAcctOpening._name
+                        },
             ]
 		},
         {
@@ -324,6 +402,14 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     		}
     	});
     },
+    onJobSelect: function(){
+    	var work = this.find('itemId', 'subupgradekyc.form.work')[0];
+    	if(CmFinoFIX.JobList.Lainnya == work.getValue()){
+    		this.form.items.get("subupgradekyc.form.otherwork").getEl().up('.x-form-item').setDisplayed(true);
+    	}else{
+    		this.form.items.get("subupgradekyc.form.otherwork").getEl().up('.x-form-item').setDisplayed(false);
+    	}
+    },
     setStore : function(store){
         this.store = store;
     },
@@ -333,6 +419,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     	this.form.items.get("subupgradekyc.form.mdnid").setValue(mdnid);
     	this.form.items.get("subupgradekyc.form.fullname").setValue(existingfullName);
     	this.form.items.get("subupgradekyc.form.email").setValue(existingEmail);
+    	this.form.items.get("subupgradekyc.form.otherwork").getEl().up('.x-form-item').setDisplayed(false);
     	
     	if(response.m_ptotal > 0){
     		var d = response.m_pEntries[0].m_pDateOfBirth.m_Date;
@@ -370,6 +457,21 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
         	this.form.items.get("subupgradekyc.form.DistrictCom").setValue(response.m_pEntries[0].m_pState);
         	this.form.items.get("subupgradekyc.form.VillageCom").setValue(response.m_pEntries[0].m_pSubState);
         	this.form.items.get("subupgradekyc.form.StreetAddress").setValue(response.m_pEntries[0].m_pStreetAddress);
+        	
+        	this.form.items.get("subupgradekyc.form.nationality").setValue(response.m_pEntries[0].m_pNationality);
+        	this.form.items.get("subupgradekyc.form.gender").setValue(response.m_pEntries[0].m_pGender);
+        	if(CmFinoFIX.JobList.Lainnya == response.m_pEntries[0].m_pWork){
+        		this.form.items.get("subupgradekyc.form.otherwork").getEl().up('.x-form-item').setDisplayed(true);
+            	this.form.items.get("subupgradekyc.form.otherwork").setValue(response.m_pEntries[0].m_pOtherWork);
+        	}else{
+        		this.form.items.get("subupgradekyc.form.otherwork").getEl().up('.x-form-item').setDisplayed(false);
+        	}
+        	this.form.items.get("subupgradekyc.form.work").setValue(response.m_pEntries[0].m_pWork);
+        	this.form.items.get("subupgradekyc.form.sourceoffund").setValue(response.m_pEntries[0].m_pSourceOfFund);
+        	this.form.items.get("subupgradekyc.form.maritalstatus").setValue(response.m_pEntries[0].m_pMaritalStatus);
+        	this.form.items.get("subupgradekyc.form.avgincome").setValue(response.m_pEntries[0].m_pIncome);
+        	this.form.items.get("subupgradekyc.form.GoalOfAcctOpening").setValue(response.m_pEntries[0].m_pGoalOfAcctOpening);
+        	
         }
     },
     showImage:function(imageName){
