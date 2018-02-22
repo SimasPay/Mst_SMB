@@ -1,6 +1,6 @@
 #@echo off
 
-DEPLOY_FOLDER="/Users/dimo/Simaspay/source/jboss/deploy"
+DEPLOY_FOLDER="/home/syb/simaspay/deploy"
 #echo $DEPLOY_FOLDER
 #:Process
 #@echo on

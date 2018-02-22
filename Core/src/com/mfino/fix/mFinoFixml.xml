@@ -23807,6 +23807,32 @@ ERROR:Mismatch of  mdn type and app type
 					</Bahasa>
 				</C1>
 			</value>
+			<value description="AboveMonthlyIncommingLimit" enum="2317">
+				<C1>
+					<English>
+						<SMS>
+							<Text>Sorry, transaction on $(TransactionDateTime)  failed. Maximum monthly incomming transaction amount is exceeded. Please retry next month. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Maaf, transaksi pada $(TransactionDateTime) gagal. Jumlah maksimum transaksi masuk per bulan terlewati. Silakan coba di bulan berikutnya. Info hub $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+						</SMS>
+					</Bahasa>
+				</C1>
+				<C2>
+					<English>
+						<SMS>
+							<Text>Sorry, transaction on $(TransactionDateTime)  failed. Maximum monthly incomming transaction amount is exceeded. Please retry next month. Info, call $(CustomerServiceShortCode). REF: $(TransactionID) </Text>
+						</SMS>
+					</English>
+					<Bahasa>
+						<SMS>
+							<Text>Maaf, transaksi pada $(TransactionDateTime) gagal. Jumlah maksimum transaksi masuk per bulan terlewati. Silakan coba di bulan berikutnya. Info hub $(CustomerServiceShortCode). REF: $(TransactionID)</Text>
+						</SMS>
+					</Bahasa>
+				</C2>
+			</value>
 		</field>
 		
 		<field number="5056" name="H2HResponseCode" type="ResponseCode" />

@@ -596,7 +596,8 @@ public enum NotificationCodes {
 	InternalLoginError(12125,2125,false),
 	AgentSubscriberCashinSuccessToSender(12156,2156,true),
 	AgentSubscriberCashinSuccessToReceiver(12157,2157,true),
-	TransferToUangkuToSender(12176,2176,true);
+	TransferToUangkuToSender(12176,2176,true),
+	AboveMonthlyIncommingLimit(12177,2317 ,true);
 	
 	private static Map<Integer,NotificationCodes> nofificationCodeMap = null;
 	private static Map<Integer, Integer> notificationCodetoInternalErroCodeMap = null;
