@@ -120,6 +120,14 @@ mFino.page.subscriber = function(config){
         mode : "subeditmaker"
     }, config));
     
+    var subscriberEditMakerViewWindow = new mFino.widget.FormWindowLOP(Ext.apply({
+        form : new mFino.widget.SubscriberEditMakerForm(config),
+        title : _("View Subscriber"),
+        width : 520,
+        height : 550,
+        mode : "subeditmakerview"
+    }, config));
+    
     var approveSettlementWindow = new mFino.widget.ClosedAccountSettlementApproveRejectWindow(config);
     	
     //this enables serverside form validation
@@ -339,44 +347,28 @@ mFino.page.subscriber = function(config){
                 tooltip : _(' Subscriber Details'),
                 itemId : 'sub.details.view',
                 handler : function(){
-                    if(!detailsForm.record){
+                	if(!detailsForm.record){
                         Ext.MessageBox.alert(_("Alert"), _("No Subscriber selected!"));
-                    }else{
-                    	var actualCount=tabPanel.pocketGrid.store.getCount();
-                    	var isLakupandai=false;
-                    	var count=0;
-            			tabPanel.pocketGrid.store.each(function(record){
-//            				alert(record.get(CmFinoFIX.message.JSPocket.Entries.PocketTypeText._name))
-            				count++;
-            				if(record.get(CmFinoFIX.message.JSPocket.Entries.PocketTypeText._name)== 'Laku Pandai' ){
-            					isLakupandai=true;
-            				}
-            				if(count==actualCount){
-            					
-            					if(isLakupandai){
-            						gridLakupadaiFormview.setTitle( _("PERSETUJUAN NASABAH LAKU PANDAI BANK SINARMAS"));
-            						gridLakupadaiFormview.setMode("close");
-//                        			gridEditFormview.form.setReadOnly(true);
-            						gridLakupadaiFormview.show();
-            						gridLakupadaiFormview.setRecord(detailsForm.record);
-            						gridLakupadaiFormview.setStore(detailsForm.store);
-            						gridLakupadaiFormview.form.setAccountAndTemplateDisplay(true);
-            					}else{
-            						  gridEditForm.setTitle( _(" Subscriber Details"));
-          	                        gridEditForm.setMode("close");
-          	                        gridEditForm.form.setReadOnly(true);
-          	                        gridEditForm.show();
-          	                       /* var status=detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name);
-          	                        gridEditForm.form.onStatusDropdown(status);
-          	                        gridEditForm.form.disableNotPermittedItems();*/
-          	                        gridEditForm.setRecord(detailsForm.record);
-          	                        gridEditForm.setStore(detailsForm.store);
-          	                        gridEditForm.form.setAccountAndTemplateDisplay(true);
-            					}
-            					
-            				}
-            			})
-                    	
+                    } if(detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.SubscriberStatus.PendingRetirement 
+                    		|| detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name) == CmFinoFIX.SubscriberStatus.Retired){
+                    	Ext.MessageBox.alert(_("Info"), _("Subscriber Edit Data can't be perform to Archived or Retired Subscriber."));
+                    } else{
+                    	var amsg = new CmFinoFIX.message.JSSubscriberEdit();
+                        amsg.m_pMDNID = detailsForm.record.get(CmFinoFIX.message.JSSubscriberMDN.Entries.ID._name);
+                        amsg.m_paction = "default";
+                        var params = mFino.util.showResponse.getDisplayParam();
+                        mFino.util.fix.send(amsg, params);
+                        Ext.apply(params, {
+                			success :  function(response){
+                				if(response.m_psuccess == true){
+                					subscriberEditMakerViewWindow.form.setDetails(response, amsg.m_pMDNID);
+                					subscriberEditMakerViewWindow.form.onView();
+                					subscriberEditMakerViewWindow.show();
+                			   }else{
+                				   Ext.MessageBox.alert(_("Info"), _(response.m_pErrorDescription));   	   
+                			   }
+                			}
+                		});
                     }
                 }
             },

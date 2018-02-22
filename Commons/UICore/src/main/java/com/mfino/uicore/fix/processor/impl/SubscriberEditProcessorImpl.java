@@ -23,10 +23,12 @@ import com.mfino.dao.SubsUpgradeBalanceLogDAO;
 import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscriberUpgradeDataDAO;
+import com.mfino.dao.SubscribersAdditionalFieldsDAO;
 import com.mfino.dao.UnRegisteredTxnInfoDAO;
 import com.mfino.dao.query.CommodityTransferQuery;
 import com.mfino.dao.query.EnumTextQuery;
 import com.mfino.dao.query.KtpDetailsQuery;
+import com.mfino.dao.query.SubscribersAdditionalFieldsQuery;
 import com.mfino.dao.query.UnRegisteredTxnInfoQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.EnumText;
@@ -36,6 +38,7 @@ import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
 import com.mfino.domain.Subscriber;
+import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.SubscriberUpgradeBalanceLog;
 import com.mfino.domain.SubscriberUpgradeData;
@@ -58,6 +61,7 @@ import com.mfino.service.PocketService;
 import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberStatusEventService;
+import com.mfino.service.SubscribersAdditionalFieldsService;
 import com.mfino.service.SystemParametersService;
 import com.mfino.service.TransactionChargingService;
 import com.mfino.service.TransactionLogService;
@@ -133,6 +137,10 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 	@Autowired
 	@Qualifier("ForwardNotificationRequestProcessorImpl")
 	private ForwardNotificationRequestProcessor forwardNotificationRequestProcessor;
+
+	@Autowired
+	@Qualifier("SubscribersAdditionalFieldsServiceImpl")
+	private SubscribersAdditionalFieldsService subscribersAdditionalFieldsService;
 	
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
@@ -331,6 +339,45 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 
 				subscriber.setAddressBySubscriberaddressid(subscriberUpgradeData.getAddress());
 				
+				SubscribersAdditionalFieldsDAO subAddFieldDao = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
+				SubscribersAdditionalFieldsQuery query = new SubscribersAdditionalFieldsQuery();
+				query.set_SubscriberID(subscriber.getId().intValue());
+				List<SubscriberAddiInfo> addInfo = subAddFieldDao.get(query);
+				log.info("get subscriber additional info: ");
+				if(addInfo != null && !addInfo.isEmpty()) {
+					for (SubscriberAddiInfo subscriberAddInfo : addInfo) {
+						subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
+						subscriberAddInfo.setWork(subscriberUpgradeData.getJob());
+						if(subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
+							subscriberAddInfo.setOtherwork(subscriberUpgradeData.getOtherJob());
+						}else {
+							subscriberAddInfo.setOtherwork(null);
+						}
+						subscriberAddInfo.setIncome(subscriberUpgradeData.getAvgMonthlyIncome());
+						subscriberAddInfo.setSourceoffund(subscriberUpgradeData.getSourceOfFund());
+						subscriberAddInfo.setGoalofacctopening(subscriberUpgradeData.getEmoneyOpeningPurpose());
+						subscriberAddInfo.setMaritalStatus(subscriberUpgradeData.getMaritalStatus());
+						subscriberAddInfo.setSubscriber(subscriber);
+						subAddFieldDao.save(subscriberAddInfo);
+						log.info("updated subscriber additional info: "+ subscriberAddInfo.getId());
+					}
+				}else {
+					SubscriberAddiInfo subscriberAddInfo = new SubscriberAddiInfo();
+					subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
+					subscriberAddInfo.setWork(subscriberUpgradeData.getJob());
+					if(subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
+						subscriberAddInfo.setOtherwork(subscriberUpgradeData.getOtherJob());
+					}
+					subscriberAddInfo.setIncome(subscriberUpgradeData.getAvgMonthlyIncome());
+					subscriberAddInfo.setSourceoffund(subscriberUpgradeData.getSourceOfFund());
+					subscriberAddInfo.setGoalofacctopening(subscriberUpgradeData.getEmoneyOpeningPurpose());
+					subscriberAddInfo.setMaritalStatus(subscriberUpgradeData.getMaritalStatus());
+					subscriberAddInfo.setSubscriber(subscriber);
+					subAddFieldDao.save(subscriberAddInfo);
+					log.info("updated subscriber additional info: "+ subscriberAddInfo.getId());
+				}
+				
+				subscriber.setGender(subscriberUpgradeData.getGender());
 				subscriberDao.save(subscriber);
 				log.info("updated subscriber: " + subscriber.getId());
 				if(subscriberUpgradeData.getEmail() != null && systemParametersService.getIsEmailVerificationNeeded()) {
@@ -637,6 +684,29 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			entry.setAccountNumber("#");
 		}
 		Address address = subscriber.getAddressBySubscriberaddressid();
+		
+		SubscribersAdditionalFieldsDAO subAddFieldDao = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
+		SubscribersAdditionalFieldsQuery query = new SubscribersAdditionalFieldsQuery();
+		query.set_SubscriberID(subscriber.getId().intValue());
+		List<SubscriberAddiInfo> addInfo = subAddFieldDao.get(query);
+		
+		if(addInfo != null && !addInfo.isEmpty() && addInfo.get(0) != null) {
+			SubscriberAddiInfo subscriberAddiInfo = addInfo.get(0);
+			entry.setNationality(subscriberAddiInfo.getNationality());
+			entry.setWork(subscriberAddiInfo.getWork());
+			entry.setWorkText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_JobList, null, subscriberAddiInfo.getWork()));
+			entry.setGender(subscriber.getGender());
+			entry.setGenderText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Gender, null, subscriber.getGender()));
+			entry.setMaritalStatus(subscriberAddiInfo.getMaritalStatus());
+			entry.setMaritalStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_MaritalStatusList, null, subscriberAddiInfo.getMaritalStatus()));
+			entry.setSourceOfFund(subscriberAddiInfo.getSourceoffund());
+			entry.setIncome(subscriberAddiInfo.getIncome());
+			entry.setIncomeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AvgIncomeList, null, subscriberAddiInfo.getIncome()));
+			entry.setGoalOfAcctOpening(subscriberAddiInfo.getGoalofacctopening());
+			entry.setOtherWork(subscriberAddiInfo.getOtherwork());
+		}
+		
+		
 		if(address != null){
 			entry.setCity(address.getCity());
 			entry.setRegionName(address.getRegionname());
@@ -667,6 +737,18 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 		}else{
 			entry.setAccountNumber("#");
 		}
+		entry.setNationality(subscriberUpgradeData.getNationality());
+		entry.setWork(subscriberUpgradeData.getJob());
+		entry.setWorkText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_JobList, null, subscriberUpgradeData.getJob()));
+		entry.setGender(subscriberUpgradeData.getGender());
+		entry.setGenderText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_Gender, null, subscriberUpgradeData.getGender()));
+		entry.setMaritalStatus(subscriberUpgradeData.getMaritalStatus());
+		entry.setMaritalStatusText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_MaritalStatusList, null, subscriberUpgradeData.getMaritalStatus()));
+		entry.setSourceOfFund(subscriberUpgradeData.getSourceOfFund());
+		entry.setIncome(subscriberUpgradeData.getAvgMonthlyIncome());
+		entry.setIncomeText(enumTextService.getEnumTextValue(CmFinoFIX.TagID_AvgIncomeList, null, subscriberUpgradeData.getAvgMonthlyIncome()));
+		entry.setGoalOfAcctOpening(subscriberUpgradeData.getEmoneyOpeningPurpose());
+		entry.setOtherWork(subscriberUpgradeData.getOtherJob());
 		Address address = subscriberUpgradeData.getAddress();
 		if(address != null){
 			entry.setCity(address.getCity());

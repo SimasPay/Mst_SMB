@@ -5904,6 +5904,14 @@
 			<field name="UpgradeAcctComments" required="N"/>
 			<field name="NotificationMethod" required="Y" />
 			<field name="MDNRestrictions" required="N"/>
+			<field name="Nationality" required="N"/>
+			<field name="Work" required="N" />
+			<field name="OtherWork" required="N" />
+			<field name="Income" required="N" />
+			<field name="GoalOfAcctOpening" required="N" />
+			<field name="SourceOfFund" required="N" />
+			<field name="Gender" required="N" />
+			<field name="MaritalStatus" required="N" />
 			
 			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
 				<field name="MDNID" required="Y" />
@@ -5925,6 +5933,18 @@
 				<field name="NotificationMethod" required="Y" />
 				<field name="MDNRestrictions" required="N"/>
 				<field name="SubscriberStatus" required="Y"/>
+				<field name="Nationality" required="N"/>
+				<field name="Work" required="N" />
+				<field name="WorkText" required="N" />
+				<field name="Income" required="N" />
+				<field name="IncomeText" required="N" />
+				<field name="GoalOfAcctOpening" required="N" />
+				<field name="SourceOfFund" required="N" />
+				<field name="OtherWork" required="N" />
+				<field name="Gender" required="N" />
+				<field name="GenderText" required="N" />
+				<field name="MaritalStatus" required="N" />
+				<field name="MaritalStatusText" required="N" />
 			</group>
 		</message>
 		<message name="JSResendMFAOTPNoPIN" msgtype="1795" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">

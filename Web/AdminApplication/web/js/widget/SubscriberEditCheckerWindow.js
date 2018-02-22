@@ -403,6 +403,14 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
         				    autoHeight: true,
     						columns: 2,
         				    items:[subsRestrictionsChecker, subsRestrictionsChecker2]
+        				},
+        				{
+        				    title: _('Additional Data'),
+        				    layout:'column',
+        				    frame:true,
+        				    autoHeight: true,
+    						columns: 3,
+        				    items:[subsAdditionalDataCheckerLabel, subsAdditionalDataChecker, subsAdditionalDataChecker2]
         				}
         			]
                 },
@@ -604,6 +612,15 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 	        var notiValue = response.m_pEntries[0].m_pNotificationMethod;
 	        this.form.getForm().items.get("subeditchecker.SMS").setValue( (notiValue & CmFinoFIX.NotificationMethod.SMS) > 0);
 	        this.form.getForm().items.get("subeditchecker.Email1").setValue( ( notiValue & CmFinoFIX.NotificationMethod.Email) > 0);
+
+	        this.form.getForm().items.get("subeditchecker.form.nationality").setValue(response.m_pEntries[0].m_pNationality);
+    		this.form.getForm().items.get("subeditchecker.form.gender").setValue(response.m_pEntries[0].m_pGender);
+        	this.form.getForm().items.get("subeditchecker.form.work").setValue(response.m_pEntries[0].m_pWork);
+        	this.form.getForm().items.get("subeditchecker.form.otherwork").setValue(response.m_pEntries[0].m_pOtherWork);
+        	this.form.getForm().items.get("subeditchecker.form.maritalstatus").setValue(response.m_pEntries[0].m_pMaritalStatus);
+        	this.form.getForm().items.get("subeditchecker.form.sourceoffund").setValue(response.m_pEntries[0].m_pSourceOfFund);
+        	this.form.getForm().items.get("subeditchecker.form.avgincome").setValue(response.m_pEntries[0].m_pIncome);
+        	this.form.getForm().items.get("subeditchecker.form.GoalOfAcctOpening").setValue(response.m_pEntries[0].m_pGoalOfAcctOpening);
 	        // fill old value
 	        if(response.m_pEntries[1].m_pKTPDocumentPath != null){
 				var docFullPath = response.m_pEntries[1].m_pKTPDocumentPath;
@@ -640,6 +657,15 @@ Ext.extend(mFino.widget.SubscriberEditCheckerWindow, Ext.Window, {
 	        var notiValue = response.m_pEntries[1].m_pNotificationMethod;
 	        this.form.getForm().items.get("subeditchecker.old.SMS").setValue( (notiValue & CmFinoFIX.NotificationMethod.SMS) > 0);
 	        this.form.getForm().items.get("subeditchecker.old.Email1").setValue( ( notiValue & CmFinoFIX.NotificationMethod.Email) > 0);
+	        
+	        this.form.getForm().items.get("subeditchecker.old.form.nationality").setValue(response.m_pEntries[1].m_pNationality);
+    		this.form.getForm().items.get("subeditchecker.old.form.gender").setValue(response.m_pEntries[1].m_pGender);
+        	this.form.getForm().items.get("subeditchecker.old.form.work").setValue(response.m_pEntries[1].m_pWork);
+        	this.form.getForm().items.get("subeditchecker.old.form.otherwork").setValue(response.m_pEntries[1].m_pOtherWork);
+        	this.form.getForm().items.get("subeditchecker.old.form.maritalstatus").setValue(response.m_pEntries[1].m_pMaritalStatus);
+        	this.form.getForm().items.get("subeditchecker.old.form.sourceoffund").setValue(response.m_pEntries[1].m_pSourceOfFund);
+        	this.form.getForm().items.get("subeditchecker.old.form.avgincome").setValue(response.m_pEntries[1].m_pIncome);
+        	this.form.getForm().items.get("subeditchecker.old.form.GoalOfAcctOpening").setValue(response.m_pEntries[1].m_pGoalOfAcctOpening);
         }
     }
 });
@@ -958,4 +984,303 @@ var subsRestrictionsChecker2 = {
         }
     ]
 };
+
+var subsAdditionalDataCheckerLabel = {
+		title: _(''),
+	    autoHeight: true,
+	   	layout: 'form',
+	    columnWidth: 0.2,
+	    labelWidth : 100,
+	    style:{
+	    	margin: '40px 0px 0px'
+	    },
+	    items : [
+	     	{
+			    xtype : "displayfield",
+				anchor : '100%',
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+				fieldLabel :_("Nationality")
+			},
+			{
+				xtype : "displayfield",
+		        anchor : '100%',
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+		        fieldLabel :_("Job")
+			},
+			{
+				xtype : "displayfield",
+	            anchor : '100%',
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+	            fieldLabel :_("Other Job")
+			},
+			{
+				xtype : "displayfield",
+	            anchor : '100%',
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+	            fieldLabel :_("Gender")
+			},
+			{
+			    xtype : 'displayfield',
+			    fieldLabel: _('Marital Status'),
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+			    anchor : '100%'
+			},
+			{
+			    xtype : 'displayfield',
+			    fieldLabel: _('Source of Fund'),
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+			    anchor : '100%'
+			},
+			{
+			    xtype : 'displayfield',
+			    fieldLabel: _('Income'),
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+			    anchor : '100%'
+			},
+			{
+			    xtype : 'displayfield',
+			    fieldLabel: _('Account Opening Purpose'),
+				value: ':',
+	            labelSeparator : '',
+				style:{
+					padding: '10px 0px 10px 0px'
+				},
+			    anchor : '100%'
+			}
+	    ]
+	}
+
+var subsAdditionalDataChecker = {
+		title: _('Current Value'),
+	    autoHeight: true,
+	    width: 430,
+	   	layout: 'form',
+	    columnWidth: 0.4,
+	    labelWidth : 10,
+	    style:{
+	    	margin: '0px 5px 0px 5px'
+	    },
+	    items : [
+	    	{
+			    xtype : 'displayfield',
+			    value: _('Current Value'),
+				labelSeparator: '',
+				style:{
+					'font-weight': 'bold',
+					'font-size': '12px',
+					'padding-top': '0px'
+				},
+			    anchor : '100%'
+			},
+	    	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.nationality',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Nationality._name,
+	            value: 'Indonesia'
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.work',
+				enumId : CmFinoFIX.TagID.JobList,
+				emptyText : _('<select one..>'),
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Work._name,
+	            listeners: {
+				 	select: function(field,record) {
+					 	this.findParentByType('SubscriberEditMakerForm').onJobSelect();
+				    }
+				}
+	        },
+	     	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.otherwork',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.OtherWork._name
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.gender',
+				enumId : CmFinoFIX.TagID.Gender,
+				emptyText : _('<select one..>'),
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Gender._name
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.maritalstatus',
+				enumId : CmFinoFIX.TagID.MaritalStatusList,
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.MaritalStatus._name
+	        },
+	     	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.sourceoffund',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.SourceOfFund._name
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.avgincome',
+				enumId : CmFinoFIX.TagID.AvgIncomeList,
+				emptyText : _('<select one..>'),
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Income._name
+	        },
+	     	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.old.form.GoalOfAcctOpening',
+				value : 'Transaksi',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.GoalOfAcctOpening._name
+	        }
+	    ]
+}
+
+var subsAdditionalDataChecker2 = {
+		title: _('New Value'),
+	    autoHeight: true,
+	    width: 430,
+	   	layout: 'form',
+	    columnWidth: 0.4,
+	    labelWidth : 10,
+	    style:{
+	    	margin: '0px 5px 0px 5px'
+	    },
+	    items : [
+	    	{
+			    xtype : 'displayfield',
+			    value: _('New Value'),
+				labelSeparator: '',
+				style:{
+					'font-weight': 'bold',
+					'font-size': '12px',
+					'padding-top': '0px'
+				},
+			    anchor : '100%'
+			},
+	    	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.nationality',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Nationality._name,
+	            value: 'Indonesia'
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.work',
+				enumId : CmFinoFIX.TagID.JobList,
+				emptyText : _('<select one..>'),
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Work._name,
+	            listeners: {
+				 	select: function(field,record) {
+					 	this.findParentByType('SubscriberEditMakerForm').onJobSelect();
+				    }
+				}
+	        },
+	     	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.otherwork',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.OtherWork._name
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.gender',
+				enumId : CmFinoFIX.TagID.Gender,
+				emptyText : _('<select one..>'),
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Gender._name
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.maritalstatus',
+				enumId : CmFinoFIX.TagID.MaritalStatusList,
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.MaritalStatus._name
+	        },
+	     	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.sourceoffund',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.SourceOfFund._name
+	        },
+	     	{
+	            xtype : 'enumdropdown',
+	            labelWidth : 0,
+	            anchor : '100%',
+	            disabled:true,
+				itemId : 'subeditchecker.form.avgincome',
+				enumId : CmFinoFIX.TagID.AvgIncomeList,
+				emptyText : _('<select one..>'),
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Income._name
+	        },
+	     	{
+	            xtype : 'textfield',
+	            labelWidth : 0,
+	            disabled:true,
+	            anchor : '100%',
+				itemId : 'subeditchecker.form.GoalOfAcctOpening',
+				value : 'Transaksi',
+	            name: CmFinoFIX.message.JSSubscriberEdit.Entries.GoalOfAcctOpening._name
+	        }
+	    ]
+}
 Ext.reg("SubscriberEditCheckerWindow", mFino.widget.SubscriberEditCheckerWindow);

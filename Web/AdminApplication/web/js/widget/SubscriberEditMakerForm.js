@@ -211,6 +211,13 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
 				    frame:true,
 				    autoHeight: true,
 				    items:[subsEditMakerRestrictions]
+				},
+				{
+					title: _('Additional Data'),
+				    layout:'column',
+				    frame:true,
+				    autoHeight: true,
+					items: [subsEditMakerAdditionalData]
 				}
 			]
         }]
@@ -316,8 +323,10 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     	this.form.items.get("subeditmaker.form.mdn").disable();
     	
     	if(response.m_ptotal > 0){
-	        if(response.m_pEntries[0].m_pKTPDocumentPath != null){
-				var docFullPath = response.m_pEntries[0].m_pKTPDocumentPath;
+    		var existingIndexData = response.m_ptotal - 1;
+    		
+	        if(response.m_pEntries[existingIndexData].m_pKTPDocumentPath != null){
+				var docFullPath = response.m_pEntries[existingIndexData].m_pKTPDocumentPath;
 				docFullPath = docFullPath.replace("\\","/");
 				docFullPath = docFullPath.replace("\\","/");
 				if(mFino.widget.SubscriberEditMakerForm.path == null || mFino.widget.SubscriberEditMakerForm.path == '' || mFino.widget.SubscriberEditMakerForm.path == undefined){
@@ -328,39 +337,61 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
 	        	this.form.items.get("subeditmaker.form.displayfield.idpath").setValue(docName);
 	        	this.form.items.get("subeditmaker.form.displayfield.idpath").show();
 			}
-	        var resValue = response.m_pEntries[0].m_pMDNRestrictions;
+	        var resValue = response.m_pEntries[existingIndexData].m_pMDNRestrictions;
 	        this.form.items.get("subeditmaker.Suspended").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.Suspended) > 0);
 	        this.form.items.get("subeditmaker.SecurityLocked").setValue( ( resValue & CmFinoFIX.SubscriberRestrictions.SecurityLocked) > 0);
 	        this.form.items.get("subeditmaker.AbsoluteLocked").setValue((resValue & CmFinoFIX.SubscriberRestrictions.AbsoluteLocked) > 0);
 	        this.form.items.get("subeditmaker.NoFundMovement").setValue((resValue & CmFinoFIX.SubscriberRestrictions.NoFundMovement) > 0);
 
-	        var notiValue = response.m_pEntries[0].m_pNotificationMethod;
+	        var notiValue = response.m_pEntries[existingIndexData].m_pNotificationMethod;
 	        this.form.items.get("subeditmaker.SMS").setValue( (notiValue & CmFinoFIX.NotificationMethod.SMS) > 0);
 	        this.form.items.get("subeditmaker.Email1").setValue( ( notiValue & CmFinoFIX.NotificationMethod.Email) > 0);
 	        
-    		this.form.items.get("subeditmaker.form.mdn").setValue(response.m_pEntries[0].m_pMDN);
-    		this.form.items.get("subeditmaker.form.fullname").setValue(response.m_pEntries[0].m_pFirstName);
-        	this.form.items.get("subeditmaker.form.idtype").setValue(response.m_pEntries[0].m_pIDType);
-        	this.form.items.get("subeditmaker.form.idnumber").setValue(response.m_pEntries[0].m_pIDNumber);
-        	this.form.items.get("subeditmaker.form.email").setValue(response.m_pEntries[0].m_pEmail);
-        	this.form.items.get("subeditmaker.form.language").setValue(response.m_pEntries[0].m_pLanguage);
-        	this.form.items.get("subeditmaker.form.status").setValue(response.m_pEntries[0].m_pSubscriberStatus);
-        	this.form.items.get("subeditmaker.form.hidden.status").setValue(response.m_pEntries[0].m_pSubscriberStatus);
+    		this.form.items.get("subeditmaker.form.mdn").setValue(response.m_pEntries[existingIndexData].m_pMDN);
+    		this.form.items.get("subeditmaker.form.fullname").setValue(response.m_pEntries[existingIndexData].m_pFirstName);
+        	this.form.items.get("subeditmaker.form.idtype").setValue(response.m_pEntries[existingIndexData].m_pIDType);
+        	this.form.items.get("subeditmaker.form.idnumber").setValue(response.m_pEntries[existingIndexData].m_pIDNumber);
+        	this.form.items.get("subeditmaker.form.email").setValue(response.m_pEntries[existingIndexData].m_pEmail);
+        	this.form.items.get("subeditmaker.form.language").setValue(response.m_pEntries[existingIndexData].m_pLanguage);
+        	this.form.items.get("subeditmaker.form.status").setValue(response.m_pEntries[existingIndexData].m_pSubscriberStatus);
+        	this.form.items.get("subeditmaker.form.hidden.status").setValue(response.m_pEntries[existingIndexData].m_pSubscriberStatus);
         	
-        	this.onStatusDropdown(response.m_pEntries[0].m_pSubscriberStatus);
+        	this.onStatusDropdown(response.m_pEntries[existingIndexData].m_pSubscriberStatus);
         	
-        	if(response.m_pEntries[0].m_pAccountNumber == '#'){
+        	if(response.m_pEntries[existingIndexData].m_pAccountNumber == '#'){
         		this.form.items.get("subeditmaker.form.bankaccid").disable();
         	}else{
-        		this.form.items.get("subeditmaker.form.bankaccid").setValue(response.m_pEntries[0].m_pAccountNumber);
+        		this.form.items.get("subeditmaker.form.bankaccid").setValue(response.m_pEntries[existingIndexData].m_pAccountNumber);
         	}
         	
-        	this.form.items.get("subeditmaker.form.ProvincialCom").setValue(response.m_pEntries[0].m_pRegionName);
-        	this.form.items.get("subeditmaker.form.CityCom").setValue(response.m_pEntries[0].m_pCity);
-        	this.form.items.get("subeditmaker.form.DistrictCom").setValue(response.m_pEntries[0].m_pState);
-        	this.form.items.get("subeditmaker.form.VillageCom").setValue(response.m_pEntries[0].m_pSubState);
-        	this.form.items.get("subeditmaker.form.StreetAddress").setValue(response.m_pEntries[0].m_pStreetAddress);
+        	this.form.items.get("subeditmaker.form.ProvincialCom").setValue(response.m_pEntries[existingIndexData].m_pRegionName);
+        	this.form.items.get("subeditmaker.form.CityCom").setValue(response.m_pEntries[existingIndexData].m_pCity);
+        	this.form.items.get("subeditmaker.form.DistrictCom").setValue(response.m_pEntries[existingIndexData].m_pState);
+        	this.form.items.get("subeditmaker.form.VillageCom").setValue(response.m_pEntries[existingIndexData].m_pSubState);
+        	this.form.items.get("subeditmaker.form.StreetAddress").setValue(response.m_pEntries[existingIndexData].m_pStreetAddress);
+        	
+        	this.form.items.get("subeditmaker.form.nationality").setValue(response.m_pEntries[existingIndexData].m_pNationality);
+    		this.form.items.get("subeditmaker.form.gender").setValue(response.m_pEntries[existingIndexData].m_pGender);
+        	this.form.items.get("subeditmaker.form.work").setValue(response.m_pEntries[existingIndexData].m_pWork);
+        	this.form.items.get("subeditmaker.form.otherwork").setValue(response.m_pEntries[existingIndexData].m_pOtherWork);
+        	this.form.items.get("subeditmaker.form.maritalstatus").setValue(response.m_pEntries[existingIndexData].m_pMaritalStatus);
+        	this.form.items.get("subeditmaker.form.sourceoffund").setValue(response.m_pEntries[existingIndexData].m_pSourceOfFund);
+        	this.form.items.get("subeditmaker.form.avgincome").setValue(response.m_pEntries[existingIndexData].m_pIncome);
+        	this.form.items.get("subeditmaker.form.GoalOfAcctOpening").setValue(response.m_pEntries[existingIndexData].m_pGoalOfAcctOpening);
+        	
         }
+    },
+    onView: function(){
+    	this.form.items.each(function(item) {
+            if(item.getXType() == 'textfield' || item.getXType() == 'combo' || item.getXType() == 'checkbox' || 
+                item.getXType() == 'textarea' || item.getXType() == 'numberfield' || item.getXType() == 'button' || 
+                item.getXType() == 'datefield' ||item.getXType() == 'checkboxgroup' ||
+                item.getXType() == 'enumdropdown'||item.getXType() == 'remotedropdown') {
+                //Disable the item
+                item.disable();
+            }
+        });
+    	console.log(this);
     },
     showImage:function(imageName){
     	var imagePath = mFino.widget.SubscriberEditMakerForm.path+imageName
@@ -466,8 +497,15 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
         	}
             this.form.items.get("subeditmaker.form.status").setValue(currentStatus);
         }
-    }
-    
+    },
+    onJobSelect: function(){
+    	var work = this.find('itemId', 'subeditmaker.form.work')[0];
+    	if(CmFinoFIX.JobList.Lainnya == work.getValue()){
+    		this.form.items.get("subeditmaker.form.otherwork").getEl().up('.x-form-item').setDisplayed(true);
+    	}else{
+    		this.form.items.get("subeditmaker.form.otherwork").getEl().up('.x-form-item').setDisplayed(false);
+    	}
+    },
 });
 
 /**
@@ -668,5 +706,95 @@ var subsEditMakerRestrictions = {
                 }
           ]
     }]
+};
+
+/*
+ * Subscriber Additional Data
+ **/
+var subsEditMakerAdditionalData = {
+	title: _(''),
+	autoHeight: true,
+	width: 430,
+	layout: 'form',
+    items : [
+    	{
+            xtype : 'textfield',
+            fieldLabel: _('Nationality'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.nationality',
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Nationality._name,
+            value: 'Indonesia'
+        },
+     	{
+            xtype : 'enumdropdown',
+            fieldLabel: _('Job'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.work',
+			enumId : CmFinoFIX.TagID.JobList,
+			emptyText : _('<select one..>'),
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Work._name,
+            listeners: {
+			 	select: function(field,record) {
+				 	this.findParentByType('SubscriberEditMakerForm').onJobSelect();
+			    }
+			}
+        },
+     	{
+            xtype : 'textfield',
+            fieldLabel: _('Other Job'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.otherwork',
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.OtherWork._name
+        },
+     	{
+            xtype : 'enumdropdown',
+            fieldLabel: _('Gender'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.gender',
+			enumId : CmFinoFIX.TagID.Gender,
+			emptyText : _('<select one..>'),
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Gender._name
+        },
+     	{
+            xtype : 'enumdropdown',
+            fieldLabel: _('Marital Status'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.maritalstatus',
+			enumId : CmFinoFIX.TagID.MaritalStatusList,
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.MaritalStatus._name
+        },
+     	{
+            xtype : 'textfield',
+            fieldLabel: _('Source of Fund'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.sourceoffund',
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.SourceOfFund._name
+        },
+     	{
+            xtype : 'enumdropdown',
+            fieldLabel: _('Average Monthly Income'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.avgincome',
+			enumId : CmFinoFIX.TagID.AvgIncomeList,
+			emptyText : _('<select one..>'),
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.Income._name
+        },
+     	{
+            xtype : 'textfield',
+            fieldLabel: _('Account Opening Purpose'),
+            emptyText:_(''),
+            anchor : '100%',
+			itemId : 'subeditmaker.form.GoalOfAcctOpening',
+			value : 'Transaksi',
+            name: CmFinoFIX.message.JSSubscriberEdit.Entries.GoalOfAcctOpening._name
+        }
+    ]
 };
 Ext.reg("SubscriberEditMakerForm", mFino.widget.SubscriberEditMakerForm);

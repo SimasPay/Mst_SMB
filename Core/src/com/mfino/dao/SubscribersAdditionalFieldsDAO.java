@@ -23,7 +23,7 @@ public class SubscribersAdditionalFieldsDAO extends BaseDAO<SubscriberAddiInfo> 
 
         if (query.getSubscriberID() != null) {
         	criteria.createAlias(SubscriberAddiInfo.FieldName_SubscriberID, "subscriber");
-            criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_RecordID, query.getSubscriberID()));
+            criteria.add(Restrictions.eq("subscriber."+Subscriber.FieldName_RecordID, query.getSubscriberID().longValue()));
         }
          processBaseQuery(query, criteria);
          List<SubscriberAddiInfo> results = criteria.list();

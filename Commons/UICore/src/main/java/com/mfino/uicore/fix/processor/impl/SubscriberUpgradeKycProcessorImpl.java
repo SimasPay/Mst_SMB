@@ -21,7 +21,9 @@ import com.mfino.dao.SubscriberDAO;
 import com.mfino.dao.SubscriberGroupDao;
 import com.mfino.dao.SubscriberMDNDAO;
 import com.mfino.dao.SubscriberUpgradeDataDAO;
+import com.mfino.dao.SubscribersAdditionalFieldsDAO;
 import com.mfino.dao.query.PocketQuery;
+import com.mfino.dao.query.SubscribersAdditionalFieldsQuery;
 import com.mfino.domain.Address;
 import com.mfino.domain.BranchCodes;
 import com.mfino.domain.ChannelCode;
@@ -331,18 +333,41 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 				subscriber.setKycLevel(unBankedLevel);
 				subscriberDao.save(subscriber);
 
-				
-				SubscriberAddiInfo subscriberAddInfo = new SubscriberAddiInfo();
-				subscriberAddInfo.setNationality(upgradeData.getNationality());
-				subscriberAddInfo.setWork(upgradeData.getJob());
-				subscriberAddInfo.setOtherwork(upgradeData.getOtherJob());
-				subscriberAddInfo.setIncome(upgradeData.getAvgMonthlyIncome());
-				subscriberAddInfo.setSourceoffund(upgradeData.getSourceOfFund());
-				subscriberAddInfo.setGoalofacctopening(upgradeData.getEmoneyOpeningPurpose());
-				subscriberAddInfo.setMaritalStatus(upgradeData.getMaritalStatus());
-				subscriberAddInfo.setSubscriber(subscriber);
-				
-				subscriberAdditionalFieldsService.save(subscriberAddInfo);
+				SubscribersAdditionalFieldsDAO subAddFieldDao = DAOFactory.getInstance().getSubscribersAdditionalFieldsDAO();
+				SubscribersAdditionalFieldsQuery query = new SubscribersAdditionalFieldsQuery();
+				query.set_SubscriberID(subscriber.getId().intValue());
+				List<SubscriberAddiInfo> addInfo = subAddFieldDao.get(query);
+				if(addInfo != null && !addInfo.isEmpty()) {
+					for (SubscriberAddiInfo subscriberAddInfo : addInfo) {
+						subscriberAddInfo.setNationality(upgradeData.getNationality());
+						subscriberAddInfo.setWork(upgradeData.getJob());
+						if(upgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
+							subscriberAddInfo.setOtherwork(upgradeData.getOtherJob());
+						}else {
+							subscriberAddInfo.setOtherwork(null);
+						}
+						subscriberAddInfo.setOtherwork(upgradeData.getOtherJob());
+						subscriberAddInfo.setIncome(upgradeData.getAvgMonthlyIncome());
+						subscriberAddInfo.setSourceoffund(upgradeData.getSourceOfFund());
+						subscriberAddInfo.setGoalofacctopening(upgradeData.getEmoneyOpeningPurpose());
+						subscriberAddInfo.setMaritalStatus(upgradeData.getMaritalStatus());
+						subscriberAddInfo.setSubscriber(subscriber);
+						subAddFieldDao.save(subscriberAddInfo);
+						log.info("updated subscriber additional info: "+ subscriberAddInfo.getId());
+					}
+				}else {
+					SubscriberAddiInfo subscriberAddInfo = new SubscriberAddiInfo();
+					subscriberAddInfo.setNationality(upgradeData.getNationality());
+					subscriberAddInfo.setWork(upgradeData.getJob());
+					subscriberAddInfo.setOtherwork(upgradeData.getOtherJob());
+					subscriberAddInfo.setIncome(upgradeData.getAvgMonthlyIncome());
+					subscriberAddInfo.setSourceoffund(upgradeData.getSourceOfFund());
+					subscriberAddInfo.setGoalofacctopening(upgradeData.getEmoneyOpeningPurpose());
+					subscriberAddInfo.setMaritalStatus(upgradeData.getMaritalStatus());
+					subscriberAddInfo.setSubscriber(subscriber);
+					subAddFieldDao.save(subscriberAddInfo);
+					log.info("updated subscriber additional info: "+ subscriberAddInfo.getId());
+				}
 				
 				subscriberMDN.setIdtype(upgradeData.getIdType());
 				subscriberMDN.setIdnumber(upgradeData.getIdNumber());

@@ -226,7 +226,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
 							itemId : 'subupgradekyc.form.GoalOfAcctOpening',
 							value : 'Transaksi',
                             name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.GoalOfAcctOpening._name
-                        },
+                        }
             ]
 		},
         {

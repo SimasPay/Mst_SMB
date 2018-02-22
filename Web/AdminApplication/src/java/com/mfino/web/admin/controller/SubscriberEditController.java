@@ -1,6 +1,7 @@
 package com.mfino.web.admin.controller;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -207,6 +208,16 @@ public class SubscriberEditController {
 	        	upgradeData.setCreatedby(userService.getCurrentUser().getUsername());
 	        	upgradeData.setCreatetime(new Timestamp(System.currentTimeMillis()));
 	        	upgradeData.setSubscriberStatus(StringUtils.isBlank(subscriberStatusReq) ? subscriber.getStatus() : subscriberStatusInt);
+	        	
+	        	upgradeData.setNationality(request.getParameter("Nationality"));
+            	upgradeData.setJob(request.getParameter("Work"));
+            	upgradeData.setGender(request.getParameter("Gender"));
+            	upgradeData.setMaritalStatus(request.getParameter("MaritalStatus"));
+            	upgradeData.setSourceOfFund(request.getParameter("SourceOfFund"));
+            	upgradeData.setAvgMonthlyIncome((StringUtils.isBlank(request.getParameter("Income"))) ? BigDecimal.ZERO : new BigDecimal(request.getParameter("Income")));
+            	upgradeData.setEmoneyOpeningPurpose(request.getParameter("GoalOfAcctOpening"));
+            	upgradeData.setOtherJob(request.getParameter("OtherWork"));
+            	
 	        	
 	        	if(StringUtils.isNotBlank(idCardpath))
 	        		upgradeData.setIdCardScanPath(idCardpath);
