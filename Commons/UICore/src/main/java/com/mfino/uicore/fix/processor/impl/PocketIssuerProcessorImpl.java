@@ -186,6 +186,9 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		if (e.getInterestRate() != null) {
 			p.setInterestrate(e.getInterestRate());
 		}
+		if(e.getMaxIncommingAmountPerMonth() != null) {
+			p.setMaxincommingamountpermonth(e.getMaxIncommingAmountPerMonth());
+		}
 	}
 
 	private void updateMessage(PocketTemplate p,
@@ -245,6 +248,8 @@ public class PocketIssuerProcessorImpl extends BaseFixProcessor implements Pocke
 		entry.setMaxTransactionsPerWeek((p.getMaxtransactionsperweek()).intValue());
 		entry.setMaxTransactionsPerMonth((p.getMaxtransactionspermonth()).intValue());
 		entry.setMinTimeBetweenTransactions((p.getMintimebetweentransactions()).intValue());
+		entry.setMaxIncommingAmountPerMonth(p.getMaxincommingamountpermonth());
+		
 		if (p.getBankcode() != null) {
 			entry.setBankCode(p.getBankcode().intValue());
 		}

@@ -985,6 +985,7 @@
 				<field name="IsSuspencePocket" required="N"/> 
 				<field name="IsSystemPocket" required="N"/>
 				<field name="InterestRate" required="N"/> 
+				<field name="MaxIncommingAmountPerMonth" required="N" />
 			</group>
 		</message>
 		<message name="JSPocketTemplateConfig" msgtype="1364" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
@@ -27049,656 +27050,658 @@ ERROR:Mismatch of  mdn type and app type
 		</field>
 		<field number="7047" name="AdditionalInfo" type="STRING" />
 		
-	<field number="7048" name="IntegrationName" type="STRING"/>
-    <field number="7049" name="AuthenticationKey" type="DigestedPIN" />
-    <field number="7050" name="IsAuthenticationKeyEnabled" type="Boolean"/>
-    <field number="7051" name="IntegrationID" type="RecordID" />
-    <field number="7052" name="IPAddress" type="STRING" />
-    <field number="7053" name="IsLoginEnabled" type="Boolean"/>
-    <field number="7054" name="InstitutionIDSearch" type="STRING" />
-	<field number="7055" name="IntegrationNameSearch" type="STRING" />
-	<field number="7056" name="PartnerSearch" type="STRING" /> 
-	<field number="7057" name="MFSBillerSearch" type="STRING" />  
-	<field number="7058" name="IntegrationPartnerMappingID" type="INT64" /> 
-	<field number="7059" name="ListOfIPsForIntegration" type="STRING" /> 
-	<field number="7060" name="IPMappingID" type="RecordID" />
-    <field number="7061" name="ResetAuthenticationKey" type="Boolean"/>
-    <field number="7062" name="PasswordHistory" type="STRING" /> 
-    <field number="7063" name="IsLoggedIn" type="Boolean" />
-    <field number="7064" name="TotalSelectedPartners" type="INT32" />
-    <field number="7066" name="ListOfSelectedPartners" type="STRING" />
-    <field number="7067" name="AmountPerPartner" type="STRING" />
-    <field number="7068" name="TotalAmountToDistribute" type="STRING" />
-    <field number="7069" name="AvailableBalance" type="STRING" />
-    <field number="7070" name="IntegrationTransactionID" type="INT64" />
-    <field number="7071" name="IsSystemUser" type="Boolean"/>
-    <field number="7072" name="PriorityLevel" type="INT32"/>
-    <field number="7073" name="ApprovalRequired" type="Boolean"/>
-	<field number="7075" name="AuthorizingFirstName" type="STRING"/>
-	<field number="7076" name="AuthorizingLastName" type="STRING"/>
-	<field number="7077" name="AuthorizingIdNumber" type="STRING"/>
-	<field number="7078" name="ApprovalComments" type="STRING"/>
-	<field number="7079" name="IsAppTypeCheckEnabled" type="Boolean"/>
-	<field number="7080" name="ApprovalIdNumber" type="STRING"/>
-	<field number="7081" name="IntegrationType" type="STRING"/>
-	<field number="7082" name="ReconcilationID1" type="STRING"/>
-	<field number="7083" name="ReconcilationID2" type="STRING"/>
-	<field number="7084" name="ReconcilationID3" type="STRING"/>
-	<field number="7085" name="PtcID" type="STRING"/>
-	<field number="7086" name="ShareType" type="INT32">
-		<value enum="1" description="TransactionCharge" />
-		<value enum="2" description="FundReversals" />
-	</field>
-	<field number="7087" name="ShareHolderType" type="INT32">
-		<value enum="1" description="Source" />
-		<value enum="2" description="Destination" />
-		<value enum="3" description="RegistrationPartner" />
-		<value enum="4" description="Partner" />
-	</field>
-	<field number="7088" name="FundDefinitionID" type="RecordID"/>
-	<field number="7089" name="AvailableAmount" type="NEWAMT"/>
-	<field number="7090" name="WithdrawalMDN" type="STRING"/>
-	<field number="7091" name="Category" type="INT32">
-			<value enum="1" description="PartnerCode" />
-			<value enum="2" description="IntegrationID" />
-			<value enum="3" description="MerchantID" />
-	</field>
-	<field number="7092" name="ExpiryType" type="INT32" >
-			<value enum="1" description="Fund" />
-			<value enum="2" description="FAC" />
-			<value enum="3" description="OTP" />
-			<value enum="4" description="Pin" />
-	</field>
-	<field number="7093" name="ExpiryMode" type="INT32">
-			<value enum="1" description="DurationInSecs"/>
-			<value enum="2" description="CutOffTime"/>
-	</field>
-	<field number="7094" name="PurposeID" type="RecordID"/>
-	<field number="7095" name="FACPrefix" type="STRING"/>
-	<field number="7096" name="FACLength" type="INT32"/>
-	<field number="7097" name="MaxFailAttemptsAllowed" type="INT32"/>
-	<field number="7098" name="OnFundAllocationTimeExpiry" type="RecordID"/>
-	<field number="7099" name="OnFailedAttemptsExceeded" type="RecordID"/>
-	<field number="7100" name="BenOpCode" type="STRING"/>
-	<field number="7101" name="InternalTxnType" type="STRING"/>
-	<field number="7102" name="LedgerType" type="STRING"/>
-	<field number="7103" name="LedgerStatus" type="STRING"/>
-	<field number="7104" name="PinBlock" type="STRING"/>
-	<field number="7105" name="DestBankName" type="STRING"/>
-	<field number="7106" name="Remarks" type="STRING"/>
-	<field number="7107" name="InterestRate" type="NEWAMT"/>
-	<field number="7108" name="Year" type="INT32"/>
-	<field number="7109" name="AverageMonthlyBalance" type="NEWAMT"/>
-	<field number="7110" name="InterestCalculated" type="NEWAMT"/>
-	<field number="7111" name="AgentCommissionCalculated" type="NEWAMT"/>
-	<field number="7112" name="OpenAccountFee" type="NEWAMT"/>
-	<field number="7113" name="CustomerBalanceFee" type="NEWAMT"/>
-	<field number="7114" name="IsTrfToSuspense" type="BOOLEAN"/>
-	<field number="7120" name="ProfileImagePath" type="STRING"/>
-	<field number="8000" name="GenerationOfOTPOnFailure" type="RecordID"/>
-	<field number="8001" name="ExpiryID" type="RecordID" />
-	<field number="8002" name="FundAllocationId" type="RecordID"/>
-	<field number="8003" name="DistributedAmount" type="NEWAMT"/>
-	<field number="8004" name="DistributionStatus" type="INT32">
-			<value enum="1" description="INITIALIZED" />
-			<value enum="2" description="TRANSFER_COMPLETED" />
-			<value enum="3" description="TRANSFER_FAILED" />
-	</field>
-	<field number="8005" name="DistributionType" type="INT32">
-			<value enum="1" description="Withdrawal"/>
-			<value enum="2" description="Reversal"/>
-	</field>
-	<field number="8006" name="ExpiryDescription" type="STRING"/>
-	<field number="8007" name="ExpiryValue" type="INT64" />
-	<field number="8008" name="FundEventType" type="INT32">
-			<value enum="1" description="Reversal" />
-			<value enum="2" description="RegenerateFACAuto" />
-			<value enum="3" description="RegenerateFACManual" />
-	</field>
-	<field number="8009" name="FundEventDescription" type="STRING" />
-	<field number="8010" name="IsMultipleWithdrawalAllowed" type="BOOLEAN" />
-	<field number="8011" name="Code" type="STRING" />
-	<field number="8012" name="FailureReasonCode" type="INT32"/>
-	<field number="8013" name="WithdrawalFailureAttempt" type="INT32"/>
-	<field number="8014" name="ExpiryTime" type="UTCTIMESTAMP"/>
-
-<field number="8015" name="RefundAccountNumber" type="STRING"/>
-    <field number="8016" name="RefundMDNID" type="INT64"/>
-    <field number="8017" name="RefundPocketID" type="INT64"/>
-    <field number="8018" name="RefundSctlID" type="INT64"/>
-    <field number="8019" name="MCStatus" type="INT32">
-			<value enum="0" description="INITIALIZED" />
-			<value enum="1" description="REFUNDED" />
-			<value enum="2" description="MOVED_TO_NATIONAL_TREASURY" />
-	</field>
-	<field number="8020" name="ToBankAccount" type="Boolean"/>
-	<field number="8021"  name="SettlementMDN" type="STRING"/>
-	<field number="8022"  name="SettlementAccountNumber" type="STRING"/>
-	<field number="8023"  name="GravedMDN" type="STRING"/>
-	<field number="8024"  name="SettlementMdnID" type="RecordID"/>
-	<field number="8025" name="ApprovalState" type="INT32">
-			<value enum="0" description="none"/>
-			<value enum="1" description="Approved"/>
-			<value enum="2" description="Rejected"/>
-	</field>	
-	<field number="8026" name="AgentCashInTrxnStatus" type="INT32">
-			<value enum="1" description="Initialized"/>
-			<value enum="2" description="Processing" />
-			<value enum="3" description="Completed" />
-			<value enum="4" description="Failed" />
-	</field>
-	<field number="8027" name="AgentCashInTrxnStatusReason" type="STRING" />
-	<field number="8028" name="AgentCashInID" type="RecordID" />
-	<field number="8029" name="AgentCashInTrxnStatusText" type="STRING" />	
-	<field number="8030" name="ScheduleTemplateID" type="RecordID"/>
-	<field number="8031" name="ModeType" type="STRING">
-			<value enum="1" description="Minutes"/>
-			<value enum="2" description="Hourly"/>
-			<value enum="3" description="Daily"/>
-			<value enum="4" description="Weekly"/>
-			<value enum="5" description="Monthly"/>
-			<value enum="6" description="Advanced"/>
-			<value enum="7" description="Time"/>
-	</field>
-	<field number="8032" name="TimeType" type="INT32">
-			<value enum="1" description="Cyclic"/>
-			<value enum="2" description="HHMMSS"/>
-			</field>
-	<field number="8033" name="DayOfWeek" type="STRING"/>
-	<field number="8034" name="DayOfMonth" type="STRING"/>
-	<field number="8035" name="Cron" type="STRING"/>
-	<field number="8036" name="StlID" type="RecordID"/>
-	<field number="8037" name="SettlementStatus" type="INT32">
-		<value enum="0" description="Initiated" />
-		<value enum="1" description="Completed" />
-		<value enum="2" description="Failed" />
-		<value enum="3" description="Settled" />
-	</field>
-	<field number="8038" name="Month" type="STRING"/>
-	<field number="8039" name="TimerValueHH" type="STRING"/>
-	<field number="8040" name="TimerValueMM" type="STRING"/>
-	<field number="8041" name="SCTLSettlementMapID" type="RecordID"/>
-	<field number="8042" name="CutoffTime" type="RecordID" />
-	
-	<field number="8043"  name="TransactionFlowID" type="RecordID"/>
-	<field number="8044"  name="ExecutionOrder" type="INT32"/>
-	<field number="8045" name="FlowStepID" type="RecordID" />
-	<field number="8046" name="RequestTypeID" type="RecordID" />
-	<field number="8047" name="ReconID" type="STRING" />
-	<field number="8048" name="ResponseStatus" type="STRING" />
-	<field number="8049" name="MappedKey" type="STRING" /> 
-	<field number="8050" name="MappedValue" type="STRING" /> 
-	<field number="8051" name="InteractionSummaryID" type="RecordID" />  
-	<field number="8052" name="OnFundAllocationTimeExpiryText" type="STRING"/>
-	<field number="8053" name="OnFailedAttemptsExceededText" type="STRING" />
-	<field number="8054" name="GenerationOfOTPOnFailureText" type="STRING" />
-	<field number="8055" name="PurposeCode" type="STRING"/>
-	<field number="8056" name="PurposeIDSearch" type="STRING"/>
-	<field number="8057" name="CategoryText" type="STRING"/>
-	<field number="8058" name="ExpiryTypeText" type="STRING"/>
-	<field number="8059" name="ExpiryModeText" type="STRING"/>
-	<field number="8060" name="ModeSearch" type="STRING"/> 
-	<field number="8061" name="IsChrgDstrbApplicableToSrcSub" type="BOOLEAN" />
-	<field number="8062" name="IsChrgDstrbApplicableToDestSub" type="BOOLEAN" />
-	<field number="8063" name="TransactionIdentifier" type="STRING"/>
-	<field number="8064" name="Charge" type="STRING"/>
-	<field number="8065" name="MinCharge" type="STRING"/>
-	<field number="8066" name="MaxCharge" type="STRING"/>
-	<field number="8067" name="ActualSharePercentage" type="STRING" />
-	<field number="8068" name="MinSharePercentage" type="STRING" />
-	<field number="8069" name="MaxSharePercentage" type="STRING" />
-	<field number="8070" name="IsHierarchyTabPartnerIDSearch" type="BOOLEAN" />
-	<field number="8071" name="ChargesIncluded" type="BOOLEAN" >
-	</field>
-	<field number="8072" name="DataCategory" type="STRING" />
-	<field number="8073" name="Version" type="STRING" />
-	
-	<field number="8074" name="NotificationReceiverType" type="INT" comment="this is a bit mask field.Increment in powers of 2" Map="Y">
+		<field number="7048" name="IntegrationName" type="STRING"/>
+	    <field number="7049" name="AuthenticationKey" type="DigestedPIN" />
+	    <field number="7050" name="IsAuthenticationKeyEnabled" type="Boolean"/>
+	    <field number="7051" name="IntegrationID" type="RecordID" />
+	    <field number="7052" name="IPAddress" type="STRING" />
+	    <field number="7053" name="IsLoginEnabled" type="Boolean"/>
+	    <field number="7054" name="InstitutionIDSearch" type="STRING" />
+		<field number="7055" name="IntegrationNameSearch" type="STRING" />
+		<field number="7056" name="PartnerSearch" type="STRING" /> 
+		<field number="7057" name="MFSBillerSearch" type="STRING" />  
+		<field number="7058" name="IntegrationPartnerMappingID" type="INT64" /> 
+		<field number="7059" name="ListOfIPsForIntegration" type="STRING" /> 
+		<field number="7060" name="IPMappingID" type="RecordID" />
+	    <field number="7061" name="ResetAuthenticationKey" type="Boolean"/>
+	    <field number="7062" name="PasswordHistory" type="STRING" /> 
+	    <field number="7063" name="IsLoggedIn" type="Boolean" />
+	    <field number="7064" name="TotalSelectedPartners" type="INT32" />
+	    <field number="7066" name="ListOfSelectedPartners" type="STRING" />
+	    <field number="7067" name="AmountPerPartner" type="STRING" />
+	    <field number="7068" name="TotalAmountToDistribute" type="STRING" />
+	    <field number="7069" name="AvailableBalance" type="STRING" />
+	    <field number="7070" name="IntegrationTransactionID" type="INT64" />
+	    <field number="7071" name="IsSystemUser" type="Boolean"/>
+	    <field number="7072" name="PriorityLevel" type="INT32"/>
+	    <field number="7073" name="ApprovalRequired" type="Boolean"/>
+		<field number="7075" name="AuthorizingFirstName" type="STRING"/>
+		<field number="7076" name="AuthorizingLastName" type="STRING"/>
+		<field number="7077" name="AuthorizingIdNumber" type="STRING"/>
+		<field number="7078" name="ApprovalComments" type="STRING"/>
+		<field number="7079" name="IsAppTypeCheckEnabled" type="Boolean"/>
+		<field number="7080" name="ApprovalIdNumber" type="STRING"/>
+		<field number="7081" name="IntegrationType" type="STRING"/>
+		<field number="7082" name="ReconcilationID1" type="STRING"/>
+		<field number="7083" name="ReconcilationID2" type="STRING"/>
+		<field number="7084" name="ReconcilationID3" type="STRING"/>
+		<field number="7085" name="PtcID" type="STRING"/>
+		<field number="7086" name="ShareType" type="INT32">
+			<value enum="1" description="TransactionCharge" />
+			<value enum="2" description="FundReversals" />
+		</field>
+		<field number="7087" name="ShareHolderType" type="INT32">
 			<value enum="1" description="Source" />
 			<value enum="2" description="Destination" />
-			<value enum="4" description="OnBehalfOfSubscriber" />
-	</field>
-	<field number="8075" name="SendNotificationStatus" type="INT" >
-			<value enum="1" description="Success" />
+			<value enum="3" description="RegistrationPartner" />
+			<value enum="4" description="Partner" />
+		</field>
+		<field number="7088" name="FundDefinitionID" type="RecordID"/>
+		<field number="7089" name="AvailableAmount" type="NEWAMT"/>
+		<field number="7090" name="WithdrawalMDN" type="STRING"/>
+		<field number="7091" name="Category" type="INT32">
+				<value enum="1" description="PartnerCode" />
+				<value enum="2" description="IntegrationID" />
+				<value enum="3" description="MerchantID" />
+		</field>
+		<field number="7092" name="ExpiryType" type="INT32" >
+				<value enum="1" description="Fund" />
+				<value enum="2" description="FAC" />
+				<value enum="3" description="OTP" />
+				<value enum="4" description="Pin" />
+		</field>
+		<field number="7093" name="ExpiryMode" type="INT32">
+				<value enum="1" description="DurationInSecs"/>
+				<value enum="2" description="CutOffTime"/>
+		</field>
+		<field number="7094" name="PurposeID" type="RecordID"/>
+		<field number="7095" name="FACPrefix" type="STRING"/>
+		<field number="7096" name="FACLength" type="INT32"/>
+		<field number="7097" name="MaxFailAttemptsAllowed" type="INT32"/>
+		<field number="7098" name="OnFundAllocationTimeExpiry" type="RecordID"/>
+		<field number="7099" name="OnFailedAttemptsExceeded" type="RecordID"/>
+		<field number="7100" name="BenOpCode" type="STRING"/>
+		<field number="7101" name="InternalTxnType" type="STRING"/>
+		<field number="7102" name="LedgerType" type="STRING"/>
+		<field number="7103" name="LedgerStatus" type="STRING"/>
+		<field number="7104" name="PinBlock" type="STRING"/>
+		<field number="7105" name="DestBankName" type="STRING"/>
+		<field number="7106" name="Remarks" type="STRING"/>
+		<field number="7107" name="InterestRate" type="NEWAMT"/>
+		<field number="7108" name="Year" type="INT32"/>
+		<field number="7109" name="AverageMonthlyBalance" type="NEWAMT"/>
+		<field number="7110" name="InterestCalculated" type="NEWAMT"/>
+		<field number="7111" name="AgentCommissionCalculated" type="NEWAMT"/>
+		<field number="7112" name="OpenAccountFee" type="NEWAMT"/>
+		<field number="7113" name="CustomerBalanceFee" type="NEWAMT"/>
+		<field number="7114" name="IsTrfToSuspense" type="BOOLEAN"/>
+		<field number="7120" name="ProfileImagePath" type="STRING"/>
+		<field number="8000" name="GenerationOfOTPOnFailure" type="RecordID"/>
+		<field number="8001" name="ExpiryID" type="RecordID" />
+		<field number="8002" name="FundAllocationId" type="RecordID"/>
+		<field number="8003" name="DistributedAmount" type="NEWAMT"/>
+		<field number="8004" name="DistributionStatus" type="INT32">
+				<value enum="1" description="INITIALIZED" />
+				<value enum="2" description="TRANSFER_COMPLETED" />
+				<value enum="3" description="TRANSFER_FAILED" />
+		</field>
+		<field number="8005" name="DistributionType" type="INT32">
+				<value enum="1" description="Withdrawal"/>
+				<value enum="2" description="Reversal"/>
+		</field>
+		<field number="8006" name="ExpiryDescription" type="STRING"/>
+		<field number="8007" name="ExpiryValue" type="INT64" />
+		<field number="8008" name="FundEventType" type="INT32">
+				<value enum="1" description="Reversal" />
+				<value enum="2" description="RegenerateFACAuto" />
+				<value enum="3" description="RegenerateFACManual" />
+		</field>
+		<field number="8009" name="FundEventDescription" type="STRING" />
+		<field number="8010" name="IsMultipleWithdrawalAllowed" type="BOOLEAN" />
+		<field number="8011" name="Code" type="STRING" />
+		<field number="8012" name="FailureReasonCode" type="INT32"/>
+		<field number="8013" name="WithdrawalFailureAttempt" type="INT32"/>
+		<field number="8014" name="ExpiryTime" type="UTCTIMESTAMP"/>
+	
+	<field number="8015" name="RefundAccountNumber" type="STRING"/>
+	    <field number="8016" name="RefundMDNID" type="INT64"/>
+	    <field number="8017" name="RefundPocketID" type="INT64"/>
+	    <field number="8018" name="RefundSctlID" type="INT64"/>
+	    <field number="8019" name="MCStatus" type="INT32">
+				<value enum="0" description="INITIALIZED" />
+				<value enum="1" description="REFUNDED" />
+				<value enum="2" description="MOVED_TO_NATIONAL_TREASURY" />
+		</field>
+		<field number="8020" name="ToBankAccount" type="Boolean"/>
+		<field number="8021"  name="SettlementMDN" type="STRING"/>
+		<field number="8022"  name="SettlementAccountNumber" type="STRING"/>
+		<field number="8023"  name="GravedMDN" type="STRING"/>
+		<field number="8024"  name="SettlementMdnID" type="RecordID"/>
+		<field number="8025" name="ApprovalState" type="INT32">
+				<value enum="0" description="none"/>
+				<value enum="1" description="Approved"/>
+				<value enum="2" description="Rejected"/>
+		</field>	
+		<field number="8026" name="AgentCashInTrxnStatus" type="INT32">
+				<value enum="1" description="Initialized"/>
+				<value enum="2" description="Processing" />
+				<value enum="3" description="Completed" />
+				<value enum="4" description="Failed" />
+		</field>
+		<field number="8027" name="AgentCashInTrxnStatusReason" type="STRING" />
+		<field number="8028" name="AgentCashInID" type="RecordID" />
+		<field number="8029" name="AgentCashInTrxnStatusText" type="STRING" />	
+		<field number="8030" name="ScheduleTemplateID" type="RecordID"/>
+		<field number="8031" name="ModeType" type="STRING">
+				<value enum="1" description="Minutes"/>
+				<value enum="2" description="Hourly"/>
+				<value enum="3" description="Daily"/>
+				<value enum="4" description="Weekly"/>
+				<value enum="5" description="Monthly"/>
+				<value enum="6" description="Advanced"/>
+				<value enum="7" description="Time"/>
+		</field>
+		<field number="8032" name="TimeType" type="INT32">
+				<value enum="1" description="Cyclic"/>
+				<value enum="2" description="HHMMSS"/>
+				</field>
+		<field number="8033" name="DayOfWeek" type="STRING"/>
+		<field number="8034" name="DayOfMonth" type="STRING"/>
+		<field number="8035" name="Cron" type="STRING"/>
+		<field number="8036" name="StlID" type="RecordID"/>
+		<field number="8037" name="SettlementStatus" type="INT32">
+			<value enum="0" description="Initiated" />
+			<value enum="1" description="Completed" />
 			<value enum="2" description="Failed" />
-			<value enum="3" description="Sending" />
-			<value enum="4" description="ToBeSent" />
-	</field>
-	<field number="8076" name="SourceAddress" type="STRING"/> 	
-	<field number="8077" name="NotificationLogID" type="RecordID"/>
-	<field number="8078" name="NotificationReceiverTypeText" type="STRING"/>
-	<field number="8079" name="NotificationLogDetailsID" type="RecordID"/>
-	<field number="8080" name="IsDuplicateSMS" type="Boolean" />
-	<field number="8081" name="Count" type="INT32" />
-	<field number="8082" name="SuccessfulNotificationsCount" type="INT32" />
-	<field number="8083" name="LastNotificationTime" type="UTCTIMESTAMP" />
-	<field number="8084" name="ActorChannelMappingID" type="RecordID" />
-	<field number="8085" name="IsSensitiveData" type="Boolean" />
-	<field number="8086" name="ListOfNotificationLogIDs" type="STRING"/>
-	<field number="8087" name="ProcessingCodeDE3" type="STRING" />
-	<field number="8088" name="SourceAccountDE102" type="STRING" />
-	<field number="8089" name="DestinationAccountDE103" type="STRING" />
-	<field number="8090" name="MPan" type="STRING" />
-	<field number="8091" name="AdjustmentStatus" type="INT32">
-		<value enum="0" description="Requested" />
-		<value enum="1" description="Approved" />
-		<value enum="2" description="Processing" />
-		<value enum="3" description="Rejected" />
-		<value enum="4" description="Failed" />
-		<value enum="5" description="Completed" />
+			<value enum="3" description="Settled" />
+		</field>
+		<field number="8038" name="Month" type="STRING"/>
+		<field number="8039" name="TimerValueHH" type="STRING"/>
+		<field number="8040" name="TimerValueMM" type="STRING"/>
+		<field number="8041" name="SCTLSettlementMapID" type="RecordID"/>
+		<field number="8042" name="CutoffTime" type="RecordID" />
 		
-	</field>
-	<field number="8092" name="AdjustmentsLogID" type="RecordID" />
-	<field number="8093" name="AdjustmentStatusText" type="STRING" />
-	<field number="8094" name="Msisdn" type="STRING" />
-	<field number="8095" name="PaidFlag" type="STRING" />
-	<field number="8096" name="BirthDate" type="UTCTIMESTAMP" />
-	<field number="8097" name="Address" type="STRING" />
-	<field number="8098" name="MarketingCatg" type="STRING" />
-	<field number="8099" name="Product" type="STRING" />
-	<field number="8100" name="LedgerID" type="RecordID" />
-	<field number="8101" name="AdjustmentType" type="INT32" />
-	<field number="8102" name="ReconcilationID4" type="STRING"/>
-    <field number="8103" name="PermissionGroupID" type="RecordID" />
-	<field number="8104" name="PermissionGroupName" type="STRING" />
-	<field number="8105" name="MFAMode" type="INT32">
-			<value enum="0" description="None" />
-			<value enum="1" description="OTP" />
-			<value enum="2" description="SecurityQuestion" />
-	</field>
-	<field number="8106" name="MFAValue" type="STRING" />
-	<field number="8107" name="DestinationType" type="STRING"/>
-	<field number="8108" name="RoleID" type="RecordID" />
-	<field number="8109" name="TxnRuleKey" type="STRING" />
-	<field number="8110" name="TxnRuleKeyType" type="STRING" />
-	<field number="8111" name="TxnRuleKeyPriority" type="INT32" />
-	<field number="8112" name="TxnRuleKeyComparision" type="STRING" />
-	<field number="8113" name="TxnRuleValue" type="STRING" />
-	<field number="8114" name="TxnRuleComparator" type="STRING" />	
-	<field number="8115" name="TxnRuleAddnInfoID" type="RecordID" />
-	<field number="8116" name="RuleKeyID" type="RecordID" />
-	<field number="8117" name="BookingDate" type="UTCTIMESTAMP"/>
-	<field number="8118" name="OpeningBalance" type="Balance"/>
-	<field number="8119" name="ClosingBalance" type="Balance"/>
-	<field number="8120" name="TotalCredit" type="Amount"/>
-	<field number="8121" name="TotalDebit" type="Amount"/>
-	<field number="8122" name="NetTurnOver" type="Amount"/>
-	<field number="8123" name="PickUpDateTime" type="UTCTIMESTAMP"/>
-	<field number="8124" name="StatusOnPickup" type="INT32">
-			<value enum="0" description="Initialized" />
-			<value enum="1" description="Active" />
-			<value enum="2" description="PendingRetirement" />
-			<value enum="3" description="Retired" />
-			<value enum="4" description="Registered" />
-			<value enum="5" description="Suspend"/>
-			<value enum="6" description="InActive"/>
-			<value enum="7" description="NotRegistered"/>
-	</field>
-	<field number="8125" name="BulkUploadFileEntryStatus" type="INT32" unused="Y">
-			<value enum="1" description="Initialized" />
+		<field number="8043"  name="TransactionFlowID" type="RecordID"/>
+		<field number="8044"  name="ExecutionOrder" type="INT32"/>
+		<field number="8045" name="FlowStepID" type="RecordID" />
+		<field number="8046" name="RequestTypeID" type="RecordID" />
+		<field number="8047" name="ReconID" type="STRING" />
+		<field number="8048" name="ResponseStatus" type="STRING" />
+		<field number="8049" name="MappedKey" type="STRING" /> 
+		<field number="8050" name="MappedValue" type="STRING" /> 
+		<field number="8051" name="InteractionSummaryID" type="RecordID" />  
+		<field number="8052" name="OnFundAllocationTimeExpiryText" type="STRING"/>
+		<field number="8053" name="OnFailedAttemptsExceededText" type="STRING" />
+		<field number="8054" name="GenerationOfOTPOnFailureText" type="STRING" />
+		<field number="8055" name="PurposeCode" type="STRING"/>
+		<field number="8056" name="PurposeIDSearch" type="STRING"/>
+		<field number="8057" name="CategoryText" type="STRING"/>
+		<field number="8058" name="ExpiryTypeText" type="STRING"/>
+		<field number="8059" name="ExpiryModeText" type="STRING"/>
+		<field number="8060" name="ModeSearch" type="STRING"/> 
+		<field number="8061" name="IsChrgDstrbApplicableToSrcSub" type="BOOLEAN" />
+		<field number="8062" name="IsChrgDstrbApplicableToDestSub" type="BOOLEAN" />
+		<field number="8063" name="TransactionIdentifier" type="STRING"/>
+		<field number="8064" name="Charge" type="STRING"/>
+		<field number="8065" name="MinCharge" type="STRING"/>
+		<field number="8066" name="MaxCharge" type="STRING"/>
+		<field number="8067" name="ActualSharePercentage" type="STRING" />
+		<field number="8068" name="MinSharePercentage" type="STRING" />
+		<field number="8069" name="MaxSharePercentage" type="STRING" />
+		<field number="8070" name="IsHierarchyTabPartnerIDSearch" type="BOOLEAN" />
+		<field number="8071" name="ChargesIncluded" type="BOOLEAN" >
+		</field>
+		<field number="8072" name="DataCategory" type="STRING" />
+		<field number="8073" name="Version" type="STRING" />
+		
+		<field number="8074" name="NotificationReceiverType" type="INT" comment="this is a bit mask field.Increment in powers of 2" Map="Y">
+				<value enum="1" description="Source" />
+				<value enum="2" description="Destination" />
+				<value enum="4" description="OnBehalfOfSubscriber" />
+		</field>
+		<field number="8075" name="SendNotificationStatus" type="INT" >
+				<value enum="1" description="Success" />
+				<value enum="2" description="Failed" />
+				<value enum="3" description="Sending" />
+				<value enum="4" description="ToBeSent" />
+		</field>
+		<field number="8076" name="SourceAddress" type="STRING"/> 	
+		<field number="8077" name="NotificationLogID" type="RecordID"/>
+		<field number="8078" name="NotificationReceiverTypeText" type="STRING"/>
+		<field number="8079" name="NotificationLogDetailsID" type="RecordID"/>
+		<field number="8080" name="IsDuplicateSMS" type="Boolean" />
+		<field number="8081" name="Count" type="INT32" />
+		<field number="8082" name="SuccessfulNotificationsCount" type="INT32" />
+		<field number="8083" name="LastNotificationTime" type="UTCTIMESTAMP" />
+		<field number="8084" name="ActorChannelMappingID" type="RecordID" />
+		<field number="8085" name="IsSensitiveData" type="Boolean" />
+		<field number="8086" name="ListOfNotificationLogIDs" type="STRING"/>
+		<field number="8087" name="ProcessingCodeDE3" type="STRING" />
+		<field number="8088" name="SourceAccountDE102" type="STRING" />
+		<field number="8089" name="DestinationAccountDE103" type="STRING" />
+		<field number="8090" name="MPan" type="STRING" />
+		<field number="8091" name="AdjustmentStatus" type="INT32">
+			<value enum="0" description="Requested" />
+			<value enum="1" description="Approved" />
 			<value enum="2" description="Processing" />
-			<value enum="3" description="Completed" />
+			<value enum="3" description="Rejected" />
 			<value enum="4" description="Failed" />
-	</field>	
-	<field number="8126" name="PctId" type="INT64" />
-	<field number="8127" name="ServiceChargeDE63" type="STRING" />
-	<field number="8128" name="HPin" type="STRING" />
-	<field number="8129" name="offset" type="STRING" />
-	<field number="8131" name="HSMResponseCode" type="STRING"/>
-	<field number="8132" name="AuthorizationToken" type="STRING"/>	
-	<field number="8133" name="MessageName" type="STRING"/>
-	<field number="8134" name="FixMessage" type="BLOB"/>
-	<field number="8135" name="ProcessingStatus" type="BOOLEAN"/>
-	<field number="8136" name="BulkUploadLineData" type="BLOB"/>
-	<field number="8137" name="RetireCount" type="INT"/>
-	<field number="8138" name="PageNumber" type="INT32" />
-	<field number="8139" name="NumRecords" type="INT32" />
-	<field number="8140" name="NewEmail" type="Email"/>
-	<field number="8141" name="ConfirmEmail" type="Email"/>
-	<field number="8142" name="Nickname" type="STRING"/>
-	<field number="8143" name="IsEmailVerified" type="BOOLEAN"/>
-	<field number="8144" name="OTPStatus" type="INT32">
-			<value enum="0" description="Initialized" />
-			<value enum="1" description="FailedOrExpired" />
-			<value enum="2" description="Validated" />
-	</field>
-	<field number="8145" name="OtherMDN" type="MDN"/>
-	<field number="8146" name="ServiceChargeAmount" type="NEWAMT"/>
-	<field number="8147" name="ParentTransID" type="INT64"/>
-	<field number="8148" name="ParentIntegrationTransID" type="INT64"/>
-	<field number="8149" name="CardAlias" type="STRING"/>
-	<field number="8150" name="MerchantName" type="STRING"/>
-	<field number="8151" name="ResponseCodeString" type="STRING"/>
-	<field number="8152" name="TransactionTypeName" type="STRING"/>
-	<field number="8153" name="ServiceDefaultConfigurationID" type="RecordID"/>
-	<field number="8154" name="ServicePocketType" type="INT32">
-		<value enum="1" description="Emoney" />
-		<value enum="2" description="Bank" />
-		<value enum="3" description="Collector" />
-		<value enum="4" description="Suspence" />
-	</field>
-	<field number="8155" name="FavoriteCategoryID" type="INT64"/>	
-	<field number="8156" name="FavoriteLabel" type="STRING"/>
-	<field number="8157" name="FavoriteValue" type="STRING"/>
-	<field number="8158" name="CategoryName" type="STRING"/>	
-	<field number="8159" name="SubscriberKYCLevel" type="INT" unused="Y">
-	   <value enum="0" description="NoKyc" />
-	   <value enum="1" description="UnBanked" />
-	   <value enum="2" description="SemiBanked" />
-	   <value enum="3" description="FullyBanked" />
-	</field>
-	<field number="8160"  name="PaymentMode" type="STRING"> 
- 		<value enum="FullAmount" description="FullAmount" /> 
- 	    <value enum="FreeAmount" description="FreeAmount" /> 
- 	    <value enum="ZeroAmount" description="ZeroAmount" /> 
- 	    <value enum="Denom" description="Denom" /> 
- 	    <value enum="PackageType" description="PackageType" /> 
- 	    <value enum="HubFullAmount" description="HubFullAmount" />
- 	    <value enum="HubZeroAmount" description="HubZeroAmount" />
-		<value enum="HubFreeAmount" description="HubFreeAmount" />
- 	</field> 
-	<field number="8161" name="FromDate" type="UTCTIMESTAMP" />
-	<field number="8162" name="ToDate" type="UTCTIMESTAMP" />
-	<field number="8163" name="BillData" type="BLOB" />
-	<field number="8164" name="FavoriteCode" type="STRING"/>
-	<field number="8165" name="UserAPIKey" type="STRING"/>
-	<field number="8166" name="MerchantData" type="STRING"/>
-	<field number="8167" name="DestinationPocketStatus" type="PocketStatus" />
-	<field number="8168" name="MerchantAccount" type="STRING" />
-	<field number="8169" name="FromUpdatedTime" type="STRING" />
-	<field number="8170" name="ToUpdatedTime" type="STRING" />	
-	<field number="8171" name="IsDaily" type="BOOLEAN" />
-	<field number="8172" name="IsMonthly" type="BOOLEAN" />
-	<field number="8173" name="MoreRecordsAvailable" type="BOOLEAN" />
-	<field number="8174" name="DenominationCode" type="STRING"/>
-	<field number="8175" name="NominalAmount" type="Amount"/>
-	<field number="8176" name="Info4" type="STRING"/>
-	<field number="8177" name="Info5" type="STRING"/>
-	<field number="8178" name="OperatorMessage" type="STRING"/>
-	<field number="8179" name="OperatorCharges" type="NEWAMT"/>
-	<field number="8180" name="OtpRetryCount" type="INT32" />
-	<field number="8181" name="IsOnlineReport" type="BOOLEAN" />
-	<field number="8182" name="IsAdvice" type="BOOLEAN" />
-	<field number="8183" name="CashinFirstTimeID" type="RecordID" />
-	<field number="8184" name="IsExcelDownload" type="BOOLEAN" />
-	<field number="8185" name="DiscountAmount" type="Amount" />
-	<field number="8186" name="LoyalityName" type="STRING" />
-	<field number="8187" name="DiscountType" type="STRING" />
-	<field number="8188" name="NumberOfCoupons" type="STRING" />
-	<field number="8193" name="IsSystemPocket" type="BOOLEAN"/>
-	<field number="8194" name="Info6" type="STRING"/>
-	<field number="8195" name="Info7" type="STRING"/>
-	<field number="8196" name="Info8" type="STRING"/>
-	<field number="8197" name="TippingAmount" type="Amount" />
-	<field number="8198" name="PointsRedeemed" type="RecordID" />
-	<field number="8199" name="AmountRedeemed" type="Amount" />	
-	<field number="8231" name="BranchCodeID" type="INT64" />
-    <field number="8232" name="BranchCodeNo" type="STRING" />
-    <field number="8233" name="BranchCode" type="STRING" />
-    <field number="8234" name="BranchCodeText" type="STRING" />
-    
-    <field number="8235" name="LakuPandaiAccountType" type="STRING">
-		<value enum="1" description="BasicSavingsAccount" />
-		<value enum="2" description="AdvancedSavingsAccount" />
-	</field>	
-	<field number="8236" name="SubscriberAddressKTPID" type="INT32"/>
-	<field number="8237" name="MothersmaidenName" type="STRING"/>
-	<field number="8238" name="ISIDLifetime" type="INT32" >
-		<value enum="0" description="LifeTime_False" />
-		<value enum="1" description="LifeTime_True" />
-	</field>
-	<field number="8239" name="IDValidUntil" type="UTCTIMESTAMP" />
-	<field number="8240" name="DomAddrIdentity" type="INT32" >
-		<value enum="1" description="According_to_Identity" />
-		<value enum="2" description="Contrast_to_Identity" />
-	</field>
-	<field number="8241" name="Work" type="STRING" />
-	<field number="8242" name="Income" type="NEWAMT" />
-	<field number="8243" name="GoalOfAcctOpening" type="STRING" />
-	<field number="8244" name="SourceOfFund" type="STRING" />
-	
-	<field number="8245" name="KTPID" type="STRING" />
-	<field number="8246" name="FullName" type="STRING" />
-	<field number="8247" name="AgentMDN" type="STRING" />
-	<field number="8248" name="BankResponseStatus" type="STRING" />
-	<field number="8249" name="BankResponse" type="STRING" />
-	
-	<field number="8250" name="KTPDocumentPath" type="STRING" />
-	<field number="8251" name="SubscriberFormPath" type="STRING" />
-	<field number="8252" name="SupportingDocumentPath" type="STRING" />
-    <field number="8253" name="SubState" type="STRING" />
-    <field number="8254" name="RT" type="STRING" />
-    <field number="8255" name="RW" type="STRING" />
-    <field number="8256" name="RejectReason" type="INT32">
-    	<value enum="11" description="Others" />
-    </field>
-    <field number="8257" name="SubscriberActivity" type="INT32">
-    	<value enum="1" description="Upgrade_From_NonKyc_To_KYC"/>
-    	<value enum="2" description="Enable_MBanking_For_Emoney_Subscriber"/>
-    	<value enum="3" description="Edit_Subscriber_Details"/>
-    	<value enum="4" description="Suspend_Emoney_Pocket"/>
-    	<value enum="5" description="Release_Suspend_For_Emoney_Pocket"/>
-    	<value enum="6" description="Reset_Pin"/>
-    	<value enum="7" description="Retire_Subscriber_Emoney_Pocket"/>
-    </field>
-    <field number="8258" name="SubscriberActivityStatus" type="INT32">
-    	<value enum="0" description="Initialized"/>
-    	<value enum="1" description="Completed"/>
-    	<value enum="2" description="Failed"/>
-    </field>
-    <field number="8301"  name="AgentCode" type="STRING"/>
-	<field number="8302"  name="AgentType" type="STRING"/>
-	<field number="8303"  name="ClassificationAgent" type="STRING"/>
-	<field number="8304"  name="TypeofBusinessAgent" type="STRING"/>
-	<field number="8305"  name="ElectonicDevieused" type="STRING"/>
-	<field number="8306"  name="AgentDescription" type="STRING"/>
-	<field number="8307"  name="KCKCPKKBankSinarmas" type="STRING"/>
-	<field number="8309"  name="CIFNumber" type="STRING"/>
-	<field number="8310"  name="AccountnumberofBankSinarmas" type="STRING"/>
-	<field number="8311"  name="BranchofBankSinarmas" type="STRING"/>
-	<field number="8312"  name="NameInAccordanceIdentity" type="STRING"/>
-	<field number="8314"  name="ExpiredDate" type="STRING"/>
-	<field number="8315"  name="AlamatInAccordanceIdentity" type="STRING"/>
-	<field number="8316"  name="RTRWAl" type="STRING"/>
-	<field number="8317"  name="DistrictAl" type="STRING"/>
-	<field number="8318"  name="VillageAl" type="STRING"/>
-	<field number="8319"  name="CityAl" type="STRING"/>
-	<field number="8320"  name="PotalCodeAl" type="STRING"/>
-	<field number="8321"  name="ProvincialAl" type="STRING"/>
-	<field number="8322"  name="DomicileAddress" type="STRING"/>
-	<field number="8323"  name="AddressDomicile" type="STRING"/>
-	<field number="8324"  name="RTRWDom" type="STRING"/>
-	<field number="8325"  name="DistrictDom" type="STRING"/>
-	<field number="8326"  name="VillageDom" type="STRING"/>
-	<field number="8327"  name="CityDom" type="STRING"/>
-	<field number="8328"  name="PotalCodeDom" type="STRING"/>
-	<field number="8329"  name="ProvincialDom" type="STRING"/>
-	<field number="8330"  name="MobilePhoneNumber" type="STRING"/>
-	<field number="8331"  name="EMail" type="STRING"/>
-	<field number="8332"  name="Jobs" type="STRING"/>
-	<field number="8333"  name="AgreementNumber" type="STRING"/>
-	<field number="8334"  name="AgreementDate" type="STRING"/>
-	<field number="8335"  name="Implementationdate" type="STRING"/>
-	<field number="8336"  name="AgentCompanyName" type="STRING"/>
-	<field number="8337"  name="Businessfields" type="STRING"/>
-	<field number="8338"  name="Position" type="STRING"/>
-	<field number="8339"  name="Lengthofwork" type="STRING"/>
-	<field number="8340"  name="CompanyAddress" type="STRING"/>
-	<field number="8341"  name="RTRWCom" type="STRING"/>
-	<field number="8342"  name="DistrictCom" type="STRING"/>
-	<field number="8343"  name="VillageCom" type="STRING"/>
-	<field number="8344"  name="CityCom" type="STRING"/>
-	<field number="8345"  name="PotalCodeCom" type="STRING"/>
-	<field number="8346"  name="LatitudeLongitude" type="STRING"/>
-	<field number="8347"  name="ProvincialCom" type="STRING"/>
-	<field number="8348"  name="PhoneNumber" type="STRING"/>	
-	<field number="8349" name="TypeofBusinessAgentText" type="STRING"/>
-	<field number="8350" name="ClassificationAgentText" type="STRING"/>
-	<field number="8351" name="AgentTypeText" type="STRING"/>
-	<field number="8352" name="ElectonicDevieusedText" type="STRING"/>
-	<field number="8353" name="AgentDescriptionText" type="STRING"/>
-	<field number="8354" name="KCKCPKKBankSinarmasText" type="STRING"/>
-	<field number="8356" name="DomicileAddressText" type="STRING"/>
-	<field number="8357" name="JobsText" type="STRING"/>	
-	<field number="8359"  name="BranchSequence" type="INT32"/>
-	<field number="8360" name="MerchantAddressID2" type="RecordID" />
-	<field number="8361" name="TypeAgentObject" type="STRING"/>
-	<field number="8363" name="TypesofbusinessEntity" type="STRING"/>	
-	<field number="8364" name="NameofBusinessEntity" type="STRING"/>
-	<field number="8365" name="TaxFileNumberNPWP" type="STRING"/>
-	<field number="8366" name="StatusofBusinessSites" type="STRING"/>
-	<field number="8367" name="FacsimileNumber" type="STRING"/>
-	<field number="8368" name="Website" type="STRING"/>
-	<field number="8369" name="LegalRelationship" type="STRING"/>
-	<field number="8372" name="TypesofbusinessEntityText" type="STRING"/>
-	<field number="8373" name="StatusofBusinessSitesText" type="STRING"/>
-	<field number="8374" name="LegalRelationshipText" type="STRING"/>
-	<field number="8375" name="OtherJobs" type="STRING"/>
-	<field number="8376" name="OtherTypesofbusinessEntity" type="STRING"/>
-	<field number="8377" name="OtherStatusofBusinessSites" type="STRING"/>
-	<field number="8378" name="OtherLegalRelationship" type="STRING"/>
-	<field number="8379" name="CorpBusinessfields" type="STRING"/>
-	<field number="8380" name="corpemail" type="STRING"/>
-	<field number="8381" name="corpKTPID" type="STRING"/>
-	<field number="8382" name="corpExpiredDate" type="STRING"/>
-	<field number="8383" name="AddressInAccordanceIdentity" type="STRING"/>
-	<field number="8384" name="BusinessAddress" type="STRING"/>
-	<field number="8385" name="PlaceofBirth" type="STRING"/>
-	<field number="8386" name="DateofBirth" type="STRING"/>
-	<field number="8387" name="CompanyEmailId" type="STRING"/>
-	<field number="8388" name="UserBankBranch" type="STRING"/>
-	<field number="8389" name="BankAccountStatus" type="STRING"/>
-	<field number="8390" name="OtherField1" type="STRING"/>
-	<field number="8391" name="RTAl" type="STRING"/>
-	<field number="8392" name="RWAl" type="STRING"/>
-	<field number="8393" name="RTCom" type="STRING"/>
-	<field number="8394" name="RWCom" type="STRING"/>
-	<field number="8395" name="Latitude" type="STRING"/>
-	<field number="8396" name="Longitude" type="STRING"/>
-	<field number="8397" name="AgrmtDate" type="UTCTIMESTAMP"/>
-	<field number="8398" name="ImplDate" type="UTCTIMESTAMP"/>
-	<field number="8399" name="BankAccountStatusText" type="STRING"/>
-	<field number="8400" name="BranchofBankSinarmasText" type="STRING"/>
-	<field number="8401" name="BankBranchCode" type="INT32"/>
-	<field number="8402" name="ElectonicDeviceUsed" type="INT32"/>
-	<field number="8403" name="BankAcountStatus" type="INT32"/>
-	<field number="8404" name="AgrementDate" type="UTCTIMESTAMP"/>
-	<field number="8405" name="Implementatindate" type="UTCTIMESTAMP"/>
-	<field number="8406" name="BusinessPartnerTypeAgentText" type="STRING"/>
-	<field number="8411" name="ProvinceId" type="STRING"/>
-	<field number="8412" name="RegionId" type="STRING"/>
-	<field number="8413" name="BIRegionId" type="STRING"/>
-	<field number="8414" name="IdProvince" type="INT64"/>
-	<field number="8415" name="DistrictId" type="STRING"/>
-	<field number="8416" name="IdRegion" type="INT64"/>
-	<field number="8417" name="VillageId" type="STRING"/>
-	<field number="8418" name="IdDistrict" type="INT64"/>
-	<field number="8419" name="CloseComments" type="STRING"/>
-	<field number="8420" name="SubscriberMDN" type="STRING"/>
-	<field number="8421" name="ProductDesired" type="STRING"/>
-	<field number="8422" name="Others" type="STRING"/>
-   <field number="8423" name="SubscriberUpgradeStatus" type="INT32">
+			<value enum="5" description="Completed" />
+			
+		</field>
+		<field number="8092" name="AdjustmentsLogID" type="RecordID" />
+		<field number="8093" name="AdjustmentStatusText" type="STRING" />
+		<field number="8094" name="Msisdn" type="STRING" />
+		<field number="8095" name="PaidFlag" type="STRING" />
+		<field number="8096" name="BirthDate" type="UTCTIMESTAMP" />
+		<field number="8097" name="Address" type="STRING" />
+		<field number="8098" name="MarketingCatg" type="STRING" />
+		<field number="8099" name="Product" type="STRING" />
+		<field number="8100" name="LedgerID" type="RecordID" />
+		<field number="8101" name="AdjustmentType" type="INT32" />
+		<field number="8102" name="ReconcilationID4" type="STRING"/>
+	    <field number="8103" name="PermissionGroupID" type="RecordID" />
+		<field number="8104" name="PermissionGroupName" type="STRING" />
+		<field number="8105" name="MFAMode" type="INT32">
+				<value enum="0" description="None" />
+				<value enum="1" description="OTP" />
+				<value enum="2" description="SecurityQuestion" />
+		</field>
+		<field number="8106" name="MFAValue" type="STRING" />
+		<field number="8107" name="DestinationType" type="STRING"/>
+		<field number="8108" name="RoleID" type="RecordID" />
+		<field number="8109" name="TxnRuleKey" type="STRING" />
+		<field number="8110" name="TxnRuleKeyType" type="STRING" />
+		<field number="8111" name="TxnRuleKeyPriority" type="INT32" />
+		<field number="8112" name="TxnRuleKeyComparision" type="STRING" />
+		<field number="8113" name="TxnRuleValue" type="STRING" />
+		<field number="8114" name="TxnRuleComparator" type="STRING" />	
+		<field number="8115" name="TxnRuleAddnInfoID" type="RecordID" />
+		<field number="8116" name="RuleKeyID" type="RecordID" />
+		<field number="8117" name="BookingDate" type="UTCTIMESTAMP"/>
+		<field number="8118" name="OpeningBalance" type="Balance"/>
+		<field number="8119" name="ClosingBalance" type="Balance"/>
+		<field number="8120" name="TotalCredit" type="Amount"/>
+		<field number="8121" name="TotalDebit" type="Amount"/>
+		<field number="8122" name="NetTurnOver" type="Amount"/>
+		<field number="8123" name="PickUpDateTime" type="UTCTIMESTAMP"/>
+		<field number="8124" name="StatusOnPickup" type="INT32">
+				<value enum="0" description="Initialized" />
+				<value enum="1" description="Active" />
+				<value enum="2" description="PendingRetirement" />
+				<value enum="3" description="Retired" />
+				<value enum="4" description="Registered" />
+				<value enum="5" description="Suspend"/>
+				<value enum="6" description="InActive"/>
+				<value enum="7" description="NotRegistered"/>
+		</field>
+		<field number="8125" name="BulkUploadFileEntryStatus" type="INT32" unused="Y">
+				<value enum="1" description="Initialized" />
+				<value enum="2" description="Processing" />
+				<value enum="3" description="Completed" />
+				<value enum="4" description="Failed" />
+		</field>	
+		<field number="8126" name="PctId" type="INT64" />
+		<field number="8127" name="ServiceChargeDE63" type="STRING" />
+		<field number="8128" name="HPin" type="STRING" />
+		<field number="8129" name="offset" type="STRING" />
+		<field number="8131" name="HSMResponseCode" type="STRING"/>
+		<field number="8132" name="AuthorizationToken" type="STRING"/>	
+		<field number="8133" name="MessageName" type="STRING"/>
+		<field number="8134" name="FixMessage" type="BLOB"/>
+		<field number="8135" name="ProcessingStatus" type="BOOLEAN"/>
+		<field number="8136" name="BulkUploadLineData" type="BLOB"/>
+		<field number="8137" name="RetireCount" type="INT"/>
+		<field number="8138" name="PageNumber" type="INT32" />
+		<field number="8139" name="NumRecords" type="INT32" />
+		<field number="8140" name="NewEmail" type="Email"/>
+		<field number="8141" name="ConfirmEmail" type="Email"/>
+		<field number="8142" name="Nickname" type="STRING"/>
+		<field number="8143" name="IsEmailVerified" type="BOOLEAN"/>
+		<field number="8144" name="OTPStatus" type="INT32">
+				<value enum="0" description="Initialized" />
+				<value enum="1" description="FailedOrExpired" />
+				<value enum="2" description="Validated" />
+		</field>
+		<field number="8145" name="OtherMDN" type="MDN"/>
+		<field number="8146" name="ServiceChargeAmount" type="NEWAMT"/>
+		<field number="8147" name="ParentTransID" type="INT64"/>
+		<field number="8148" name="ParentIntegrationTransID" type="INT64"/>
+		<field number="8149" name="CardAlias" type="STRING"/>
+		<field number="8150" name="MerchantName" type="STRING"/>
+		<field number="8151" name="ResponseCodeString" type="STRING"/>
+		<field number="8152" name="TransactionTypeName" type="STRING"/>
+		<field number="8153" name="ServiceDefaultConfigurationID" type="RecordID"/>
+		<field number="8154" name="ServicePocketType" type="INT32">
+			<value enum="1" description="Emoney" />
+			<value enum="2" description="Bank" />
+			<value enum="3" description="Collector" />
+			<value enum="4" description="Suspence" />
+		</field>
+		<field number="8155" name="FavoriteCategoryID" type="INT64"/>	
+		<field number="8156" name="FavoriteLabel" type="STRING"/>
+		<field number="8157" name="FavoriteValue" type="STRING"/>
+		<field number="8158" name="CategoryName" type="STRING"/>	
+		<field number="8159" name="SubscriberKYCLevel" type="INT" unused="Y">
+		   <value enum="0" description="NoKyc" />
+		   <value enum="1" description="UnBanked" />
+		   <value enum="2" description="SemiBanked" />
+		   <value enum="3" description="FullyBanked" />
+		</field>
+		<field number="8160"  name="PaymentMode" type="STRING"> 
+	 		<value enum="FullAmount" description="FullAmount" /> 
+	 	    <value enum="FreeAmount" description="FreeAmount" /> 
+	 	    <value enum="ZeroAmount" description="ZeroAmount" /> 
+	 	    <value enum="Denom" description="Denom" /> 
+	 	    <value enum="PackageType" description="PackageType" /> 
+	 	    <value enum="HubFullAmount" description="HubFullAmount" />
+	 	    <value enum="HubZeroAmount" description="HubZeroAmount" />
+			<value enum="HubFreeAmount" description="HubFreeAmount" />
+	 	</field> 
+		<field number="8161" name="FromDate" type="UTCTIMESTAMP" />
+		<field number="8162" name="ToDate" type="UTCTIMESTAMP" />
+		<field number="8163" name="BillData" type="BLOB" />
+		<field number="8164" name="FavoriteCode" type="STRING"/>
+		<field number="8165" name="UserAPIKey" type="STRING"/>
+		<field number="8166" name="MerchantData" type="STRING"/>
+		<field number="8167" name="DestinationPocketStatus" type="PocketStatus" />
+		<field number="8168" name="MerchantAccount" type="STRING" />
+		<field number="8169" name="FromUpdatedTime" type="STRING" />
+		<field number="8170" name="ToUpdatedTime" type="STRING" />	
+		<field number="8171" name="IsDaily" type="BOOLEAN" />
+		<field number="8172" name="IsMonthly" type="BOOLEAN" />
+		<field number="8173" name="MoreRecordsAvailable" type="BOOLEAN" />
+		<field number="8174" name="DenominationCode" type="STRING"/>
+		<field number="8175" name="NominalAmount" type="Amount"/>
+		<field number="8176" name="Info4" type="STRING"/>
+		<field number="8177" name="Info5" type="STRING"/>
+		<field number="8178" name="OperatorMessage" type="STRING"/>
+		<field number="8179" name="OperatorCharges" type="NEWAMT"/>
+		<field number="8180" name="OtpRetryCount" type="INT32" />
+		<field number="8181" name="IsOnlineReport" type="BOOLEAN" />
+		<field number="8182" name="IsAdvice" type="BOOLEAN" />
+		<field number="8183" name="CashinFirstTimeID" type="RecordID" />
+		<field number="8184" name="IsExcelDownload" type="BOOLEAN" />
+		<field number="8185" name="DiscountAmount" type="Amount" />
+		<field number="8186" name="LoyalityName" type="STRING" />
+		<field number="8187" name="DiscountType" type="STRING" />
+		<field number="8188" name="NumberOfCoupons" type="STRING" />
+		<field number="8193" name="IsSystemPocket" type="BOOLEAN"/>
+		<field number="8194" name="Info6" type="STRING"/>
+		<field number="8195" name="Info7" type="STRING"/>
+		<field number="8196" name="Info8" type="STRING"/>
+		<field number="8197" name="TippingAmount" type="Amount" />
+		<field number="8198" name="PointsRedeemed" type="RecordID" />
+		<field number="8199" name="AmountRedeemed" type="Amount" />	
+		<field number="8231" name="BranchCodeID" type="INT64" />
+	    <field number="8232" name="BranchCodeNo" type="STRING" />
+	    <field number="8233" name="BranchCode" type="STRING" />
+	    <field number="8234" name="BranchCodeText" type="STRING" />
+	    
+	    <field number="8235" name="LakuPandaiAccountType" type="STRING">
+			<value enum="1" description="BasicSavingsAccount" />
+			<value enum="2" description="AdvancedSavingsAccount" />
+		</field>	
+		<field number="8236" name="SubscriberAddressKTPID" type="INT32"/>
+		<field number="8237" name="MothersmaidenName" type="STRING"/>
+		<field number="8238" name="ISIDLifetime" type="INT32" >
+			<value enum="0" description="LifeTime_False" />
+			<value enum="1" description="LifeTime_True" />
+		</field>
+		<field number="8239" name="IDValidUntil" type="UTCTIMESTAMP" />
+		<field number="8240" name="DomAddrIdentity" type="INT32" >
+			<value enum="1" description="According_to_Identity" />
+			<value enum="2" description="Contrast_to_Identity" />
+		</field>
+		<field number="8241" name="Work" type="STRING" />
+		<field number="8242" name="Income" type="NEWAMT" />
+		<field number="8243" name="GoalOfAcctOpening" type="STRING" />
+		<field number="8244" name="SourceOfFund" type="STRING" />
+		
+		<field number="8245" name="KTPID" type="STRING" />
+		<field number="8246" name="FullName" type="STRING" />
+		<field number="8247" name="AgentMDN" type="STRING" />
+		<field number="8248" name="BankResponseStatus" type="STRING" />
+		<field number="8249" name="BankResponse" type="STRING" />
+		
+		<field number="8250" name="KTPDocumentPath" type="STRING" />
+		<field number="8251" name="SubscriberFormPath" type="STRING" />
+		<field number="8252" name="SupportingDocumentPath" type="STRING" />
+	    <field number="8253" name="SubState" type="STRING" />
+	    <field number="8254" name="RT" type="STRING" />
+	    <field number="8255" name="RW" type="STRING" />
+	    <field number="8256" name="RejectReason" type="INT32">
+	    	<value enum="11" description="Others" />
+	    </field>
+	    <field number="8257" name="SubscriberActivity" type="INT32">
+	    	<value enum="1" description="Upgrade_From_NonKyc_To_KYC"/>
+	    	<value enum="2" description="Enable_MBanking_For_Emoney_Subscriber"/>
+	    	<value enum="3" description="Edit_Subscriber_Details"/>
+	    	<value enum="4" description="Suspend_Emoney_Pocket"/>
+	    	<value enum="5" description="Release_Suspend_For_Emoney_Pocket"/>
+	    	<value enum="6" description="Reset_Pin"/>
+	    	<value enum="7" description="Retire_Subscriber_Emoney_Pocket"/>
+	    </field>
+	    <field number="8258" name="SubscriberActivityStatus" type="INT32">
+	    	<value enum="0" description="Initialized"/>
+	    	<value enum="1" description="Completed"/>
+	    	<value enum="2" description="Failed"/>
+	    </field>
+	    <field number="8301"  name="AgentCode" type="STRING"/>
+		<field number="8302"  name="AgentType" type="STRING"/>
+		<field number="8303"  name="ClassificationAgent" type="STRING"/>
+		<field number="8304"  name="TypeofBusinessAgent" type="STRING"/>
+		<field number="8305"  name="ElectonicDevieused" type="STRING"/>
+		<field number="8306"  name="AgentDescription" type="STRING"/>
+		<field number="8307"  name="KCKCPKKBankSinarmas" type="STRING"/>
+		<field number="8309"  name="CIFNumber" type="STRING"/>
+		<field number="8310"  name="AccountnumberofBankSinarmas" type="STRING"/>
+		<field number="8311"  name="BranchofBankSinarmas" type="STRING"/>
+		<field number="8312"  name="NameInAccordanceIdentity" type="STRING"/>
+		<field number="8314"  name="ExpiredDate" type="STRING"/>
+		<field number="8315"  name="AlamatInAccordanceIdentity" type="STRING"/>
+		<field number="8316"  name="RTRWAl" type="STRING"/>
+		<field number="8317"  name="DistrictAl" type="STRING"/>
+		<field number="8318"  name="VillageAl" type="STRING"/>
+		<field number="8319"  name="CityAl" type="STRING"/>
+		<field number="8320"  name="PotalCodeAl" type="STRING"/>
+		<field number="8321"  name="ProvincialAl" type="STRING"/>
+		<field number="8322"  name="DomicileAddress" type="STRING"/>
+		<field number="8323"  name="AddressDomicile" type="STRING"/>
+		<field number="8324"  name="RTRWDom" type="STRING"/>
+		<field number="8325"  name="DistrictDom" type="STRING"/>
+		<field number="8326"  name="VillageDom" type="STRING"/>
+		<field number="8327"  name="CityDom" type="STRING"/>
+		<field number="8328"  name="PotalCodeDom" type="STRING"/>
+		<field number="8329"  name="ProvincialDom" type="STRING"/>
+		<field number="8330"  name="MobilePhoneNumber" type="STRING"/>
+		<field number="8331"  name="EMail" type="STRING"/>
+		<field number="8332"  name="Jobs" type="STRING"/>
+		<field number="8333"  name="AgreementNumber" type="STRING"/>
+		<field number="8334"  name="AgreementDate" type="STRING"/>
+		<field number="8335"  name="Implementationdate" type="STRING"/>
+		<field number="8336"  name="AgentCompanyName" type="STRING"/>
+		<field number="8337"  name="Businessfields" type="STRING"/>
+		<field number="8338"  name="Position" type="STRING"/>
+		<field number="8339"  name="Lengthofwork" type="STRING"/>
+		<field number="8340"  name="CompanyAddress" type="STRING"/>
+		<field number="8341"  name="RTRWCom" type="STRING"/>
+		<field number="8342"  name="DistrictCom" type="STRING"/>
+		<field number="8343"  name="VillageCom" type="STRING"/>
+		<field number="8344"  name="CityCom" type="STRING"/>
+		<field number="8345"  name="PotalCodeCom" type="STRING"/>
+		<field number="8346"  name="LatitudeLongitude" type="STRING"/>
+		<field number="8347"  name="ProvincialCom" type="STRING"/>
+		<field number="8348"  name="PhoneNumber" type="STRING"/>	
+		<field number="8349" name="TypeofBusinessAgentText" type="STRING"/>
+		<field number="8350" name="ClassificationAgentText" type="STRING"/>
+		<field number="8351" name="AgentTypeText" type="STRING"/>
+		<field number="8352" name="ElectonicDevieusedText" type="STRING"/>
+		<field number="8353" name="AgentDescriptionText" type="STRING"/>
+		<field number="8354" name="KCKCPKKBankSinarmasText" type="STRING"/>
+		<field number="8356" name="DomicileAddressText" type="STRING"/>
+		<field number="8357" name="JobsText" type="STRING"/>	
+		<field number="8359"  name="BranchSequence" type="INT32"/>
+		<field number="8360" name="MerchantAddressID2" type="RecordID" />
+		<field number="8361" name="TypeAgentObject" type="STRING"/>
+		<field number="8363" name="TypesofbusinessEntity" type="STRING"/>	
+		<field number="8364" name="NameofBusinessEntity" type="STRING"/>
+		<field number="8365" name="TaxFileNumberNPWP" type="STRING"/>
+		<field number="8366" name="StatusofBusinessSites" type="STRING"/>
+		<field number="8367" name="FacsimileNumber" type="STRING"/>
+		<field number="8368" name="Website" type="STRING"/>
+		<field number="8369" name="LegalRelationship" type="STRING"/>
+		<field number="8372" name="TypesofbusinessEntityText" type="STRING"/>
+		<field number="8373" name="StatusofBusinessSitesText" type="STRING"/>
+		<field number="8374" name="LegalRelationshipText" type="STRING"/>
+		<field number="8375" name="OtherJobs" type="STRING"/>
+		<field number="8376" name="OtherTypesofbusinessEntity" type="STRING"/>
+		<field number="8377" name="OtherStatusofBusinessSites" type="STRING"/>
+		<field number="8378" name="OtherLegalRelationship" type="STRING"/>
+		<field number="8379" name="CorpBusinessfields" type="STRING"/>
+		<field number="8380" name="corpemail" type="STRING"/>
+		<field number="8381" name="corpKTPID" type="STRING"/>
+		<field number="8382" name="corpExpiredDate" type="STRING"/>
+		<field number="8383" name="AddressInAccordanceIdentity" type="STRING"/>
+		<field number="8384" name="BusinessAddress" type="STRING"/>
+		<field number="8385" name="PlaceofBirth" type="STRING"/>
+		<field number="8386" name="DateofBirth" type="STRING"/>
+		<field number="8387" name="CompanyEmailId" type="STRING"/>
+		<field number="8388" name="UserBankBranch" type="STRING"/>
+		<field number="8389" name="BankAccountStatus" type="STRING"/>
+		<field number="8390" name="OtherField1" type="STRING"/>
+		<field number="8391" name="RTAl" type="STRING"/>
+		<field number="8392" name="RWAl" type="STRING"/>
+		<field number="8393" name="RTCom" type="STRING"/>
+		<field number="8394" name="RWCom" type="STRING"/>
+		<field number="8395" name="Latitude" type="STRING"/>
+		<field number="8396" name="Longitude" type="STRING"/>
+		<field number="8397" name="AgrmtDate" type="UTCTIMESTAMP"/>
+		<field number="8398" name="ImplDate" type="UTCTIMESTAMP"/>
+		<field number="8399" name="BankAccountStatusText" type="STRING"/>
+		<field number="8400" name="BranchofBankSinarmasText" type="STRING"/>
+		<field number="8401" name="BankBranchCode" type="INT32"/>
+		<field number="8402" name="ElectonicDeviceUsed" type="INT32"/>
+		<field number="8403" name="BankAcountStatus" type="INT32"/>
+		<field number="8404" name="AgrementDate" type="UTCTIMESTAMP"/>
+		<field number="8405" name="Implementatindate" type="UTCTIMESTAMP"/>
+		<field number="8406" name="BusinessPartnerTypeAgentText" type="STRING"/>
+		<field number="8411" name="ProvinceId" type="STRING"/>
+		<field number="8412" name="RegionId" type="STRING"/>
+		<field number="8413" name="BIRegionId" type="STRING"/>
+		<field number="8414" name="IdProvince" type="INT64"/>
+		<field number="8415" name="DistrictId" type="STRING"/>
+		<field number="8416" name="IdRegion" type="INT64"/>
+		<field number="8417" name="VillageId" type="STRING"/>
+		<field number="8418" name="IdDistrict" type="INT64"/>
+		<field number="8419" name="CloseComments" type="STRING"/>
+		<field number="8420" name="SubscriberMDN" type="STRING"/>
+		<field number="8421" name="ProductDesired" type="STRING"/>
+		<field number="8422" name="Others" type="STRING"/>
+	   <field number="8423" name="SubscriberUpgradeStatus" type="INT32">
+				<value enum="0" description="Initialized" />
+				<value enum="1" description="Approve" />
+				<value enum="2" description="Reject" />
+		</field>
+		<field number="8424" name="UpgradeAcctStatus" type="INT32" />
+		<field number="8425" name="UpgradeAcctApprovedBy" type="STRING" />
+		<field number="8426" name="UpgradeAcctTime" type="UTCTIMESTAMP" />
+		<field number="8427" name="UpgradeAcctComments" type="STRING" />
+		<field number="8428" name="UpgradeAcctStatusText" type="STRING" />
+		<field number="8429" name="AgentMDNSearch" type="STRING"/>
+	   	<field number="8430" name="FullNameSearch" type="STRING"/>
+	   	<field number="8431" name="SubscriberMDNSearch" type="STRING"/>
+	   	<field number="8432" name="ProductDesiredSearch" type="STRING"/>
+	   	<field number="8433" name="ProductReferralID"  type="RecordID" unused="Y" />
+	   	<field number="8434" name="AgentName" type="STRING"/>
+	   	<field number="8435" name="IsIdLifetimeText" type="STRING"/>
+	   	<field number="8436" name="DateOfBirthText" type="STRING"/>
+	   	<field number="8437" name="IDValidUntilText" type="STRING"/>
+		<field number="8438" name="IsRetirePartner" type="INT32">
+	   		<value enum="0" description="False" />
+			<value enum="1" description="True" />
+	   	</field>
+	   	<field number="8439" name="CloseAgent" type="STRING"/>
+	   	<field number="8440" name="CloseUser" type="STRING"/>
+	   	<field number="8441" name="CloseAcctStatus" type="INT32">
+	   		<value enum="0" description="Initialized" />
+			<value enum="1" description="Validated" />
+			<value enum="2" description="InquiryFailed" />
+			<value enum="3" description="Failed" />
+			<value enum="4" description="Approve" />
+			<value enum="5" description="Reject" />
+	   	</field>	
+		<field number="8442" name="CloseApproverComments" type="STRING" />
+		<field number="8443" name="CloseAcctApprovedBy" type="STRING" />
+		<field number="8444" name="CloseAcctTime" type="UTCTIMESTAMP" />
+		<field number="8445" name="RetryAttempt" type="INT32" />
+		<field number="8446" name="KTPDateOfBirth" type="UTCTIMESTAMP" />
+		<field number="8447" name="KTPRT" type="STRING" required="N" />
+		<field number="8448" name="KTPRW" type="STRING" required="N" />
+		<field number="8449" name="KTPZipCode" type="STRING" required="N" />
+		<field number="8450" name="KTPSubState" type="STRING" required="N" />
+		<field number="8451" name="KTPPlotNo"  type="STRING" required="N" />
+		<field number="8452" name="KTPStreetAddress" type="STRING" required="N" />
+		<field number="8453" name="KTPCity" type="STRING" required="N" />
+		<field number="8454" name="KTPRegionName" type="STRING" required="N" />
+		<field number="8455" name="KTPState" type="STRING" required="N" />
+		<field number="8456" name="IsDomesticAddrIdentity" type="BOOLEAN" required="N" />
+		<field number="8457" name="WorkList" type="INT32">
+				<value enum="1" description="Pegawai Negeri" />
+				<value enum="2" description="Profesional" />
+				<value enum="3" description="Wiraswasta" />
+				<value enum="4" description="Karyawan Swasta" />
+				<value enum="5" description="Lainnya"/>
+			</field>
+		<field number="8458" name="OtherWork" type="STRING" required="N" />
+		<field number="8459" name="IDTypeForKycUpgrade" type="STRING">
+			<value enum="1" description="Passport" />
+			<value enum="2" description="KTP" />
+			<value enum="3" description="SIM" />
+		</field>
+		<field number="8460" name="UpgradeKycStatusSearch" type="INT32">
+			<value enum="5" description="All"/>
+			<value enum="0" description="Initialized"/>
+			<value enum="1" description="Approved"/>
+			<value enum="2" description="Rejected"/>
+			<value enum="3" description="Revision"/>
+		</field>
+		<field number="8461" name="SubscriberUpgradeKycStatus" type="INT32">
 			<value enum="0" description="Initialized" />
 			<value enum="1" description="Approve" />
 			<value enum="2" description="Reject" />
-	</field>
-	<field number="8424" name="UpgradeAcctStatus" type="INT32" />
-	<field number="8425" name="UpgradeAcctApprovedBy" type="STRING" />
-	<field number="8426" name="UpgradeAcctTime" type="UTCTIMESTAMP" />
-	<field number="8427" name="UpgradeAcctComments" type="STRING" />
-	<field number="8428" name="UpgradeAcctStatusText" type="STRING" />
-	<field number="8429" name="AgentMDNSearch" type="STRING"/>
-   	<field number="8430" name="FullNameSearch" type="STRING"/>
-   	<field number="8431" name="SubscriberMDNSearch" type="STRING"/>
-   	<field number="8432" name="ProductDesiredSearch" type="STRING"/>
-   	<field number="8433" name="ProductReferralID"  type="RecordID" unused="Y" />
-   	<field number="8434" name="AgentName" type="STRING"/>
-   	<field number="8435" name="IsIdLifetimeText" type="STRING"/>
-   	<field number="8436" name="DateOfBirthText" type="STRING"/>
-   	<field number="8437" name="IDValidUntilText" type="STRING"/>
-	<field number="8438" name="IsRetirePartner" type="INT32">
-   		<value enum="0" description="False" />
-		<value enum="1" description="True" />
-   	</field>
-   	<field number="8439" name="CloseAgent" type="STRING"/>
-   	<field number="8440" name="CloseUser" type="STRING"/>
-   	<field number="8441" name="CloseAcctStatus" type="INT32">
-   		<value enum="0" description="Initialized" />
-		<value enum="1" description="Validated" />
-		<value enum="2" description="InquiryFailed" />
-		<value enum="3" description="Failed" />
-		<value enum="4" description="Approve" />
-		<value enum="5" description="Reject" />
-   	</field>	
-	<field number="8442" name="CloseApproverComments" type="STRING" />
-	<field number="8443" name="CloseAcctApprovedBy" type="STRING" />
-	<field number="8444" name="CloseAcctTime" type="UTCTIMESTAMP" />
-	<field number="8445" name="RetryAttempt" type="INT32" />
-	<field number="8446" name="KTPDateOfBirth" type="UTCTIMESTAMP" />
-	<field number="8447" name="KTPRT" type="STRING" required="N" />
-	<field number="8448" name="KTPRW" type="STRING" required="N" />
-	<field number="8449" name="KTPZipCode" type="STRING" required="N" />
-	<field number="8450" name="KTPSubState" type="STRING" required="N" />
-	<field number="8451" name="KTPPlotNo"  type="STRING" required="N" />
-	<field number="8452" name="KTPStreetAddress" type="STRING" required="N" />
-	<field number="8453" name="KTPCity" type="STRING" required="N" />
-	<field number="8454" name="KTPRegionName" type="STRING" required="N" />
-	<field number="8455" name="KTPState" type="STRING" required="N" />
-	<field number="8456" name="IsDomesticAddrIdentity" type="BOOLEAN" required="N" />
-	<field number="8457" name="WorkList" type="INT32">
+			<value enum="3" description="Revision" />
+		</field>
+		<field number="8462" name="UpgradeAcctRequestBy" type="STRING" />
+		<field number="8463" name="IDTypeText" type="STRING" />
+		<field number="8464" name="OnBehalfMDN" type="STRING" />
+		<field number="8465" name="SubscriberActivityText" type="STRING" />
+		<field number="8466" name="MaritalStatusList" type="STRING">
+			<value enum="1" description="Belum Menikah" />
+			<value enum="2" description="Menikah" />
+			<value enum="3" description="Janda_Duda" />
+		</field>
+		<field number="8467" name="AvgIncomeList" type="STRING">
+			<value enum="1" description="Dibawah_5k" />
+			<value enum="2" description="Between_5k_10k" />
+			<value enum="3" description="Between_10k_25k" />
+			<value enum="4" description="Between_25k_50k" />
+			<value enum="5" description="Between_50k_100k" />
+			<value enum="6" description="Diatas_100k" />
+		</field>
+		<field number="8468" name="JobList" type="STRING">
 			<value enum="1" description="Pegawai Negeri" />
 			<value enum="2" description="Profesional" />
 			<value enum="3" description="Wiraswasta" />
 			<value enum="4" description="Karyawan Swasta" />
 			<value enum="5" description="Lainnya"/>
 		</field>
-	<field number="8458" name="OtherWork" type="STRING" required="N" />
-	<field number="8459" name="IDTypeForKycUpgrade" type="STRING">
-		<value enum="1" description="Passport" />
-		<value enum="2" description="KTP" />
-		<value enum="3" description="SIM" />
-	</field>
-	<field number="8460" name="UpgradeKycStatusSearch" type="INT32">
-		<value enum="5" description="All"/>
-		<value enum="0" description="Initialized"/>
-		<value enum="1" description="Approved"/>
-		<value enum="2" description="Rejected"/>
-		<value enum="3" description="Revision"/>
-	</field>
-	<field number="8461" name="SubscriberUpgradeKycStatus" type="INT32">
-		<value enum="0" description="Initialized" />
-		<value enum="1" description="Approve" />
-		<value enum="2" description="Reject" />
-		<value enum="3" description="Revision" />
-	</field>
-	<field number="8462" name="UpgradeAcctRequestBy" type="STRING" />
-	<field number="8463" name="IDTypeText" type="STRING" />
-	<field number="8464" name="OnBehalfMDN" type="STRING" />
-	<field number="8465" name="SubscriberActivityText" type="STRING" />
-	<field number="8466" name="MaritalStatusList" type="STRING">
-		<value enum="1" description="Belum Menikah" />
-		<value enum="2" description="Menikah" />
-		<value enum="3" description="Janda_Duda" />
-	</field>
-	<field number="8467" name="AvgIncomeList" type="STRING">
-		<value enum="1" description="Dibawah_5k" />
-		<value enum="2" description="Between_5k_10k" />
-		<value enum="3" description="Between_10k_25k" />
-		<value enum="4" description="Between_25k_50k" />
-		<value enum="5" description="Between_50k_100k" />
-		<value enum="6" description="Diatas_100k" />
-	</field>
-	<field number="8468" name="JobList" type="STRING">
-		<value enum="1" description="Pegawai Negeri" />
-		<value enum="2" description="Profesional" />
-		<value enum="3" description="Wiraswasta" />
-		<value enum="4" description="Karyawan Swasta" />
-		<value enum="5" description="Lainnya"/>
-	</field>
-	<field number="8469" name="GenderText" type="STRING" />
-	<field number="8470" name="IncomeText" type="STRING" />
-	<field number="8471" name="MaritalStatusText" type="STRING" />
-	<field number="8472" name="WorkText" type="STRING" />
+		<field number="8469" name="GenderText" type="STRING" />
+		<field number="8470" name="IncomeText" type="STRING" />
+		<field number="8471" name="MaritalStatusText" type="STRING" />
+		<field number="8472" name="WorkText" type="STRING" />
+	
+		<field number="8473" name="MaxIncommingAmountPerMonth" type="Amount" />
     </fields>
     <primitives>
 		<dbtype name="mysql">
