@@ -1070,6 +1070,7 @@
 				<field name="CurrentDailyExpenditure" required="N" />
 				<field name="CurrentWeeklyExpenditure" required="N" />
 				<field name="CurrentMonthlyExpenditure" required="N" />
+				<field name="CurrentMonthlyIncomming" required="N" />
 				<field name="CurrentDailyTxnsCount" required="N" />
 				<field name="CurrentWeeklyTxnsCount" required="N" />
 				<field name="CurrentMonthlyTxnsCount" required="N" />
@@ -27702,6 +27703,8 @@ ERROR:Mismatch of  mdn type and app type
 		<field number="8472" name="WorkText" type="STRING" />
 	
 		<field number="8473" name="MaxIncommingAmountPerMonth" type="Amount" />
+		<field number="8474" name="CurrentMonthlyIncomming" type="Amount" />
+		
     </fields>
     <primitives>
 		<dbtype name="mysql">

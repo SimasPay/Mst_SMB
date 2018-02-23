@@ -162,6 +162,12 @@ Ext.extend(mFino.widget.PocketDetails,mFino.widget.Form, {
             fieldLabel: _("Pocket Upgraded/Downgraded By"),
             xtype:'displayfield',
             name: CmFinoFIX.message.JSPocket.Entries.PocketTemplateChangedBy._name
+        },
+        {
+            fieldLabel: _("Current Monthly Incomming Amount"),
+            xtype:'displayfield',
+            renderer : "money",
+            name: CmFinoFIX.message.JSPocket.Entries.CurrentMonthlyIncomming._name
         }
         ];
 

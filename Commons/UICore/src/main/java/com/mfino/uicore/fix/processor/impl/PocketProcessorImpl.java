@@ -878,6 +878,11 @@ public class PocketProcessorImpl extends BaseFixProcessor implements PocketProce
             theEntries.setCurrentMonthlyExpenditure(currentMontlyExpenditure);
         }
 
+        BigDecimal currentMontlyIncomming = thePocket.getCurrentmonthlyincomming();
+        if (null != currentMontlyIncomming) {
+            theEntries.setCurrentMonthlyIncomming(currentMontlyIncomming);
+        }
+        
         Integer currentDailyTransactionCount = (thePocket.getCurrentdailytxnscount()).intValue();
         theEntries.setCurrentDailyTxnsCount(currentDailyTransactionCount);
 
