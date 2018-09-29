@@ -475,8 +475,6 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			pocket.setCurrentmonthlytxnscount(0);
 			pocket.setCurrentweeklyexpenditure(BigDecimal.valueOf(0));
 			pocket.setCurrentweeklytxnscount(0);
-
-			pocket.setCurrentmonthlyincomming(BigDecimal.ZERO);
 		}else{
 			// Reset the pocket counters based on the last transaction date 
 			Calendar calendarNow = Calendar.getInstance();
@@ -497,8 +495,6 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 			if (calendarNow.get(Calendar.MONTH) != lastTransationTime.get(Calendar.MONTH)) {
 				pocket.setCurrentmonthlytxnscount(0);
 				pocket.setCurrentmonthlyexpenditure(BigDecimal.valueOf(0));
-				
-				pocket.setCurrentmonthlyincomming(BigDecimal.ZERO);
 			} 
 		}
 		
@@ -580,9 +576,7 @@ public class ValidationServiceImpl extends BaseServiceImpl implements Validation
 		else if(pocket.getCurrentmonthlyexpenditure().add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxamountpermonth()) == 1){
 			notificationCode = NotificationCodes.AboveMonthlyExpenditureLimit.getInternalErrorCode();
 		}
-		else if(pocket.getCurrentmonthlyincomming().add(amount).compareTo(pocket.getPocketTemplateByPockettemplateid().getMaxincommingamountpermonth()) == 1 && !isSource){
-			notificationCode = NotificationCodes.AboveMonthlyIncommingLimit.getInternalErrorCode();
-		}
+		
 		responseFix.setInternalErrorCode(notificationCode);
 		pocket.setLasttransactiontime(now);
 		

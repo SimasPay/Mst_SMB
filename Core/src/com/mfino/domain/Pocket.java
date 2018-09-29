@@ -99,9 +99,6 @@ public class Pocket extends Base implements java.io.Serializable {
 	private Set<PartnerServices> partnerServicesesForDestpocketid = new HashSet<PartnerServices>(
 			0);
 
-
-	private BigDecimal currentmonthlyincomming = new BigDecimal(0);
-	
 	public Pocket() {
 	}
 
@@ -540,15 +537,6 @@ public class Pocket extends Base implements java.io.Serializable {
 	public void setPartnerServicesesForDestpocketid(
 			Set<PartnerServices> partnerServicesesForDestpocketid) {
 		this.partnerServicesesForDestpocketid = partnerServicesesForDestpocketid;
-	}
-
-	@Column(name = "CURRENTMONTHLYINCOMMING")
-	public BigDecimal getCurrentmonthlyincomming() {
-		return currentmonthlyincomming;
-	}
-
-	public void setCurrentmonthlyincomming(BigDecimal currentmonthlyincomming) {
-		this.currentmonthlyincomming = currentmonthlyincomming;
 	}
 
 }

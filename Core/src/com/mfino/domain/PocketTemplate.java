@@ -48,7 +48,6 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	private BigDecimal maxamountperday;
 	private BigDecimal maxamountperweek;
 	private BigDecimal maxamountpermonth;
-	private BigDecimal maxincommingamountpermonth;
 	private Integer maxtransactionsperday;
 	private Integer maxtransactionsperweek;
 	private Integer maxtransactionspermonth;
@@ -480,14 +479,6 @@ public class PocketTemplate  extends Base implements java.io.Serializable {
 	public void setPocketTemplateConfigs(
 			Set<PocketTemplateConfig> pocketTemplateConfigs) {
 		this.pocketTemplateConfigs = pocketTemplateConfigs;
-	}
-	
-	@Column(name = "MAXINCOMMINGAMOUNTPERMONTH", nullable = false, precision = 25, scale = 4)
-	public BigDecimal getMaxincommingamountpermonth() {
-		return maxincommingamountpermonth;
-	}
-	public void setMaxincommingamountpermonth(BigDecimal maxincommingamountpermonth) {
-		this.maxincommingamountpermonth = maxincommingamountpermonth;
 	}
 
 }

@@ -142,15 +142,6 @@ public class BackendUtil {
 		}
 	}
 	
-	public static void setIncommingPocketLimits(Pocket pocket, BigDecimal transactionAmount){
-		if(!((pocket.getPocketTemplateByPockettemplateid().getIscollectorpocket()) || 
-				(pocket.getPocketTemplateByPockettemplateid().getIssuspencepocket()) || 
-				(pocket.getPocketTemplateByPockettemplateid().getIssystempocket()) )){
-			BigDecimal currentIncommingLimit = (pocket.getCurrentmonthlyincomming() == null) ? BigDecimal.ZERO : pocket.getCurrentmonthlyincomming();
-			pocket.setCurrentmonthlyincomming(currentIncommingLimit.add(transactionAmount));
-		}
-	}
-	
 	public static void revertPocketLimits(Pocket pocket, BigDecimal transactionAmount, PendingCommodityTransfer pct){
 		if(pct==null){
 			log.error("Aborting revert of pocket limits, pct is null");
