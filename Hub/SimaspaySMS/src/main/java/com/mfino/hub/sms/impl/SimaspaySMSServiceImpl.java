@@ -6,7 +6,6 @@ package com.mfino.hub.sms.impl;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.camel.Exchange;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -33,8 +32,7 @@ public class SimaspaySMSServiceImpl implements SMSNotificationService
 	public static final String RESPONSE_CODE_SUCCESS = "00";
 	public static final String RESPONSE_CODE = "responseCode";
 	public static final String ERROR_MESSAGE = "errorMessage";
-	
-	private String priorityUrl;
+
 	private String url;
 	private String systemId;
 	private String msgId;
@@ -162,13 +160,7 @@ public class SimaspaySMSServiceImpl implements SMSNotificationService
 			log.info("SimaspaySMSServiceImpl :: process() url: "+getUrl()+", Request Params: "+reqParams);
 			
 			RSClientPostHttp client = new RSClientPostHttp();
-			JSONObject responseObj = null;
-			if(StringUtils.startsWithIgnoreCase(getMessage(), "Kode OTP Simaspay anda") ||
-					StringUtils.startsWithIgnoreCase(getMessage(), "Your Simaspay code is")) {
-				responseObj = client.callHttpPostService(getJSON(), getPriorityUrl(), Integer.parseInt(getTimeout()));
-			}else {
-				responseObj = client.callHttpPostService(getJSON(), getUrl(), Integer.parseInt(getTimeout()));
-			}
+			JSONObject responseObj = client.callHttpPostService(getJSON(), getUrl(), Integer.parseInt(getTimeout()));
 			
 			if(null != responseObj && !responseObj.get("status").equals("CommunicationFailure")) {
 				
@@ -239,13 +231,5 @@ public class SimaspaySMSServiceImpl implements SMSNotificationService
 		requestParams.put(KEY_MESSAGE, getMessage());
 		
 		return requestParams;
-	}
-
-	public String getPriorityUrl() {
-		return priorityUrl;
-	}
-
-	public void setPriorityUrl(String priorityUrl) {
-		this.priorityUrl = priorityUrl;
 	}
 }

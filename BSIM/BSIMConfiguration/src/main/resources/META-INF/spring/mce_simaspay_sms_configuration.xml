@@ -66,7 +66,6 @@
 	</bean>
 	
 	<bean id="SimaspaySMSService" class="com.mfino.hub.sms.impl.SimaspaySMSServiceImpl">
-		<property name="priorityUrl" value="${simaspay.sms.priority.http.url}"/>
 		<property name="url" value="${simaspay.sms.http.url}"/>
 		<property name="systemId" value="${simaspay.sms.systemId}"/>
 		<property name="msgId" value="${simaspay.sms.msgId}"/>
