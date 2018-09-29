@@ -17,3 +17,14 @@ built
 build
 ~*
 *.tmp
+.classpath
+.jsdtscope
+.project
+GTBank/
+build_log.txt
+CmFinoFIX.java
+MANIFEST.MF
+mFinoFIX.js
+mFinoFixml_*
+.settings
+*.hbm.xml
