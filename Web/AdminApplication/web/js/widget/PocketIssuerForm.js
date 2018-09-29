@@ -406,24 +406,6 @@ Ext.extend(mFino.widget.PocketIssuerForm, Ext.FormPanel, {
                     name: CmFinoFIX.message.JSPocketTemplate.Entries.MaxTransactionsPerMonth._name
                 }
                 ]
-            },
-            {
-            	title: _('Incomming Limits'),
-            	frame: true,
-            	autoHeight: true,
-            	width: 840,
-            	items: [
-            		{
-            			xtype : 'numberfield',
-                        allowDecimals:false,
-                        fieldLabel: _('Maximum Per Month'),
-                        allowBlank: false,
-                        itemId : 'pocket.form.maximumIncommingMonth',
-                        anchor : '55%',
-                        vtype:'number16',
-                        name: CmFinoFIX.message.JSPocketTemplate.Entries.MaxIncommingAmountPerMonth._name
-            		}
-            	]
             }
 //            ,
 //            {
