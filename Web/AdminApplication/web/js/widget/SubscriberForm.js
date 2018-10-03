@@ -587,7 +587,7 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     onSuspendClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("Suspended").checked) {
-            alert('@Martin::NOACTION 1');
+            //alert('@Martin::NOACTION 1');
             //this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
         } else {
         	if (CmFinoFIX.SubscriberStatus.Suspend === currentStatus) {
@@ -599,10 +599,10 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
     onSecurityLockClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("SecurityLocked").checked) {
-            alert('@Martin::NOACTION 2');
+            //alert('@Martin::NOACTION 2');
             //this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("Suspended").checked) {
-                alert('@Martin::NOACTION 3');
+                //alert('@Martin::NOACTION 3');
             //this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
@@ -629,10 +629,10 @@ Ext.extend(mFino.widget.SubscriberForm, Ext.form.FormPanel, {
      onNoFundMovementClick: function(){
     	var currentStatus = this.record.data[CmFinoFIX.message.JSSubscriberMDN.Entries.Status._name];
         if(this.form.items.get("NoFundMovement").checked) {
-            alert('@Martin::NOACTION 4');
+            //alert('@Martin::NOACTION 4');
             //this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("Suspended").checked) {
-                alert('@Martin::NOACTION 5');
+                //alert('@Martin::NOACTION 5');
             //this.form.items.get("sub.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {

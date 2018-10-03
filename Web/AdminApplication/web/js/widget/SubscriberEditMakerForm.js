@@ -445,7 +445,7 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     onSuspendClick: function(){
     	var currentStatus = this.form.items.get("subeditmaker.form.hidden.status").getValue();
         if(this.form.items.get("subeditmaker.Suspended").checked) {
-            alert('@Martin::NOACTION 1');
+            //alert('@Martin::NOACTION 1');
             //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
         } else {
         	if (CmFinoFIX.SubscriberStatus.Suspend == currentStatus) {
@@ -457,10 +457,10 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     onSecurityLockClick: function(){
     	var currentStatus = this.form.items.get("subeditmaker.form.hidden.status").getValue();
         if(this.form.items.get("subeditmaker.SecurityLocked").checked) {
-            alert('@Martin::NOACTION 2');
+            //alert('@Martin::NOACTION 2');
             //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("subeditmaker.Suspended").checked) {
-                alert('@Martin::NOACTION 3');
+                //alert('@Martin::NOACTION 3');
             //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
@@ -487,10 +487,10 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
      onNoFundMovementClick: function(){
     	var currentStatus = this.form.items.get("subeditmaker.form.hidden.status").getValue();
         if(this.form.items.get("subeditmaker.NoFundMovement").checked) {
-            alert('@Martin::NOACTION 4');
+            //alert('@Martin::NOACTION 4');
             //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("subeditmaker.Suspended").checked) {
-                alert('@Martin::NOACTION 5');
+                //alert('@Martin::NOACTION 5');
             //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
