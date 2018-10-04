@@ -694,6 +694,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	       // processPaging(query, sourcePocketCriteria);
 	
 	        //applying Order
+	        sourcePocketCriteria.addOrder(Order.desc(CommodityTransfer.FieldName_EndTime));//@kris, sebelumnya cuman ada RecordID aja, tambahin ini diawal biar sort yb endtime first?
 	        sourcePocketCriteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 	        applyOrder(query, sourcePocketCriteria);
 	        
