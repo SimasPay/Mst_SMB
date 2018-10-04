@@ -42,7 +42,7 @@
    "Transfer to Uangku" : "Transfer to Uangku",
    "B2ETransfer" : "Tansfer from Bank",
    "CashInFromSelf" : "Cash In from Bank",
-   "CashInFromOther" : "Cash In from Other Bank",
+   "CashInFromOther" : "Cash In/Top Up",
    "CashWithdrawalRefund" : "Cash Withdrawal Refund"
     },
  "0" : {
@@ -88,7 +88,7 @@
    "Transfer to Uangku" : "Transfer to Uangku",
    "B2ETransfer" : "Tansfer from Bank",
    "CashInFromSelf" : "Cash In from Bank",
-   "CashInFromOther" : "Cash In from Other Bank",
+   "CashInFromOther" : "Cash In/Top Up",
    "CashWithdrawalRefund" : "Cash Withdrawal Refund"
     }
 }
