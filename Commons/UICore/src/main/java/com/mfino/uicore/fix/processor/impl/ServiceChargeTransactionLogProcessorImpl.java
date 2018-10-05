@@ -97,6 +97,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
+		log.info("@kris: ServiceChargeTransactionLogProcessor.process()");
 		CMJSServiceChargeTransactions realMsg = (CMJSServiceChargeTransactions) msg;
 
 		if (CmFinoFIX.JSaction_Select.equals(realMsg.getaction())) {
@@ -226,6 +227,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private Map<Long, BillPayments> getSctlBpMap(List<BillPayments> billPaymentsLst) {
+		log.info("@kris: getSctlBpMap()");
 		Map<Long, BillPayments> sctlBpMap = new HashMap<Long, BillPayments>();
 		for(BillPayments bp : billPaymentsLst) {
 			sctlBpMap.put(bp.getId().longValue(), bp);
@@ -234,6 +236,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private Map<Long, IntegrationSummary> getSctlIsMap(List<IntegrationSummary> integrationSummaryLst) {
+		log.info("@kris: getSctlIsMap()");
 		Map<Long, IntegrationSummary> sctlIsMap = new HashMap<Long, IntegrationSummary>();
 		for(IntegrationSummary is : integrationSummaryLst) {
 			sctlIsMap.put(is.getId().longValue(), is);
@@ -242,6 +245,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private List<Long> getSctlList(List<ServiceChargeTxnLog> results) {
+		log.info("@kris: getSctlList()");
 		List<Long> sctlList = new ArrayList<Long>();
 		for(ServiceChargeTxnLog sctl : results) {
 			sctlList.add(sctl.getId().longValue());
@@ -250,6 +254,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private Long getSCTLID(String bankRetrievalReferenceNumber) {
+		log.info("@kris: getSCTLID()");
 		CommodityTransferQuery query = new CommodityTransferQuery();
 		query.setBankRRN(bankRetrievalReferenceNumber);
 		DAOFactory daoFactory =  DAOFactory.getInstance();

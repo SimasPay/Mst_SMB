@@ -337,7 +337,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 
 	@SuppressWarnings("unchecked")
 	private List<CommodityTransfer> getTransferList(CommodityTransferQuery query) {
-		log.debug("@kris getTransferList");
+		log.info("@kris getTransferList");
 		List<CommodityTransfer> result = new ArrayList<CommodityTransfer>();
 		
 		Criteria criteria = createCriteria();
@@ -500,7 +500,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     
     public List<CommodityTransfer> getTxnHistory(CommodityTransferQuery query)
     {
-    	log.debug("@kris getTxnHistory");
+    	log.info("@kris getTxnHistory");
     	if (query.getSourceDestnPocket() != null 
     			&& query.getLimit() <= ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
 
@@ -633,8 +633,8 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     
 
     public List<CommodityTransfer> get(CommodityTransferQuery query) throws Exception {
-    	log.debug("@kris: CommodityTransferDAO.get() orderMap:"+query.getOrderMap());
-    	log.debug("@kris: CommodityTransferDAO.get() sortString:"+query.getSortString());
+    	log.info("@kris: CommodityTransferDAO.get() orderMap:"+query.getOrderMap());
+    	log.info("@kris: CommodityTransferDAO.get() sortString:"+query.getSortString());
     	if (query.getSourceDestnPocket() != null 
     			&& query.getLimit() != ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
     		//Do Sql processing and return
@@ -688,7 +688,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	if (query.getSourceDestnPocket() != null &&
     			query.getLimit()!=null && query.getLimit() == ConfigurationUtil.getExcelRowLimit())
     	{
-    		log.debug("@kris: source and dest pocket is not null and query limit equals excel row limit");
+    		log.info("@kris: source and dest pocket is not null and query limit equals excel row limit");
 	    	/**
 	    	 * code for getting the results with only source pocket id set
 	    	 * NOTE: when you change this code make sure the below code for dest pocket id
@@ -736,12 +736,12 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	         * Get the results from source pocket and dest pocket and merge and sort and get the 
 	         * max limit rows
 	         */
-	        log.debug("@kris print query sourcePocketCriteria:"+printQueryFromCriteria(sourcePocketCriteria));
+	        log.info("@kris print query sourcePocketCriteria:"+printQueryFromCriteria(sourcePocketCriteria));
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> resultFromSourcePokcet = sourcePocketCriteria.list();
 	        printId(resultFromSourcePokcet);
 	        
-	        log.debug("@kris print query destPocketCriteria:"+printQueryFromCriteria(destPocketCriteria));
+	        log.info("@kris print query destPocketCriteria:"+printQueryFromCriteria(destPocketCriteria));
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> resultFromDestPocket = destPocketCriteria.list();
 	        printId(resultFromDestPocket);
@@ -758,7 +758,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	// or use separate method for download stuff.
     	else
     	{
-    		log.debug("@kris: proces criteria without put difference in source and dest pocket");
+    		log.info("@kris: proces criteria without put difference in source and dest pocket");
 	        Criteria criteria = createCriteria();
 	
 	        applyQuery(query, criteria);
@@ -771,7 +771,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
         	criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 	        applyOrder(query, criteria);
 	        
-	        log.debug("@kris print query:"+printQueryFromCriteria(criteria));
+	        log.info("@kris print query:"+printQueryFromCriteria(criteria));
 	        
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> results = criteria.list();
@@ -796,7 +796,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	}catch(Exception e){
     		log.error("error",e);
     	}
-    	log.debug("@kris printId "+message+":"+sb.toString());
+    	log.info("@kris printId "+message+":"+sb.toString());
     }
     
     public static String printQueryFromCriteria(Criteria criteria){
@@ -825,9 +825,9 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     private List<CommodityTransfer> mergeResults(List<CommodityTransfer> results1,
 			List<CommodityTransfer> results2, int maxCount)
 	{
-    	log.debug("@kris mergeResults");
-    	log.debug("@kris results1:"+((results1!=null)?results1.size():"null"));
-    	log.debug("@kris results2:"+((results2!=null)?results2.size():"null"));
+    	log.info("@kris mergeResults");
+    	log.info("@kris results1:"+((results1!=null)?results1.size():"null"));
+    	log.info("@kris results2:"+((results2!=null)?results2.size():"null"));
     	
 		List<CommodityTransfer> mergedResult = new ArrayList<CommodityTransfer>();
 		mergedResult.addAll(results1);

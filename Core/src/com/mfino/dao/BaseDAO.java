@@ -115,7 +115,7 @@ public class BaseDAO<T> {
     }
 
     public static void addOrder(String order, String colName, Criteria criteria) {
-    	log.debug("@kris: add order"+order+" with colName:"+colName);
+    	log.info("@kris: add order"+order+" with colName:"+colName);
         Order orderObj = null;
         if (order.equals(QueryConstants.ASC_STRING)) {
             orderObj = Order.asc(colName);
