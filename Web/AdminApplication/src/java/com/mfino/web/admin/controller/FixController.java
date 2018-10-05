@@ -732,6 +732,9 @@ public class FixController {
 
 			CFIXMsg msg = CFIXMsg.fromFIX(buf);
 
+			log.info("@kris: processFix completePostString: "+completePostString);
+			log.info("@kris: processFix msg: "+msg);
+			
 			if (msg == null) {
 				log.error("Failed to decode fix message: (" + msg.DumpFields()
 						+ ") \n" + MfinoUtil.dumpHttpRequest(request));
@@ -756,6 +759,9 @@ public class FixController {
 			String action = ((CMJSBase) msg).getaction();
 			TransactionLog tl = new TransactionLog();
 
+			log.info("@kris: processFix msgClassName"+msgClassName);
+			log.info("@kris: processFix action: "+action);
+			
 			if (msgClassName.equals(CMJSSubscribers.class.getName())) {
 				fixProcessor = subscriberProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscribers);
@@ -1471,6 +1477,9 @@ public class FixController {
 				tl.setMessagecode(-1);
 				throw new UnsupportedOperationException(msgClassName);
 			}
+			
+			log.info("@kris: processFix getMessagecode: "+tl.getMessagecode());
+			
 			if (action == null || !action.equalsIgnoreCase("read")) {
 				MfinoServiceProvider msp = mFinoServiceProviderProcessor
 						.getById(1);
