@@ -197,8 +197,9 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                         },
                      	{
                             xtype : 'enumdropdown',
-                            fieldLabel: _('Marital Status'),
-                            emptyText:_(''),
+                            fieldLabel: _('Marital Status '),
+                            emptyText : _('<select one..>'),
+                            allowBlank: false,
                             anchor : '100%',
 							itemId : 'subupgradekyc.form.maritalstatus',
 							enumId : CmFinoFIX.TagID.MaritalStatusList,
