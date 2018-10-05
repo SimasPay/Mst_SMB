@@ -24,8 +24,14 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.loader.criteria.CriteriaJoinWalker;
+import org.hibernate.loader.criteria.CriteriaQueryTranslator;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.persister.entity.OuterJoinLoadable;
 import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +57,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     private static final String PocketBySourcePocketID = "pocket";
     private CompanyDAO companyDao = DAOFactory.getInstance().getCompanyDAO();
     
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static Logger log = LoggerFactory.getLogger(CommodityTransferDAO.class);
     
     public void applyQuery(CommodityTransferQuery query, Criteria criteria) throws Exception
     {
@@ -331,6 +337,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 
 	@SuppressWarnings("unchecked")
 	private List<CommodityTransfer> getTransferList(CommodityTransferQuery query) {
+		log.debug("@kris getTransferList");
 		List<CommodityTransfer> result = new ArrayList<CommodityTransfer>();
 		
 		Criteria criteria = createCriteria();
@@ -493,6 +500,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     
     public List<CommodityTransfer> getTxnHistory(CommodityTransferQuery query)
     {
+    	log.debug("@kris getTxnHistory");
     	if (query.getSourceDestnPocket() != null 
     			&& query.getLimit() <= ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
 
@@ -625,6 +633,8 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     
 
     public List<CommodityTransfer> get(CommodityTransferQuery query) throws Exception {
+    	log.debug("@kris: CommodityTransferDAO.get() orderMap:"+query.getOrderMap());
+    	log.debug("@kris: CommodityTransferDAO.get() sortString:"+query.getSortString());
     	if (query.getSourceDestnPocket() != null 
     			&& query.getLimit() != ConfigurationUtil.getExcelRowLimit() && (query.getSubTotalBy() == null)) {
     		//Do Sql processing and return
@@ -678,6 +688,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	if (query.getSourceDestnPocket() != null &&
     			query.getLimit()!=null && query.getLimit() == ConfigurationUtil.getExcelRowLimit())
     	{
+    		log.debug("@kris: source and dest pocket is not null and query limit equals excel row limit");
 	    	/**
 	    	 * code for getting the results with only source pocket id set
 	    	 * NOTE: when you change this code make sure the below code for dest pocket id
@@ -725,15 +736,19 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	         * Get the results from source pocket and dest pocket and merge and sort and get the 
 	         * max limit rows
 	         */
+	        log.debug("@kris print query sourcePocketCriteria:"+printQueryFromCriteria(sourcePocketCriteria));
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> resultFromSourcePokcet = sourcePocketCriteria.list();
+	        printId(resultFromSourcePokcet);
 	        
-	        
+	        log.debug("@kris print query destPocketCriteria:"+printQueryFromCriteria(destPocketCriteria));
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> resultFromDestPocket = destPocketCriteria.list();
+	        printId(resultFromDestPocket);
 	        
 	        //now merge these results
 	        List<CommodityTransfer> results = mergeResults(resultFromSourcePokcet,resultFromDestPocket,query.getLimit());
+	        printId("after merge",results);
 	        query.setTotal(results.size());
 	        return results;
     	}
@@ -743,6 +758,7 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     	// or use separate method for download stuff.
     	else
     	{
+    		log.debug("@kris: proces criteria without put difference in source and dest pocket");
 	        Criteria criteria = createCriteria();
 	
 	        applyQuery(query, criteria);
@@ -751,18 +767,68 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
 	        // Paging
 	        processPaging(query, criteria);
 	
+	        criteria.addOrder(Order.desc(CommodityTransfer.FieldName_EndTime));//@kris: attemp fixing point 7a
         	criteria.addOrder(Order.desc(CommodityTransfer.FieldName_RecordID));
 	        applyOrder(query, criteria);
+	        
+	        log.debug("@kris print query:"+printQueryFromCriteria(criteria));
+	        
 	        @SuppressWarnings("unchecked")
 	        List<CommodityTransfer> results = criteria.list();
+	        printId(results);
 	        return results;
     	}
     }
-
-
+    
+    public static void printId(List<CommodityTransfer> list){
+    	printId("",list);
+    }
+    
+    public static void printId(String message, List<CommodityTransfer> list){
+    	StringBuffer sb=new StringBuffer();
+    	try{
+	    	for (int i = 0; i < list.size(); i++) {
+				CommodityTransfer ct=(CommodityTransfer)list.get(i);
+				sb.append("[");
+				sb.append(ct.getId()+":"+ct.getSctlId()+":"+ct.getEndtime());
+				sb.append("]");
+			}
+    	}catch(Exception e){
+    		log.error("error",e);
+    	}
+    	log.debug("@kris printId "+message+":"+sb.toString());
+    }
+    
+    public static String printQueryFromCriteria(Criteria criteria){
+    	String sql=null;
+    	try{
+	    	CriteriaImpl criteriaImpl = (CriteriaImpl)criteria;
+	    	SessionImplementor session = criteriaImpl.getSession();
+	    	SessionFactoryImplementor factory = session.getFactory();
+	    	CriteriaQueryTranslator translator=new CriteriaQueryTranslator(factory,criteriaImpl,criteriaImpl.getEntityOrClassName(),CriteriaQueryTranslator.ROOT_SQL_ALIAS);
+	    	String[] implementors = factory.getImplementors( criteriaImpl.getEntityOrClassName() );
+	
+	    	CriteriaJoinWalker walker = new CriteriaJoinWalker((OuterJoinLoadable)factory.getEntityPersister(implementors[0]), 
+	    	                        translator,
+	    	                        factory, 
+	    	                        criteriaImpl, 
+	    	                        criteriaImpl.getEntityOrClassName(), 
+	    	                        session.getLoadQueryInfluencers()   );
+	
+	    	sql=walker.getSQLString();
+    	}catch(Exception e){
+    		log.error("error",e);
+    	}
+    	return sql;
+    }
+    
     private List<CommodityTransfer> mergeResults(List<CommodityTransfer> results1,
 			List<CommodityTransfer> results2, int maxCount)
 	{
+    	log.debug("@kris mergeResults");
+    	log.debug("@kris results1:"+((results1!=null)?results1.size():"null"));
+    	log.debug("@kris results2:"+((results2!=null)?results2.size():"null"));
+    	
 		List<CommodityTransfer> mergedResult = new ArrayList<CommodityTransfer>();
 		mergedResult.addAll(results1);
 		mergedResult.addAll(results2);
