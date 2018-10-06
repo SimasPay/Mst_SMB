@@ -243,6 +243,10 @@
 </script>
 <script type="text/javascript" src="<c:url value="/js/widget/UserGrid.js"/>">
 </script>
+<script type="text/javascript" src="<c:url value="/js/widget/AuditLogGrid.js"/>">
+</script>
+<script type="text/javascript" src="<c:url value="/js/widget/AuditLogViewGridWindow.js"/>">
+</script>
 
 <!-- Enum tab -->
 <script type="text/javascript" src="<c:url value="/js/page/enumPage.js"/>">

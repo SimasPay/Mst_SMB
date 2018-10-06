@@ -38,6 +38,7 @@ import com.mfino.fix.CmFinoFIX.CMJSAgentClosing;
 import com.mfino.fix.CmFinoFIX.CMJSAgentClosingInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectAddBankPocketToEmoneySubscriber;
 import com.mfino.fix.CmFinoFIX.CMJSApproveRejectSettlement;
+import com.mfino.fix.CmFinoFIX.CMJSAuditLog;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInConfirm;
 import com.mfino.fix.CmFinoFIX.CMJSBankTellerCashInInquiry;
 import com.mfino.fix.CmFinoFIX.CMJSBase;
@@ -707,6 +708,11 @@ public class FixController {
 	@Qualifier("RetireEmoneyPocketSubscriberProcessorImpl")
 	private RetireEmoneyPocketSubscriberProcessor retireEmoneyPocketSubscriberProcessor;
 	
+	@Autowired
+	@Qualifier("AuditLogProcessorImpl")
+	private AuditLogProcessor auditLogProcessor;
+	
+	
 	@RequestMapping("/fix.htm")
 	public View processFix(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -1354,6 +1360,9 @@ public class FixController {
 			}else if (msgClassName.equals(CMJSSubscriberEdit.class.getName())){
 				fixProcessor = subscriberEditProcessor;
 				tl.setMessagecode(CmFinoFIX.MsgType_JSSubscriberEdit);
+			}else if (msgClassName.equals(CMJSAuditLog.class.getName())){
+				fixProcessor = auditLogProcessor;
+				tl.setMessagecode(CmFinoFIX.MsgType_JSAuditLog);
 			}
 
 			/*
