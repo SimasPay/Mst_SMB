@@ -180,7 +180,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                             xtype : 'textfield',
                             fieldLabel: _('Other Job'),
                             emptyText:_(''),
-                            allowBlank: false,
+                            allowBlank: true,
                             anchor : '100%',
 							itemId : 'subupgradekyc.form.otherwork',
                             name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.OtherWork._name
