@@ -789,7 +789,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 		try{
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			String mdn2 = subscriberMDN.getMdn();
-			
+			log.debug("@Martin>>: sendSMS to ["+mdn2+"] start ");
 			NotificationWrapper smsNotificationWrapper = new NotificationWrapper();
 			smsNotificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			smsNotificationWrapper.setCode(notificationCode);
@@ -803,8 +803,10 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			smsValues.setDestinationMDN(mdn2);
 			smsValues.setMessage(smsMessage);
 			smsValues.setNotificationCode(smsNotificationWrapper.getCode());
+			log.debug("@Martin>>: sendSMS to ["+mdn2+"] message=["+smsMessage+"] ");
 			
 			smsService.asyncSendSMS(smsValues);
+			log.debug("@Martin>>: sendSMS to ["+mdn2+"] DONE !");
 		}catch(Exception e){
 			e.printStackTrace();
 			log.error("Error in Sending SMS "+e.getMessage(),e);
