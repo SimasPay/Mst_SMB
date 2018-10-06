@@ -257,3 +257,15 @@ Update notification set status=1, text='Please access PlayStore or AppStore to u
 Update notification set status=1, text='Silakan ke PlayStore atau AppStore untuk perbarui Aplikasi SimasPay Anda sebelum melakukan transaksi.' where id=2935;
 Update notification set status=1, text='Please access PlayStore or AppStore to update your SimasPay Application before performing transaction.' where id=2931;
 Update notification set status=1, text='Silakan ke PlayStore atau AppStore untuk perbarui Aplikasi SimasPay Anda sebelum melakukan transaksi.' where id=2936;
+
+
+Update notification set status=1, text='Please access PlayStore or AppStore to update your SimasPay Application before performing transaction.' where id=2931;
+Update notification set status=1, text='Akun SimasPay anda telah diblokir. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=787;
+Update notification set status=1, text='Akun SimasPay anda telah diblokir. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=789;
+Update notification set status=1, text='Akun SimasPay anda telah diblokir. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=790;
+Update notification set status=1, text='Akun SimasPay anda telah diblokir. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=791;
+Update notification set status=0, text='Akun SimasPay anda telah aktif kembali. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=793;
+Update notification set status=1, text='Akun SimasPay anda telah aktif kembali. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=792;
+Update notification set status=1, text='Akun SimasPay anda telah aktif kembali. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=794;
+Update notification set status=1, text='Akun SimasPay anda telah aktif kembali. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=795;
+Update notification set status=1, text='Akun SimasPay anda telah aktif kembali. Info lebih lanjut, hubungi Bank Sinarmas Customer Care: $(CustomerServiceShortCode).' where id=796;

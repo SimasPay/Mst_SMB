@@ -43,4 +43,10 @@ JBossFuse:smx@root> list | grep xml
 [root@simaspayuat bin]# ./startup.sh
 
 ==========================================================================================================================
+extract jboss fuse
+
+jpos/deploy/conn_config_bsm.xml
+mux_config_bsm.xml
+
+
 
