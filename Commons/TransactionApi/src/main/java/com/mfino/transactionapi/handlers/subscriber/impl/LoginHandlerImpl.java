@@ -22,16 +22,21 @@ import com.mfino.crypto.KeyService;
 import com.mfino.domain.ChannelSessionMgmt;
 import com.mfino.domain.Partner;
 import com.mfino.domain.Pocket;
+import com.mfino.domain.SMSValues;
+import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberMdn;
 import com.mfino.domain.TransactionLog;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMWebApiLoginRequest;
 import com.mfino.handlers.FIXMessageHandler;
 import com.mfino.hibernate.Timestamp;
+import com.mfino.mailer.NotificationWrapper;
 import com.mfino.result.XMLResult;
 import com.mfino.service.ChannelSessionManagementService;
 import com.mfino.service.MfinoUtilService;
+import com.mfino.service.NotificationMessageParserService;
 import com.mfino.service.PartnerService;
+import com.mfino.service.SMSService;
 import com.mfino.service.SubscriberMdnService;
 import com.mfino.service.SubscriberService;
 import com.mfino.service.SubscriberStatusEventService;
@@ -92,6 +97,13 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 	@Qualifier("SubscriberServiceImpl")
 	private SubscriberService subscriberService;
 	
+	@Autowired
+	@Qualifier("NotificationMessageParserServiceImpl")
+	private NotificationMessageParserService notificationMessageParserService;
+	
+	@Autowired
+	@Qualifier("SMSServiceImpl")
+	private SMSService smsService;
 
 
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED)
@@ -409,6 +421,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				subscriberMDN.getSubscriber().setStatus(CmFinoFIX.SubscriberStatus_InActive);
 				subscriberMDN.getSubscriber().setStatustime(now);
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriberMDN.getSubscriber(),true);
+				
+				//@@martin
+				sendSMS(subscriberMDN,CmFinoFIX.NotificationCode_MDNAccountSuspendNotification);
+
 			}
 			
 			// Check if the Subscriber is of Partner type
@@ -427,5 +443,31 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			}
 		}
 	}
-
+	
+	//@@martin
+	private void sendSMS (SubscriberMdn subscriberMDN , Integer notificationCode) {
+		try{
+			Subscriber subscriber = subscriberMDN.getSubscriber();
+			String mdn2 = subscriberMDN.getMdn();
+			
+			NotificationWrapper smsNotificationWrapper = new NotificationWrapper();
+			smsNotificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			smsNotificationWrapper.setCode(notificationCode);
+			smsNotificationWrapper.setDestMDN(mdn2);
+			smsNotificationWrapper.setLanguage(subscriber.getLanguage());
+			smsNotificationWrapper.setFirstName(subscriber.getFirstname());
+	    	smsNotificationWrapper.setLastName(subscriber.getLastname());
+			
+	    	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper, true);
+			SMSValues smsValues= new SMSValues();
+			smsValues.setDestinationMDN(mdn2);
+			smsValues.setMessage(smsMessage);
+			smsValues.setNotificationCode(smsNotificationWrapper.getCode());
+			
+			smsService.asyncSendSMS(smsValues);
+		}catch(Exception e){
+			e.printStackTrace();
+			log.error("Error in Sending SMS "+e.getMessage(),e);
+		}
+	}
 }

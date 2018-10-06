@@ -37,6 +37,7 @@ import com.mfino.domain.KycLevel;
 import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.domain.Pocket;
 import com.mfino.domain.PocketTemplate;
+import com.mfino.domain.SMSValues;
 import com.mfino.domain.Subscriber;
 import com.mfino.domain.SubscriberAddiInfo;
 import com.mfino.domain.SubscriberMdn;
@@ -477,9 +478,13 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 		if ((isAbsolutLockedChanged && isNewAbsolutLocked) || (isSecurityLockedChanged && isNewSecurityLocked) || (isSelfSuspendedChanged && isNewSelfSuspended) || (isSuspendedChanged && isNewSuspended)) {
 			newMsg.setCode(CmFinoFIX.NotificationCode_MDNAccountSuspendNotification);
 			forwardNotificationRequestProcessor.process(newMsg);
+			//@Martin : send SMS upon restriction
+			sendSMS(subscriberMdn, CmFinoFIX.NotificationCode_MDNAccountSuspendNotification);
 		} else if (isRestrictionsNoneChanged && isNewRestrictionsNone) {
 			newMsg.setCode(CmFinoFIX.NotificationCode_MDNReleaseSuspension);
 			forwardNotificationRequestProcessor.process(newMsg);
+			//@Martin : send SMS upon Release restriction
+			//sendSMS(subscriberMdn, CmFinoFIX.NotificationCode_MDNReleaseSuspension);
 		}
 	
 	}
@@ -776,6 +781,34 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			}
 		}
 		return idTypeValue;
+	}
+	
+	
+	//@@martin
+	private void sendSMS (SubscriberMdn subscriberMDN , Integer notificationCode) {
+		try{
+			Subscriber subscriber = subscriberMDN.getSubscriber();
+			String mdn2 = subscriberMDN.getMdn();
+			
+			NotificationWrapper smsNotificationWrapper = new NotificationWrapper();
+			smsNotificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
+			smsNotificationWrapper.setCode(notificationCode);
+			smsNotificationWrapper.setDestMDN(mdn2);
+			smsNotificationWrapper.setLanguage(subscriber.getLanguage());
+			smsNotificationWrapper.setFirstName(subscriber.getFirstname());
+	    	smsNotificationWrapper.setLastName(subscriber.getLastname());
+			
+	    	String smsMessage = notificationMessageParserService.buildMessage(smsNotificationWrapper, true);
+			SMSValues smsValues= new SMSValues();
+			smsValues.setDestinationMDN(mdn2);
+			smsValues.setMessage(smsMessage);
+			smsValues.setNotificationCode(smsNotificationWrapper.getCode());
+			
+			smsService.asyncSendSMS(smsValues);
+		}catch(Exception e){
+			e.printStackTrace();
+			log.error("Error in Sending SMS "+e.getMessage(),e);
+		}
 	}
 
 }
