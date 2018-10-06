@@ -198,7 +198,7 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTxnLog>
           processPaging(query, criteria);
 
           if(query.isIDOrdered()) {
-        	//criteria.addOrder(Order.desc(ActivitiesLog.FieldName_));
+        	criteria.addOrder(Order.desc("CREATETIME"));//@kris
             criteria.addOrder(Order.desc(ActivitiesLog.FieldName_RecordID));
           }
           
