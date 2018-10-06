@@ -10,7 +10,7 @@ mFino.widget.SubscriberUpgradeKycLevelWindow = function (config){
         defaultType: 'textfield',
         fileUpload:true,
         width: 600,
-        height: 500,
+        height: 600,
         frame : true,
         bodyStyle: 'padding: 10px 10px 0 10px;',
         labelWidth: 5,
