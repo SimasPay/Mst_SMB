@@ -211,6 +211,7 @@ Ext.extend(mFino.widget.PartnerTransactionSearchForm, Ext.FormPanel, {
     },
     
     searchHandler : function(){
+        console.log("@kris: PartnerTransactionSearchForm.searchHandler");
         if(this.getForm().isValid()){
             var values = this.getForm().getValues();
             //the date range picker seems to out put the value even if it is disabled.
