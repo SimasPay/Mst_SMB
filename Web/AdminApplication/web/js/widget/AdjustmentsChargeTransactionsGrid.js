@@ -7,6 +7,7 @@ Ext.ns("mFino.widget");
  * @param config dataUrl is the base url to get data
  */
 mFino.widget.AdjustmentsChargeTransactionsGrid = function (config) {
+    console.log("@kris: AdjustmentsChargeTransactionsGrid.init");
     var localConfig = Ext.apply({}, config);
     if(!localConfig.store){
         localConfig.store = new FIX.FIXStore(config.dataUrl, CmFinoFIX.message.JSServiceChargeTransactions);

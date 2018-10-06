@@ -1,0 +1,52 @@
+
+
+ZUGENK NOTE
+
+
+mvn install:install-file -Dfile="exp4j-0.4.8.jar" -DgroupId=de.congrace -DartifactId=exp4jCustom -Dversion=0.4.8 -Dpackaging=jar
+ 
+-DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar
+<dependency>
+
+mvn install:install-file -Dfile="/Users/it.atsbanksinarmas.com/Downloads/OJDBC-Full/ojdbc6.jar" -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar
+
+
+ant mvn-dist -Dprofile=bsim -Ddbtype=oracle -Drelease=3.0.0.0 -Drevision=1550
+
+
+
+
+TV 
+
+530 805 627 / 1y97y7ms
+
+990 073 935 / iff111
+
+==========================================================================================================================
+
+[root@simaspayuat ~]# cd /opt/apache-tomcat-8.5.4/bin
+[root@simaspayuat bin]# ./shutdown.sh
+[root@simaspayuat bin]# ps -ef | grep tomcat
+[root@simaspayuat bin]# cd /opt/jboss-fuse-6.2.1.redhat-084/bin
+[root@simaspayuat bin]# ./client -u smx -p smx
+JBossFuse:smx@root> shutdown
+Confirm: shutdown instance root (yes/no): yes
+[root@simaspayuat bin]# ps -ef | grep fuse
+
+STARTING :
+[root@simaspayuat bin]# ./start
+[root@simaspayuat bin]# ./client -u smx -p smx
+JBossFuse:smx@root> list | grep xml
+[ 376] [Active     ] [            ] [Started] [   80] mce_auto_reversal_configuration.xml (0.0.0)
+[ 377] [Active     ] [            ] [Started] [   80] mce_fix_configuration.xml (0.0.0)
+[root@simaspayuat bin]# cd /opt/apache-tomcat-8.5.4/bin
+[root@simaspayuat bin]# ./startup.sh
+
+==========================================================================================================================
+extract jboss fuse
+
+jpos/deploy/conn_config_bsm.xml
+mux_config_bsm.xml
+
+
+

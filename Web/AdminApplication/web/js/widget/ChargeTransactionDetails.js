@@ -5,6 +5,7 @@ Ext.ns("mFino.widget");
 
 mFino.widget.ChargeTransactionDetails = function (config)
 {
+    console.log("@kris: ChargeTransactionDetails.init");
     var localConfig = Ext.apply({}, config);
 
     localConfig = Ext.applyIf(localConfig, {

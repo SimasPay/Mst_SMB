@@ -204,6 +204,7 @@ Ext.extend(mFino.widget.IntegrationsSearchForm, Ext.FormPanel, {
 	},
 
 	searchHandler : function(){
+		console.log("@kris: IntegrationSearchForm.searchHandler");
 		if(this.getForm().isValid()){
 			var values = this.getForm().getValues();
 			this.fireEvent("search", values);

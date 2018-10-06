@@ -445,7 +445,8 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     onSuspendClick: function(){
     	var currentStatus = this.form.items.get("subeditmaker.form.hidden.status").getValue();
         if(this.form.items.get("subeditmaker.Suspended").checked) {
-            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+            //alert('@Martin::NOACTION 1');
+            //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
         } else {
         	if (CmFinoFIX.SubscriberStatus.Suspend == currentStatus) {
         		currentStatus = CmFinoFIX.SubscriberStatus.Initialized;
@@ -456,9 +457,11 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
     onSecurityLockClick: function(){
     	var currentStatus = this.form.items.get("subeditmaker.form.hidden.status").getValue();
         if(this.form.items.get("subeditmaker.SecurityLocked").checked) {
-            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            //alert('@Martin::NOACTION 2');
+            //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("subeditmaker.Suspended").checked) {
-                this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+                //alert('@Martin::NOACTION 3');
+            //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
         	if (CmFinoFIX.SubscriberStatus.InActive == currentStatus) {
@@ -484,9 +487,11 @@ Ext.extend(mFino.widget.SubscriberEditMakerForm, Ext.FormPanel, {
      onNoFundMovementClick: function(){
     	var currentStatus = this.form.items.get("subeditmaker.form.hidden.status").getValue();
         if(this.form.items.get("subeditmaker.NoFundMovement").checked) {
-            this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
+            //alert('@Martin::NOACTION 4');
+            //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.InActive);
             if(this.form.items.get("subeditmaker.Suspended").checked) {
-                this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
+                //alert('@Martin::NOACTION 5');
+            //this.form.items.get("subeditmaker.form.status").setValue(CmFinoFIX.SubscriberStatus.Suspend);
             }
         } else {
         	if (CmFinoFIX.SubscriberStatus.InActive == currentStatus) {

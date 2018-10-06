@@ -1,0 +1,1 @@
+ant mvn-dist -Dprofile=bsim -Ddbtype=oracle -Drelease=3.0.0.0 -Drevision=1550

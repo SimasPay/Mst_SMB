@@ -19,7 +19,9 @@ public class GetConstantCodes {
 	
 	public static final String FAILURE = "06";
 
-	public static final String INVALID_AMOUNT = "13";
+		//@Martin: change RC 13 to 63
+	public static final String INVALID_AMOUNT = "63";
+//	public static final String INVALID_AMOUNT = "13";
 	
 	public static final String REJECT = "99";
 	

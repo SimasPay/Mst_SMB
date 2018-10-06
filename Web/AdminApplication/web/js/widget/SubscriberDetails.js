@@ -316,6 +316,12 @@ mFino.widget.SubscriberDetails = function (config)
                 xtype: "displayfield",
                 anchor : '100%',
                 fieldLabel: _('Upgrade Account Comments'),
+                style: {
+					color: 'red' ,
+					//text-decoration:'underline',
+					//text-decoration: 'underline',
+					cursor:'pointer'
+				},
                 name: CmFinoFIX.message.JSSubscriberMDN.Entries.UpgradeAcctComments._name
             },
             {

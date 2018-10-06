@@ -4,6 +4,7 @@
 Ext.ns("mFino.widget");
 
 mFino.widget.ChargeTransactionSearchForm = function (config) {
+    console.log("@kris: ChargeTransactionSearchForm");
     var localConfig = Ext.apply({}, config);
     localConfig = Ext.applyIf(localConfig, {
         id : "chargetransactionsearchfrom",
@@ -254,6 +255,7 @@ mFino.widget.ChargeTransactionSearchForm = function (config) {
                 xtype: 'button',
                 text: _('Search'),
                 style : {
+                    color : 'red',
                     align : 'right'
                 },
                 anchor:'50%',
@@ -300,6 +302,7 @@ Ext.extend(mFino.widget.ChargeTransactionSearchForm, Ext.FormPanel, {
 
   
     searchTransactions : function(){
+        console.log("@kris: searchTransactions");
         var tab_holder = Ext.get("menu1");
         tab_holder.setCurrent("transactions");
         var contentPanel = Ext.getCmp("contentPanel");
@@ -323,6 +326,7 @@ Ext.extend(mFino.widget.ChargeTransactionSearchForm, Ext.FormPanel, {
     },
    
     searchHandler : function(){
+        console.log("@kris: ChargeTransactionSearchForm.searchHandler");
         if(this.getForm().isValid()){
             var values = this.getForm().getValues();
            var currdatetime= new Date();

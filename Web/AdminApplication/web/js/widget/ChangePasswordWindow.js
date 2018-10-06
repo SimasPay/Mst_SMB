@@ -17,6 +17,7 @@ mFino.widget.ChangePasswordWindow = Ext.extend(Ext.Component,{ //added for #2311
                         '<li>* Must be no more than 40 characters long. </li>',
                         '<li>* Must contain atleast one Number. </li>',
                         '<li>* Must contain atleast one capital letter. </li>',
+                        '<li>* Password will be valid for 90 days. </li>',
                     '</ul>',
                     '</div>',
                     '<div id="changePasswordPanel"></div>',

@@ -97,15 +97,20 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	@Override
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
+		log.info("@kris: ServiceChargeTransactionLogProcessor.process()");
 		CMJSServiceChargeTransactions realMsg = (CMJSServiceChargeTransactions) msg;
-
+		log.info("@kris: realMsg.getaction(): "+realMsg.getaction());
 		if (CmFinoFIX.JSaction_Select.equals(realMsg.getaction())) {
+			log.info("@kris: action equals "+CmFinoFIX.JSaction_Select);
 			ServiceChargeTransactionsLogQuery query = new ServiceChargeTransactionsLogQuery();
 			Partner partner = userService.getPartner();
 			if(partner!=null){
 				query.setSourceDestPartnerID(partner.getId().longValue());
 			}
+			
+			log.info("@kris: realMsg.getBankRetrievalReferenceNumber():"+realMsg.getBankRetrievalReferenceNumber());
 			if(StringUtils.isNotBlank(realMsg.getBankRetrievalReferenceNumber())){
+				log.info("@kris: bank rrn not blank");
 				Long Id = getSCTLID(realMsg.getBankRetrievalReferenceNumber()) ;
 				if(Id!=null){
 					query.setId(Id);
@@ -115,6 +120,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 					return realMsg;
 				}
 			}else{
+				log.info("@kris: bank rrn IS blank");
 				if(realMsg.getIDSearch()!=null){
 					query.setId(realMsg.getIDSearch());
 				}
@@ -188,8 +194,11 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			query.setIDOrdered(true); 
 			
 			List<ServiceChargeTxnLog> results = sctlDao.get(query);
+			log.info("@kris: SCTL results:"+((results!=null)?results.size():"null"));
 			List<Long> sctlList = getSctlList(results);
-
+			log.info("@kris: SCTL sctlList size:"+((sctlList!=null)?sctlList.size():"null"));
+			printId("@kris: dari getSctlList",sctlList);
+			
 			List<IntegrationSummary> integrationSummaryLst ;//= integrationSummaryDao.getBySctlList(sctlList);
 			Map<Long,IntegrationSummary> sctlIsMap = null ;//= getSctlIsMap(integrationSummaryLst);
 
@@ -198,17 +207,23 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 			
 			int maxNoOfDaysToReverseTxn = systemParametersService.getInteger(SystemParameterKeys.MAX_NO_OF_DAYS_TO_REVERSE_TXN);
 			int startIndex = 0;
-
+			log.info("@kris maxNoOfDaysToReverseTxn:"+maxNoOfDaysToReverseTxn);
+			
 			if (results != null) {
+				log.info("@kris results is not null");
 				realMsg.allocateEntries(results.size());
 				for (int i = 0; i <results.size(); i++) {
 					if( i%BACTH_SIZE == 0 ) {
 						int endIndex = startIndex+BACTH_SIZE < results.size() ? startIndex+BACTH_SIZE : results.size();
 						integrationSummaryLst = integrationSummaryDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
+						log.info("@kris: SCTL integrationSummaryLst size:"+((integrationSummaryLst!=null)?integrationSummaryLst.size():"null"));
 						sctlIsMap = getSctlIsMap(integrationSummaryLst);
-
+						log.info("@kris: sctlIsMap:"+sctlIsMap);
+						
 						billPaymentsLst = billPaymentsDao.getBySctlList(sctlList.subList(startIndex, endIndex ));
+						log.info("@kris: SCTL billPaymentsLst size:"+((billPaymentsLst!=null)?billPaymentsLst.size():"null"));
 						sctlBpMap = getSctlBpMap(billPaymentsLst);
+						log.info("@kris: sctlBpMap:"+sctlIsMap);
 						startIndex = startIndex + BACTH_SIZE;
 					}
 					ServiceChargeTxnLog sctl = results.get(i);
@@ -216,6 +231,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 					updateMessage(sctl,entry,realMsg, maxNoOfDaysToReverseTxn,sctlIsMap,sctlBpMap);
 					realMsg.getEntries()[i] = entry;
 				}
+				//log.info("@kris realMsg.getEntries() length:"+(realMsg.getEntries().length());
 			}
 			realMsg.setsuccess(CmFinoFIX.Boolean_True);
 			realMsg.settotal(query.getTotal());
@@ -224,8 +240,27 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 
 		return realMsg;
 	}
-
+	
+	public void printId(List<Long> list){
+    	printId("",list);
+    }
+    
+    public void printId(String message, List<Long> list){
+    	StringBuffer sb=new StringBuffer();
+    	try{
+	    	for (int i = 0; i < list.size(); i++) {
+				Long sctlId=list.get(i);
+				if(i>0)sb.append(",");
+				sb.append(sctlId);
+			}
+    	}catch(Exception e){
+    		log.error("error",e);
+    	}
+    	log.info("@kris SCTL printId "+message+":"+sb.toString());
+    }
+    
 	private Map<Long, BillPayments> getSctlBpMap(List<BillPayments> billPaymentsLst) {
+		log.info("@kris: getSctlBpMap()");
 		Map<Long, BillPayments> sctlBpMap = new HashMap<Long, BillPayments>();
 		for(BillPayments bp : billPaymentsLst) {
 			sctlBpMap.put(bp.getId().longValue(), bp);
@@ -234,6 +269,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private Map<Long, IntegrationSummary> getSctlIsMap(List<IntegrationSummary> integrationSummaryLst) {
+		log.info("@kris: getSctlIsMap()");
 		Map<Long, IntegrationSummary> sctlIsMap = new HashMap<Long, IntegrationSummary>();
 		for(IntegrationSummary is : integrationSummaryLst) {
 			sctlIsMap.put(is.getId().longValue(), is);
@@ -242,6 +278,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private List<Long> getSctlList(List<ServiceChargeTxnLog> results) {
+		log.info("@kris: getSctlList()");
 		List<Long> sctlList = new ArrayList<Long>();
 		for(ServiceChargeTxnLog sctl : results) {
 			sctlList.add(sctl.getId().longValue());
@@ -250,6 +287,7 @@ public class ServiceChargeTransactionLogProcessorImpl extends BaseFixProcessor i
 	}
 
 	private Long getSCTLID(String bankRetrievalReferenceNumber) {
+		log.info("@kris: getSCTLID()");
 		CommodityTransferQuery query = new CommodityTransferQuery();
 		query.setBankRRN(bankRetrievalReferenceNumber);
 		DAOFactory daoFactory =  DAOFactory.getInstance();

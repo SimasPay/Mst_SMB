@@ -67,9 +67,10 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
+    	log.info("@kris:CommodityTransferProcessorImpl process");
     	String state=null;
         CMJSCommodityTransfer realMsg = (CMJSCommodityTransfer) msg;
-        
+        log.info("@kris: action: "+realMsg.getaction());
         CommodityTransferDAO dao = DAOFactory.getInstance().getCommodityTransferDAO();
         PendingCommodityTransferDAO pendingDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
 
