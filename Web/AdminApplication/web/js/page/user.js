@@ -37,7 +37,11 @@ mFino.page.user = function(config){
         mode : "close",
         title : _('User Details')
     },config));
-
+    
+    var auditLogView = new mFino.widget.AuditLogViewGridWindow(Ext.apply({
+        grid : new mFino.widget.AuditLogGrid(config)
+    },config));
+    
     var grid = new mFino.widget.UserGrid(Ext.apply({
         title : _('User Search Results'),
         height: 450
@@ -128,6 +132,24 @@ mFino.page.user = function(config){
                                 }, this);
                             }
                         }
+                    },
+                    {
+                    	iconCls: 'mfino-button-upgrade',
+                    	id:'user_activity',
+                    	itemId : 'user.details.useractivity',
+                    	tooltip : _('User activity'),
+                    	handler : function(){
+                    		auditLogView.grid.store.lastOptions = {
+                                params : {
+                                    start : 0,
+                                    limit : CmFinoFIX.PageSize.Default
+                                }
+                            };
+                    		//auditLogView.grid.store.baseParams[CmFinoFIX.message.JSBulkUploadEntry.IDSearch._name] = record.get(CmFinoFIX.message.JSBulkUpload.Entries.ID._name);
+                    		auditLogView.grid.store.load(auditLogView.grid.store.lastOptions);
+                    		auditLogView.setStore(auditLogView.grid.store);
+                    		auditLogView.show();
+                    	}
                     }
                     //            ,
                     //            {
@@ -155,6 +177,7 @@ mFino.page.user = function(config){
                     //                    }
                     //                }
                     //            }
+                    
                 ],
                 items: [  detailsForm ]
             }
