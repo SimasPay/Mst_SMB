@@ -4,6 +4,8 @@
 Ext.ns("mFino.widget");
 
 mFino.widget.TransactionSearchForm = function (config) {
+    console.log("@kris: TransactionSearchForm");
+    ChargeTransactionSearchForm
     var localConfig = Ext.apply({}, config);
     localConfig = Ext.applyIf(localConfig, {
         id : "transactionsearchfrom",
@@ -250,6 +252,7 @@ mFino.widget.TransactionSearchForm = function (config) {
                 xtype: 'button',
                 text: _('Search'),
                 style : {
+                    color : 'green',
                     align : 'right'
                 },
                 anchor:'50%',
@@ -347,6 +350,7 @@ Ext.extend(mFino.widget.TransactionSearchForm, Ext.FormPanel, {
     },
     
     searchHandler : function(){
+        console.log("@kris: TransactionSearchForm.searchHandler");
         if(this.getForm().isValid()){
             var values = this.getForm().getValues();
             //the date range picker seems to out put the value even if it is disabled.
