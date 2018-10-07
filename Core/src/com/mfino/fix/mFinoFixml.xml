@@ -5948,9 +5948,24 @@
 			</group>
 		</message>
 		<message name="JSResendMFAOTPNoPIN" msgtype="1795" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
-		<field name="SourceMDN" required="Y"/>
-		<field name="SctlId" required="N"/>
-	</message>
+			<field name="SourceMDN" required="Y"/>
+			<field name="SctlId" required="N"/>
+		</message>
+		<message name="JSAuditLog" msgtype="1797" msgcat="app" AlwaysCreate="true" Java="Y" JavaScript="Y" ExtendsMessage="JSBase">
+			<field name="CreatedBySearch" required="N"/>
+			<field name="CreateTimeSearch" required="N"/>
+			<group name="EntriesCount" groupid="Entries" groupname="Entries" required="N" RemoteModified="Y">
+				<field name="RecordID" required="N" />
+	            <field name="RecordVersion"  required="N" />
+				<field name="LastUpdateTime" required="N" />
+				<field name="UpdatedBy" required="N" />
+				<field name="CreateTime" required="N" />
+				<field name="CreatedBy" required="N" />
+				<field name="MessageName" required="N" />
+				<field name="FixMessage" required="N" />
+				<field name="Action" required="N"/>
+			</group>
+		</message>
 	</messages>
 	<records>
 		<record name="Base" Java="Y">
@@ -25427,7 +25442,8 @@ ERROR:Mismatch of  mdn type and app type
 	        <value enum="23001" description="Promos" />
 	         <!-- ProductReferrals -->
 	        <value enum="23101" description="ProductReferrals" />	        
-	        <value enum="23102" description="ProductReferrals_View" />
+	        <value enum="23102" description="ProductReferrals_View" />   
+	        <value enum="23103" description="Audit_Log" />
 	        
 		</field>
 		<field number="5495" name="NotificationMethodText" type="STRING" unused="Y" />

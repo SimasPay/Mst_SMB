@@ -20,6 +20,7 @@ build
 .classpath
 .jsdtscope
 .project
+GTBank/
 build_log.txt
 CmFinoFIX.java
 MANIFEST.MF

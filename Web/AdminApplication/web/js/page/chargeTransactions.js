@@ -363,6 +363,7 @@ mFino.page.chargeTransactions = function(config){
          }
    });
    searchBox.on("search", function(values){
+	   console.log("@kris: chargeTransaction.js on search");
         detailsForm.getForm().reset();
         detailsForm.record = null;
         transactionGrid.store.baseParams = values;

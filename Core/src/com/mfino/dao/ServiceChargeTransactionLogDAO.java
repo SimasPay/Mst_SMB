@@ -13,6 +13,28 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.loader.criteria.CriteriaJoinWalker;
+import org.hibernate.loader.criteria.CriteriaQueryTranslator;
+import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.persister.entity.OuterJoinLoadable;
+import org.hibernate.type.StandardBasicTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mfino.constants.QueryConstants;
 import com.mfino.dao.query.ServiceChargeTransactionsLogQuery;
 import com.mfino.domain.ActivitiesLog;
@@ -32,7 +54,8 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTxnLog>
 	 * @return
 	 */
 	private ChannelCodeDAO channelDao = DAOFactory.getInstance().getChannelCodeDao();
-	
+	private static Logger log = LoggerFactory.getLogger(CommodityTransferDAO.class);
+	 
 	public ServiceChargeTxnLog getByTransactionLogId(long transactionLogId) {
 		ServiceChargeTxnLog sctl = null;
 		Criteria criteria = createCriteria();
@@ -70,6 +93,29 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTxnLog>
             sctl.setMfinoServiceProvider(msp);
         }
         super.save(sctl);
+    }
+    
+    public static String printQueryFromCriteria(Criteria criteria){
+    	String sql=null;
+    	try{
+	    	CriteriaImpl criteriaImpl = (CriteriaImpl)criteria;
+	    	SessionImplementor session = criteriaImpl.getSession();
+	    	SessionFactoryImplementor factory = session.getFactory();
+	    	CriteriaQueryTranslator translator=new CriteriaQueryTranslator(factory,criteriaImpl,criteriaImpl.getEntityOrClassName(),CriteriaQueryTranslator.ROOT_SQL_ALIAS);
+	    	String[] implementors = factory.getImplementors( criteriaImpl.getEntityOrClassName() );
+	
+	    	CriteriaJoinWalker walker = new CriteriaJoinWalker((OuterJoinLoadable)factory.getEntityPersister(implementors[0]), 
+	    	                        translator,
+	    	                        factory, 
+	    	                        criteriaImpl, 
+	    	                        criteriaImpl.getEntityOrClassName(), 
+	    	                        session.getLoadQueryInfluencers()   );
+	
+	    	sql=walker.getSQLString();
+    	}catch(Exception e){
+    		log.error("error",e);
+    	}
+    	return sql;
     }
     
     public List<ServiceChargeTxnLog> get(ServiceChargeTransactionsLogQuery query){
@@ -152,11 +198,15 @@ public class ServiceChargeTransactionLogDAO extends BaseDAO<ServiceChargeTxnLog>
           processPaging(query, criteria);
 
           if(query.isIDOrdered()) {
+        	criteria.addOrder(Order.desc(ServiceChargeTxnLog.FieldName_CreateTime));//@kris
             criteria.addOrder(Order.desc(ActivitiesLog.FieldName_RecordID));
           }
           
           //applying Order
           applyOrder(query, criteria);
+          
+          log.info("@kris print SCTL query:"+printQueryFromCriteria(criteria));
+          
           @SuppressWarnings("unchecked")
           List<ServiceChargeTxnLog> results = criteria.list();
 

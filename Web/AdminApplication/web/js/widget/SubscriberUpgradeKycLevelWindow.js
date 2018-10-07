@@ -22,7 +22,7 @@ mFino.widget.SubscriberUpgradeKycLevelWindow = function (config){
 Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
     initComponent : function(){
         this.autoScroll = true;
-        this.draggable=true;
+        //is.draggable=true; udah bisa fix dengan height diatas
         this.frame = true;
     	this.labelWidth = 220;
         this.labelPad = 5;
@@ -180,7 +180,7 @@ Ext.extend(mFino.widget.SubscriberUpgradeKycLevelWindow, Ext.FormPanel, {
                             xtype : 'textfield',
                             fieldLabel: _('Other Job'),
                             emptyText:_(''),
-                            allowBlank: false,
+                            allowBlank: true,
                             anchor : '100%',
 							itemId : 'subupgradekyc.form.otherwork',
                             name: CmFinoFIX.message.JSSubscriberUpgradeKyc.Entries.OtherWork._name
