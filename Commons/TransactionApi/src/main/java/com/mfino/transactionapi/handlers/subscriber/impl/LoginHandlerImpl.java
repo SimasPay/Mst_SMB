@@ -398,9 +398,11 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 	}
 
 	private void recalculateMDNRestrictions(SubscriberMdn subscriberMDN) {
+		log.info("@Martin>>: Event recalculating wrong pin "+subscriberMDN.getMdn());
 		if ((subscriberMDN.getRestrictions() & CmFinoFIX.SubscriberRestrictions_SecurityLocked) != 0) {
 			return;
 		}
+		log.info("@Martin>>: Event recalculating wrong pin "+subscriberMDN.getWrongpincount()+">="+systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT));
 		if (subscriberMDN.getWrongpincount() >= systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT)) {
 			Timestamp now = new Timestamp();
 			subscriberMDN.setRestrictions(subscriberMDN.getRestrictions() | CmFinoFIX.SubscriberRestrictions_SecurityLocked);
@@ -423,6 +425,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				subscriberStatusEventService.upsertNextPickupDateForStatusChange(subscriberMDN.getSubscriber(),true);
 				
 				//@@martin
+				log.info("@Martin>>: Event to send MDNRestriction sms, due to wrong pin exceed limit..");
 				sendSMS(subscriberMDN,CmFinoFIX.NotificationCode_MDNAccountSuspendNotification);
 
 			}
@@ -449,7 +452,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		try{
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			String mdn2 = subscriberMDN.getMdn();
-			log.debug("@Martin>>: sendSMS to ["+mdn2+"] start");
+			log.info("@Martin>>: sendSMS to ["+mdn2+"] start");
 			NotificationWrapper smsNotificationWrapper = new NotificationWrapper();
 			smsNotificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			smsNotificationWrapper.setCode(notificationCode);
@@ -463,10 +466,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 			smsValues.setDestinationMDN(mdn2);
 			smsValues.setMessage(smsMessage);
 			smsValues.setNotificationCode(smsNotificationWrapper.getCode());
-			log.debug("@Martin>>: sendSMS to ["+mdn2+"] message=["+smsMessage+"] ");
+			log.info("@Martin>>: sendSMS to ["+mdn2+"] message=["+smsMessage+"] ");
 			
 			smsService.asyncSendSMS(smsValues);
-			log.debug("@Martin>>: sendSMS to ["+mdn2+"] DONE !");
+			log.info("@Martin>>: sendSMS to ["+mdn2+"] DONE !");
 		}catch(Exception e){
 			e.printStackTrace();
 			log.error("Error in Sending SMS "+e.getMessage(),e);
