@@ -17,7 +17,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "AUDIT_LOG")
 public class AuditLog extends Base implements java.io.Serializable {
-
+//	public static final String FieldName_RecordID = "RecordID";
+//	public static final String FieldName_MessageName = "messagename";
+//	public static final String FieldName_FixMessage = "fixmessage";
+//	public static final String FieldName_Action = "jsaction";
 	
 	private String messagename;
 	private String fixmessage;

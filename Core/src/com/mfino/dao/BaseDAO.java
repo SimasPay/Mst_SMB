@@ -39,6 +39,25 @@ import com.mfino.service.CoreServiceFactory;
 import com.mfino.service.HibernateService;
 import com.mysql.jdbc.Driver;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.loader.criteria.CriteriaJoinWalker;
+import org.hibernate.loader.criteria.CriteriaQueryTranslator;
+import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.persister.entity.OuterJoinLoadable;
+import org.hibernate.type.StandardBasicTypes;
 /**
  *
  * @author sandeepjs
@@ -345,7 +364,30 @@ public class BaseDAO<T> {
     }
     protected Query getSQLQuery(String queryStr) {
         return getSession().createSQLQuery(queryStr);
-}
+    }
+    
+    public static String printQueryFromCriteria(Criteria criteria){
+    	String sql=null;
+    	try{
+	    	CriteriaImpl criteriaImpl = (CriteriaImpl)criteria;
+	    	SessionImplementor session = criteriaImpl.getSession();
+	    	SessionFactoryImplementor factory = session.getFactory();
+	    	CriteriaQueryTranslator translator=new CriteriaQueryTranslator(factory,criteriaImpl,criteriaImpl.getEntityOrClassName(),CriteriaQueryTranslator.ROOT_SQL_ALIAS);
+	    	String[] implementors = factory.getImplementors( criteriaImpl.getEntityOrClassName() );
+	
+	    	CriteriaJoinWalker walker = new CriteriaJoinWalker((OuterJoinLoadable)factory.getEntityPersister(implementors[0]), 
+	    	                        translator,
+	    	                        factory, 
+	    	                        criteriaImpl, 
+	    	                        criteriaImpl.getEntityOrClassName(), 
+	    	                        session.getLoadQueryInfluencers()   );
+	
+	    	sql=walker.getSQLString();
+    	}catch(Exception e){
+    		log.error("error",e);
+    	}
+    	return sql;
+    }
 
 }
 
