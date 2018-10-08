@@ -25,7 +25,7 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 		log.info("@kris DumpFields:"+msg.DumpFields());
 
 		CMJSAuditLog realMsg = (CMJSAuditLog) msg;
-		log.info("@kris FieldName_CreatedBySearch:"+realMsg.FieldName_CreatedBySearch);
+		log.info("@kris FieldName_CreatedBySearch:"+realMsg.getCreatedBySearch());
 		
 //		log.info("@kris: CMJSAuditLog DumpFields:"+realMsg.DumpFields());
 		
@@ -37,9 +37,9 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 		AuditLogQuery query=new AuditLogQuery();
 		
 		
-		if(realMsg.FieldName_CreatedBySearch != null){
+		if(realMsg.getCreatedBySearch() != null){
 
-			query.setCreatedBy(realMsg.FieldName_CreatedBySearch);
+			query.setCreatedBy(realMsg.getCreatedBySearch());
 		}
 		
 		List<AuditLog>results=dao.get(query);
