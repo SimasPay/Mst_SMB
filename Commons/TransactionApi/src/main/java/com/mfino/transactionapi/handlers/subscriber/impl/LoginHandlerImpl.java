@@ -174,6 +174,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				if(GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse))
 				{
 					log.info("invalid pin received in login request");
+					log.info("@Martin: invalid pin occured !");
 					recalculateWrongPinCounts(srcSubscriberMDN, result);
 					log.info("saving subscriber mdn after reseting wrong pin counts and restrictions");
 					subscriberMdnService.saveSubscriberMDN(srcSubscriberMDN);
@@ -389,9 +390,10 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 	
 	private void recalculateWrongPinCounts(SubscriberMdn mdn, LoginXMLResult result) {
 		int wrongPinCount = systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT);
+		log.info("@Martin: recalculateWrongPinCounts ["+mdn.getWrongpincount()+" >= "+wrongPinCount+"]");
 		if (mdn.getWrongpincount() <wrongPinCount )
 			mdn.setWrongpincount(mdn.getWrongpincount() + 1);
-		if(mdn.getWrongpincount()==wrongPinCount)
+		if(mdn.getWrongpincount()>=wrongPinCount)
 			recalculateMDNRestrictions(mdn);
 		result.setNumberOfTriesLeft((int)(wrongPinCount - mdn.getWrongpincount()));
 		

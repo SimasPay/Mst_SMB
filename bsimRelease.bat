@@ -1,6 +1,6 @@
 @echo off
 
-set RELEASE_FOLDER_PATH=D:\programs\BUILDS\BSIM_BUILD_MAIN_11398
+set RELEASE_FOLDER_PATH=D:\SIMASPAY\BUILDS\BSIM_BUILD_MAIN
 
 copy MfinoCoreEngine\Backend\target\Backend-0.1-SNAPSHOT.jar %RELEASE_FOLDER_PATH%\smx
 copy GTBank\BillPayments\target\BillPayments-0.1-SNAPSHOT.jar %RELEASE_FOLDER_PATH%\smx

@@ -345,6 +345,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				query.set_SubscriberID(subscriber.getId().intValue());
 				List<SubscriberAddiInfo> addInfo = subAddFieldDao.get(query);
 				log.info("get subscriber additional info: ");
+				log.info("@Martin: job isNull["+subscriberUpgradeData.getJob()+"]");
 				if(addInfo != null && !addInfo.isEmpty()) {
 					for (SubscriberAddiInfo subscriberAddInfo : addInfo) {
 						subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
@@ -366,6 +367,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 					SubscriberAddiInfo subscriberAddInfo = new SubscriberAddiInfo();
 					subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
 					subscriberAddInfo.setWork(subscriberUpgradeData.getJob());
+			
 					if(subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
 						subscriberAddInfo.setOtherwork(subscriberUpgradeData.getOtherJob());
 					}
@@ -399,7 +401,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				if(isLakuapandiaSubscriber) {
 					ktpDetailsDAO.save(ktpDetails);
 				}
-	        	
+				log.info("@Martin: mdnRestrictions isNull["+mdnRestrictions+"]");    	
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
 					updateForwardMessage(forwardMsg, subscriberUpgradeData, oldRestrictions, subscriberMDN);
