@@ -49,12 +49,13 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 			realMsg.allocateEntries(results.size());
 			for (int i = 0; i <results.size(); i++) {
 				CMJSAuditLog.CGEntries entry = new CMJSAuditLog.CGEntries();
-	        	entry.setRecordID(Long.valueOf(i+""));
-	        	entry.setAction("default");
-	        	entry.setCreatedBy("user"+i);
-	        	entry.setCreateTime(new Timestamp());
-	        	entry.setRecordVersion(i);
-	        	entry.setMessageName("com.mfino.fix.CmFinoFIX$CMJSSubscriberEdit");
+				AuditLog al = results.get(i);
+	        	entry.setRecordID(al.getId());
+	        	entry.setAction(al.getJsaction());
+	        	entry.setCreatedBy(al.getCreatedby());
+	        	entry.setCreateTime(al.getCreatetime());
+	        	entry.setRecordVersion(al.getVersion());
+	        	entry.setMessageName(al.getMessagename());
 	            realMsg.getEntries()[i] = entry;
 			}
 		}
