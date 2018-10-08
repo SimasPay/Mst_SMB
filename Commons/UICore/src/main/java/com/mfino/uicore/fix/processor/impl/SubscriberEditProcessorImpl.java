@@ -350,7 +350,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 					for (SubscriberAddiInfo subscriberAddInfo : addInfo) {
 						subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
 						subscriberAddInfo.setWork(subscriberUpgradeData.getJob());
-						if(subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
+						if(subscriberUpgradeData.getJob()!=null && subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
 							subscriberAddInfo.setOtherwork(subscriberUpgradeData.getOtherJob());
 						}else {
 							subscriberAddInfo.setOtherwork(null);
@@ -368,7 +368,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 					subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
 					subscriberAddInfo.setWork(subscriberUpgradeData.getJob());
 			
-					if(subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
+					if(subscriberUpgradeData.getJob()!=null && subscriberUpgradeData.getJob().equals(CmFinoFIX.WorkList_Lainnya.toString())) {
 						subscriberAddInfo.setOtherwork(subscriberUpgradeData.getOtherJob());
 					}
 					subscriberAddInfo.setIncome(subscriberUpgradeData.getAvgMonthlyIncome());

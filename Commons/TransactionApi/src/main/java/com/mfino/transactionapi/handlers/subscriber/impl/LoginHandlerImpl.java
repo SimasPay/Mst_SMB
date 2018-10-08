@@ -168,12 +168,12 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 				//userPwd = new String(CryptographyService.generateSHA256Hash(subscriberMDN.getMDN(), userPwd));
 				//if (!password.equals(userPwd)) {
 				//done this change for introducing HSM for validation
-				log.info("validating pin");
+				log.info("XXvalidating pin");
 				String pinValidationResponse = mfinoUtilService.validatePin(srcSubscriberMDN.getMdn(), userPwd, password, 
 						systemParametersService.getPinLength());
 				if(GeneralConstants.LOGIN_RESPONSE_FAILED.equals(pinValidationResponse))
 				{
-					log.info("invalid pin received in login request");
+					log.info("XX invalid pin received in login request");
 					log.info("@Martin: invalid pin occured !");
 					recalculateWrongPinCounts(srcSubscriberMDN, result);
 					log.info("saving subscriber mdn after reseting wrong pin counts and restrictions");
