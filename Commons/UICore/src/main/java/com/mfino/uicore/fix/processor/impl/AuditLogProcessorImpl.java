@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAuditLog;
+import com.mfino.fix.CmFinoFIX.CMJSUsers;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.uicore.fix.processor.AuditLogProcessor;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
@@ -22,17 +23,24 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 	@Override
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
 		log.info("@kris DumpFields:"+msg.DumpFields());
+
 		CMJSAuditLog realMsg = (CMJSAuditLog) msg;
-		log.info("@kris: realMsg.getaction(): "+realMsg.getaction());
-		log.info("@kris: CMJSAuditLog DumpFields:"+realMsg.DumpFields());
+		log.info("@kris FieldName_CreatedBySearch:"+realMsg.FieldName_CreatedBySearch);
+		
+//		log.info("@kris: CMJSAuditLog DumpFields:"+realMsg.DumpFields());
+		
+//		CMJSUsers realMsg = (CMJSUsers) msg;
+//		log.info("@kris: CMJSUsers DumpFields:"+realMsg.DumpFields());
+//		log.info("@kris: realMsg.getaction(): "+realMsg.getaction());
 		
 		AuditLogDAO dao = DAOFactory.getInstance().getAuditLogDAO();
 		AuditLogQuery query=new AuditLogQuery();
 		
-//		if(realMsg.getCreatedBy() != null){
-//
-//			query.setCreatedBy(realMsg.getCreatedBy());
-//		}
+		
+		if(realMsg.FieldName_CreatedBySearch != null){
+
+			query.setCreatedBy(realMsg.FieldName_CreatedBySearch);
+		}
 		
 		List<AuditLog>results=dao.get(query);
 		
