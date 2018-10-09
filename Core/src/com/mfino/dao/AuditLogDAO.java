@@ -38,9 +38,9 @@ public class AuditLogDAO extends BaseDAO<AuditLog> {
         // Paging
         processPaging(query, criteria);
 
-        if(query.isIDOrdered()) {
+        //if(query.isIDOrdered()) {
           criteria.addOrder(Order.desc(AuditLog.FieldName_CreateTime));
-        }
+        //}
         
         //applying Order
         applyOrder(query, criteria);

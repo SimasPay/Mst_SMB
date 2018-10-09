@@ -146,6 +146,14 @@ mFino.page.user = function(config){
                                 }
                             };
                     		//auditLogView.grid.store.baseParams[CmFinoFIX.message.JSBulkUploadEntry.IDSearch._name] = record.get(CmFinoFIX.message.JSBulkUpload.Entries.ID._name);
+                    		
+                    		//auditLogView.grid.store.baseParams[CmFinoFIX.message.JSAuditLog.CreatedBySearch._name] =detailsForm.record.get(CmFinoFIX.message.JSAuditLog.CreatedBySearch._name);
+                    		auditLogView.grid.store.baseParams[CmFinoFIX.message.JSAuditLog.CreatedBySearch._name] =detailsForm.record.get(CmFinoFIX.message.JSUsers.Entries.Username._name);
+                    		
+                    		console.log("@kris a:"+detailsForm.record.get(CmFinoFIX.message.JSAuditLog.CreatedBySearch._name));
+                    		console.log("@kris b:"+detailsForm.record.get(CmFinoFIX.message.JSUsers.Entries.ID._name));
+                    		console.log("@kris c:"+detailsForm.record.get(CmFinoFIX.message.JSUsers.Entries.Username._name));
+                    		
                     		auditLogView.grid.store.load(auditLogView.grid.store.lastOptions);
                     		auditLogView.setStore(auditLogView.grid.store);
                     		auditLogView.show();

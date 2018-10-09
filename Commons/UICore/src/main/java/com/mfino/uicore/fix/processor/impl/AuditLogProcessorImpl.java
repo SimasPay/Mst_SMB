@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.mfino.fix.CFIXMsg;
 import com.mfino.fix.CmFinoFIX;
 import com.mfino.fix.CmFinoFIX.CMJSAuditLog;
+import com.mfino.fix.CmFinoFIX.CMJSUsers;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.uicore.fix.processor.AuditLogProcessor;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
@@ -22,17 +23,24 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 	@Override
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
 		log.info("@kris DumpFields:"+msg.DumpFields());
+
 		CMJSAuditLog realMsg = (CMJSAuditLog) msg;
-		log.info("@kris: realMsg.getaction(): "+realMsg.getaction());
-		log.info("@kris: CMJSAuditLog DumpFields:"+realMsg.DumpFields());
+		log.info("@kris FieldName_CreatedBySearch:"+realMsg.getCreatedBySearch());
+		
+//		log.info("@kris: CMJSAuditLog DumpFields:"+realMsg.DumpFields());
+		
+//		CMJSUsers realMsg = (CMJSUsers) msg;
+//		log.info("@kris: CMJSUsers DumpFields:"+realMsg.DumpFields());
+//		log.info("@kris: realMsg.getaction(): "+realMsg.getaction());
 		
 		AuditLogDAO dao = DAOFactory.getInstance().getAuditLogDAO();
 		AuditLogQuery query=new AuditLogQuery();
 		
-//		if(realMsg.getCreatedBy() != null){
-//
-//			query.setCreatedBy(realMsg.getCreatedBy());
-//		}
+		
+		if(realMsg.getCreatedBySearch() != null){
+
+			query.setCreatedBy(realMsg.getCreatedBySearch());
+		}
 		
 		List<AuditLog>results=dao.get(query);
 		
@@ -41,12 +49,13 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 			realMsg.allocateEntries(results.size());
 			for (int i = 0; i <results.size(); i++) {
 				CMJSAuditLog.CGEntries entry = new CMJSAuditLog.CGEntries();
-	        	entry.setRecordID(Long.valueOf(i+""));
-	        	entry.setAction("default");
-	        	entry.setCreatedBy("user"+i);
-	        	entry.setCreateTime(new Timestamp());
-	        	entry.setRecordVersion(i);
-	        	entry.setMessageName("com.mfino.fix.CmFinoFIX$CMJSSubscriberEdit");
+				AuditLog al = results.get(i);
+	        	entry.setRecordID(al.getId());
+	        	entry.setAction(al.getJsaction());
+	        	entry.setCreatedBy(al.getCreatedby());
+	        	entry.setCreateTime(al.getCreatetime());
+	        	entry.setRecordVersion(al.getVersion());
+	        	entry.setMessageName(al.getMessagename());
 	            realMsg.getEntries()[i] = entry;
 			}
 		}
