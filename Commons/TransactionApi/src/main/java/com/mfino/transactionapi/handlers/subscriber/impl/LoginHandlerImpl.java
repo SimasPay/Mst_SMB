@@ -117,6 +117,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		
 		String Apptype=request.getAppType();
 		log.info("Handling webapi login request");
+		log.info("@Martin: LoginHandlerImpl.handle()");
 		LoginXMLResult result = new LoginXMLResult();
 
 		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLoginRequest, request.DumpFields());
@@ -136,12 +137,14 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		}
 		
 		if(result.isValidVersion()){
-
+		log.info("@Martin: isValid Version");
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(request.getSourceMDN());
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
+		log.info("@Martin: validateSubscriberAsSource=>"+validationResult);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Subscriber with mdn : "+request.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);
+			log.info("@Martin: Subscriber with mdn : "+request.getSourceMDN()+" has failed validations");
 			return result;
 
 		}
