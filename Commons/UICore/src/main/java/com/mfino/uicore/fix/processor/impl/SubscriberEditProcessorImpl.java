@@ -345,7 +345,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				query.set_SubscriberID(subscriber.getId().intValue());
 				List<SubscriberAddiInfo> addInfo = subAddFieldDao.get(query);
 				log.info("get subscriber additional info: ");
-				log.info("@Martin: job isNull["+subscriberUpgradeData.getJob()+"]");
+//				//log.info("@Martin: job isNull["+subscriberUpgradeData.getJob()+"]");
 				if(addInfo != null && !addInfo.isEmpty()) {
 					for (SubscriberAddiInfo subscriberAddInfo : addInfo) {
 						subscriberAddInfo.setNationality(subscriberUpgradeData.getNationality());
@@ -401,7 +401,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 				if(isLakuapandiaSubscriber) {
 					ktpDetailsDAO.save(ktpDetails);
 				}
-				log.info("@Martin: mdnRestrictions isNull["+mdnRestrictions+"]");    	
+				//log.info("@Martin: mdnRestrictions isNull["+mdnRestrictions+"]");    	
 				if (mdnRestrictions != null) {
 					CMJSForwardNotificationRequest forwardMsg = new CMJSForwardNotificationRequest();
 					updateForwardMessage(forwardMsg, subscriberUpgradeData, oldRestrictions, subscriberMDN);
@@ -452,7 +452,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 	private void updateForwardMessage(
 			CMJSForwardNotificationRequest newMsg,
 			SubscriberUpgradeData subscriberUpgradeData, Integer oldRestrictions, SubscriberMdn subscriberMdn) throws Exception {
-		log.info("@Martin>>: Event Subscriber update ForwardMessage");
+		//log.info("@Martin>>: Event Subscriber update ForwardMessage");
 		newMsg.setDestMDN(subscriberMdn.getMdn());
 		newMsg.setFormatOnly(Boolean.FALSE);
 		newMsg.setMSPID(1L);
@@ -481,13 +481,13 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			newMsg.setCode(CmFinoFIX.NotificationCode_MDNAccountSuspendNotification);
 			forwardNotificationRequestProcessor.process(newMsg);
 			//@Martin : send SMS upon restriction
-			log.info("@Martin>>: Event to send MDNRestriction sms, due to Admin trigger.. ");
+			//log.info("@Martin>>: Event to send MDNRestriction sms, due to Admin trigger.. ");
 			sendSMS(subscriberMdn, CmFinoFIX.NotificationCode_MDNAccountSuspendNotification);
 		} else if (isRestrictionsNoneChanged && isNewRestrictionsNone) {
 			newMsg.setCode(CmFinoFIX.NotificationCode_MDNReleaseSuspension);
 			forwardNotificationRequestProcessor.process(newMsg);
 			//@Martin : send SMS upon Release restriction
-			log.info("@Martin>>: Event to send MDNReleaseRestriction sms");
+			//log.info("@Martin>>: Event to send MDNReleaseRestriction sms");
 			sendSMS(subscriberMdn, CmFinoFIX.NotificationCode_MDNReleaseSuspension);
 		}
 	
@@ -793,7 +793,7 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 		try{
 			Subscriber subscriber = subscriberMDN.getSubscriber();
 			String mdn2 = subscriberMDN.getMdn();
-			log.info("@Martin>>: sendSMS to ["+mdn2+"] start ");
+			//log.info("@Martin>>: sendSMS to ["+mdn2+"] start ");
 			NotificationWrapper smsNotificationWrapper = new NotificationWrapper();
 			smsNotificationWrapper.setNotificationMethod(CmFinoFIX.NotificationMethod_SMS);
 			smsNotificationWrapper.setCode(notificationCode);
@@ -807,10 +807,10 @@ public class SubscriberEditProcessorImpl extends BaseFixProcessor implements Sub
 			smsValues.setDestinationMDN(mdn2);
 			smsValues.setMessage(smsMessage);
 			smsValues.setNotificationCode(smsNotificationWrapper.getCode());
-			log.info("@Martin>>: sendSMS to ["+mdn2+"] message=["+smsMessage+"] ");
+			//log.info("@Martin>>: sendSMS to ["+mdn2+"] message=["+smsMessage+"] ");
 			
 			smsService.asyncSendSMS(smsValues);
-			log.info("@Martin>>: sendSMS to ["+mdn2+"] DONE !");
+			//log.info("@Martin>>: sendSMS to ["+mdn2+"] DONE !");
 		}catch(Exception e){
 			e.printStackTrace();
 			log.error("Error in Sending SMS "+e.getMessage(),e);
