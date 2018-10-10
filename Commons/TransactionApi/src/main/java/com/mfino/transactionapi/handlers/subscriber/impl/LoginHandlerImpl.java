@@ -117,7 +117,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		
 		String Apptype=request.getAppType();
 		log.info("XXHandling webapi login request");
-		log.info("@Martin: LoginHandlerImpl.handle()");
+		log.info("@Martin: LoginHandlerImpl.handle().   ");
 		LoginXMLResult result = new LoginXMLResult();
 
 		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLoginRequest, request.DumpFields());
