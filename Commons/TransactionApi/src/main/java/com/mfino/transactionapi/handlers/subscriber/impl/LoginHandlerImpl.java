@@ -116,8 +116,8 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		isHttps = transDetails.isHttps();
 		
 		String Apptype=request.getAppType();
-		log.info("Handling webapi login request");
-		log.info("@Martin: LoginHandlerImpl.handle()");
+		log.info("XXHandling webapi login request");
+		log.info("@Martin: LoginHandlerImpl.handle().   ");
 		LoginXMLResult result = new LoginXMLResult();
 
 		TransactionLog tLog = transactionLogService.saveTransactionsLog(CmFinoFIX.MessageType_WebApiLoginRequest, request.DumpFields());
@@ -131,7 +131,7 @@ public class LoginHandlerImpl extends FIXMessageHandler implements LoginHandler{
 		
 		if(!transDetails.isSimaspayActivity()) {
 			
-			log.info("Login Failed for Simobi User");
+			log.info("XXLogin Failed for Simobi User");
 			result.setNotificationCode(CmFinoFIX.NotificationCode_LoginFailedForSimobiUser);
 			return result;
 		}
