@@ -140,6 +140,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	Integer language = 0;	// Default language set as Bahasa.
 	
 	public Result handle(TransactionDetails transactionDetails) {
+		log.info("@kris EmoneyTrxnHistoryHandler");
 		log.info("Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
 		String pocketCode= transactionDetails.getSourcePocketCode();
 		ChannelCode cc = transactionDetails.getCc();
@@ -185,6 +186,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		else if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()) ||
 				ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionDetails.getTransactionName()) )
 		{
+			log.info("@kris: history & statement detail");
 			int nofRecords = systemParametersService.getInteger(SystemParameterKeys.MAX_TXN_COUNT_IN_HISTORY);
 			log.info("The system parameter 'max.txn.count.in.history' is set to: " + nofRecords);
 			if (nofRecords != -1) {
@@ -201,7 +203,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		result.setTransactionID(transactionsLog.getId().longValue());
 
 		SubscriberMdn srcSubscriberMDN = subscriberMdnService.getByMDN(transactionsHistory.getSourceMDN());
+		log.info("@kris: srcSubscriberMDN:"+srcSubscriberMDN);
+		
 		Integer validationResult = transactionApiValidationService.validateSubscriberAsSource(srcSubscriberMDN);
+		log.info("@kris: validationResult subscriber as source:"+validationResult);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Source subscriber with mdn : "+transactionsHistory.getSourceMDN()+" has failed validations");
 			result.setNotificationCode(validationResult);
@@ -209,6 +214,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		}	
 		
 		validationResult = transactionApiValidationService.validatePin(srcSubscriberMDN, transactionsHistory.getPin());
+		log.info("@kris validationResult pin:"+validationResult);
 		if(!CmFinoFIX.ResponseCode_Success.equals(validationResult)){
 			log.error("Pin validation failed for mdn: "+transactionsHistory.getSourceMDN());
 			result.setNumberOfTriesLeft((int)(systemParametersService.getInteger(SystemParameterKeys.MAX_WRONGPIN_COUNT) - srcSubscriberMDN.getWrongpincount()));
@@ -220,6 +226,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 
 		Pocket srcPocket = pocketService.getDefaultPocket(srcSubscriberMDN, pocketCode);
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
+		log.info("@kris: validationResult source pocket:"+validationResult);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
 			log.error("Source pocket with id "+(srcPocket!=null? srcPocket.getId():null)+" has failed validations");
 			result.setNotificationCode(validationResult);
@@ -229,6 +236,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		
 		ServiceChargeTxnLog sctl;
 		Transaction transaction = null;
+		log.info("@kris: transactionDetails.getSctlId():"+transactionDetails.getSctlId());
 		if(transactionDetails.getSctlId() != null)
 		{
 			sctl = sctlService.getBySCTLID(transactionDetails.getSctlId());

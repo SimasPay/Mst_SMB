@@ -260,6 +260,9 @@ public class PendingCommodityTransferDAO extends BaseDAO<PendingCommodityTransfe
         // applying Order
         criteria.addOrder(Order.desc(PendingCommodityTransfer.FieldName_RecordID));
         applyOrder(query, criteria);
+        
+        log.info("@kris: PendingCommodityTransferDAO:"+printQueryFromCriteria(criteria));
+        
         @SuppressWarnings("unchecked")
         List<PendingCommodityTransfer> results = criteria.list();
 

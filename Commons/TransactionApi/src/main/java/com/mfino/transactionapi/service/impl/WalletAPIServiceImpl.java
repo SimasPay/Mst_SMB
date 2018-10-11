@@ -1,12 +1,11 @@
-/**
- * 
- */
 package com.mfino.transactionapi.service.impl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.mfino.constants.ServiceAndTransactionConstants;
 import com.mfino.constants.SystemParameterKeys;
 import com.mfino.exceptions.InvalidDataException;
@@ -57,6 +56,7 @@ import com.mfino.transactionapi.vo.TransactionDetails;
  */
 @Service("WalletAPIServiceImpl")
 public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPIService{
+	private static Logger	log	= LoggerFactory.getLogger(WalletAPIServiceImpl.class);
 	
 	@Autowired
 	@Qualifier("CheckBalanceHandlerImpl")
@@ -169,13 +169,20 @@ public class WalletAPIServiceImpl extends BaseAPIService implements WalletAPISer
 	private static final String MAX_NO_OF_RECORDS = "15000";
 
 	public XMLResult handleRequest(TransactionDetails transactionDetails) throws InvalidDataException {
+		log.info("@kris: WalletApiService transactionDetails"+transactionDetails);
 		XMLResult xmlResult = null;
 
 		String transactionName = transactionDetails.getTransactionName();
 		String destMDN = transactionDetails.getDestMDN();
-		transactionDetails.setDestMDN( subscriberService.normalizeMDN(destMDN));
+		String normalizedMDN=subscriberService.normalizeMDN(destMDN);
+		
+		transactionDetails.setDestMDN(normalizedMDN);
 		String sourceMessage = transactionDetails.getSourceMessage();
-
+		log.info("@kris: transactionName:"+transactionName);
+		log.info("@kris: destMDN:"+destMDN);
+		log.info("@kris: normalizedMDN:"+normalizedMDN);
+		log.info("@kris: sourceMessage:"+sourceMessage);
+		
 		if (ServiceAndTransactionConstants.TRANSACTION_CHECKBALANCE.equals(transactionName)) {
 		
 			transactionRequestValidationService.validateCheckBalanceDetails(transactionDetails);

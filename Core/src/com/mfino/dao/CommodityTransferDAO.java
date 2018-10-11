@@ -524,8 +524,11 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     		if (query.getStartTimeLT() != null) {
     			queryString = queryString +" and sctl.createtime < :startTimeLT";
     		}
-
-    		Query newQuery = getSession().createQuery(selectString + queryString + orderString); 
+    		
+    		String fullQuery=selectString + queryString + orderString;
+    		log.info("@kris: fullQuery:"+fullQuery);
+    		
+    		Query newQuery = getSession().createQuery(fullQuery); 
     		if (query.getStart() != null && query.getLimit() != null) 
     		{
     			newQuery.setMaxResults(query.getLimit());
@@ -549,10 +552,11 @@ public class CommodityTransferDAO extends BaseDAO<CommodityTransfer> {
     			newQuery.setParameter("startTimeLT", query.getStartTimeLT());
     		}
 
+    		log.info("@kris: newQuery:"+newQuery);
     		List list = newQuery.list();
+    		log.info("The size of the list is: "+((list!=null)?list.size():"null"));
 
     		List<CommodityTransfer> ctList = new ArrayList<CommodityTransfer>();
-    		log.info("The size of the ctList is: "+list.size());
     		for(int i=0;i<list.size();i++) 
     		{
     			Object[] data = (Object[])list.get(i);

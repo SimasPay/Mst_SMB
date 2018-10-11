@@ -194,6 +194,9 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                   List<CommodityTransfer> results = null;
             List<PendingCommodityTransfer> pendingResults = null;
             // Conditional check to find if the table is a Commodity Transfer Table or the Pending Commodity Transfer Table
+           
+            log.info("@kris: realMsg.getTransferState():"+realMsg.getTransferState());
+            
             if (CmFinoFIX.TransferState_Complete.equals(realMsg.getTransferState())) {
                 //We are to Search on Commodity Transfer Table
                 //state = enumService.getEnumTextValue(CmFinoFIX.TagID_TransferState, null, CmFinoFIX.TransferState_Complete);
@@ -222,6 +225,8 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
 
             // Check to see if we are querying for GroupBY
             // If not we will be doing a normal processing for earch record returned
+            log.info("@kris: results:"+results+", pendingResults:"+pendingResults);
+            
             if (query.getSubTotalBy() == null) {
                 if (results != null || pendingResults != null) {
                     int size = 0;
@@ -232,6 +237,9 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
                     if (pendingResults != null) {
                         pendingSize = pendingResults.size();
                     }
+                    
+                    log.info("@kris: results size:"+size+", pendingResults size:"+pendingSize);
+                    
                     if (size > 0) {
                         for (int i = 0; i < size; i++) {
                         	CommodityTransfer   ct = results.get(i);

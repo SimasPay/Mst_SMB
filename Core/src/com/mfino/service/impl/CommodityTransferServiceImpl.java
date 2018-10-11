@@ -126,10 +126,11 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 	 */
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED)
 	public List<CommodityTransfer> getTranscationsHistory(Pocket pocket, SubscriberMdn subscriberMDN, CMGetTransactions transactionsHistory) throws Exception {
+		log.info("@kris: getTranscationsHistory");
 		log.info("getting the commodityTransfer list for SubscriberMdn: "+(subscriberMDN!=null?subscriberMDN.getMdn():null)+
 				"and on pocket with id: "+(pocket!=null?pocket.getId():null));
 		CommodityTransferDAO ctd = DAOFactory.getInstance().getCommodityTransferDAO();
-		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();
+		ChargeTxnCommodityTransferMapDAO ctMapDao = DAOFactory.getInstance().getTxnTransferMap();//@kris: Not used?
 		CommodityTransferQuery ctq = new CommodityTransferQuery();
 //		int maxCount = systemParametersService.getInteger(SystemParameterKeys.MAX_TXN_COUNT_IN_HISTORY);
 //		log.info("The system parameter 'max.txn.count.in.history' is set to: "+maxCount);
@@ -156,6 +157,8 @@ public class CommodityTransferServiceImpl implements CommodityTransferService{
 		}
 		//List<CommodityTransfer> list = ctd.get(ctq);
 		List<CommodityTransfer> list = ctd.getTxnHistory(ctq);
+		log.info("@kris: list size"+((list!=null)?list.size():"null"));
+		CommodityTransferDAO.printId("@kris: hasil dari getTransactionsHistory",list);
 		return list;
 	}
 	
