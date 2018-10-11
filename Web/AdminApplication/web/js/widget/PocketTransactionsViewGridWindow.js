@@ -72,6 +72,7 @@ Ext.extend(mFino.widget.PocketTransactionsViewGridWindow, Ext.Window, {
         }, this);
         
         this.searchform.on("search", function(values){
+            console.log('PocketTransactionsViewGrid.search');
         	this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.TransactionsTransferStatus._name] = values.TransactionsTransferStatus;
         	this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.StartTime._name] = values.startDate;
             this.grid.store.baseParams[CmFinoFIX.message.JSCommodityTransfer.EndTime._name] = values.endDate; 

@@ -67,25 +67,32 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
 
     @Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
-    	log.info("@kris:CommodityTransferProcessorImpl process");
+    	log.info("@kris:CommodityTransferProcessorImpl process 2");
     	String state=null;
         CMJSCommodityTransfer realMsg = (CMJSCommodityTransfer) msg;
         log.info("@kris: action: "+realMsg.getaction());
         CommodityTransferDAO dao = DAOFactory.getInstance().getCommodityTransferDAO();
         PendingCommodityTransferDAO pendingDAO = DAOFactory.getInstance().getPendingCommodityTransferDAO();
 
+        log.info("@kris: equal select?"+CmFinoFIX.JSaction_Select.equals(realMsg.getaction()));
+        
         if (CmFinoFIX.JSaction_Select.equals(realMsg.getaction())) {
             CommodityTransferQuery query = new CommodityTransferQuery();
             //handle pockets transaction view
+            log.info("@kris:CommodityTransferProcessorImpl process"+CmFinoFIX.JSaction_Select);
             if ((realMsg.getIsMiniStatementRequest()!=null &&realMsg.getIsMiniStatementRequest()) && 
             		realMsg.getSourceDestnPocketID() != null) {
+            	log.info("@kris: masuk");
             	CFIXMsg result =transactionsViewProcessor.process(realMsg);
             	if(result instanceof CMJSError){
             		//not a pocket transaction view so continue with normal processing
             	}else{
+            		log.info("return result");
             		return result;
             	}
             }
+            
+            log.info("@kris: realMsg.getJSMsgType()"+realMsg.getJSMsgType());
             
             if(realMsg.getJSMsgType()!=null
             		&&CmFinoFIX.MsgType_JSBankTellerCashOutInquiry.equals(realMsg.getJSMsgType())){
@@ -156,19 +163,24 @@ public class CommodityTransferProcessorImpl extends BaseFixProcessor implements 
             query.setLimit(realMsg.getlimit());
             query.setMsgType(realMsg.getTransactionUICategory());
             query.setBulkuploadID(realMsg.getBulkUploadIDSearch());
+            log.info("@kris: realMsg.getSourceDestnPocketID():"+realMsg.getSourceDestnPocketID());
             if(realMsg.getSourceDestnPocketID()!=null){
             	PocketDAO pocketDao = DAOFactory.getInstance().getPocketDAO();
             	query.setSourceDestnPocket(pocketDao.getById(realMsg.getSourceDestnPocketID()));
             }
 
             // Here set the E-Money Only Transactions or not
-            if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyEMoney_View)) {
+            boolean isAuthorizedTransactionOnlyEmoneyView=authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyEMoney_View);
+            log.info("@kris: isAuthorizedTransactionOnlyEmoneyView:"+isAuthorizedTransactionOnlyEmoneyView);
+            if (isAuthorizedTransactionOnlyEmoneyView) {
                 // If we reach here then this role can only see the EMONEY transactions.
                 query.setOnlyEmoneyTxns(true);
             }
 
             // Here set the Bank Only Transactions or not
-            if (authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View)) {
+            boolean isAuthorizedTransactionOnlyBankView=authorizationService.isAuthorized(CmFinoFIX.Permission_Transaction_OnlyBank_View);
+            log.info("@kris: isAuthorizedTransactionOnlyBankView:"+isAuthorizedTransactionOnlyBankView);
+            if (isAuthorizedTransactionOnlyBankView) {
                 // If we reach here then this role can only see the Bank transactions.
                 query.setOnlyBankTxns(true);
 
