@@ -67,24 +67,42 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 	
 	@Transactional(readOnly=false, propagation = Propagation.REQUIRED,rollbackFor=Throwable.class)
 	public CFIXMsg process(CFIXMsg msg) throws Exception {
+		log.info("@kris: TransactionsViewProcessorImpl class");
 		CMJSCommodityTransfer realMsg = (CMJSCommodityTransfer) msg;
+		log.info("@kris: CMJSCommodityTransfer realMsg:"+realMsg);
 		suspensePocket = pocketDao.getById(systemParametersService.getLong(SystemParameterKeys.SUSPENSE_POCKET_ID_KEY));
 		chargesPocket = pocketDao.getById(systemParametersService.getLong(SystemParameterKeys.CHARGES_POCKET_ID_KEY));
 		globalPocket = pocketDao.getById(systemParametersService.getLong(SystemParameterKeys.GLOBAL_SVA_POCKET_ID_KEY));
 		taxPocket = pocketDao.getById(systemParametersService.getLong(SystemParameterKeys.TAX_POCKET_ID_KEY));
+		
+		log.info("@kris: realMsg.getSourceDestnPocketID():"+realMsg.getSourceDestnPocketID());
+		log.info("@kris: realMsg.getSourceDestMDNAndID():"+realMsg.getSourceDestMDNAndID());
+		
 		if (realMsg.getSourceDestnPocketID() != null) {
 			Pocket pocket = pocketDao.getById(realMsg.getSourceDestnPocketID());
 			queryPocketMDN = pocket.getSubscriberMdn();
+			
+			log.info("@kris: pocket:"+pocket);
+			log.info("@kris: queryPocketMDN:"+queryPocketMDN);
+			log.info("@kris: pocket.getPocketTemplateByPockettemplateid().getType():"+pocket.getPocketTemplateByPockettemplateid().getType());
+			log.info("@kris: pocket.getPocketTemplateByPockettemplateid().getCommodity():"+pocket.getPocketTemplateByPockettemplateid().getCommodity());
+			log.info("@kris: CmFinoFIX.Commodity_Money:"+CmFinoFIX.Commodity_Money);
+			log.info("@kris: CmFinoFIX.PocketType_SVA:"+CmFinoFIX.PocketType_SVA);
+			log.info("@kris: CmFinoFIX.PocketType_BankAccount:"+CmFinoFIX.PocketType_BankAccount);
+			
 			if(CmFinoFIX.PocketType_SVA.equals(pocket.getPocketTemplateByPockettemplateid().getType())&&
 					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplateByPockettemplateid().getCommodity())){
+				log.info("@kris: return processTransactions CmFinoFIX.PocketType_SVA");
 				return processTransactions(realMsg, null, null, CmFinoFIX.PocketType_SVA);
 			}
 			else if (CmFinoFIX.PocketType_BankAccount.equals(pocket.getPocketTemplateByPockettemplateid().getType())&&
 					CmFinoFIX.Commodity_Money.equals(pocket.getPocketTemplateByPockettemplateid().getCommodity())){
+				log.info("@kris: return processTransactions CmFinoFIX.PocketType_BankAccount");
 				return processTransactions(realMsg, null, null, CmFinoFIX.PocketType_BankAccount);
 			}
 
 		} else if (realMsg.getSourceDestMDNAndID() != null) {
+			log.info("realMsg.getSourceDestMDNAndID() != null");
 			String[] mdnAndID = realMsg.getSourceDestMDNAndID().split(",");
 			if (mdnAndID.length == 2 && StringUtils.isNumeric(mdnAndID[1])) {
 				String mdn = mdnAndID[0];
@@ -103,6 +121,7 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 	}
 
 	private CFIXMsg processTransactions(CMJSCommodityTransfer msg, String mdn, Long mdnId, Integer pocketType) throws Exception  {
+		log.info("@kris: in process transaction");
 		CMJSCommodityTransfer realMsg = msg;
 		MFSLedgerQuery query = new MFSLedgerQuery();
 
@@ -119,7 +138,10 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 			query.setCreateTimeLT(realMsg.getEndTime());
 		}
 		if(realMsg.getServiceChargeTransactionLogID()!=null){
+			log.info("@kris: getServiceChargeTransactionLogID:"+realMsg.getServiceChargeTransactionLogID());
 			List<Long> transferIDs = DAOFactory.getInstance().getTxnTransferMap().geTransferIdsBySCTLId(realMsg.getServiceChargeTransactionLogID());
+			log.info("@kris transferIDs 1 size:"+((transferIDs!=null)?transferIDs.size():"null"));
+			printId("A",transferIDs);
 			if(transferIDs==null||transferIDs.size() ==0){
 				transferIDs = new ArrayList<Long>();
 				transferIDs.add(0L);
@@ -127,7 +149,10 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 				query.setTransferIDs(transferIDs);				
 		}
 		if (pocketType != null && CmFinoFIX.PocketType_BankAccount.equals(pocketType)) {
+			log.info("@kris: pocketType:"+pocketType+", CmFinoFIX.PocketType_BankAccount.equals:"+CmFinoFIX.PocketType_BankAccount);
 			List<Long> transferIDs = ctDao.getCommodityTransferIdsBySourceAndDestPocketId(realMsg.getSourceDestnPocketID());
+			log.info("@kris transferIDs 2 size:"+((transferIDs!=null)?transferIDs.size():"null"));
+			printId("B",transferIDs);
 			if (CollectionUtils.isNotEmpty(transferIDs)) {
 				query.setTransferIDs(transferIDs);
 				query.setPocketId(globalPocket.getId().longValue());
@@ -136,6 +161,8 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		query.setStart(realMsg.getstart());
 		query.setLimit(realMsg.getlimit());
 		List<MfsLedger> results = ledgerDao.get(query);
+		log.info("@kris results size:"+((results!=null)?results.size():"null"));
+		
 		if (results != null&&!results.isEmpty()) {
 			realMsg.allocateEntries(results.size());
 
@@ -235,4 +262,34 @@ public class TransactionsViewProcessorImpl extends BaseFixProcessor implements T
 		entry.setServiceChargeTransactionLogID(sctlId);
 		
 	}
+	
+	private void debugEntry(CGEntries entry){
+		StringBuffer sb=new StringBuffer();
+		sb.append("~id:"+entry.getID());
+		sb.append("~startTime:"+entry.getStartTime());
+		sb.append("~transactionTypeText:"+entry.getTransactionTypeText());
+		sb.append("~sctlID:"+entry.getServiceChargeTransactionLogID());
+		sb.append("~debit:"+entry.getDebitAmount());
+		sb.append("~credit:"+entry.getCreditAmount());
+		log.info(sb.toString());
+	}
+	
+	public void printId(List<Long> list){
+    	printId("",list);
+    }
+    
+    public void printId(String message, List<Long> list){
+    	StringBuffer sb=new StringBuffer();
+    	try{
+	    	for (int i = 0; i < list.size(); i++) {
+				Long sctlId=list.get(i);
+				if(i>0)sb.append(",");
+				sb.append(sctlId);
+			}
+    	}catch(Exception e){
+    		log.error("error",e);
+    	}
+    	log.info("@kris SCTL printId "+message+":"+sb.toString());
+    }
+    
 }
