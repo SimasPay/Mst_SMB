@@ -22,6 +22,7 @@ public class MFSLedgerDAO extends BaseDAO<MfsLedger> {
 
 	@SuppressWarnings("unchecked")
 	public List<MfsLedger> get(MFSLedgerQuery query) {
+		log.info("@kris: get MFSLedger");
 		 Criteria criteria = createCriteria();
 		 
 		 if (query.getPocketId() != null) {
@@ -60,6 +61,8 @@ public class MFSLedgerDAO extends BaseDAO<MfsLedger> {
 		 processBaseQuery(query, criteria);
 		 processPaging(query, criteria);
 		 applyOrder(query, criteria) ;
+		 
+		 log.info(printQueryFromCriteria(criteria));
 		 
 		 List<MfsLedger> results =criteria.list();
 		 return results;

@@ -220,6 +220,7 @@ public class WebApiRequestController {
   			transactionDetails.setTransactionIdentifier(trxnIdentifier);
   			transactionDetails.setSimpaspayActivity(isSimaspayActivity);
   			
+  			log.info("@kris: transactionDetails.getServiceName():"+transactionDetails.getServiceName());
 //  			transactionDetails.setSourceMDN(sourceMDN);
 
   			ChannelCode channelCode = genericWebAPIService.getChannelCode(transactionDetails.getChannelCode());
@@ -289,7 +290,7 @@ public class WebApiRequestController {
 					service = (BaseAPIService) accountAPIServices;
 				}
 				else if (ServiceAndTransactionConstants.SERVICE_WALLET.equals(transactionDetails.getServiceName())) {
-				
+					log.info("@kris: masuk "+ServiceAndTransactionConstants.SERVICE_WALLET)
 					service = (BaseAPIService) walletAPIService;
 				}
 				else if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {

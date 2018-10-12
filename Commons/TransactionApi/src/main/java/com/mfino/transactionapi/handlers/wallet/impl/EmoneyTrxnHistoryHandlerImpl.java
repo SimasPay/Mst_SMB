@@ -141,7 +141,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("@kris EmoneyTrxnHistoryHandler");
-		log.info("Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
+		log.info("#Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
 		String pocketCode= transactionDetails.getSourcePocketCode();
 		ChannelCode cc = transactionDetails.getCc();
 		CMGetTransactions transactionsHistory = new CMGetTransactions();
