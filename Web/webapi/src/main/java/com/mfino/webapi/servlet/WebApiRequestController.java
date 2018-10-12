@@ -290,7 +290,7 @@ public class WebApiRequestController {
 					service = (BaseAPIService) accountAPIServices;
 				}
 				else if (ServiceAndTransactionConstants.SERVICE_WALLET.equals(transactionDetails.getServiceName())) {
-					log.info("@kris: masuk "+ServiceAndTransactionConstants.SERVICE_WALLET)
+					log.info("@kris: masuk "+ServiceAndTransactionConstants.SERVICE_WALLET);
 					service = (BaseAPIService) walletAPIService;
 				}
 				else if (ServiceAndTransactionConstants.SERVICE_AGENT.equals(transactionDetails.getServiceName())) {
