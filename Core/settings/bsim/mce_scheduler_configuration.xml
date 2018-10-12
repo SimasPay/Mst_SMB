@@ -122,7 +122,7 @@
 	<bean id="transferPCTTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="transferPCT" />
 		<property name="timeZone" ref="timeZone" />
-		<property name="cronExpression" value="0 0/30 23-4 1/1 * ? *" />
+		<property name="cronExpression" value="0 0/10 4-23 1/1 * ? *" />
 	</bean>
 	
 	<bean id="pct21ctClearanceJob"	class="com.mfino.mce.backend.PendingCommodityTransfer21CtClearanceJob">
