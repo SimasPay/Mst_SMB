@@ -68,10 +68,14 @@ import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
+
 import com.mfino.domain.MfsLedger;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSLedgerDAO;
+import com.mfino.dao.CommodityTransferDAO;
+import com.mfino.dao.DAOFactory;
+
 
 /*
  * @author Maruthi
@@ -146,7 +150,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	
 	public Result handle(TransactionDetails transactionDetails) {
 		log.info("@kris EmoneyTrxnHistoryHandler");
-		log.info("#Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
+		log.info("##Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
 		String pocketCode= transactionDetails.getSourcePocketCode();
 		ChannelCode cc = transactionDetails.getCc();
 		CMGetTransactions transactionsHistory = new CMGetTransactions();
@@ -287,31 +291,44 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		try {
 			//@kris: add from commodity transfer
 			transactionHistoryList.addAll(getFromMFSLedger(srcPocket, srcSubscriberMDN));
+			
+			CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
+			
 			//transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
 			log.info("@kris: transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
-
+			ctDao.printId("@kris: transactionHistoryList ids",transactionHistoryList);
+			log.info("@kris: transaction:"+transaction);
 			if(transaction != null)	{
 				//sctl.setCalculatedCharge(BigDecimal.ZERO);
 				sctl.setCalculatedcharge(transaction.getAmountTowardsCharges());
 				transactionChargingService.completeTheTransaction(sctl);
 			}
+			log.info("@kris: done set calculated charge");
+			
 			if (transactionHistoryList.size() == 0) {
 				result.setNotificationCode(CmFinoFIX.NotificationCode_NoCompletedTransactionsWereFound);
 				return result;
 			}
 
-			Collections.sort(transactionHistoryList, new Comparator<CommodityTransfer>() {
-				@Override
-				public int compare(CommodityTransfer ct1, CommodityTransfer ct2) {
-					return ( (ct2.getId().intValue() - ct1.getId().intValue()));
-				}
-			});
 			language = (int)srcSubscriberMDN.getSubscriber().getLanguage();
 			if(ServiceAndTransactionConstants.TRANSACTION_HISTORY.equals(transactionDetails.getTransactionName()) ||
 					ServiceAndTransactionConstants.TRANSACTION_HISTORY_DETAILED_STATEMENT.equals(transactionDetails.getTransactionName()) )
-			{
+			{	
+				log.info("@kris add transactionHistoryList to result");
 				result.setTransactionList(transactionHistoryList);
 			}
+			
+			Collections.sort(transactionHistoryList, new Comparator<CommodityTransfer>() {
+				@Override
+				public int compare(CommodityTransfer ct1, CommodityTransfer ct2) {
+					if(ct1!=null && ct1.getId()!=null && ct2!=null && ct2.getId()!=null){
+						return ( (ct2.getId().intValue() - ct1.getId().intValue()));
+					}
+					//descending
+					return 1;
+				}
+			});
+			
 			//@kris: populate dest card pan by id
 			for(CommodityTransfer ct : transactionHistoryList){
 				if(ct.getUicategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup) && ct.getDestcardpan() == null){
@@ -328,6 +345,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			String fileName =  srcSubscriberMDN.getMdn() + "_" + dateString + ".pdf";
 		    String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
 			
+		    log.info("@kris: check if download pdf");
 		    if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
 				
 				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getId().longValue());
@@ -389,7 +407,9 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		for (int i = 0; i < results.size(); i++) {
 			CommodityTransfer ct=new CommodityTransfer();
 			MfsLedger l=results.get(i);
+			log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid());
 			ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
+			log.info("@kris: ct"+i+":"+ct);
 //			ct.setPocket(pocket);
 //			ct.setId(l.getCommoditytransferid());
 //			ct.setCreatetime(l.getCreatetime());
