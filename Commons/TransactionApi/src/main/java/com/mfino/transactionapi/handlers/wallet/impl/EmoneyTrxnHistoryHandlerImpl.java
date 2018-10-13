@@ -435,7 +435,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 						log.info("error copy PCT to CT",e);
 					}
 				}
-				ct.setSctlid(l.getSctlid());
+				ct.setSctlId(l.getSctlid());
 				log.info("@kris: new ct"+i+":"+ct);
 	//			ct.setPocket(pocket);
 	//			ct.setId(l.getCommoditytransferid());
