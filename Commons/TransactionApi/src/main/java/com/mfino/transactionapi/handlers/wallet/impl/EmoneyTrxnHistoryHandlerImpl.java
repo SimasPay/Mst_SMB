@@ -419,13 +419,13 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		List<MfsLedger> results = ledgerDao.get(query);
 		log.info("@kris: results getFromMFSLedger size:"+((results!=null)?results.size():"null"));
 		
+		CommodityTransfer ct=null;
+		MfsLedger l=null;
 		for (int i = 0; i < results.size(); i++) {
-			CommodityTransfer ct=null;
-			
 			try{
-				MfsLedger l=results.get(i);
-				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid()+", l sctlid:"+l.getSctlid()+", ledgerType:"+l.getLedgertype());
+				l=results.get(i);
 				ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
+				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid()+", l sctlid:"+l.getSctlid()+", ledgerType:"+l.getLedgertype());
 				if(ct==null){
 					//@kris copy dari pending commodity transfer
 					ct=new CommodityTransfer();
@@ -445,7 +445,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				}else{
 					ct.setIsCreditInMFSLedger(false);
 				}
-				log.info("@kris: new ct"+i+":"+ct);
+				log.info("@kris: neww ct"+i+":"+ct);
 	//			ct.setPocket(pocket);
 	//			ct.setId(l.getCommoditytransferid());
 	//			ct.setCreatetime(l.getCreatetime());
