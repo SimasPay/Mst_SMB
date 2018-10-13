@@ -416,11 +416,11 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		log.info("@kris: results getFromMFSLedger size:"+((results!=null)?results.size():"null"));
 		
 		for (int i = 0; i < results.size(); i++) {
-			CommodityTransfer ct=new CommodityTransfer();
+			CommodityTransfer ct=null;
 			
 			try{
 				MfsLedger l=results.get(i);
-				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid());
+				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid()+", l sctlid:"+l.getSctlid());
 				ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
 				if(ct==null){
 					//@kris copy dari pending commodity transfer
@@ -430,12 +430,13 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 						PendingCommodityTransfer pct=pendingCommodityTransferService.getById(l.getCommoditytransferid());
 						log.info("@kris: pct toString():"+pct);
 						ct.copy(pct,null);
+						ct.setId(l.getCommoditytransferid());
 					}catch(Exception e){
 						log.info("error copy PCT to CT",e);
 					}
 				}
 				ct.setSctlid(l.getSctlid());
-				log.info("@kris: ct"+i+":"+ct);
+				log.info("@kris: new ct"+i+":"+ct);
 	//			ct.setPocket(pocket);
 	//			ct.setId(l.getCommoditytransferid());
 	//			ct.setCreatetime(l.getCreatetime());
@@ -554,7 +555,11 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	
 	public String getTxnType(CommodityTransfer ct, Pocket pk, Integer language){
 		String sourceMsg = ct.getSourcemessage();
-		boolean isCredit = !(ct.getPocket().getId().equals(pk.getId()));
+		
+		boolean isCredit = !(ct.
+				getPocket().
+					getId().equals(
+							pk.getId()));
 		String txnType = null;
 		ServiceChargeTxnLog sctl = DAOFactory.getInstance().getServiceChargeTransactionLogDAO().getById(ct.getSctlId());
 		
