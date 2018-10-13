@@ -424,7 +424,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			
 			try{
 				MfsLedger l=results.get(i);
-				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid()+", l sctlid:"+l.getSctlid());
+				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid()+", l sctlid:"+l.getSctlid()+", ledgerType:"+l.getLedgertype());
 				ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
 				if(ct==null){
 					//@kris copy dari pending commodity transfer

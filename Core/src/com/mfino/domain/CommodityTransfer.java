@@ -1259,6 +1259,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	 		sb.append("id:"+String.valueOf(getId()));
 	 		
 	 		sb.append(",sctl id:"+getSctlId());
+	 		sb.append(", isCreditInMFSLedger:"+getIsCreditInMFSLedger());
 	 		sb.append(", commodity:"+getCommodity());
 	 		sb.append(", sourcemdn:"+getSourcemdn());
 	 		sb.append(", getUicategory():"+getUicategory());

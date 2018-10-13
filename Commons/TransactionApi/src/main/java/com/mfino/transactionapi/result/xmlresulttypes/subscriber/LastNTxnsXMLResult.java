@@ -175,11 +175,12 @@ public class LastNTxnsXMLResult extends XMLResult {
 					
 //					try{
 						log.info("@kris: xml: pocket:"+ct.getPocket()
-							+", source pocket:"+getSourcePocket()
+							+", source pocket: "+getSourcePocket()+", sctlid: "+ct.getSctlId()
 							+", iscreditinmfsledger:"+ct.getIsCreditInMFSLedger());
 						
 						if(ct.getIsCreditInMFSLedger()!=null){
-							if(ct.getIsCreditInMFSLedger()){
+							log.info("@kris: getIsCreditInMFSLedger != null");
+							if(ct.getIsCreditInMFSLedger()==true){
 								isCredit = true;
 							}else{
 								isCredit = false;
@@ -190,6 +191,7 @@ public class LastNTxnsXMLResult extends XMLResult {
 						}else{
 							isCredit = true;
 						}
+						log.info("isCredit:"+isCredit);
 //					}catch(Exception e){
 //						log.info("error in isCredit");
 //						//isCredit=true;
