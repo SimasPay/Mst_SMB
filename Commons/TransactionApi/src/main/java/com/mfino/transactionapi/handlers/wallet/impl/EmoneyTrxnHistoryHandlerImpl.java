@@ -445,7 +445,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 					log.info("@kris: duplicate");
 					ct.duplicate(ctTemp,null);
 				}
-				ct.setUpdatedby("result"+i);//cuman buat debugging doang
+				//ct.setUpdatedby("result"+i);//cuman buat debugging doang
 				ct.setSctlId(l.getSctlid());
 				if("Cr.".equalsIgnoreCase(l.getLedgertype())){
 					ct.setIsCreditInMFSLedger(true);
