@@ -172,7 +172,7 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	private Long transactionchargeid;
 	private Boolean ispartofsharedupchain;
 	private Long id;
-
+	private Boolean isCreditInMFSLedger;
 	
 	private Long sctlId;
 
@@ -1137,6 +1137,16 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 		this.ispartofsharedupchain = ispartofsharedupchain;
 	}
 
+	
+	@Transient
+	public Boolean getIsCreditInMFSLedger() {
+		return this.isCreditInMFSLedger;
+	}
+	
+	public void setIsCreditInMFSLedger(Boolean isCreditInMFSLedger) {
+		this.isCreditInMFSLedger=isCreditInMFSLedger;
+	}
+	
 	
 	@Transient
 	public Long getSctlId() {

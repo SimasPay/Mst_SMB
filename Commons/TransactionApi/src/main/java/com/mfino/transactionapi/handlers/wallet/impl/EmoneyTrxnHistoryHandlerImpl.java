@@ -302,7 +302,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 
 			//@kris: add from commodity transfer
 			//transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
-			transactionHistoryList.addAll(getFromMFSLedger(srcPocket, srcSubscriberMDN));
+			transactionHistoryList.addAll(getFromMFSLedger(srcPocket, srcSubscriberMDN,transactionsHistory));
 			log.info("@kris: transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
 			
 			CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
@@ -399,7 +399,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		return result;
 	}
 	
-	private List<CommodityTransfer> getFromMFSLedger(Pocket pocket, SubscriberMdn subMdn){
+	private List<CommodityTransfer> getFromMFSLedger(Pocket pocket, SubscriberMdn subMdn, CMGetTransactions transactionsHistory){
 		log.info("@kris: getFromMFSLedger: pocket:"+pocket+", subMdn:"+subMdn);
 		List<CommodityTransfer> transactionHistoryList = new ArrayList<CommodityTransfer>();
 		MFSLedgerDAO ledgerDao = DAOFactory.getInstance().getMFSLedgerDAO();
@@ -411,6 +411,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		if(subMdn!=null){
 			query.setMdnId(subMdn.getId());
 		}
+		
+		query.setCreateTimeGE(new Date(transactionsHistory.getFromDate().getTime()));
+		query.setCreateTimeLT(new Date(transactionsHistory.getToDate().getTime()));
+		
 		
 		List<MfsLedger> results = ledgerDao.get(query);
 		log.info("@kris: results getFromMFSLedger size:"+((results!=null)?results.size():"null"));
@@ -436,6 +440,11 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 					}
 				}
 				ct.setSctlId(l.getSctlid());
+				if("Cr.".equalsIgnoreCase(l.getLedgertype())){
+					ct.setIsCreditInMFSLedger(true);
+				}else{
+					ct.setIsCreditInMFSLedger(false);
+				}
 				log.info("@kris: new ct"+i+":"+ct);
 	//			ct.setPocket(pocket);
 	//			ct.setId(l.getCommoditytransferid());
