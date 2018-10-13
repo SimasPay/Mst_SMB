@@ -538,5 +538,12 @@ public class Pocket extends Base implements java.io.Serializable {
 			Set<PartnerServices> partnerServicesesForDestpocketid) {
 		this.partnerServicesesForDestpocketid = partnerServicesesForDestpocketid;
 	}
-
+	
+	@Override
+ 	public String toString(){
+ 		StringBuilder sb=new StringBuilder();
+ 		sb.append("id:"+String.valueOf(getId()));
+ 		sb.append(", getSubscriberMdn:"+getSubscriberMdn());
+ 		return sb.toString();
+ 	}
 }

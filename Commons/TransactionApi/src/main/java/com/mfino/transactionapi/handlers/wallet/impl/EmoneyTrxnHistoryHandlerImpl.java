@@ -159,6 +159,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		log.info("@kris EmoneyTrxnHistoryHandler");
 		log.info("##Extracting data from transactionDetails in EmoneyTrxnHistoryHandlerImpl from sourceMDN: "+transactionDetails.getSourceMDN());
 		String pocketCode= transactionDetails.getSourcePocketCode();
+		log.info("@kris: pocketCode: "+pocketCode);
 		ChannelCode cc = transactionDetails.getCc();
 		CMGetTransactions transactionsHistory = new CMGetTransactions();
 		transactionsHistory.setSourceMDN(transactionDetails.getSourceMDN());
@@ -241,6 +242,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		addCompanyANDLanguageToResult(srcSubscriberMDN,result);
 
 		Pocket srcPocket = pocketService.getDefaultPocket(srcSubscriberMDN, pocketCode);
+		log.info("@kris: srcSubscriberMDN:"+srcSubscriberMDN+", pocketCode:"+pocketCode);
+		log.info("@kris: == Source pocket with id "+(srcPocket!=null? srcPocket.getId():null));
 		validationResult = transactionApiValidationService.validateSourcePocket(srcPocket);
 		log.info("@kris: validationResult source pocket:"+validationResult);
 		if (!validationResult.equals(CmFinoFIX.ResponseCode_Success)) {
@@ -296,14 +299,15 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		List<CommodityTransfer> transactionHistoryList = new ArrayList<CommodityTransfer>();
 		
 		try {
+
 			//@kris: add from commodity transfer
+			//transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
 			transactionHistoryList.addAll(getFromMFSLedger(srcPocket, srcSubscriberMDN));
+			log.info("@kris: transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
 			
 			CommodityTransferDAO ctDao = DAOFactory.getInstance().getCommodityTransferDAO();
-			
-			//transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
-			log.info("@kris: transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
 			ctDao.printId("@kris: transactionHistoryList ids",transactionHistoryList);
+
 			log.info("@kris: transaction:"+transaction);
 			if(transaction != null)	{
 				//sctl.setCalculatedCharge(BigDecimal.ZERO);
@@ -424,6 +428,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 					try{
 						log.info("@kris: not exist in CT, get from PCT and COPY!");
 						PendingCommodityTransfer pct=pendingCommodityTransferService.getById(l.getCommoditytransferid());
+						log.info("@kris: pct toString():"+pct);
 						ct.copy(pct,null);
 					}catch(Exception e){
 						log.info("error copy PCT to CT",e);

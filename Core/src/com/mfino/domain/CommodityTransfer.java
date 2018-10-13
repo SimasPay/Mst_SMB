@@ -1242,4 +1242,25 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 	        }
 
 	    }
+	 
+	 	@Override
+	 	public String toString(){
+	 		StringBuilder sb=new StringBuilder();
+	 		sb.append("id:"+String.valueOf(getId()));
+	 		
+	 		sb.append(",sctl id:"+getSctlId());
+	 		sb.append(", commodity:"+getCommodity());
+	 		sb.append(", sourcemdn:"+getSourcemdn());
+	 		sb.append(", getUicategory():"+getUicategory());
+	 		sb.append(", getDestcardpan():"+getDestcardpan());
+	 		sb.append(", getDestmdn():"+getDestmdn());
+	 		sb.append(", sourcemessage:"+getSourcemessage());
+	 		sb.append(", starttime:"+getStarttime());
+	 		sb.append(", desc:"+getGeneratedTxnDescription());
+	 		sb.append(", pocket:"+((getPocket()!=null)?getPocket().getId():"null"));
+	 		sb.append(", amount:"+getAmount());
+	 		sb.append(", charges:"+getCharges());
+	 		
+	 		return sb.toString();
+	 	}
 }

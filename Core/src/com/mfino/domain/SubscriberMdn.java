@@ -643,5 +643,13 @@ public class SubscriberMdn extends Base implements java.io.Serializable {
 			Set<ChannelSessionMgmt> channelSessionMgmts) {
 		this.channelSessionMgmts = channelSessionMgmts;
 	}
-
+	
+	@Override
+ 	public String toString(){
+ 		StringBuilder sb=new StringBuilder();
+ 		sb.append("id:"+String.valueOf(getId()));
+// 		sb.append(", getSubscriberMdn:"+getSubscriberMdn());
+ 		return sb.toString();
+ 	}
+	
 }

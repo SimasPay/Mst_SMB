@@ -169,13 +169,21 @@ public class LastNTxnsXMLResult extends XMLResult {
 					getXmlWriter().writeEndElement();
 
 					getXmlWriter().writeStartElement("isCredit");
+					
 					boolean isCredit ;
-					if(ct.getPocket().getId().equals(getSourcePocket().getId())){
-						isCredit = false;
+					
+					try{
+						if(ct.getPocket().getId().equals(getSourcePocket().getId())){
+							isCredit = false;
+						}
+						else{
+							isCredit = true;
+						}
+					}catch(Exception e){
+						log.info("Exception:",e);
+						isCredit=true;
 					}
-					else{
-						isCredit = true;
-					}
+					
 					getXmlWriter().writeCharacters(String.valueOf(isCredit),false);
 					getXmlWriter().writeEndElement();
 					
