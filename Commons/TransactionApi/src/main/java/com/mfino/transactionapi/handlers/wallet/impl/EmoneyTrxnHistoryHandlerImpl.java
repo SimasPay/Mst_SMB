@@ -389,10 +389,12 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		for (int i = 0; i < results.size(); i++) {
 			CommodityTransfer ct=new CommodityTransfer();
 			MfsLedger l=results.get(i);
-			
-			ct.setCreatetime(l.getCreatetime());
-			ct.setStarttime(l.getCreatetime());
-			ct.setAmount(l.getAmount());
+			ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
+//			ct.setPocket(pocket);
+//			ct.setId(l.getCommoditytransferid());
+//			ct.setCreatetime(l.getCreatetime());
+//			ct.setStarttime(l.getCreatetime());
+//			ct.setAmount(l.getAmount());
 			
 			transactionHistoryList.add(ct);
 		}
