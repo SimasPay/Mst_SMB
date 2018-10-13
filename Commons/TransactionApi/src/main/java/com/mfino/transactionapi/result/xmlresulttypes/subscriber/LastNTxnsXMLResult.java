@@ -173,14 +173,16 @@ public class LastNTxnsXMLResult extends XMLResult {
 					boolean isCredit ;
 					
 					try{
-						if(ct.getPocket().getId().equals(getSourcePocket().getId())){
+						log.info("@kris: xml: pocket:"+ct.getPocket()+", source pocket:"+getSourcePocket());
+						if(ct.getPocket().getId().equals(
+								getSourcePocket().getId())){
 							isCredit = false;
 						}
 						else{
 							isCredit = true;
 						}
 					}catch(Exception e){
-						log.info("Exception:",e);
+						log.info("error in isCredit");
 						isCredit=true;
 					}
 					
