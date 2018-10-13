@@ -425,10 +425,13 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			try{
 				l=results.get(i);
 				log.info("@kris: #"+i+", ledger  ctid:"+l.getCommoditytransferid()+", ledger sctlid:"+l.getSctlid()+", ledgerType:"+l.getLedgertype());
-				ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
-				if(ct==null){
+				CommodityTransfer ctTemp=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
+				log.info("@kris: ctTemp:"+ctTemp);
+				
+				ct=new CommodityTransfer();
+				if(ctTemp==null){
+					log.info("@kris: create new CT from PCT");
 					//@kris copy dari pending commodity transfer
-					ct=new CommodityTransfer();
 					try{
 						log.info("@kris: not exist in CT, get from PCT and COPY!");
 						PendingCommodityTransfer pct=pendingCommodityTransferService.getById(l.getCommoditytransferid());
@@ -438,6 +441,9 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 					}catch(Exception e){
 						log.info("error copy PCT to CT",e);
 					}
+				}else{
+					log.info("@kris: duplicate");
+					ct.duplicate(ctTemp,null);
 				}
 				ct.setUpdatedby("result"+i);//cuman buat debugging doang
 				ct.setSctlId(l.getSctlid());

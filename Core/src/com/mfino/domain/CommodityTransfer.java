@@ -1253,6 +1253,56 @@ public class CommodityTransfer extends Base implements java.io.Serializable {
 
 	    }
 	 
+	 public void duplicate(CommodityTransfer commodityTransfer, ClassMetadata classMetadata) {
+	        try {
+	            Class ctcl = Class.forName("com.mfino.domain.CommodityTransfer");
+	            Class pctcl = Class.forName("com.mfino.domain.CommodityTransfer");
+	            
+	            if(classMetadata == null){
+	            	HibernateService hibernateService = CoreServiceFactory.getInstance().getHibernateService();
+	            	classMetadata = hibernateService.getSession().getSessionFactory().getClassMetadata(CommodityTransfer.class);
+	            }
+	            
+	            String[] propertyNames = classMetadata.getPropertyNames();
+	            //String IdPropertyNames = classMetadata.getIdentifierPropertyName();
+	            Class c = null;
+	            Method method;
+	            Method method1;
+	            Character firstChar;
+	            
+	            /*System.out.println("IdPropertyNames:" + IdPropertyNames);
+	            
+	            firstChar = IdPropertyNames.charAt(0);
+	            Method idMethod = pctcl.getMethod("get" + firstChar.toString().toUpperCase() + IdPropertyNames.substring(1), c);
+	            Method idMethod1 = ctcl.getMethod("set" + firstChar.toString().toUpperCase() + IdPropertyNames.substring(1), idMethod.getReturnType());
+	            idMethod1.invoke(this, idMethod.invoke(pendingCommodityTransfer, new Object[0]));*/
+	            
+	            for (int i = 0; i < propertyNames.length; i++) {
+	            	
+	            	firstChar = propertyNames[i].charAt(0);
+	            	
+	            	try{
+	            		
+	            		method = pctcl.getMethod("get" + firstChar.toString().toUpperCase() + propertyNames[i].substring(1));
+	            	}
+	            	catch(Exception exp){
+	            		log.error("caught exception ", exp);
+	            		continue;
+	            	}
+	                //System.out.println(propertyNames[i] + "  " + method.invoke(pendingCommodityTransfer, new Object[0]));
+	            	
+	            	method1 = ctcl.getMethod("set" + firstChar.toString().toUpperCase() + propertyNames[i].substring(1), method.getReturnType());
+	                method1.invoke(this, method.invoke(commodityTransfer, new Object[0]));
+//	                        Method method2 = ctcl.getMethod("get" + propertyNames[i],null);
+//	                        System.out.println(propertyNames[i] + "  " + method2.invoke(this, new Object[0]));
+	            }
+
+	        } catch (Exception exp) {
+	        	log.error("Commodity Transfer Copy failed: ", exp);
+	        }
+
+	    }
+	 
 	 	@Override
 	 	public String toString(){
 	 		StringBuilder sb=new StringBuilder();
