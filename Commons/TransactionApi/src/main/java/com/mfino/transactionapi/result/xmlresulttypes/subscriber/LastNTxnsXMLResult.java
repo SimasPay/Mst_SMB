@@ -174,9 +174,7 @@ public class LastNTxnsXMLResult extends XMLResult {
 					
 					
 //					try{
-						log.info("@kris: xml: pocket:"+ct.getPocket()
-							+", source pocket: "+getSourcePocket()+", sctlid: "+ct.getSctlId()
-							+", iscreditinmfsledger:"+ct.getIsCreditInMFSLedger());
+						log.info("@kris: xml: ct: "+ct);
 						
 						if(ct.getIsCreditInMFSLedger()!=null){
 							log.info("@kris: getIsCreditInMFSLedger != null");

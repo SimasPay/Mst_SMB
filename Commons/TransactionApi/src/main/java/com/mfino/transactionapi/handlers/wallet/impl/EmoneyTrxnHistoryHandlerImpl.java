@@ -424,8 +424,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		for (int i = 0; i < results.size(); i++) {
 			try{
 				l=results.get(i);
+				log.info("@kris: #"+i+", ledger  ctid:"+l.getCommoditytransferid()+", ledger sctlid:"+l.getSctlid()+", ledgerType:"+l.getLedgertype());
 				ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
-				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid()+", l sctlid:"+l.getSctlid()+", ledgerType:"+l.getLedgertype());
 				if(ct==null){
 					//@kris copy dari pending commodity transfer
 					ct=new CommodityTransfer();
@@ -439,6 +439,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 						log.info("error copy PCT to CT",e);
 					}
 				}
+				ct.setUpdatedby("result"+i);//cuman buat debugging doang
 				ct.setSctlId(l.getSctlid());
 				if("Cr.".equalsIgnoreCase(l.getLedgertype())){
 					ct.setIsCreditInMFSLedger(true);

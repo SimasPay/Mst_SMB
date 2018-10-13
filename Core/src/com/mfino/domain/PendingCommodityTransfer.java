@@ -1199,7 +1199,8 @@ public class PendingCommodityTransfer extends Base implements java.io.Serializab
  		sb.append(", pocket;"+((getPocket()!=null)?getPocket().getId():"null"));
  		sb.append(", amount:"+getAmount());
  		sb.append(", charges:"+getCharges());
- 		
+ 		sb.append(", hashcode:"+hashCode());
+ 		sb.append(", updateby:"+getUpdatedby());
  		return sb.toString();
  	}
 }
