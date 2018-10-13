@@ -47,6 +47,7 @@ import com.mfino.result.Result;
 import com.mfino.service.BillPaymentsService;
 import com.mfino.service.BookingDateBalanceService;
 import com.mfino.service.CommodityTransferService;
+import com.mfino.service.PendingCommodityTransferService;
 import com.mfino.service.EnumTextService;
 import com.mfino.service.IBTService;
 import com.mfino.service.MailService;
@@ -70,10 +71,12 @@ import com.mfino.util.MfinoUtil;
 
 
 import com.mfino.domain.MfsLedger;
+import com.mfino.domain.PendingCommodityTransfer;
 import com.mfino.dao.query.MFSLedgerQuery;
 import com.mfino.dao.DAOFactory;
 import com.mfino.dao.MFSLedgerDAO;
 import com.mfino.dao.CommodityTransferDAO;
+import com.mfino.dao.PendingCommodityTransferDAO;
 import com.mfino.dao.DAOFactory;
 
 
@@ -92,6 +95,10 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 	@Qualifier("CommodityTransferServiceImpl")
 	private CommodityTransferService commodityTransferService;
 
+	@Autowired
+	@Qualifier("PendingCommodityTransferServiceImpl")
+	private PendingCommodityTransferService pendingCommodityTransferService;
+	
 	@Autowired
 	@Qualifier("TransactionApiValidationServiceImpl")
 	private TransactionApiValidationService transactionApiValidationService;
@@ -406,17 +413,33 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		
 		for (int i = 0; i < results.size(); i++) {
 			CommodityTransfer ct=new CommodityTransfer();
-			MfsLedger l=results.get(i);
-			log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid());
-			ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
-			log.info("@kris: ct"+i+":"+ct);
-//			ct.setPocket(pocket);
-//			ct.setId(l.getCommoditytransferid());
-//			ct.setCreatetime(l.getCreatetime());
-//			ct.setStarttime(l.getCreatetime());
-//			ct.setAmount(l.getAmount());
 			
-			transactionHistoryList.add(ct);
+			try{
+				MfsLedger l=results.get(i);
+				log.info("@kris: #"+i+", l ct id:"+l.getCommoditytransferid());
+				ct=commodityTransferService.getCommodityTransferById(l.getCommoditytransferid());
+				if(ct==null){
+					//@kris copy dari pending commodity transfer
+					ct=new CommodityTransfer();
+					try{
+						log.info("@kris: not exist in CT, get from PCT and COPY!");
+						PendingCommodityTransfer pct=pendingCommodityTransferService.getById(l.getCommoditytransferid());
+						ct.copy(pct,null);
+					}catch(Exception e){
+						log.info("error copy PCT to CT",e);
+					}
+				}
+				log.info("@kris: ct"+i+":"+ct);
+	//			ct.setPocket(pocket);
+	//			ct.setId(l.getCommoditytransferid());
+	//			ct.setCreatetime(l.getCreatetime());
+	//			ct.setStarttime(l.getCreatetime());
+	//			ct.setAmount(l.getAmount());
+				
+				transactionHistoryList.add(ct);
+			}catch(Exception e){
+				log.info("error getFromMFSLedger",e);
+			}
 		}
 		log.info("@kris: getFromMFSLedger transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
 		return transactionHistoryList;
