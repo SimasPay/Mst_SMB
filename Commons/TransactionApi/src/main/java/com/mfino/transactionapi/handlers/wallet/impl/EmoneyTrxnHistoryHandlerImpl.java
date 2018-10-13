@@ -68,6 +68,11 @@ import com.mfino.transactionapi.vo.TransactionDetails;
 import com.mfino.util.ConfigurationUtil;
 import com.mfino.util.MfinoUtil;
 
+import com.mfino.domain.MfsLedger;
+import com.mfino.dao.query.MFSLedgerQuery;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.MFSLedgerDAO;
+
 /*
  * @author Maruthi
  * 
@@ -278,8 +283,13 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		
 		transactionsHistory.setServiceChargeTransactionLogID(sctl.getId().longValue());
 		List<CommodityTransfer> transactionHistoryList = new ArrayList<CommodityTransfer>();
+		
 		try {
-			transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
+			//@kris: add from commodity transfer
+			transactionHistoryList.addAll(getFromMFSLedger(srcPocket, srcSubscriberMDN));
+			//transactionHistoryList.addAll(commodityTransferService.getTranscationsHistory(srcPocket, srcSubscriberMDN,transactionsHistory));
+			log.info("@kris: transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
+
 			if(transaction != null)	{
 				//sctl.setCalculatedCharge(BigDecimal.ZERO);
 				sctl.setCalculatedcharge(transaction.getAmountTowardsCharges());
@@ -302,6 +312,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			{
 				result.setTransactionList(transactionHistoryList);
 			}
+			//@kris: populate dest card pan by id
 			for(CommodityTransfer ct : transactionHistoryList){
 				if(ct.getUicategory().equals(CmFinoFIX.TransactionUICategory_NFC_Pocket_Topup) && ct.getDestcardpan() == null){
 					Pocket dtPk = pocketService.getById(ct.getDestpocketid().longValue());
@@ -316,7 +327,8 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 			
 			String fileName =  srcSubscriberMDN.getMdn() + "_" + dateString + ".pdf";
 		    String filePath = "../webapps" + File.separatorChar + "webapi" +  File.separatorChar + "Emoney_Txn_History" + File.separatorChar + fileName;
-			if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
+			
+		    if(ServiceAndTransactionConstants.TRANSACTION_EMAIL_HISTORY_AS_PDF.equals(transactionDetails.getTransactionName())) {
 				
 				createPDFAndSendEmail(transactionDetails, srcSubscriberMDN, srcPocket, transactionHistoryList, filePath,sctl.getId().longValue());
 				result.setNotificationCode(CmFinoFIX.NotificationCode_TransactionHistoryEmailWasSent);
@@ -330,7 +342,7 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 				result.setDownloadURL(downloadURL);
 			
 			} else {
-				
+				log.info("@kris: masuk sini");
 				Long txnCount = commodityTransferService.getTranscationsCount(srcPocket, srcSubscriberMDN,transactionsHistory);
 				result.setTotalTxnCount(txnCount);
 				if(txnCount > (transactionsHistory.getPageNumber() + 1) * transactionsHistory.getNumRecords()){
@@ -358,6 +370,35 @@ public class EmoneyTrxnHistoryHandlerImpl extends FIXMessageHandler implements E
 		return result;
 	}
 	
+	private List<CommodityTransfer> getFromMFSLedger(Pocket pocket, SubscriberMdn subMdn){
+		log.info("@kris: getFromMFSLedger: pocket:"+pocket+", subMdn:"+subMdn);
+		List<CommodityTransfer> transactionHistoryList = new ArrayList<CommodityTransfer>();
+		MFSLedgerDAO ledgerDao = DAOFactory.getInstance().getMFSLedgerDAO();
+		MFSLedgerQuery query = new MFSLedgerQuery();
+		if(pocket!=null){
+			query.setPocketId(pocket.getId());
+		}
+		
+		if(subMdn!=null){
+			query.setMdnId(subMdn.getId());
+		}
+		
+		List<MfsLedger> results = ledgerDao.get(query);
+		log.info("@kris: results getFromMFSLedger size:"+((results!=null)?results.size():"null"));
+		
+		for (int i = 0; i < results.size(); i++) {
+			CommodityTransfer ct=new CommodityTransfer();
+			MfsLedger l=results.get(i);
+			
+			ct.setCreatetime(l.getCreatetime());
+			ct.setStarttime(l.getCreatetime());
+			ct.setAmount(l.getAmount());
+			
+			transactionHistoryList.add(ct);
+		}
+		log.info("@kris: getFromMFSLedger transactionHistoryList size:"+((transactionHistoryList!=null)?transactionHistoryList.size():"null"));
+		return transactionHistoryList;
+	}
 	
 	private void createPDFAndSendEmail(TransactionDetails txnDetails, SubscriberMdn subscriberMDN, Pocket srcPocket, List<CommodityTransfer> transactionHistoryList, String filepath, Long sctlId) throws IOException, DocumentException
 	{
