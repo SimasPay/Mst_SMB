@@ -88,6 +88,10 @@ mFino.widget.AuditLogGrid = function (config) {
         {
             header: _('Action'),
             dataIndex: CmFinoFIX.message.JSAuditLog.Entries.Action._name
+        },
+        {
+            header: _('Fix Message'),
+            dataIndex: CmFinoFIX.message.JSAuditLog.Entries.FixMessage._name
         }
         ]
     });

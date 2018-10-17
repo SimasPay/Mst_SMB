@@ -141,4 +141,26 @@ abstract public class CFIXMsg extends CFIXGroup {
     public void CloneRawData(CMultiXBuffer NewBuf) {
         m_pRawBuf = NewBuf;
     }
+    
+    public static void main(String[] args) {
+    	String completePostString = "8=mFinoFIX.2.5.\n" +
+"9=000107\n" +
+"35=1049\n" +
+"5126=0\n" +
+"5127=read.\n" +
+"5122=ASC.\n" +
+"5123=20\n" +
+"5124=FIX.\n" +
+"8184=false\n" +
+"5033=Intializing subscriber not allowed..\n" +
+"10=029";
+        CMultiXBuffer buf = new CMultiXBuffer();
+        buf.Append(completePostString);
+
+        CFIXMsg msg = CFIXMsg.fromFIX(buf);
+
+        System.out.println("@kris: processFix completePostString: "+completePostString);
+        System.out.println("@kris: processFix msg: "+msg);
+        System.out.println("@kris: processFix df: "+msg.DumpFields());
+    }
 }

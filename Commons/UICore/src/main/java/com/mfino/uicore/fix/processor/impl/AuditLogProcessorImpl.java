@@ -9,7 +9,8 @@ import com.mfino.fix.CmFinoFIX.CMJSUsers;
 import com.mfino.hibernate.Timestamp;
 import com.mfino.uicore.fix.processor.AuditLogProcessor;
 import com.mfino.uicore.fix.processor.BaseFixProcessor;
-
+import com.mfino.uicore.util.FixMsgMap;
+        
 import com.mfino.domain.AuditLog;
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 	        	entry.setCreatedBy(al.getCreatedby());
 	        	entry.setCreateTime(al.getCreatetime());
 	        	entry.setRecordVersion(al.getVersion());
+                        String translatedFixMessage=FixMsgMap.translate(al.getFixmessage());
+	        	entry.setFixMessage(translatedFixMessage);
 	        	String entity=al.getMessagename().replace("com.mfino.fix.CmFinoFIX$CMJS","");
 	        	entry.setMessageName(entity);
 	            realMsg.getEntries()[i] = entry;

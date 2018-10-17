@@ -16,6 +16,12 @@ public class FixMsgMap {
          System.out.println(FixMsgMap.get("5033"));
     }
     
+    public static String translate(String fixMessage){
+        String result=fixMessage;
+        
+        return result;
+    }
+    
     private static void init(){
         map.put("8","BeginString");
         map.put("9","BodyLength");
