@@ -1,8 +1,19 @@
 package com.mfino.uicore.util;
 
+import com.mfino.dao.AuditLogDAO;
+import com.mfino.dao.DAOFactory;
+import com.mfino.dao.query.AuditLogQuery;
+import com.mfino.domain.AuditLog;
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixMsgMap {
+    static public Logger log = LoggerFactory.getLogger(FixMsgMap.class);
+    
     static private HashMap<String,String> map=new HashMap<String,String>();
         
     public static String get(String fixCode){
@@ -10,15 +21,66 @@ public class FixMsgMap {
             init();
         return map.get(fixCode);
     }
-    
+
+
+
     public static void main(String[] args){
-        System.out.println(FixMsgMap.get("8253"));
-         System.out.println(FixMsgMap.get("5033"));
+   
+
+    
+       String test="8=mFinoFIX.2.5."
+        +"9=000146"
+        +"35=1049"
+        +"5126=0"
+        +"5127=read."
+        +"5122=ASC."
+        +"5123=20"
+        +"5124=FIX."
+        +"5120=true"
+        +"8184=false"
+        +"5023=0"
+        +"5033=Request for Subscriber Edit Data is Approved successfully."
+        +"10=007";
+       String test2="8=mFinoFIX.2.5.|9=000146|35=1049|5126=0|5127=read.|5122=ASC.|5123=20|5124=FIX.|5120=true|8184=false|5023=0|5033=Request for Subscriber Edit Data is Approved successfully.|10=007|";
+       String test3="\"8=mFinoFIX.2.5. 9=000146 35=1049 5126=0 5127=read. 5122=ASC. 5123=20 5124=FIX. 5120=true 8184=false 5023=0 5033=Request for Subscriber Edit Data is Approved successfully. 10=007 ";
+       
+         String translated=FixMsgMap.translate(test3);
+        //return new StringBuilder(source).replace(m.start(groupToReplace), m.end(groupToReplace), replacement).toString();
+    
+//       Pattern p=Pattern.compile("(\\d)=");
+//       Matcher m=p.matcher(test);
+//       for(m.)
+        //log.info(FixMsgMap.get("8253"));
+         //log.info(FixMsgMap.get("5033"));
     }
     
     public static String translate(String fixMessage){
         String result=fixMessage;
         
+        if(result!=null && result.length()>0 && result.contains("\n")){
+            log.info("contains \\n nih, replace!");
+            result=result.replace("\n", " ");
+        }
+        
+        log.info("fixMessage to be translated:"+fixMessage);
+        try{
+            Pattern p=Pattern.compile("(\\d+)=");
+            Matcher m=p.matcher(fixMessage);
+
+            while (m.find()){
+                String code=m.group();
+                log.info("raw code:"+code);
+                code=code.replace("=", "");
+                log.info("final code:"+code);
+                String label=get(code);
+                log.info("final label:"+label);
+                result=result.replace(code, label);
+            }
+        }catch(Exception e){
+            result=fixMessage;
+        }
+        
+        log.info("translated:"+result);
         return result;
     }
     
