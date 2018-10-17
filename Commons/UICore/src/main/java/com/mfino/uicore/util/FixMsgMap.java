@@ -74,7 +74,7 @@ public class FixMsgMap {
                 log.info("final code:"+code);
                 String label=get(code);
                 log.info("final label:"+label);
-                result=result.replace(code, label);
+                result=result.replace(code+"=", label+"=");
             }
         }catch(Exception e){
             result=fixMessage;

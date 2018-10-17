@@ -58,7 +58,13 @@ public class AuditLogProcessorImpl extends BaseFixProcessor implements AuditLogP
 	        	entry.setRecordVersion(al.getVersion());
                         String translatedFixMessage=FixMsgMap.translate(al.getFixmessage());
 	        	entry.setFixMessage(translatedFixMessage);
-	        	String entity=al.getMessagename().replace("com.mfino.fix.CmFinoFIX$CMJS","");
+                        
+                        String entity=al.getMessagename();
+                        if(al.getMessagename().startsWith("com.mfino.fix.CmFinoFIX$CMJS")){
+                            entity=entity.replace("com.mfino.fix.CmFinoFIX$CMJS","");
+                        }else if(al.getMessagename().startsWith("com.mfino.fix.CmFinoFIX$CM")){
+                            entity=entity.replace("com.mfino.fix.CmFinoFIX$CM","");
+                        }
 	        	entry.setMessageName(entity);
 	            realMsg.getEntries()[i] = entry;
 			}

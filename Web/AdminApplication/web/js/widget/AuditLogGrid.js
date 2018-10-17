@@ -91,7 +91,9 @@ mFino.widget.AuditLogGrid = function (config) {
         },
         {
             header: _('Fix Message'),
-            dataIndex: CmFinoFIX.message.JSAuditLog.Entries.FixMessage._name
+            dataIndex: CmFinoFIX.message.JSAuditLog.Entries.FixMessage._name,
+            defaultWidth: 600,
+            autoSize: true
         }
         ]
     });
