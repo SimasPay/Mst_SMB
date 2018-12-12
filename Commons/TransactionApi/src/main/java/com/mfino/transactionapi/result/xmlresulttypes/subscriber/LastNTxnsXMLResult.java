@@ -200,9 +200,10 @@ public class LastNTxnsXMLResult extends XMLResult {
 					
 					if (ct.getAmount() != null) {
 						BigDecimal txnAmount = ct.getAmount();
+						/*
 						if (!isCredit) {
 							txnAmount = txnAmount.add(ct.getCharges());
-						}
+						}*/
 						getXmlWriter().writeStartElement("amount");
 						getXmlWriter().writeCharacters(numberFormat.format(txnAmount),false);
 						getXmlWriter().writeEndElement();
