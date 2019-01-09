@@ -88,14 +88,18 @@ public class MFAServiceImpl implements MFAService{
 			//Your Simaspay code is 1168. Please click the link to go back to Simaspay. Link: simaspay://?token=1168
 			//message = "Kode Simobi Anda " + oneTimePin + " (no ref: " + sctlID + ")";
 			
-			message = "Kode OTP Simaspay anda : " + oneTimePin + ". Atau silahkan klik link berikut simaspay://?token=" + oneTimePin;
+			//message = "Kode OTP Simaspay anda : " + oneTimePin + ". Atau silahkan klik link berikut simaspay://?token=" + oneTimePin;
+			
+			//ini wording request dari divisi antifraud
+			message = "Kode OTP Simaspay Anda " + oneTimePin + ". HATI-HATI PENIPUAN, jangan berikan informasi ini kepada siapapun";
 		}
 		else {
 			
 			//Kode OTP Simaspay anda : 1168. Atau silahkan klik link berikut simaspay://?token=1168
 			//message = "Your Simobi Code is " + oneTimePin + "(ref no: " + sctlID + ")";
 			
-			message = "Your Simaspay code is " + oneTimePin + ". Please click the link to go back to Simaspay. Link: simaspay://?token=" + oneTimePin;
+			//message = "Your Simaspay code is " + oneTimePin + ". Please click the link to go back to Simaspay. Link: simaspay://?token=" + oneTimePin;
+			message = "Kode OTP Simaspay Anda " + oneTimePin + ". HATI-HATI PENIPUAN, jangan berikan informasi ini kepada siapapun";
 		}
 		smsService.setDestinationMDN(sourceMDN);
 		smsService.setMessage(message);
