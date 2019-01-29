@@ -226,6 +226,11 @@ public class SubscriberUpgradeKycProcessorImpl extends BaseFixProcessor implemen
 			Long checkerUserBranchId = userService.getCurrentUser().getBranchcodeid();
 			BranchCodes branchCodes = branchCodeDao.getById(checkerUserBranchId);
 			
+			log.info("@kris: makerUsername:"+makerUsername+", checkerUserBranchId:"+checkerUserBranchId);
+			log.info("@kris: makerUser:"+makerUser+", getBranchcodeid:"+((makerUser!=null)?makerUser.getBranchcodeid():"null"));
+			log.info("@kris: currentUser ID:"+userService.getCurrentUser().getId());
+			log.info("@kris: checkerUserBranchId:"+checkerUserBranchId);
+
 			if((makerUser != null && makerUser.getBranchcodeid() == checkerUserBranchId) || 
 					(branchCodes != null && StringUtils.equals(branchCodes.getBranchcode(), DEFAULT_BRANCH))){
 				
